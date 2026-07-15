@@ -163,21 +163,44 @@ async function fetchText(url) {
   return res.text();
 }
 
-/** Resolve a lu.ma calendar slug to its ICS feed URL. */
-async function lumaIcsUrl(slug) {
+/** Resolve a lu.ma calendar slug to candidate ICS feed URLs (best first),
+ *  plus a diagnostic string describing how resolution went. */
+async function lumaIcsCandidates(slug) {
+  const candidates = [];
+  let diag = "";
   try {
     const html = await fetchText(`https://lu.ma/${slug}`);
-    // Prefer the explicit api_id field; otherwise take the most frequent
-    // cal- id on the page (calendar pages embed theirs many times).
+    // Prefer the explicit api_id field; otherwise rank every cal- id on the
+    // page by frequency (calendar pages embed their own id many times).
     const exact = html.match(/"api_id"\s*:\s*"(cal-[A-Za-z0-9]+)"/);
-    if (exact) return `https://api.lu.ma/ics/get?entity=calendar&id=${exact[1]}`;
     const counts = new Map();
     for (const m of html.matchAll(/cal-[A-Za-z0-9]{6,}/g))
       counts.set(m[0], (counts.get(m[0]) || 0) + 1);
-    const top = [...counts.entries()].sort((a, b) => b[1] - a[1])[0];
-    if (top) return `https://api.lu.ma/ics/get?entity=calendar&id=${top[0]}`;
-  } catch { /* fall through to slug form */ }
-  return `https://api.lu.ma/ics/get?entity=calendar&id=${slug}`;
+    const ranked = [...counts.entries()].sort((a, b) => b[1] - a[1]).map((e) => e[0]);
+    if (exact) ranked.unshift(exact[1]);
+    for (const id of [...new Set(ranked)].slice(0, 3))
+      candidates.push(`https://api.lu.ma/ics/get?entity=calendar&id=${id}`);
+    if (!candidates.length) diag = `page https://lu.ma/${slug} loaded but contains no calendar id`;
+  } catch (err) {
+    diag = `page https://lu.ma/${slug} failed: ${String(err.message || err).slice(0, 80)}`;
+  }
+  candidates.push(`https://api.lu.ma/ics/get?entity=calendar&id=${slug}`);
+  return { candidates, diag };
+}
+
+/** Fetch the first candidate URL that answers with an iCal payload. */
+async function fetchFirstIcs(urls) {
+  const errors = [];
+  for (const url of urls) {
+    try {
+      const raw = await fetchText(url);
+      if (/BEGIN:VCALENDAR/.test(raw)) return raw;
+      errors.push(`${url}: not an iCal feed`);
+    } catch (err) {
+      errors.push(String(err.message || err).slice(0, 100));
+    }
+  }
+  throw new Error(errors.join(" | "));
 }
 
 // ------------------------------------------------------------------ geocoding
@@ -243,11 +266,20 @@ async function processSource(source, market, marketKey, out, skipGeocode) {
   if (source.enabled === false) { status.status = "needs-setup"; return; }
   if (source.type === "manual") { status.status = "manual"; return; }
 
-  let icsUrl = source.url;
   try {
-    if (source.type === "luma-calendar") icsUrl = await lumaIcsUrl(source.slug);
-    const raw = await fetchText(icsUrl);
-    if (!/BEGIN:VCALENDAR/.test(raw)) throw new Error("not an iCal feed");
+    let raw, diag = "";
+    if (source.type === "luma-calendar") {
+      const resolved = await lumaIcsCandidates(source.slug);
+      diag = resolved.diag;
+      try {
+        raw = await fetchFirstIcs(resolved.candidates);
+      } catch (err) {
+        throw new Error([diag, String(err.message || err)].filter(Boolean).join(" | "));
+      }
+    } else {
+      raw = await fetchText(source.url);
+      if (!/BEGIN:VCALENDAR/.test(raw)) throw new Error("not an iCal feed");
+    }
     const now = Date.now();
     const min = now - WINDOW_PAST_DAYS * 864e5;
     const max = now + WINDOW_FUTURE_DAYS * 864e5;
