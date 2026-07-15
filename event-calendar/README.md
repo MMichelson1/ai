@@ -26,6 +26,26 @@ compute. It runs on the free tier of GitHub Actions + GitHub Pages.
   calendar shows validated events within a 25 / 50 / 100-mile radius. Shareable links:
   `…/#city=Berlin`.
 
+## Newsletter builder (chapter & regional leads)
+
+The page includes a **Newsletter builder** for the weekly newsletters sent from the
+AI Collective platform to chapter or region members. Chapter towns may only have a
+few events a month, so it's built region-first: enter your **chapter/region name**,
+the **list of chapter cities** in your region (5–15 is typical), a per-city radius,
+how many **weeks ahead** to include, and the **type of output**:
+
+- **Email HTML** — table-layout, inline-styles markup that renders correctly in
+  email clients; paste it straight into the platform's newsletter editor. AI
+  Collective events carry an orange stripe and badge; community events a blue stripe.
+- **Markdown** — for platforms/editors that take Markdown.
+- **Plain text** — lowest common denominator.
+
+Events across all listed cities are merged into one dated digest with register
+links, free/paid labels, organizer, type, and capacity. Settings are saved in the
+browser, so building next week's section is one click. (Email clients can't run
+JavaScript — that's why the output is generated static markup rather than an
+embedded live calendar.)
+
 ## How events are validated
 
 An event appears only if **all** of these hold:

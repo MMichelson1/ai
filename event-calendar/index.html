@@ -179,6 +179,30 @@
   .table-wrap{overflow-x:auto}
   .where{font-size:.88rem;color:var(--muted);margin-top:12px;max-width:75ch}
 
+  /* ---------- newsletter builder ---------- */
+  .nl-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px 16px;margin-top:14px}
+  .nl-grid label{display:flex;flex-direction:column;gap:5px;font-size:.78rem;font-weight:600;color:var(--faint);text-transform:uppercase;letter-spacing:.07em}
+  .nl-grid input[type=text],.nl-grid select{
+    padding:10px 12px;border-radius:9px;border:1px solid var(--line);background:var(--raised);
+    color:var(--ink);font:inherit;font-size:.95rem;text-transform:none;letter-spacing:0;font-weight:400;
+  }
+  .nl-grid .full{grid-column:1/-1}
+  .nl-grid .chk{flex-direction:row;align-items:center;gap:8px;text-transform:none;letter-spacing:0;
+    font-size:.9rem;font-weight:400;color:var(--muted);align-self:end;padding-bottom:8px}
+  .nl-actions{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:14px}
+  .btn-primary{padding:10px 22px;border-radius:9px;border:none;background:var(--cobalt);color:#fff;font-weight:600}
+  .btn-primary:hover{background:var(--vermilion)}
+  .btn-ghost{padding:10px 18px;border-radius:9px;border:1px solid var(--line);background:var(--raised);color:var(--ink);font-weight:600}
+  .btn-ghost:hover{background:var(--day-hover)}
+  #nlNote{font-size:.85rem;color:var(--muted)}
+  #nlOut{margin-top:18px;display:flex;flex-direction:column;gap:12px}
+  #nlPreviewWrap{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fff}
+  #nlPreview{width:100%;height:420px;border:0;display:block;background:#fff}
+  #nlPre{max-height:420px;overflow:auto;background:var(--raised);border:1px solid var(--line);
+    border-radius:10px;padding:14px;font-size:.82rem;white-space:pre-wrap;margin:0}
+  #nlCode{width:100%;min-height:140px;resize:vertical;border:1px solid var(--line);border-radius:10px;
+    background:var(--raised);color:var(--ink);font:.78rem/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;padding:12px}
+
   footer{border-top:1px solid var(--line);color:var(--faint);font-size:.82rem;padding:18px 20px 40px}
   footer .inner{max-width:1020px;margin:0 auto;display:flex;flex-wrap:wrap;gap:6px 24px}
 </style>
@@ -267,6 +291,53 @@
       site, marked in-person, and carrying a physical address. Data refreshes automatically every 6 hours —
       no AI tokens are ever used.
     </p>
+  </section>
+
+  <section class="card" id="newsletterCard">
+    <div class="kicker">For chapter &amp; regional leads</div>
+    <h2>Newsletter builder</h2>
+    <p class="where">
+      Generate a ready-to-paste “Upcoming events” section for the weekly newsletter you send from the
+      AI Collective platform to chapter or region members. A chapter town may only have 2–3 events a month,
+      so list every chapter city in your region (5–15 is typical) and events are merged into one digest.
+      Your settings are remembered on this device. Email HTML uses inline styles and table layout, so it
+      renders correctly in email clients and platform editors.
+    </p>
+    <form id="nlForm" class="nl-grid">
+      <label class="full">Chapter / region name
+        <input type="text" id="nlName" placeholder="e.g. The AI Collective — Southeast US" autocomplete="off">
+      </label>
+      <label class="full">Chapter cities in your region (comma-separated)
+        <input type="text" id="nlCities" placeholder="e.g. Atlanta, Nashville, Charlotte, Raleigh" autocomplete="off">
+      </label>
+      <label>Radius per city
+        <select id="nlRadius"><option value="25">25 mi</option><option value="50" selected>50 mi</option><option value="100">100 mi</option></select>
+      </label>
+      <label>Weeks ahead
+        <select id="nlWeeks"><option value="1">1 week</option><option value="2" selected>2 weeks</option><option value="3">3 weeks</option><option value="4">4 weeks</option></select>
+      </label>
+      <label>Type of output
+        <select id="nlFormat">
+          <option value="email" selected>Email HTML (for newsletters)</option>
+          <option value="markdown">Markdown</option>
+          <option value="text">Plain text</option>
+        </select>
+      </label>
+      <label class="chk"><input type="checkbox" id="nlCommunity" checked>Include community events</label>
+      <div class="nl-actions full">
+        <button type="submit" class="btn-primary">Generate newsletter section</button>
+        <span id="nlNote" role="status"></span>
+      </div>
+    </form>
+    <div id="nlOut" hidden>
+      <div id="nlPreviewWrap"><iframe id="nlPreview" title="Newsletter preview" sandbox=""></iframe></div>
+      <pre id="nlPre" hidden></pre>
+      <div class="nl-actions">
+        <button type="button" class="btn-ghost" id="nlCopy">Copy to clipboard</button>
+        <span id="nlCopyNote" role="status"></span>
+      </div>
+      <textarea id="nlCode" readonly spellcheck="false" aria-label="Generated newsletter code"></textarea>
+    </div>
   </section>
 </main>
 
@@ -384,12 +455,13 @@ function dayLabel(key){
 const todayKey = ()=> new Intl.DateTimeFormat("en-CA",{year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
 
 /* ---------- scope: which events are near the searched city ---------- */
-function inScope(ev){
-  if (ev.lat!=null && ev.lon!=null) return miles({lat:ev.lat,lon:ev.lon}, state.center) <= state.radius;
+function evNear(ev, center, radius){
+  if (ev.lat!=null && ev.lon!=null) return miles({lat:ev.lat,lon:ev.lon}, center) <= radius;
   const mk = DATA.markets?.[ev.market];
-  if (mk?.center) return miles(mk.center, state.center) <= state.radius;
+  if (mk?.center) return miles(mk.center, center) <= radius;
   return false;
 }
+function inScope(ev){ return evNear(ev, state.center, state.radius); }
 const scoped = ()=> (DATA?.events||[]).filter(inScope);
 function activeMarketKey(){
   let best=null, bestD=Infinity;
@@ -545,6 +617,151 @@ async function doSearch(name){
   renderAll();
 }
 
+/* ---------- newsletter builder ---------- */
+const SETTINGS_KEY = "aic-cal-settings";
+function loadSettings(){
+  try{ return JSON.parse(localStorage.getItem(SETTINGS_KEY)) || {}; }catch(e){ return {}; }
+}
+function saveSettings(s){
+  try{ localStorage.setItem(SETTINGS_KEY, JSON.stringify(s)); }catch(e){ /* private mode */ }
+}
+
+function groupByDay(evs){
+  const groups = new Map();
+  for (const ev of evs){ const k=dateKey(ev); if(!groups.has(k)) groups.set(k,[]); groups.get(k).push(ev); }
+  return groups;
+}
+
+function newsletterEvents(centers, radius, weeks, includeCommunity){
+  const now = Date.now(), horizon = now + weeks*7*864e5;
+  const seen = new Set();
+  return (DATA?.events||[]).filter(ev=>{
+    if (!includeCommunity && !ev.aic) return false;
+    if (!(Date.parse(ev.end||ev.start) >= now-6*36e5 && Date.parse(ev.start) <= horizon)) return false;
+    if (!centers.some(c=>evNear(ev,c,radius))) return false;
+    if (seen.has(ev.id)) return false;
+    seen.add(ev.id);
+    return true;
+  }).sort((a,b)=>a.start.localeCompare(b.start));
+}
+
+function nlMetaLine(ev){
+  const bits = [timeLabel(ev), ev.location, ev.organizer, ev.type];
+  if (ev.capacity) bits.push(`capacity ${ev.capacity}`);
+  bits.push(ev.price==="free" ? "Free" : ev.price==="paid" ? "Paid" : "See listing for price");
+  return bits;
+}
+
+function nlEmailHtml(name, evs, weeks){
+  const calUrl = location.origin.startsWith("http") ? location.href.split("#")[0] : "";
+  let rows = "";
+  for (const [k,list] of groupByDay(evs)){
+    rows += `<tr><td style="padding:18px 24px 2px;font-family:Arial,Helvetica,sans-serif;font-size:12px;font-weight:bold;letter-spacing:1px;text-transform:uppercase;color:#8B88AC;">${esc(dayLabel(k))}</td></tr>`;
+    for (const ev of list){
+      const stripe = ev.aic ? "#FF7A1A" : "#5B7CFF";
+      const price = ev.price==="free" ? '<span style="color:#1E8E5A;font-weight:bold;">Free</span>'
+                  : ev.price==="paid" ? '<span style="color:#B65E10;font-weight:bold;">Paid</span>'
+                  : '<span style="color:#8B88AC;">See listing for price</span>';
+      const cap = ev.capacity ? ` &middot; capacity ${esc(ev.capacity)}` : "";
+      rows += `<tr><td style="padding:6px 24px;">
+  <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background:#FFFFFF;border:1px solid #E4E4F0;border-left:4px solid ${stripe};border-radius:8px;">
+    <tr>
+      <td style="padding:12px 16px;font-family:Arial,Helvetica,sans-serif;">
+        <a href="${esc(ev.url)}" style="font-size:16px;font-weight:bold;color:#181540;text-decoration:none;">${esc(ev.title)}</a>${ev.aic?' <span style="font-size:10px;font-weight:bold;color:#FFFFFF;background:#FF7A1A;padding:2px 7px;border-radius:9px;vertical-align:2px;">AI&nbsp;COLLECTIVE</span>':""}<br>
+        <span style="font-size:13px;color:#5B5880;line-height:1.7;">${esc(timeLabel(ev))} &middot; ${esc(ev.location)}<br>
+        ${esc(ev.organizer)} &middot; ${esc(ev.type)}${cap} &middot; ${price}</span>
+      </td>
+      <td width="96" align="right" style="padding:12px 16px;vertical-align:middle;">
+        <a href="${esc(ev.url)}" style="display:inline-block;background:#2334D8;color:#FFFFFF;font-family:Arial,Helvetica,sans-serif;font-size:13px;font-weight:bold;padding:9px 16px;border-radius:8px;text-decoration:none;">Register</a>
+      </td>
+    </tr>
+  </table>
+</td></tr>`;
+    }
+  }
+  const footerLink = calUrl ? ` &middot; <a href="${esc(calUrl)}" style="color:#2334D8;">View the full calendar</a>` : "";
+  return `<!-- ${esc(name)} — upcoming AI events (generated ${new Date().toISOString().slice(0,10)} by the AI Collective Event Calendar) -->
+<table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="max-width:640px;margin:0 auto;background:#F4F5FB;border-radius:12px;">
+  <tr><td style="background:#231A55;padding:20px 24px;border-radius:12px 12px 0 0;font-family:Arial,Helvetica,sans-serif;">
+    <span style="font-size:19px;font-weight:bold;color:#FFFFFF;">${esc(name)}</span><br>
+    <span style="font-size:13px;color:#FFD9BC;">Validated in-person AI events &middot; next ${weeks} week${weeks>1?"s":""}</span>
+  </td></tr>
+  ${rows}
+  <tr><td style="padding:14px 24px 20px;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#8B88AC;">Orange = AI Collective events &middot; Blue = community events${footerLink}</td></tr>
+</table>`;
+}
+
+function nlMarkdown(name, evs, weeks){
+  let out = `## ${name} — Upcoming AI events (next ${weeks} week${weeks>1?"s":""})\n\n`;
+  for (const [k,list] of groupByDay(evs)){
+    out += `### ${dayLabel(k)}\n\n`;
+    for (const ev of list){
+      out += `- **[${ev.title}](${ev.url})**${ev.aic?" `AI Collective`":""} — ${nlMetaLine(ev).join(" · ")}\n`;
+    }
+    out += "\n";
+  }
+  out += `_Validated in-person events only. Orange/AI Collective tagged events are chapter events; all others are community events._\n`;
+  return out;
+}
+
+function nlText(name, evs, weeks){
+  let out = `${name.toUpperCase()} — UPCOMING AI EVENTS (NEXT ${weeks} WEEK${weeks>1?"S":""})\n`;
+  for (const [k,list] of groupByDay(evs)){
+    out += `\n${dayLabel(k)}\n${"-".repeat(dayLabel(k).length)}\n`;
+    for (const ev of list){
+      out += `* ${ev.title}${ev.aic?" [AI Collective]":""}\n  ${nlMetaLine(ev).join(" | ")}\n  Register: ${ev.url}\n`;
+    }
+  }
+  return out;
+}
+
+async function generateNewsletter(){
+  const note = $("nlNote");
+  const name = $("nlName").value.trim() || "The AI Collective";
+  const cityStr = $("nlCities").value.trim() || state.cityLabel;
+  const radius = +$("nlRadius").value;
+  const weeks = +$("nlWeeks").value;
+  const format = $("nlFormat").value;
+  const includeCommunity = $("nlCommunity").checked;
+  saveSettings({name, cities:cityStr, radius, weeks, format, includeCommunity});
+
+  note.textContent = "Resolving cities…";
+  const centers = [], misses = [];
+  for (const c of cityStr.split(",").map(s=>s.trim()).filter(Boolean)){
+    const hit = await lookupCity(c);
+    if (hit) centers.push({lat:hit.lat, lon:hit.lon}); else misses.push(c);
+  }
+  if (!centers.length){ note.textContent = "No cities recognized — check spelling or try nearby major cities."; return; }
+
+  const evs = newsletterEvents(centers, radius, weeks, includeCommunity);
+  note.textContent = `${evs.length} event${evs.length===1?"":"s"} across ${centers.length} cit${centers.length===1?"y":"ies"}`
+    + (misses.length ? ` — couldn’t locate: ${misses.join(", ")}` : "");
+  if (!evs.length){ $("nlOut").hidden = true; return; }
+
+  const code = format==="email" ? nlEmailHtml(name, evs, weeks)
+             : format==="markdown" ? nlMarkdown(name, evs, weeks)
+             : nlText(name, evs, weeks);
+  $("nlOut").hidden = false;
+  $("nlCode").value = code;
+  const isEmail = format==="email";
+  $("nlPreviewWrap").hidden = !isEmail;
+  $("nlPre").hidden = isEmail;
+  if (isEmail) $("nlPreview").srcdoc = `<body style="margin:0;padding:16px;background:#EDEDF4;">${code}</body>`;
+  else $("nlPre").textContent = code;
+  $("nlCopyNote").textContent = "";
+}
+
+async function copyNewsletter(){
+  const code = $("nlCode").value;
+  try{
+    await navigator.clipboard.writeText(code);
+    $("nlCopyNote").textContent = "Copied — paste it into your newsletter editor.";
+  }catch(e){
+    $("nlCode").focus(); $("nlCode").select();
+    $("nlCopyNote").textContent = "Press Ctrl/Cmd+C to copy the selected code.";
+  }
+}
+
 /* ---------- wiring ---------- */
 function monthShift(delta){
   let {y,m} = state.view; m += delta;
@@ -573,6 +790,15 @@ function init(){
     const v = $("cityInput").value;
     if (v.trim()) doSearch(v);
   });
+  $("nlForm").addEventListener("submit",(e)=>{ e.preventDefault(); generateNewsletter(); });
+  $("nlCopy").addEventListener("click",copyNewsletter);
+  const s = loadSettings();
+  if (s.name) $("nlName").value = s.name;
+  if (s.cities) $("nlCities").value = s.cities;
+  if (s.radius) $("nlRadius").value = String(s.radius);
+  if (s.weeks) $("nlWeeks").value = String(s.weeks);
+  if (s.format) $("nlFormat").value = s.format;
+  if (typeof s.includeCommunity === "boolean") $("nlCommunity").checked = s.includeCommunity;
   $("radiusSel").addEventListener("change",(e)=>{
     state.radius = +e.target.value;
     const n = scoped().length;
