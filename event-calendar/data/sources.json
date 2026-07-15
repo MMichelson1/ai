@@ -75,8 +75,8 @@
     {
       "name": "The AI Collective — Worldwide (Luma)",
       "type": "luma-calendar",
-      "slug": "genaicollective",
-      "url": "https://lu.ma/genaicollective",
+      "slug": "genai-collective",
+      "url": "https://lu.ma/genai-collective",
       "organizer": "The AI Collective",
       "aic": true,
       "assumeAI": true,
