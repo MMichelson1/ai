@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-15T02:40:15.046Z",
+  "generatedAt": "2026-07-15T02:42:17.863Z",
   "sample": false,
   "markets": {
     "atlanta": {
@@ -21,7 +21,7 @@
       "aic": true,
       "status": "ok",
       "count": 9,
-      "lastChecked": "2026-07-15T02:40:15.046Z",
+      "lastChecked": "2026-07-15T02:42:17.863Z",
       "note": ""
     },
     {
@@ -32,7 +32,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-07-15T02:40:16.427Z",
+      "lastChecked": "2026-07-15T02:42:19.375Z",
       "note": "Get the section's public iCal feed URL from events.vtools.ieee.org (Events → Export/iCal for the Atlanta Section), paste it into 'url', then set enabled:true."
     },
     {
@@ -43,7 +43,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-07-15T02:40:16.427Z",
+      "lastChecked": "2026-07-15T02:42:19.375Z",
       "note": "Any Meetup group exposes an iCal feed at https://www.meetup.com/<group-slug>/events/ical/ — add one source entry per local AI group and set enabled:true."
     },
     {
@@ -54,7 +54,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-07-15T02:40:16.427Z",
+      "lastChecked": "2026-07-15T02:42:19.375Z",
       "note": "Most university event calendars (Localist, Google Calendar) publish an ICS feed — paste it here. AI keyword filtering is applied automatically."
     },
     {
@@ -65,7 +65,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-07-15T02:40:16.427Z",
+      "lastChecked": "2026-07-15T02:42:19.375Z",
       "note": "Eventbrite retired public event search; per-organizer listings work via their free API. Add EVENTBRITE_TOKEN as a repo secret and organizer IDs here — see README."
     },
     {
@@ -76,7 +76,7 @@
       "aic": false,
       "status": "manual",
       "count": 0,
-      "lastChecked": "2026-07-15T02:40:16.427Z",
+      "lastChecked": "2026-07-15T02:42:19.375Z",
       "note": "LinkedIn and Facebook publish no feeds. Chapter leads add validated in-person events to data/manual-events.json via pull request; each entry must link to a live listing on a trusted site."
     },
     {
@@ -87,7 +87,7 @@
       "aic": true,
       "status": "error",
       "count": 0,
-      "lastChecked": "2026-07-15T02:40:16.427Z",
+      "lastChecked": "2026-07-15T02:42:19.375Z",
       "note": "HTTP 404 for https://api.lu.ma/ics/get?entity=calendar&id=genaicollective"
     }
   ],
