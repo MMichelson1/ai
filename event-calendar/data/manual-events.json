@@ -1,0 +1,4 @@
+{
+  "$comment": "Validated in-person events found on LinkedIn, Facebook, or anywhere without a machine-readable feed. Chapter leads add entries via pull request. Every entry MUST include: title, start (ISO 8601 with offset), location (street address), organizer, and url pointing to the LIVE listing on a trusted site (lu.ma, meetup.com, eventbrite.*, ieee.org, *.edu). Entries whose url is not on a trusted host, or whose location looks virtual, are dropped by the fetch script.",
+  "events": []
+}

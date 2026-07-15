@@ -1,0 +1,610 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The AI Collective — AI Event Calendar</title>
+<meta name="description" content="Validated, in-person AI events near you — meetings, classes, workshops, demo nights and more. Search any city worldwide.">
+<style>
+  :root{
+    --cobalt:#2334D8; --cobalt-bright:#4D63FF; --vermilion:#E8431F; --amber:#FF8A1E;
+    --dot-aic:#FF7A1A; --dot-other:#5B7CFF;
+    --bg:#F4F5FB; --surface:#FFFFFF; --raised:#EDEFF9; --line:#DCDEF0;
+    --ink:#181540; --muted:#5B5880; --faint:#8B88AC;
+    --chip-bg:#EDEFF9; --ok:#1E8E5A; --warn:#B65E10; --err:#C22F2F;
+    --day-hover:#E9EBFA; --today-ring:#2334D8;
+    --grad:linear-gradient(118deg,#1F2ED6 0%,#231A55 42%,#8A2419 68%,#E8431F 84%,#FF8A1E 100%);
+    --shadow:0 1px 2px rgba(24,21,64,.06),0 8px 28px -12px rgba(24,21,64,.18);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#0D0B26; --surface:#171441; --raised:#1F1B52; --line:#2B2766;
+      --ink:#F2F1FC; --muted:#A6A3CC; --faint:#7A77A3;
+      --chip-bg:#232057; --ok:#4CC98B; --warn:#FFA94D; --err:#FF7B7B;
+      --day-hover:#211D5C; --today-ring:#FF8A1E;
+      --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 32px -12px rgba(0,0,0,.55);
+    }
+  }
+  :root[data-theme="light"]{
+    --cobalt:#2334D8; --dot-aic:#FF7A1A; --dot-other:#5B7CFF;
+    --bg:#F4F5FB; --surface:#FFFFFF; --raised:#EDEFF9; --line:#DCDEF0;
+    --ink:#181540; --muted:#5B5880; --faint:#8B88AC;
+    --chip-bg:#EDEFF9; --ok:#1E8E5A; --warn:#B65E10; --err:#C22F2F;
+    --day-hover:#E9EBFA; --today-ring:#2334D8;
+    --shadow:0 1px 2px rgba(24,21,64,.06),0 8px 28px -12px rgba(24,21,64,.18);
+  }
+  :root[data-theme="dark"]{
+    --bg:#0D0B26; --surface:#171441; --raised:#1F1B52; --line:#2B2766;
+    --ink:#F2F1FC; --muted:#A6A3CC; --faint:#7A77A3;
+    --chip-bg:#232057; --ok:#4CC98B; --warn:#FFA94D; --err:#FF7B7B;
+    --day-hover:#211D5C; --today-ring:#FF8A1E;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 32px -12px rgba(0,0,0,.55);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--bg); color:var(--ink);
+    font:16px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{
+    font-family:"Avenir Next","Avenir",Futura,"Century Gothic","Segoe UI",ui-sans-serif,system-ui,sans-serif;
+    letter-spacing:.01em; text-wrap:balance;
+  }
+  a{color:var(--cobalt-bright)}
+  button{font:inherit;color:inherit;cursor:pointer}
+  .num{font-variant-numeric:tabular-nums}
+
+  /* ---------- header ---------- */
+  header.hero{background:var(--grad); color:#fff; padding:28px 20px 26px}
+  .hero-inner{max-width:1020px;margin:0 auto;display:flex;flex-wrap:wrap;gap:20px;align-items:center}
+  .mark{flex:0 0 auto}
+  .hero h1{margin:0;font-size:clamp(1.35rem,3.2vw,1.9rem);font-weight:600;line-height:1.2}
+  .hero .sub{margin:.3rem 0 0;font-size:.95rem;opacity:.88;max-width:52ch}
+  .searchbar{flex:1 1 100%;display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}
+  .searchbar input{
+    flex:1 1 240px;min-width:0;padding:11px 14px;border-radius:10px;border:1px solid rgba(255,255,255,.35);
+    background:rgba(10,8,40,.35);color:#fff;font:inherit;
+  }
+  .searchbar input::placeholder{color:rgba(255,255,255,.65)}
+  .searchbar select{
+    padding:11px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.35);
+    background:rgba(10,8,40,.35);color:#fff;font:inherit;
+  }
+  .searchbar select option{color:#181540}
+  .searchbar button{
+    padding:11px 20px;border-radius:10px;border:none;background:#fff;color:#181540;font-weight:600;
+  }
+  .searchbar button:hover{background:#FFE9D6}
+  .search-note{flex:1 1 100%;font-size:.85rem;min-height:1.2em;opacity:.92}
+  input:focus-visible,select:focus-visible,button:focus-visible,[tabindex]:focus-visible,td.day:focus-visible{
+    outline:2px solid var(--amber);outline-offset:2px;
+  }
+
+  main{max-width:1020px;margin:0 auto;padding:22px 20px 60px;display:flex;flex-direction:column;gap:22px}
+
+  .banner{
+    background:var(--raised);border:1px solid var(--line);border-left:4px solid var(--amber);
+    border-radius:10px;padding:12px 16px;font-size:.92rem;color:var(--muted);
+  }
+  .banner strong{color:var(--ink)}
+
+  .legend{display:flex;gap:22px;flex-wrap:wrap;font-size:.88rem;color:var(--muted);align-items:center}
+  .legend .dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:7px;vertical-align:-1px}
+  .dot.aic{background:var(--dot-aic)} .dot.other{background:var(--dot-other)}
+
+  /* ---------- calendar ---------- */
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:20px}
+  .cal-head{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:14px}
+  .cal-head h2{margin:0;font-size:1.25rem;font-weight:600;min-width:12ch;text-align:center}
+  .nav-btn{
+    width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--raised);
+    display:grid;place-items:center;font-size:1.15rem;line-height:1;color:var(--ink);
+  }
+  .nav-btn:hover{background:var(--day-hover)}
+  table.cal{width:100%;border-collapse:collapse;table-layout:fixed}
+  table.cal th{
+    font-size:.72rem;text-transform:uppercase;letter-spacing:.09em;color:var(--faint);
+    font-weight:600;padding:6px 4px;text-align:center;
+  }
+  td.day{
+    height:78px;vertical-align:top;border:1px solid var(--line);border-radius:8px;padding:6px 7px;
+    cursor:pointer;transition:background .12s;
+  }
+  @media (prefers-reduced-motion: reduce){ td.day{transition:none} }
+  td.day:hover{background:var(--day-hover)}
+  td.day.blank{cursor:default;border-color:transparent}
+  td.day.blank:hover{background:transparent}
+  td.day .n{font-size:.85rem;color:var(--muted)}
+  td.day.today .n{
+    color:#fff;background:var(--today-ring);border-radius:50%;
+    display:inline-grid;place-items:center;width:22px;height:22px;font-weight:600;
+  }
+  td.day.sel{background:var(--day-hover);box-shadow:inset 0 0 0 2px var(--today-ring)}
+  .dots{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+  .dots .dot{width:9px;height:9px;border-radius:50%}
+  .dots .more{font-size:.68rem;color:var(--faint);line-height:1}
+  @media (max-width:560px){ td.day{height:58px;padding:4px 5px} .dots .dot{width:7px;height:7px} }
+
+  /* ---------- panels & event cards ---------- */
+  section h2{margin:0 0 4px;font-size:1.15rem}
+  section .kicker{
+    font-size:.72rem;text-transform:uppercase;letter-spacing:.12em;color:var(--faint);
+    font-weight:600;margin-bottom:2px;
+  }
+  .day-group{margin-top:16px}
+  .day-group>h3{margin:0 0 8px;font-size:.95rem;color:var(--muted);font-weight:600}
+  .evt{
+    display:flex;flex-wrap:wrap;gap:10px 16px;align-items:flex-start;
+    background:var(--surface);border:1px solid var(--line);border-radius:12px;
+    padding:14px 16px;margin-bottom:10px;box-shadow:var(--shadow);
+  }
+  .evt .body{flex:1 1 320px;min-width:0}
+  .evt h4{margin:0 0 6px;font-size:1.02rem;line-height:1.35}
+  .evt h4 a{color:inherit;text-decoration:none}
+  .evt h4 a:hover{text-decoration:underline}
+  .chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+  .chip{
+    font-size:.7rem;text-transform:uppercase;letter-spacing:.07em;font-weight:600;
+    padding:3px 9px;border-radius:999px;background:var(--chip-bg);color:var(--muted);
+  }
+  .chip.aic{background:var(--dot-aic);color:#241202}
+  .chip.free{color:var(--ok);box-shadow:inset 0 0 0 1px currentColor;background:transparent}
+  .chip.paid{color:var(--warn);box-shadow:inset 0 0 0 1px currentColor;background:transparent}
+  .chip.check{color:var(--faint);box-shadow:inset 0 0 0 1px var(--line);background:transparent}
+  .meta{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;font-size:.86rem;color:var(--muted)}
+  .meta dt{color:var(--faint);font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;padding-top:2px}
+  .meta dd{margin:0;overflow-wrap:anywhere}
+  .evt .cta{flex:0 0 auto;display:flex;flex-direction:column;gap:6px;align-items:flex-end;margin-left:auto}
+  .register{
+    display:inline-block;padding:9px 18px;border-radius:9px;background:var(--cobalt);color:#fff;
+    text-decoration:none;font-weight:600;font-size:.9rem;
+  }
+  .register:hover{background:var(--vermilion)}
+  .srcnote{font-size:.72rem;color:var(--faint)}
+  .empty{color:var(--muted);font-size:.92rem;background:var(--raised);border:1px dashed var(--line);border-radius:10px;padding:14px 16px}
+
+  /* ---------- sources ---------- */
+  .src-table{width:100%;border-collapse:collapse;font-size:.88rem}
+  .src-table th{
+    text-align:left;font-size:.7rem;text-transform:uppercase;letter-spacing:.09em;color:var(--faint);
+    padding:8px 10px;border-bottom:1px solid var(--line);
+  }
+  .src-table td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+  .src-table tr:last-child td{border-bottom:none}
+  .status{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:2px 8px;border-radius:999px}
+  .status.ok,.status.sample{color:var(--ok);box-shadow:inset 0 0 0 1px currentColor}
+  .status.needs-setup,.status.manual{color:var(--warn);box-shadow:inset 0 0 0 1px currentColor}
+  .status.error{color:var(--err);box-shadow:inset 0 0 0 1px currentColor}
+  .table-wrap{overflow-x:auto}
+  .where{font-size:.88rem;color:var(--muted);margin-top:12px;max-width:75ch}
+
+  footer{border-top:1px solid var(--line);color:var(--faint);font-size:.82rem;padding:18px 20px 40px}
+  footer .inner{max-width:1020px;margin:0 auto;display:flex;flex-wrap:wrap;gap:6px 24px}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <svg class="mark" width="64" height="64" viewBox="0 0 64 64" role="img" aria-label="The AI Collective">
+      <defs>
+        <linearGradient id="aicg" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#1F2ED6"/><stop offset=".45" stop-color="#231A55"/>
+          <stop offset=".75" stop-color="#C33A18"/><stop offset="1" stop-color="#FF8A1E"/>
+        </linearGradient>
+      </defs>
+      <circle cx="32" cy="32" r="32" fill="url(#aicg)"/>
+      <path d="M46 21.5 A17.5 17.5 0 1 0 46 42.5" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"/>
+      <path d="M40 27.5 A9 9 0 0 0 27 29" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"/>
+    </svg>
+    <div>
+      <h1>The AI Collective · AI Event Calendar</h1>
+      <p class="sub">Validated, in-person AI events — meetings, classes, workshops, demo nights and more. Enter your city; we search a radius around it.</p>
+    </div>
+    <form class="searchbar" id="searchForm">
+      <input id="cityInput" type="text" placeholder="Enter your city — e.g. Atlanta, Berlin, São Paulo…" aria-label="City" autocomplete="off">
+      <select id="radiusSel" aria-label="Search radius">
+        <option value="25">25 mi</option>
+        <option value="50" selected>50 mi</option>
+        <option value="100">100 mi</option>
+      </select>
+      <button type="submit">Search</button>
+      <div class="search-note num" id="searchNote" role="status"></div>
+    </form>
+  </div>
+</header>
+
+<main>
+  <div class="banner" id="sampleBanner" hidden>
+    <strong>Sample data.</strong> These placeholder events show the layout only. Run the
+    <em>Update events &amp; deploy calendar</em> GitHub Action (or <code>node scripts/fetch-events.mjs</code>)
+    to replace them with live, validated events from the configured feeds.
+  </div>
+
+  <div class="legend">
+    <span><span class="dot aic"></span>The AI Collective event</span>
+    <span><span class="dot other"></span>Community event (Meetup, IEEE, universities, Eventbrite…)</span>
+    <span>Click any date to see that day’s events.</span>
+  </div>
+
+  <section class="card" aria-label="Monthly calendar">
+    <div class="cal-head">
+      <button class="nav-btn" id="prevBtn" aria-label="Previous month">‹</button>
+      <h2 id="calTitle" class="num"></h2>
+      <button class="nav-btn" id="nextBtn" aria-label="Next month">›</button>
+    </div>
+    <table class="cal" id="calTable"><thead></thead><tbody></tbody></table>
+  </section>
+
+  <section id="daySection" hidden>
+    <div class="kicker">Selected date</div>
+    <h2 id="dayTitle"></h2>
+    <div id="dayList"></div>
+  </section>
+
+  <section>
+    <div class="kicker">Coming up</div>
+    <h2 id="upTitle">Next few weeks</h2>
+    <div id="upList"></div>
+  </section>
+
+  <section class="card">
+    <div class="kicker">Where these events come from</div>
+    <h2>Sources for this market</h2>
+    <div class="table-wrap">
+      <table class="src-table" id="srcTable">
+        <thead><tr><th>Source</th><th>Type</th><th>Status</th><th>Events</th><th>Notes</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <p class="where">
+      Markets subscribe to structured calendar feeds — <strong>Luma</strong> (lu.ma/aicatl for Atlanta,
+      lu.ma/genaicollective worldwide), <strong>Meetup.com</strong> group feeds, <strong>IEEE vTools</strong>,
+      <strong>Eventbrite</strong> organizers, and <strong>university/college calendars</strong>.
+      <strong>LinkedIn</strong> and <strong>Facebook</strong> events arrive via chapter-lead submissions,
+      each linked to a live listing. Every event is validated before it appears: listed on an active, trusted
+      site, marked in-person, and carrying a physical address. Data refreshes automatically every 6 hours —
+      no AI tokens are ever used.
+    </p>
+  </section>
+</main>
+
+<footer>
+  <div class="inner">
+    <span id="stamp" class="num"></span>
+    <span>Refreshes via GitHub Actions — zero AI-token cost to view or share.</span>
+    <span>Want your city here? Add your feeds to <code>data/sources.json</code> — see the README.</span>
+  </div>
+</footer>
+
+<script>
+"use strict";
+/* Embedded fallback: used when data/events.json can't be fetched
+   (e.g. opened as a standalone file or hosted where fetch is blocked). */
+const FALLBACK_DATA = /*__DATA__*/{
+  "generatedAt": "2026-07-15T12:00:00.000Z",
+  "sample": true,
+  "$comment": "SAMPLE DATA for layout/demo only — these are illustrative events, not validated listings. Run scripts/fetch-events.mjs (or the 'Update events' GitHub Action) to replace this file with live, validated events from the configured feeds.",
+  "markets": {
+    "atlanta": { "label": "Atlanta, GA, USA", "center": { "lat": 33.749, "lon": -84.388 }, "radiusMiles": 50, "tz": "America/New_York" }
+  },
+  "sources": [
+    { "market": "atlanta", "name": "The AI Collective — Atlanta (Luma)", "url": "https://lu.ma/aicatl", "type": "luma-calendar", "aic": true, "status": "sample", "count": 4, "lastChecked": "2026-07-15T12:00:00.000Z", "note": "" },
+    { "market": "atlanta", "name": "IEEE Atlanta Section (vTools)", "url": "https://events.vtools.ieee.org", "type": "ics", "aic": false, "status": "needs-setup", "count": 1, "lastChecked": "2026-07-15T12:00:00.000Z", "note": "Paste the section's public iCal feed URL into data/sources.json." },
+    { "market": "atlanta", "name": "Atlanta AI Meetup groups (Meetup.com)", "url": "https://www.meetup.com", "type": "ics", "aic": false, "status": "needs-setup", "count": 2, "lastChecked": "2026-07-15T12:00:00.000Z", "note": "Add https://www.meetup.com/<group>/events/ical/ per group." },
+    { "market": "atlanta", "name": "Georgia Tech / university calendars", "url": "", "type": "ics", "aic": false, "status": "needs-setup", "count": 2, "lastChecked": "2026-07-15T12:00:00.000Z", "note": "Most university calendars publish an ICS feed." },
+    { "market": "atlanta", "name": "Eventbrite (requires free API token)", "url": "https://www.eventbrite.com", "type": "eventbrite-org", "aic": false, "status": "needs-setup", "count": 1, "lastChecked": "2026-07-15T12:00:00.000Z", "note": "Add EVENTBRITE_TOKEN repo secret — see README." },
+    { "market": "atlanta", "name": "LinkedIn & Facebook events (manual submissions)", "url": "", "type": "manual", "aic": false, "status": "manual", "count": 0, "lastChecked": "2026-07-15T12:00:00.000Z", "note": "Submitted by chapter leads via pull request to data/manual-events.json." },
+    { "market": "global", "name": "The AI Collective — Worldwide (Luma)", "url": "https://lu.ma/genaicollective", "type": "luma-calendar", "aic": true, "status": "sample", "count": 8, "lastChecked": "2026-07-15T12:00:00.000Z", "note": "" }
+  ],
+  "events": [
+    { "id": "sample-atl-01", "title": "AI Demo Night — July", "start": "2026-07-16T18:00:00-04:00", "end": "2026-07-16T20:30:00-04:00", "allDay": false, "tz": "America/New_York", "location": "Atlanta Tech Village, 3423 Piedmont Rd NE, Atlanta, GA", "lat": 33.8464, "lon": -84.3661, "organizer": "The AI Collective — Atlanta", "url": "https://lu.ma/aicatl", "sourceDomain": "lu.ma", "aic": true, "type": "demo night", "price": "free", "capacity": 150, "market": "atlanta" },
+    { "id": "sample-atl-02", "title": "Founders + AI Coffee", "start": "2026-07-21T08:30:00-04:00", "end": "2026-07-21T10:00:00-04:00", "allDay": false, "tz": "America/New_York", "location": "Switchyards Downtown, 151 Ted Turner Dr NW, Atlanta, GA", "lat": 33.7595, "lon": -84.3903, "organizer": "The AI Collective — Atlanta", "url": "https://lu.ma/aicatl", "sourceDomain": "lu.ma", "aic": true, "type": "coffee", "price": "free", "capacity": 40, "market": "atlanta" },
+    { "id": "sample-atl-03", "title": "Atlanta AI Meetup: Agents in Production", "start": "2026-07-22T18:30:00-04:00", "end": "2026-07-22T20:30:00-04:00", "allDay": false, "tz": "America/New_York", "location": "Ponce City Market, 675 Ponce De Leon Ave NE, Atlanta, GA", "lat": 33.7726, "lon": -84.3664, "organizer": "Atlanta AI Meetup", "url": "https://www.meetup.com", "sourceDomain": "meetup.com", "aic": false, "type": "panel", "price": "free", "capacity": null, "market": "atlanta" },
+    { "id": "sample-atl-04", "title": "Hands-on LLM Workshop", "start": "2026-07-25T10:00:00-04:00", "end": "2026-07-25T15:00:00-04:00", "allDay": false, "tz": "America/New_York", "location": "Georgia Tech, Klaus Advanced Computing Building, 266 Ferst Dr NW, Atlanta, GA", "lat": 33.7772, "lon": -84.3963, "organizer": "Georgia Tech College of Computing", "url": "https://www.eventbrite.com", "sourceDomain": "eventbrite.com", "aic": false, "type": "workshop", "price": "paid", "capacity": 60, "market": "atlanta" },
+    { "id": "sample-atl-05", "title": "AI Walk & Talk — Piedmont Park", "start": "2026-07-26T09:00:00-04:00", "end": "2026-07-26T10:30:00-04:00", "allDay": false, "tz": "America/New_York", "location": "Piedmont Park, 12th St Gate, Atlanta, GA", "lat": 33.7851, "lon": -84.3738, "organizer": "Atlanta AI Meetup", "url": "https://www.meetup.com", "sourceDomain": "meetup.com", "aic": false, "type": "walk", "price": "free", "capacity": 25, "market": "atlanta" },
+    { "id": "sample-atl-06", "title": "IEEE Talk: Edge AI & Robotics", "start": "2026-07-30T18:00:00-04:00", "end": "2026-07-30T20:00:00-04:00", "allDay": false, "tz": "America/New_York", "location": "Georgia State University, 55 Park Pl NE, Atlanta, GA", "lat": 33.7547, "lon": -84.3854, "organizer": "IEEE Atlanta Section", "url": "https://events.vtools.ieee.org", "sourceDomain": "vtools.ieee.org", "aic": false, "type": "panel", "price": "free", "capacity": 80, "market": "atlanta" },
+    { "id": "sample-atl-07", "title": "Intro to Machine Learning (Evening Class)", "start": "2026-08-04T18:00:00-04:00", "end": "2026-08-04T21:00:00-04:00", "allDay": false, "tz": "America/New_York", "location": "Emory Continuing Education, 1256 Briarcliff Rd NE, Atlanta, GA", "lat": 33.7925, "lon": -84.3339, "organizer": "Emory Continuing Education", "url": "https://www.eventbrite.com", "sourceDomain": "eventbrite.com", "aic": false, "type": "class", "price": "paid", "capacity": 30, "market": "atlanta" },
+    { "id": "sample-atl-08", "title": "Vibe Coding Night", "start": "2026-08-07T19:00:00-04:00", "end": "2026-08-07T22:00:00-04:00", "allDay": false, "tz": "America/New_York", "location": "Atlanta Tech Village, 3423 Piedmont Rd NE, Atlanta, GA", "lat": 33.8464, "lon": -84.3661, "organizer": "The AI Collective — Atlanta", "url": "https://lu.ma/aicatl", "sourceDomain": "lu.ma", "aic": true, "type": "vibe night", "price": "free", "capacity": 100, "market": "atlanta" },
+    { "id": "sample-atl-09", "title": "Monthly Social: AI on the BeltLine", "start": "2026-08-12T17:30:00-04:00", "end": "2026-08-12T20:00:00-04:00", "allDay": false, "tz": "America/New_York", "location": "New Realm Brewing, 550 Somerset Terrace NE, Atlanta, GA", "lat": 33.7712, "lon": -84.3646, "organizer": "The AI Collective — Atlanta", "url": "https://lu.ma/aicatl", "sourceDomain": "lu.ma", "aic": true, "type": "social", "price": "free", "capacity": 120, "market": "atlanta" },
+    { "id": "sample-atl-10", "title": "AI Builders Hackathon", "start": "2026-08-15T09:00:00-04:00", "end": "2026-08-15T21:00:00-04:00", "allDay": false, "tz": "America/New_York", "location": "The Gathering Spot, 384 Northyards Blvd NW, Atlanta, GA", "lat": 33.7715, "lon": -84.4051, "organizer": "AI Builders ATL", "url": "https://www.eventbrite.com", "sourceDomain": "eventbrite.com", "aic": false, "type": "hackathon", "price": "paid", "capacity": 200, "market": "atlanta" },
+    { "id": "sample-sf-01", "title": "AI Collective SF — Demo Night", "start": "2026-07-23T18:00:00-07:00", "end": "2026-07-23T21:00:00-07:00", "allDay": false, "tz": "America/Los_Angeles", "location": "SoMa, San Francisco, CA", "lat": 37.7785, "lon": -122.3968, "organizer": "The AI Collective — San Francisco", "url": "https://lu.ma/genaicollective", "sourceDomain": "lu.ma", "aic": true, "type": "demo night", "price": "free", "capacity": 200, "market": "global" },
+    { "id": "sample-nyc-01", "title": "AI Collective NYC — GenAI Social", "start": "2026-07-29T18:30:00-04:00", "end": "2026-07-29T21:00:00-04:00", "allDay": false, "tz": "America/New_York", "location": "Flatiron District, New York, NY", "lat": 40.7411, "lon": -73.9897, "organizer": "The AI Collective — New York", "url": "https://lu.ma/genaicollective", "sourceDomain": "lu.ma", "aic": true, "type": "social", "price": "free", "capacity": 150, "market": "global" },
+    { "id": "sample-ber-01", "title": "AI Collective Berlin — Agents Workshop", "start": "2026-07-28T18:00:00+02:00", "end": "2026-07-28T21:00:00+02:00", "allDay": false, "tz": "Europe/Berlin", "location": "Mitte, Berlin, Germany", "lat": 52.52, "lon": 13.405, "organizer": "The AI Collective — Berlin", "url": "https://lu.ma/genaicollective", "sourceDomain": "lu.ma", "aic": true, "type": "workshop", "price": "free", "capacity": 80, "market": "global" },
+    { "id": "sample-syd-01", "title": "AI Collective Sydney — Founders Coffee", "start": "2026-07-31T08:00:00+10:00", "end": "2026-07-31T09:30:00+10:00", "allDay": false, "tz": "Australia/Sydney", "location": "Barangaroo, Sydney NSW, Australia", "lat": -33.8614, "lon": 151.2016, "organizer": "The AI Collective — Sydney", "url": "https://lu.ma/genaicollective", "sourceDomain": "lu.ma", "aic": true, "type": "coffee", "price": "free", "capacity": 35, "market": "global" },
+    { "id": "sample-lon-01", "title": "AI Collective London — Panel: State of AI", "start": "2026-08-05T18:30:00+01:00", "end": "2026-08-05T21:00:00+01:00", "allDay": false, "tz": "Europe/London", "location": "Shoreditch, London, UK", "lat": 51.5246, "lon": -0.0797, "organizer": "The AI Collective — London", "url": "https://lu.ma/genaicollective", "sourceDomain": "lu.ma", "aic": true, "type": "panel", "price": "free", "capacity": 120, "market": "global" },
+    { "id": "sample-par-01", "title": "AI Collective Paris — Soirée démo", "start": "2026-08-06T19:00:00+02:00", "end": "2026-08-06T22:00:00+02:00", "allDay": false, "tz": "Europe/Paris", "location": "Station F, 5 Parvis Alan Turing, Paris, France", "lat": 48.8339, "lon": 2.3712, "organizer": "The AI Collective — Paris", "url": "https://lu.ma/genaicollective", "sourceDomain": "lu.ma", "aic": true, "type": "demo night", "price": "free", "capacity": 180, "market": "global" },
+    { "id": "sample-sp-01", "title": "AI Collective São Paulo — Hack Night", "start": "2026-08-13T18:30:00-03:00", "end": "2026-08-13T22:00:00-03:00", "allDay": false, "tz": "America/Sao_Paulo", "location": "Vila Madalena, São Paulo, Brazil", "lat": -23.5505, "lon": -46.6899, "organizer": "The AI Collective — São Paulo", "url": "https://lu.ma/genaicollective", "sourceDomain": "lu.ma", "aic": true, "type": "hackathon", "price": "free", "capacity": 90, "market": "global" },
+    { "id": "sample-tok-01", "title": "AI Collective Tokyo — LLM Meetup", "start": "2026-08-19T19:00:00+09:00", "end": "2026-08-19T21:30:00+09:00", "allDay": false, "tz": "Asia/Tokyo", "location": "Shibuya, Tokyo, Japan", "lat": 35.6595, "lon": 139.7005, "organizer": "The AI Collective — Tokyo", "url": "https://lu.ma/genaicollective", "sourceDomain": "lu.ma", "aic": true, "type": "meetup", "price": "free", "capacity": 100, "market": "global" }
+  ]
+};
+
+const CITY_TABLE = {
+  "atlanta":[33.749,-84.388],"san francisco":[37.7749,-122.4194],"sf":[37.7749,-122.4194],
+  "new york":[40.7128,-74.006],"nyc":[40.7128,-74.006],"london":[51.5072,-0.1276],
+  "paris":[48.8566,2.3522],"berlin":[52.52,13.405],"tokyo":[35.6762,139.6503],
+  "sydney":[-33.8688,151.2093],"são paulo":[-23.5505,-46.6333],"sao paulo":[-23.5505,-46.6333],
+  "austin":[30.2672,-97.7431],"boston":[42.3601,-71.0589],"chicago":[41.8781,-87.6298],
+  "seattle":[47.6062,-122.3321],"los angeles":[34.0522,-118.2437],"la":[34.0522,-118.2437],
+  "denver":[39.7392,-104.9903],"miami":[25.7617,-80.1918],"toronto":[43.6532,-79.3832],
+  "vancouver":[49.2827,-123.1207],"mexico city":[19.4326,-99.1332],"bogotá":[4.711,-74.0721],
+  "bogota":[4.711,-74.0721],"buenos aires":[-34.6037,-58.3816],"madrid":[40.4168,-3.7038],
+  "barcelona":[41.3874,2.1686],"lisbon":[38.7223,-9.1393],"amsterdam":[52.3676,4.9041],
+  "brussels":[50.8503,4.3517],"zurich":[47.3769,8.5417],"munich":[48.1351,11.582],
+  "vienna":[48.2082,16.3738],"stockholm":[59.3293,18.0686],"copenhagen":[55.6761,12.5683],
+  "oslo":[59.9139,10.7522],"helsinki":[60.1699,24.9384],"dublin":[53.3498,-6.2603],
+  "tel aviv":[32.0853,34.7818],"dubai":[25.2048,55.2708],"bangalore":[12.9716,77.5946],
+  "bengaluru":[12.9716,77.5946],"mumbai":[19.076,72.8777],"delhi":[28.7041,77.1025],
+  "singapore":[1.3521,103.8198],"hong kong":[22.3193,114.1694],"seoul":[37.5665,126.978],
+  "shanghai":[31.2304,121.4737],"beijing":[39.9042,116.4074],"melbourne":[-37.8136,144.9631],
+  "auckland":[-36.8509,174.7645],"cape town":[-33.9249,18.4241],"nairobi":[-1.2921,36.8219],
+  "lagos":[6.5244,3.3792],"cairo":[30.0444,31.2357],"washington":[38.9072,-77.0369],
+  "washington dc":[38.9072,-77.0369],"dc":[38.9072,-77.0369],"houston":[29.7604,-95.3698],
+  "dallas":[32.7767,-96.797],"phoenix":[33.4484,-112.074],"philadelphia":[39.9526,-75.1652],
+  "montreal":[45.5019,-73.5674],"raleigh":[35.7796,-78.6382],"nashville":[36.1627,-86.7816],
+  "charlotte":[35.2271,-80.8431]
+};
+
+const $ = (id)=>document.getElementById(id);
+const esc = (s)=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const MI = 3958.8, rad = x=>x*Math.PI/180;
+const miles = (a,b)=>{
+  const dLat=rad(b.lat-a.lat), dLon=rad(b.lon-a.lon);
+  const h=Math.sin(dLat/2)**2+Math.cos(rad(a.lat))*Math.cos(rad(b.lat))*Math.sin(dLon/2)**2;
+  return 2*MI*Math.asin(Math.sqrt(h));
+};
+
+let DATA=null;
+const state = { center:{lat:33.749,lon:-84.388}, cityLabel:"Atlanta", radius:50,
+                view:null, selectedKey:null };
+
+/* ---------- date helpers (render in the event's own timezone) ---------- */
+const dkFmtCache = {};
+function dateKey(ev){
+  const tz = ev.tz || undefined;
+  const k = tz||"local";
+  dkFmtCache[k] ||= new Intl.DateTimeFormat("en-CA",{timeZone:tz,year:"numeric",month:"2-digit",day:"2-digit"});
+  return dkFmtCache[k].format(new Date(ev.start));
+}
+function timeLabel(ev){
+  if (ev.allDay) return "All day";
+  const tz = ev.tz || undefined;
+  const f = new Intl.DateTimeFormat(undefined,{timeZone:tz,hour:"numeric",minute:"2-digit"});
+  let s = f.format(new Date(ev.start));
+  if (ev.end) s += " – " + f.format(new Date(ev.end));
+  const tzn = new Intl.DateTimeFormat(undefined,{timeZone:tz,timeZoneName:"short"})
+    .formatToParts(new Date(ev.start)).find(p=>p.type==="timeZoneName");
+  return s + (tzn ? " " + tzn.value : "");
+}
+function dayLabel(key){
+  const [y,m,d]=key.split("-").map(Number);
+  return new Date(y,m-1,d).toLocaleDateString(undefined,{weekday:"long",month:"long",day:"numeric",year:"numeric"});
+}
+const todayKey = ()=> new Intl.DateTimeFormat("en-CA",{year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
+
+/* ---------- scope: which events are near the searched city ---------- */
+function inScope(ev){
+  if (ev.lat!=null && ev.lon!=null) return miles({lat:ev.lat,lon:ev.lon}, state.center) <= state.radius;
+  const mk = DATA.markets?.[ev.market];
+  if (mk?.center) return miles(mk.center, state.center) <= state.radius;
+  return false;
+}
+const scoped = ()=> (DATA?.events||[]).filter(inScope);
+function activeMarketKey(){
+  let best=null, bestD=Infinity;
+  for (const [key,mk] of Object.entries(DATA.markets||{})){
+    const d = miles(mk.center, state.center);
+    if (d <= (mk.radiusMiles||50) && d < bestD){ best=key; bestD=d; }
+  }
+  return best;
+}
+
+/* ---------- calendar grid ---------- */
+function byDay(events){
+  const map = new Map();
+  for (const ev of events){
+    const k = dateKey(ev);
+    if (!map.has(k)) map.set(k,[]);
+    map.get(k).push(ev);
+  }
+  return map;
+}
+function renderCalendar(){
+  const {y,m} = state.view;
+  $("calTitle").textContent = new Date(y,m,1).toLocaleDateString(undefined,{month:"long",year:"numeric"});
+  const dayMap = byDay(scoped());
+  const first = new Date(y,m,1).getDay();
+  const days = new Date(y,m+1,0).getDate();
+  const tKey = todayKey();
+  const wd = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+  $("calTable").tHead.innerHTML = "<tr>"+wd.map(w=>`<th scope="col">${w}</th>`).join("")+"</tr>";
+  let html="", cell=0;
+  for (let row=0; row<6 && cell < first+days; row++){
+    html+="<tr>";
+    for (let col=0; col<7; col++, cell++){
+      const d = cell-first+1;
+      if (d<1 || d>days){ html+='<td class="day blank"></td>'; continue; }
+      const key = `${y}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+      const evs = dayMap.get(key)||[];
+      const cls = ["day", key===tKey?"today":"", key===state.selectedKey?"sel":""].filter(Boolean).join(" ");
+      const shown = evs.slice(0,5);
+      const dots = shown.map(e=>`<span class="dot ${e.aic?"aic":"other"}"></span>`).join("")
+        + (evs.length>5?`<span class="more num">+${evs.length-5}</span>`:"");
+      const label = `${dayLabel(key)}, ${evs.length} event${evs.length===1?"":"s"}`;
+      html+=`<td class="${cls}" data-key="${key}" tabindex="0" role="button" aria-label="${esc(label)}">`+
+            `<span class="n num">${d}</span><div class="dots">${dots}</div></td>`;
+    }
+    html+="</tr>";
+  }
+  $("calTable").tBodies[0].innerHTML = html;
+}
+
+/* ---------- event cards ---------- */
+function card(ev){
+  const price = ev.price==="free" ? '<span class="chip free">Free</span>'
+             : ev.price==="paid" ? '<span class="chip paid">Paid</span>'
+             : '<span class="chip check">See listing</span>';
+  const aic = ev.aic ? '<span class="chip aic">AI Collective</span>' : "";
+  const cap = ev.capacity ? `<dt>Capacity</dt><dd class="num">${esc(ev.capacity)}</dd>` : "";
+  return `<article class="evt">
+    <div class="body">
+      <div class="chips">${aic}<span class="chip">${esc(ev.type)}</span>${price}</div>
+      <h4><a href="${esc(ev.url)}" target="_blank" rel="noopener">${esc(ev.title)}</a></h4>
+      <dl class="meta">
+        <dt>Date</dt><dd class="num">${esc(dayLabel(dateKey(ev)))}</dd>
+        <dt>Time</dt><dd class="num">${esc(timeLabel(ev))}</dd>
+        <dt>Location</dt><dd>${esc(ev.location)}</dd>
+        <dt>Organizer</dt><dd>${esc(ev.organizer)}</dd>
+        ${cap}
+      </dl>
+    </div>
+    <div class="cta">
+      <a class="register" href="${esc(ev.url)}" target="_blank" rel="noopener">Register</a>
+      <span class="srcnote">via ${esc(ev.sourceDomain)}</span>
+    </div>
+  </article>`;
+}
+
+function renderDay(){
+  const sec = $("daySection");
+  if (!state.selectedKey){ sec.hidden=true; return; }
+  sec.hidden=false;
+  $("dayTitle").textContent = dayLabel(state.selectedKey);
+  const evs = scoped().filter(e=>dateKey(e)===state.selectedKey)
+    .sort((a,b)=>a.start.localeCompare(b.start));
+  $("dayList").innerHTML = evs.length
+    ? evs.map(card).join("")
+    : '<div class="empty">No validated in-person events on this date within your search radius.</div>';
+  sec.scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+
+function renderUpcoming(){
+  const now = Date.now(), horizon = now + 28*864e5;
+  const evs = scoped()
+    .filter(e=>{ const t=Date.parse(e.end||e.start); return t>=now-6*36e5 && Date.parse(e.start)<=horizon; })
+    .sort((a,b)=>a.start.localeCompare(b.start)).slice(0,60);
+  $("upTitle").textContent = `Next four weeks near ${state.cityLabel} (${state.radius} mi)`;
+  if (!evs.length){
+    $("upList").innerHTML = `<div class="empty">No validated in-person AI events found within ${state.radius} miles of
+      ${esc(state.cityLabel)} yet. Feeds for this market may not be configured — chapters can add their city’s
+      Luma, Meetup, IEEE, or university feeds to <code>data/sources.json</code> (see the README), and events
+      appear on the next automatic refresh.</div>`;
+    return;
+  }
+  const groups = new Map();
+  for (const ev of evs){ const k=dateKey(ev); (groups.get(k)||groups.set(k,[]).get(k)).push(ev); }
+  $("upList").innerHTML = [...groups.entries()].map(([k,list])=>
+    `<div class="day-group"><h3 class="num">${esc(dayLabel(k))}</h3>${list.map(card).join("")}</div>`).join("");
+}
+
+function renderSources(){
+  const mk = activeMarketKey();
+  const rows = (DATA.sources||[]).filter(s=>s.market===mk || s.market==="global" || s.market==="manual");
+  $("srcTable").tBodies[0].innerHTML = rows.length ? rows.map(s=>`<tr>
+      <td>${s.url?`<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.name)}</a>`:esc(s.name)}</td>
+      <td>${esc(s.type)}</td>
+      <td><span class="status ${esc(s.status)}">${esc(s.status)}</span></td>
+      <td class="num">${s.count??""}</td>
+      <td>${esc(s.note||"")}</td>
+    </tr>`).join("")
+    : `<tr><td colspan="5">No feeds configured for this market yet — worldwide AI Collective events (lu.ma/genaicollective) are still searched. Add local feeds in <code>data/sources.json</code>.</td></tr>`;
+}
+
+function renderAll(){ renderCalendar(); renderDay(); renderUpcoming(); renderSources(); }
+
+/* ---------- city search ---------- */
+async function lookupCity(name){
+  const q = name.trim().toLowerCase();
+  if (!q) return null;
+  for (const [city,ll] of Object.entries(CITY_TABLE))
+    if (city===q || q.startsWith(city+",")) return {lat:ll[0],lon:ll[1],label:name.trim()};
+  // Known markets from the data file
+  for (const mk of Object.values(DATA?.markets||{}))
+    if (mk.label.toLowerCase().startsWith(q)) return {...mk.center,label:mk.label};
+  try{
+    const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(name)}`,
+      {headers:{"Accept":"application/json"}});
+    const js = await res.json();
+    if (js[0]) return {lat:+js[0].lat, lon:+js[0].lon, label:name.trim()};
+  }catch(e){ /* offline / CSP-blocked: fall through */ }
+  return null;
+}
+
+async function doSearch(name){
+  const note = $("searchNote");
+  note.textContent = "Searching…";
+  const hit = await lookupCity(name);
+  if (!hit){ note.textContent = "City not found — try the nearest major city (e.g. “Atlanta” or “Berlin”)."; return; }
+  state.center = {lat:hit.lat, lon:hit.lon};
+  state.cityLabel = hit.label.split(",")[0];
+  state.selectedKey = null;
+  const n = scoped().length;
+  note.textContent = `${n} validated in-person event${n===1?"":"s"} within ${state.radius} mi of ${state.cityLabel}.`;
+  location.hash = "city="+encodeURIComponent(state.cityLabel);
+  renderAll();
+}
+
+/* ---------- wiring ---------- */
+function monthShift(delta){
+  let {y,m} = state.view; m += delta;
+  if (m<0){m=11;y--;} if (m>11){m=0;y++;}
+  state.view = {y,m};
+  renderCalendar();
+}
+function init(){
+  const now = new Date();
+  state.view = {y:now.getFullYear(), m:now.getMonth()};
+  $("prevBtn").addEventListener("click",()=>monthShift(-1));
+  $("nextBtn").addEventListener("click",()=>monthShift(1));
+  $("calTable").addEventListener("click",(e)=>{
+    const td = e.target.closest("td.day:not(.blank)");
+    if (!td) return;
+    state.selectedKey = td.dataset.key; renderCalendar(); renderDay();
+  });
+  $("calTable").addEventListener("keydown",(e)=>{
+    if (e.key!=="Enter" && e.key!==" ") return;
+    const td = e.target.closest("td.day:not(.blank)");
+    if (!td) return;
+    e.preventDefault(); state.selectedKey = td.dataset.key; renderCalendar(); renderDay();
+  });
+  $("searchForm").addEventListener("submit",(e)=>{
+    e.preventDefault();
+    const v = $("cityInput").value;
+    if (v.trim()) doSearch(v);
+  });
+  $("radiusSel").addEventListener("change",(e)=>{
+    state.radius = +e.target.value;
+    const n = scoped().length;
+    $("searchNote").textContent = `${n} validated in-person event${n===1?"":"s"} within ${state.radius} mi of ${state.cityLabel}.`;
+    renderAll();
+  });
+}
+
+async function load(){
+  try{
+    const res = await fetch("data/events.json?v="+Date.now(), {cache:"no-store"});
+    if (!res.ok) throw new Error("HTTP "+res.status);
+    DATA = await res.json();
+  }catch(e){
+    DATA = FALLBACK_DATA || {generatedAt:null, sample:true, markets:{}, sources:[], events:[]};
+  }
+  $("sampleBanner").hidden = !DATA.sample;
+  if (DATA.generatedAt)
+    $("stamp").textContent = "Events last refreshed " + new Date(DATA.generatedAt).toLocaleString();
+  // Default market, or #city= from a shared link
+  const dm = Object.values(DATA.markets||{})[0];
+  if (dm){ state.center = dm.center; state.cityLabel = dm.label.split(",")[0]; }
+  const hashCity = new URLSearchParams(location.hash.slice(1)).get("city");
+  init();
+  if (hashCity){ $("cityInput").value = hashCity; await doSearch(hashCity); }
+  else {
+    const n = scoped().length;
+    $("searchNote").textContent = `${n} validated in-person event${n===1?"":"s"} within ${state.radius} mi of ${state.cityLabel}.`;
+    renderAll();
+  }
+}
+load();
+</script>
+</body>
+</html>

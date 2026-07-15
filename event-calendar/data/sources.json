@@ -1,0 +1,86 @@
+{
+  "$comment": "Source registry for the AI Collective Event Calendar. Each market subscribes to structured calendar feeds (iCal/ICS) — no AI tokens are ever used to gather events. Add your city by copying the 'atlanta' block, setting center coordinates and timezone, and listing your local feeds. Set enabled:false to keep a source listed but skipped until its feed URL is verified.",
+  "defaultMarket": "atlanta",
+  "markets": {
+    "atlanta": {
+      "label": "Atlanta, GA, USA",
+      "tz": "America/New_York",
+      "center": { "lat": 33.749, "lon": -84.388 },
+      "radiusMiles": 50,
+      "sources": [
+        {
+          "name": "The AI Collective — Atlanta (Luma)",
+          "type": "luma-calendar",
+          "slug": "aicatl",
+          "url": "https://lu.ma/aicatl",
+          "organizer": "The AI Collective — Atlanta",
+          "aic": true,
+          "assumeAI": true,
+          "enabled": true
+        },
+        {
+          "name": "IEEE Atlanta Section (vTools)",
+          "type": "ics",
+          "url": "",
+          "organizer": "IEEE Atlanta Section",
+          "aic": false,
+          "assumeAI": false,
+          "enabled": false,
+          "note": "Get the section's public iCal feed URL from events.vtools.ieee.org (Events → Export/iCal for the Atlanta Section), paste it into 'url', then set enabled:true."
+        },
+        {
+          "name": "Atlanta AI Meetup groups (Meetup.com)",
+          "type": "ics",
+          "url": "",
+          "organizer": "Meetup.com",
+          "aic": false,
+          "assumeAI": false,
+          "enabled": false,
+          "note": "Any Meetup group exposes an iCal feed at https://www.meetup.com/<group-slug>/events/ical/ — add one source entry per local AI group and set enabled:true."
+        },
+        {
+          "name": "Georgia Tech / university calendars",
+          "type": "ics",
+          "url": "",
+          "organizer": "Universities & colleges",
+          "aic": false,
+          "assumeAI": false,
+          "enabled": false,
+          "note": "Most university event calendars (Localist, Google Calendar) publish an ICS feed — paste it here. AI keyword filtering is applied automatically."
+        },
+        {
+          "name": "Eventbrite (requires free API token)",
+          "type": "eventbrite-org",
+          "url": "https://www.eventbrite.com",
+          "organizer": "Eventbrite",
+          "aic": false,
+          "assumeAI": false,
+          "enabled": false,
+          "note": "Eventbrite retired public event search; per-organizer listings work via their free API. Add EVENTBRITE_TOKEN as a repo secret and organizer IDs here — see README."
+        },
+        {
+          "name": "LinkedIn & Facebook events (manual submissions)",
+          "type": "manual",
+          "url": "",
+          "organizer": "Chapter leads",
+          "aic": false,
+          "assumeAI": false,
+          "enabled": true,
+          "note": "LinkedIn and Facebook publish no feeds. Chapter leads add validated in-person events to data/manual-events.json via pull request; each entry must link to a live listing on a trusted site."
+        }
+      ]
+    }
+  },
+  "global": [
+    {
+      "name": "The AI Collective — Worldwide (Luma)",
+      "type": "luma-calendar",
+      "slug": "genaicollective",
+      "url": "https://lu.ma/genaicollective",
+      "organizer": "The AI Collective",
+      "aic": true,
+      "assumeAI": true,
+      "enabled": true
+    }
+  ]
+}
