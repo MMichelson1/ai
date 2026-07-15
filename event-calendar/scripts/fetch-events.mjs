@@ -167,8 +167,15 @@ async function fetchText(url) {
 async function lumaIcsUrl(slug) {
   try {
     const html = await fetchText(`https://lu.ma/${slug}`);
-    const m = html.match(/"api_id"\s*:\s*"(cal-[A-Za-z0-9]+)"/);
-    if (m) return `https://api.lu.ma/ics/get?entity=calendar&id=${m[1]}`;
+    // Prefer the explicit api_id field; otherwise take the most frequent
+    // cal- id on the page (calendar pages embed theirs many times).
+    const exact = html.match(/"api_id"\s*:\s*"(cal-[A-Za-z0-9]+)"/);
+    if (exact) return `https://api.lu.ma/ics/get?entity=calendar&id=${exact[1]}`;
+    const counts = new Map();
+    for (const m of html.matchAll(/cal-[A-Za-z0-9]{6,}/g))
+      counts.set(m[0], (counts.get(m[0]) || 0) + 1);
+    const top = [...counts.entries()].sort((a, b) => b[1] - a[1])[0];
+    if (top) return `https://api.lu.ma/ics/get?entity=calendar&id=${top[0]}`;
   } catch { /* fall through to slug form */ }
   return `https://api.lu.ma/ics/get?entity=calendar&id=${slug}`;
 }
