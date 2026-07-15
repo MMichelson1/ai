@@ -7,31 +7,22 @@
 <meta name="description" content="Validated, in-person AI events near you — meetings, classes, workshops, demo nights and more. Search any city worldwide.">
 <style>
   :root{
-    --cobalt:#2334D8; --cobalt-bright:#4D63FF; --vermilion:#E8431F; --amber:#FF8A1E;
-    --dot-aic:#FF7A1A; --dot-other:#5B7CFF;
-    --bg:#F4F5FB; --surface:#FFFFFF; --raised:#EDEFF9; --line:#DCDEF0;
-    --ink:#181540; --muted:#5B5880; --faint:#8B88AC;
-    --chip-bg:#EDEFF9; --ok:#1E8E5A; --warn:#B65E10; --err:#C22F2F;
-    --day-hover:#E9EBFA; --today-ring:#2334D8;
+    --cobalt:#2334D8; --cobalt-bright:#2E41E8; --vermilion:#E8431F; --amber:#FF8A1E;
+    --dot-aic:#F96A00; --dot-other:#3D52F0;
+    --bg:#FAF5EA; --surface:#FFFFFF; --raised:#F3ECDB; --line:#E7DEC7;
+    --ink:#221D52; --muted:#655F86; --faint:#9A93AC;
+    --chip-bg:#F3ECDB; --ok:#1E8E5A; --warn:#B65E10; --err:#C22F2F;
+    --day-hover:#F6EFDC; --today-ring:#2334D8;
     --grad:linear-gradient(118deg,#1F2ED6 0%,#231A55 42%,#8A2419 68%,#E8431F 84%,#FF8A1E 100%);
-    --shadow:0 1px 2px rgba(24,21,64,.06),0 8px 28px -12px rgba(24,21,64,.18);
-  }
-  @media (prefers-color-scheme: dark){
-    :root{
-      --bg:#0D0B26; --surface:#171441; --raised:#1F1B52; --line:#2B2766;
-      --ink:#F2F1FC; --muted:#A6A3CC; --faint:#7A77A3;
-      --chip-bg:#232057; --ok:#4CC98B; --warn:#FFA94D; --err:#FF7B7B;
-      --day-hover:#211D5C; --today-ring:#FF8A1E;
-      --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 32px -12px rgba(0,0,0,.55);
-    }
+    --shadow:0 1px 2px rgba(84,62,26,.06),0 8px 28px -12px rgba(84,62,26,.2);
   }
   :root[data-theme="light"]{
-    --cobalt:#2334D8; --dot-aic:#FF7A1A; --dot-other:#5B7CFF;
-    --bg:#F4F5FB; --surface:#FFFFFF; --raised:#EDEFF9; --line:#DCDEF0;
-    --ink:#181540; --muted:#5B5880; --faint:#8B88AC;
-    --chip-bg:#EDEFF9; --ok:#1E8E5A; --warn:#B65E10; --err:#C22F2F;
-    --day-hover:#E9EBFA; --today-ring:#2334D8;
-    --shadow:0 1px 2px rgba(24,21,64,.06),0 8px 28px -12px rgba(24,21,64,.18);
+    --cobalt:#2334D8; --cobalt-bright:#2E41E8; --dot-aic:#F96A00; --dot-other:#3D52F0;
+    --bg:#FAF5EA; --surface:#FFFFFF; --raised:#F3ECDB; --line:#E7DEC7;
+    --ink:#221D52; --muted:#655F86; --faint:#9A93AC;
+    --chip-bg:#F3ECDB; --ok:#1E8E5A; --warn:#B65E10; --err:#C22F2F;
+    --day-hover:#F6EFDC; --today-ring:#2334D8;
+    --shadow:0 1px 2px rgba(84,62,26,.06),0 8px 28px -12px rgba(84,62,26,.2);
   }
   :root[data-theme="dark"]{
     --bg:#0D0B26; --surface:#171441; --raised:#1F1B52; --line:#2B2766;
@@ -354,7 +345,7 @@
 /* Embedded fallback: used when data/events.json can't be fetched
    (e.g. opened as a standalone file or hosted where fetch is blocked). */
 const FALLBACK_DATA = /*__DATA__*/{
-  "generatedAt": "2026-07-15T02:29:38.501Z",
+  "generatedAt": "2026-07-15T02:45:38.649Z",
   "sample": false,
   "markets": {
     "atlanta": {
@@ -376,7 +367,7 @@ const FALLBACK_DATA = /*__DATA__*/{
       "aic": true,
       "status": "ok",
       "count": 9,
-      "lastChecked": "2026-07-15T02:29:38.502Z",
+      "lastChecked": "2026-07-15T02:45:38.649Z",
       "note": ""
     },
     {
@@ -387,7 +378,7 @@ const FALLBACK_DATA = /*__DATA__*/{
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-07-15T02:29:41.182Z",
+      "lastChecked": "2026-07-15T02:45:39.607Z",
       "note": "Get the section's public iCal feed URL from events.vtools.ieee.org (Events → Export/iCal for the Atlanta Section), paste it into 'url', then set enabled:true."
     },
     {
@@ -398,7 +389,7 @@ const FALLBACK_DATA = /*__DATA__*/{
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-07-15T02:29:41.182Z",
+      "lastChecked": "2026-07-15T02:45:39.607Z",
       "note": "Any Meetup group exposes an iCal feed at https://www.meetup.com/<group-slug>/events/ical/ — add one source entry per local AI group and set enabled:true."
     },
     {
@@ -409,7 +400,7 @@ const FALLBACK_DATA = /*__DATA__*/{
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-07-15T02:29:41.182Z",
+      "lastChecked": "2026-07-15T02:45:39.607Z",
       "note": "Most university event calendars (Localist, Google Calendar) publish an ICS feed — paste it here. AI keyword filtering is applied automatically."
     },
     {
@@ -420,7 +411,7 @@ const FALLBACK_DATA = /*__DATA__*/{
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-07-15T02:29:41.183Z",
+      "lastChecked": "2026-07-15T02:45:39.607Z",
       "note": "Eventbrite retired public event search; per-organizer listings work via their free API. Add EVENTBRITE_TOKEN as a repo secret and organizer IDs here — see README."
     },
     {
@@ -431,19 +422,19 @@ const FALLBACK_DATA = /*__DATA__*/{
       "aic": false,
       "status": "manual",
       "count": 0,
-      "lastChecked": "2026-07-15T02:29:41.183Z",
+      "lastChecked": "2026-07-15T02:45:39.607Z",
       "note": "LinkedIn and Facebook publish no feeds. Chapter leads add validated in-person events to data/manual-events.json via pull request; each entry must link to a live listing on a trusted site."
     },
     {
       "market": "global",
       "name": "The AI Collective — Worldwide (Luma)",
-      "url": "https://lu.ma/genaicollective",
+      "url": "https://lu.ma/genai-collective",
       "type": "luma-calendar",
       "aic": true,
-      "status": "error",
-      "count": 0,
-      "lastChecked": "2026-07-15T02:29:41.183Z",
-      "note": "HTTP 404 for https://api.lu.ma/ics/get?entity=calendar&id=genaicollective"
+      "status": "ok",
+      "count": 17,
+      "lastChecked": "2026-07-15T02:45:39.607Z",
+      "note": ""
     }
   ],
   "events": [
@@ -543,6 +534,120 @@ const FALLBACK_DATA = /*__DATA__*/{
       "market": "atlanta"
     },
     {
+      "id": "evt-lP3wH1vF2xMEmKT@events.lu.ma",
+      "title": "AI and the Future of Work (w/ The AI Collective)",
+      "start": "2026-07-22T22:00:00.000Z",
+      "end": "2026-07-23T00:30:00.000Z",
+      "allDay": false,
+      "tz": null,
+      "location": "South Tryon Street, S Tryon St, Charlotte, NC, USA",
+      "lat": 35.1587217,
+      "lon": -80.9214202,
+      "organizer": "The AI Collective",
+      "url": "https://lu.ma/genai-collective",
+      "sourceDomain": "lu.ma",
+      "aic": true,
+      "type": "meetup",
+      "price": "check",
+      "capacity": null,
+      "market": "global"
+    },
+    {
+      "id": "evt-i37oTmha7QaTJY3@events.lu.ma",
+      "title": "El Futuro de la Inteligencia Artificial en Guatemala",
+      "start": "2026-07-25T20:30:00.000Z",
+      "end": "2026-07-26T00:00:00.000Z",
+      "allDay": false,
+      "tz": null,
+      "location": "IGA, Ruta 1 4-05, Cdad. de Guatemala, Guatemala",
+      "lat": 14.622284899999999,
+      "lon": -90.51363359999999,
+      "organizer": "The AI Collective",
+      "url": "https://lu.ma/genai-collective",
+      "sourceDomain": "lu.ma",
+      "aic": true,
+      "type": "meetup",
+      "price": "check",
+      "capacity": null,
+      "market": "global"
+    },
+    {
+      "id": "evt-79dHut2ytH8A8RK@events.lu.ma",
+      "title": "AI Bouldering Social (w/ The AI Collective)",
+      "start": "2026-07-29T16:30:00.000Z",
+      "end": "2026-07-29T18:30:00.000Z",
+      "allDay": false,
+      "tz": null,
+      "location": "Boulder World Munich East, Hanne-Hiob-Straße 4, 81671 München, Germany",
+      "lat": 48.125872,
+      "lon": 11.6110615,
+      "organizer": "The AI Collective",
+      "url": "https://lu.ma/genai-collective",
+      "sourceDomain": "lu.ma",
+      "aic": true,
+      "type": "social",
+      "price": "check",
+      "capacity": null,
+      "market": "global"
+    },
+    {
+      "id": "evt-lHMUGeuHhcnyRFa@events.lu.ma",
+      "title": "No-Code Coding | Stamford AI Meetup | (w/ AI Collective)",
+      "start": "2026-08-04T21:30:00.000Z",
+      "end": "2026-08-05T00:30:00.000Z",
+      "allDay": false,
+      "tz": null,
+      "location": "2200 Atlantic St, Stamford, CT 06902, USA",
+      "lat": 41.0414548,
+      "lon": -73.54324869999999,
+      "organizer": "The AI Collective",
+      "url": "https://lu.ma/genai-collective",
+      "sourceDomain": "lu.ma",
+      "aic": true,
+      "type": "meetup",
+      "price": "check",
+      "capacity": null,
+      "market": "global"
+    },
+    {
+      "id": "evt-R56H5ACPdj9flDV@events.lu.ma",
+      "title": "Space Coast AI Town Hall",
+      "start": "2026-08-06T21:30:00.000Z",
+      "end": "2026-08-06T23:30:00.000Z",
+      "allDay": false,
+      "tz": null,
+      "location": "Catherine Schweinsberg Rood Central Library, 308 Forrest Ave, Cocoa, FL 32922, USA",
+      "lat": 28.359578,
+      "lon": -80.7295977,
+      "organizer": "The AI Collective",
+      "url": "https://lu.ma/genai-collective",
+      "sourceDomain": "lu.ma",
+      "aic": true,
+      "type": "meetup",
+      "price": "check",
+      "capacity": null,
+      "market": "global"
+    },
+    {
+      "id": "evt-r1tc4fbccdm6yPK@events.lu.ma",
+      "title": "SF DEMO NIGHT 🚀 (w/ The AI Collective)",
+      "start": "2026-08-07T00:30:00.000Z",
+      "end": "2026-08-07T03:30:00.000Z",
+      "allDay": false,
+      "tz": null,
+      "location": "AWS Builder Loft, 525 Market St, San Francisco, CA 94105, USA",
+      "lat": 37.790321299999995,
+      "lon": -122.399369,
+      "organizer": "The AI Collective",
+      "url": "https://lu.ma/genai-collective",
+      "sourceDomain": "lu.ma",
+      "aic": true,
+      "type": "demo night",
+      "price": "check",
+      "capacity": null,
+      "market": "global"
+    },
+    {
       "id": "evt-sIMaqMPNdqUeIuH@events.lu.ma",
       "title": "Peachtree Corners | All-Day Pass #ATLTechWeek",
       "start": "2026-08-09T14:00:00.000Z",
@@ -600,6 +705,25 @@ const FALLBACK_DATA = /*__DATA__*/{
       "market": "atlanta"
     },
     {
+      "id": "evt-XShO8yQaccPsNC6@events.lu.ma",
+      "title": "Office Hours (w/ The AI Collective)",
+      "start": "2026-08-11T21:00:00.000Z",
+      "end": "2026-08-11T22:00:00.000Z",
+      "allDay": false,
+      "tz": null,
+      "location": "TolHouse, 1447 N Summit St, Toledo, OH 43604, USA",
+      "lat": 41.6610659,
+      "lon": -83.5183677,
+      "organizer": "The AI Collective",
+      "url": "https://lu.ma/genai-collective",
+      "sourceDomain": "lu.ma",
+      "aic": true,
+      "type": "meetup",
+      "price": "check",
+      "capacity": null,
+      "market": "global"
+    },
+    {
       "id": "evt-W7jNAMdQqeQwfFy@events.lu.ma",
       "title": "Tech Square | All-Day Pass #ATLTechWeek",
       "start": "2026-08-14T13:00:00.000Z",
@@ -617,6 +741,120 @@ const FALLBACK_DATA = /*__DATA__*/{
       "price": "check",
       "capacity": null,
       "market": "atlanta"
+    },
+    {
+      "id": "evt-JjZvBpkOgdfCoL2@events.lu.ma",
+      "title": "Office Hours (w/ The AI Collective)",
+      "start": "2026-08-25T21:00:00.000Z",
+      "end": "2026-08-25T22:00:00.000Z",
+      "allDay": false,
+      "tz": null,
+      "location": "TolHouse, 1447 N Summit St, Toledo, OH 43604, USA",
+      "lat": 41.6610659,
+      "lon": -83.5183677,
+      "organizer": "The AI Collective",
+      "url": "https://lu.ma/genai-collective",
+      "sourceDomain": "lu.ma",
+      "aic": true,
+      "type": "meetup",
+      "price": "check",
+      "capacity": null,
+      "market": "global"
+    },
+    {
+      "id": "evt-eIwmWglPyhTNyxR@events.lu.ma",
+      "title": "Step SF 2026: The AI & Tech Startup Festival",
+      "start": "2026-08-27T16:00:00.000Z",
+      "end": "2026-08-28T03:00:00.000Z",
+      "allDay": false,
+      "tz": null,
+      "location": "The Midway, 900 Marin St, San Francisco, CA 94124, USA",
+      "lat": 37.7492774,
+      "lon": -122.3856944,
+      "organizer": "The AI Collective",
+      "url": "https://lu.ma/genai-collective",
+      "sourceDomain": "lu.ma",
+      "aic": true,
+      "type": "meetup",
+      "price": "check",
+      "capacity": null,
+      "market": "global"
+    },
+    {
+      "id": "evt-voBwRpWXktthHOo@events.lu.ma",
+      "title": "From AI User to AI Builder - Base44 x AI Collective (Austin)",
+      "start": "2026-08-27T23:00:00.000Z",
+      "end": "2026-08-28T02:00:00.000Z",
+      "allDay": false,
+      "tz": null,
+      "location": "Austin, TX, USA",
+      "lat": 30.267152999999997,
+      "lon": -97.7430608,
+      "organizer": "The AI Collective",
+      "url": "https://lu.ma/genai-collective",
+      "sourceDomain": "lu.ma",
+      "aic": true,
+      "type": "meetup",
+      "price": "check",
+      "capacity": null,
+      "market": "global"
+    },
+    {
+      "id": "evt-cjADctfCTQnvXtA@events.lu.ma",
+      "title": "From AI User to AI Builder - Base44 x AI Collective (Portland)",
+      "start": "2026-09-09T01:00:00.000Z",
+      "end": "2026-09-09T04:00:00.000Z",
+      "allDay": false,
+      "tz": null,
+      "location": "Portland, OR, USA",
+      "lat": 45.515232,
+      "lon": -122.6783853,
+      "organizer": "The AI Collective",
+      "url": "https://lu.ma/genai-collective",
+      "sourceDomain": "lu.ma",
+      "aic": true,
+      "type": "meetup",
+      "price": "check",
+      "capacity": null,
+      "market": "global"
+    },
+    {
+      "id": "evt-9gkeFGX5rqTEJcW@events.lu.ma",
+      "title": "From AI User to AI Builder - Base44 x AI Collective (Toronto)",
+      "start": "2026-09-15T22:00:00.000Z",
+      "end": "2026-09-16T01:00:00.000Z",
+      "allDay": false,
+      "tz": null,
+      "location": "Toronto, ON, Canada",
+      "lat": 43.6548253,
+      "lon": -79.388447,
+      "organizer": "The AI Collective",
+      "url": "https://lu.ma/genai-collective",
+      "sourceDomain": "lu.ma",
+      "aic": true,
+      "type": "meetup",
+      "price": "check",
+      "capacity": null,
+      "market": "global"
+    },
+    {
+      "id": "evt-9vKvVuAcdtCi5Ee@events.lu.ma",
+      "title": "From AI User to AI Builder - Base44 x AI Collective (Miami)",
+      "start": "2026-09-24T22:00:00.000Z",
+      "end": "2026-09-25T01:00:00.000Z",
+      "allDay": false,
+      "tz": null,
+      "location": "Miami, FL, USA",
+      "lat": 25.7616798,
+      "lon": -80.1917902,
+      "organizer": "The AI Collective",
+      "url": "https://lu.ma/genai-collective",
+      "sourceDomain": "lu.ma",
+      "aic": true,
+      "type": "meetup",
+      "price": "check",
+      "capacity": null,
+      "market": "global"
     }
   ]
 };
@@ -894,10 +1132,10 @@ function nlEmailHtml(name, evs, weeks){
                   : '<span style="color:#8B88AC;">See listing for price</span>';
       const cap = ev.capacity ? ` &middot; capacity ${esc(ev.capacity)}` : "";
       rows += `<tr><td style="padding:6px 24px;">
-  <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background:#FFFFFF;border:1px solid #E4E4F0;border-left:4px solid ${stripe};border-radius:8px;">
+  <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background:#FFFFFF;border:1px solid #E7DEC7;border-left:4px solid ${stripe};border-radius:8px;">
     <tr>
       <td style="padding:12px 16px;font-family:Arial,Helvetica,sans-serif;">
-        <a href="${esc(ev.url)}" style="font-size:16px;font-weight:bold;color:#181540;text-decoration:none;">${esc(ev.title)}</a>${ev.aic?' <span style="font-size:10px;font-weight:bold;color:#FFFFFF;background:#FF7A1A;padding:2px 7px;border-radius:9px;vertical-align:2px;">AI&nbsp;COLLECTIVE</span>':""}<br>
+        <a href="${esc(ev.url)}" style="font-size:16px;font-weight:bold;color:#221D52;text-decoration:none;">${esc(ev.title)}</a>${ev.aic?' <span style="font-size:10px;font-weight:bold;color:#FFFFFF;background:#FF7A1A;padding:2px 7px;border-radius:9px;vertical-align:2px;">AI&nbsp;COLLECTIVE</span>':""}<br>
         <span style="font-size:13px;color:#5B5880;line-height:1.7;">${esc(timeLabel(ev))} &middot; ${esc(ev.location)}<br>
         ${esc(ev.organizer)} &middot; ${esc(ev.type)}${cap} &middot; ${price}</span>
       </td>
@@ -911,7 +1149,7 @@ function nlEmailHtml(name, evs, weeks){
   }
   const footerLink = calUrl ? ` &middot; <a href="${esc(calUrl)}" style="color:#2334D8;">View the full calendar</a>` : "";
   return `<!-- ${esc(name)} — upcoming AI events (generated ${new Date().toISOString().slice(0,10)} by the AI Collective Event Calendar) -->
-<table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="max-width:640px;margin:0 auto;background:#F4F5FB;border-radius:12px;">
+<table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="max-width:640px;margin:0 auto;background:#FAF5EA;border-radius:12px;">
   <tr><td style="background:#231A55;padding:20px 24px;border-radius:12px 12px 0 0;font-family:Arial,Helvetica,sans-serif;">
     <span style="font-size:19px;font-weight:bold;color:#FFFFFF;">${esc(name)}</span><br>
     <span style="font-size:13px;color:#FFD9BC;">Validated in-person AI events &middot; next ${weeks} week${weeks>1?"s":""}</span>
@@ -976,7 +1214,7 @@ async function generateNewsletter(){
   const isEmail = format==="email";
   $("nlPreviewWrap").hidden = !isEmail;
   $("nlPre").hidden = isEmail;
-  if (isEmail) $("nlPreview").srcdoc = `<body style="margin:0;padding:16px;background:#EDEDF4;">${code}</body>`;
+  if (isEmail) $("nlPreview").srcdoc = `<body style="margin:0;padding:16px;background:#F0E9D8;">${code}</body>`;
   else $("nlPre").textContent = code;
   $("nlCopyNote").textContent = "";
 }
