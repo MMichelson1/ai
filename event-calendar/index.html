@@ -270,9 +270,14 @@
       <strong>Eventbrite</strong> organizers, and <strong>university/college calendars</strong>.
       <strong>LinkedIn</strong> and <strong>Facebook</strong> events arrive via chapter-lead submissions,
       each linked to a live listing. Every event is validated before it appears: listed on an active, trusted
-      site, marked in-person, and carrying a physical address. Data refreshes automatically every 6 hours —
-      no AI tokens are ever used.
+      site, marked in-person, and carrying a physical address. Data refreshes every Sunday at 6:00 am ET —
+      or on demand with the refresh button below. No AI tokens are ever used.
     </p>
+    <div class="nl-actions">
+      <a class="btn-ghost" href="https://github.com/MMichelson1/ai/actions/workflows/update-events.yml"
+         target="_blank" rel="noopener">↻ Refresh event data now</a>
+      <span class="srcnote">Opens the update workflow on GitHub — click “Run workflow”. Requires repo access; forks should point this link at their own repo.</span>
+    </div>
   </section>
 
   <section class="card" id="newsletterCard">
@@ -326,7 +331,7 @@
 <footer>
   <div class="inner">
     <span id="stamp" class="num"></span>
-    <span>Refreshes via GitHub Actions — zero AI-token cost to view or share.</span>
+    <span>Refreshes Sundays 6:00 am ET via GitHub Actions (plus on-demand) — zero AI-token cost to view or share.</span>
     <span>Want your city here? Add your feeds to <code>data/sources.json</code> — see the README.</span>
   </div>
 </footer>

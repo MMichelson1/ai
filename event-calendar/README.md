@@ -84,7 +84,7 @@ The live page lists each source with its status (`ok` / `error` / `needs-setup` 
 3. Run the **"Update events & deploy calendar"** workflow once (Actions tab →
    Run workflow). It self-tests the parser, fetches live events, commits
    `data/events.json`, and deploys the site.
-4. Done — it refreshes itself every 6 hours.
+4. Done — it refreshes itself every Sunday at 6:00 am ET, or on demand via the workflow's "Run workflow" button (linked from the calendar page).
 
 ## Add your city (chapter leads anywhere in the world)
 
@@ -121,7 +121,7 @@ searchable by any city name.
 | Activity | AI tokens | Other cost |
 |---|---|---|
 | Viewing / sharing the calendar | 0 | free (GitHub Pages) |
-| 6-hourly refresh | 0 | ~1–2 min GitHub Actions (free tier ≈ 2,000 min/mo) |
+| Weekly refresh (Sun 6:00 am ET) or on-demand | 0 | ~1–2 min GitHub Actions (free tier ≈ 2,000 min/mo) |
 | Geocoding new venues | 0 | free (Nominatim, rate-limited, cached) |
 | One-time build of this tool | done | — |
 
@@ -134,4 +134,4 @@ searchable by any city name.
 - `data/geocache.json` — venue → coordinates cache (generated).
 - `scripts/fetch-events.mjs` — fetch/validate/classify/geocode (Node 20, stdlib only;
   `--self-test` runs its parser checks).
-- `.github/workflows/update-events.yml` — 6-hourly refresh + Pages deploy.
+- `.github/workflows/update-events.yml` — weekly refresh (Sun 6:00 am ET) + on-demand runs + Pages deploy.
