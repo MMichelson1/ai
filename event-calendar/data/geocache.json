@@ -1,3 +1,7 @@
 {
-  "atlanta tech park, 107 technology pkwy nw, peachtree corners, ga 30092": null
+  "atlanta tech park, 107 technology pkwy nw, peachtree corners, ga 30092": null,
+  "atlanta, ga, us": {
+    "lat": 33.7544657,
+    "lon": -84.3898151
+  }
 }

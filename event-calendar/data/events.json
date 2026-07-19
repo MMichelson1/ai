@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-15T04:41:26.612Z",
+  "generatedAt": "2026-07-19T11:12:01.711Z",
   "sample": false,
   "markets": {
     "atlanta": {
@@ -21,7 +21,7 @@
       "aic": true,
       "status": "ok",
       "count": 9,
-      "lastChecked": "2026-07-15T04:41:26.613Z",
+      "lastChecked": "2026-07-19T11:12:01.711Z",
       "note": ""
     },
     {
@@ -32,7 +32,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-07-15T04:41:28.633Z",
+      "lastChecked": "2026-07-19T11:12:04.828Z",
       "note": "Get the section's public iCal feed URL from events.vtools.ieee.org (Events → Export/iCal for the Atlanta Section), paste it into 'url', then set enabled:true."
     },
     {
@@ -43,7 +43,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-07-15T04:41:28.633Z",
+      "lastChecked": "2026-07-19T11:12:04.828Z",
       "note": "Any Meetup group exposes an iCal feed at https://www.meetup.com/<group-slug>/events/ical/ — add one source entry per local AI group and set enabled:true."
     },
     {
@@ -54,7 +54,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-07-15T04:41:28.633Z",
+      "lastChecked": "2026-07-19T11:12:04.828Z",
       "note": "Most university event calendars (Localist, Google Calendar) publish an ICS feed — paste it here. AI keyword filtering is applied automatically."
     },
     {
@@ -65,7 +65,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-07-15T04:41:28.633Z",
+      "lastChecked": "2026-07-19T11:12:04.828Z",
       "note": "Eventbrite retired public event search; per-organizer listings work via their free API. Add EVENTBRITE_TOKEN as a repo secret and organizer IDs here — see README."
     },
     {
@@ -76,7 +76,7 @@
       "aic": false,
       "status": "manual",
       "count": 0,
-      "lastChecked": "2026-07-15T04:41:28.633Z",
+      "lastChecked": "2026-07-19T11:12:04.828Z",
       "note": "LinkedIn and Facebook publish no feeds. Chapter leads add validated in-person events to data/manual-events.json via pull request; each entry must link to a live listing on a trusted site."
     },
     {
@@ -86,50 +86,12 @@
       "type": "luma-calendar",
       "aic": true,
       "status": "ok",
-      "count": 17,
-      "lastChecked": "2026-07-15T04:41:28.633Z",
+      "count": 18,
+      "lastChecked": "2026-07-19T11:12:04.828Z",
       "note": ""
     }
   ],
   "events": [
-    {
-      "id": "evt-zV7pDeUdc3OE7xZ@events.lu.ma",
-      "title": "Vibe Night - Sandy Springs (w/ The AI Collective)",
-      "start": "2026-07-14T22:00:00.000Z",
-      "end": "2026-07-15T00:30:00.000Z",
-      "allDay": false,
-      "tz": "America/New_York",
-      "location": "Hudson Grille Sandy Springs, 6317 Roswell Rd NE, Sandy Springs, GA 30328, USA",
-      "lat": 33.9274497,
-      "lon": -84.3784171,
-      "organizer": "The AI Collective — Atlanta",
-      "url": "https://lu.ma/aicatl",
-      "sourceDomain": "lu.ma",
-      "aic": true,
-      "type": "vibe night",
-      "price": "check",
-      "capacity": null,
-      "market": "atlanta"
-    },
-    {
-      "id": "evt-hwqkJoFtxQuw2Fh@events.lu.ma",
-      "title": "Sandy Springs AI Meetup (w/ The AI Collective ATL)",
-      "start": "2026-07-15T21:30:00.000Z",
-      "end": "2026-07-16T00:00:00.000Z",
-      "allDay": false,
-      "tz": "America/New_York",
-      "location": "Mutation Brewing and Distilling Company, 5825 Roswell Rd NE, Sandy Springs, GA 30328, USA",
-      "lat": 33.9143451,
-      "lon": -84.37880539999999,
-      "organizer": "The AI Collective — Atlanta",
-      "url": "https://lu.ma/aicatl",
-      "sourceDomain": "lu.ma",
-      "aic": true,
-      "type": "meetup",
-      "price": "check",
-      "capacity": null,
-      "market": "atlanta"
-    },
     {
       "id": "evt-ccVATzdpEfKMbsz@events.lu.ma",
       "title": "Cumming AI + Coffee (w/ The AI Collective)",
@@ -188,6 +150,25 @@
       "market": "atlanta"
     },
     {
+      "id": "evt-Y9Uz47jy5eHTgnW@events.lu.ma",
+      "title": "Match Marketer Mixer w/ The AI Collective Atlanta",
+      "start": "2026-07-22T22:00:00.000Z",
+      "end": "2026-07-23T00:00:00.000Z",
+      "allDay": false,
+      "tz": "America/New_York",
+      "location": "Hudson Grille Sandy Springs, 6317 Roswell Rd NE, Sandy Springs, GA 30328, USA",
+      "lat": 33.9274497,
+      "lon": -84.3784171,
+      "organizer": "The AI Collective — Atlanta",
+      "url": "https://lu.ma/aicatl",
+      "sourceDomain": "lu.ma",
+      "aic": true,
+      "type": "social",
+      "price": "check",
+      "capacity": null,
+      "market": "atlanta"
+    },
+    {
       "id": "evt-lP3wH1vF2xMEmKT@events.lu.ma",
       "title": "AI and the Future of Work (w/ The AI Collective)",
       "start": "2026-07-22T22:00:00.000Z",
@@ -197,6 +178,44 @@
       "location": "South Tryon Street, S Tryon St, Charlotte, NC, USA",
       "lat": 35.1587217,
       "lon": -80.9214202,
+      "organizer": "The AI Collective",
+      "url": "https://lu.ma/genai-collective",
+      "sourceDomain": "lu.ma",
+      "aic": true,
+      "type": "meetup",
+      "price": "check",
+      "capacity": null,
+      "market": "global"
+    },
+    {
+      "id": "evt-hP9BUhycanr59Wb@events.lu.ma",
+      "title": "Atlanta | Claude Conversation",
+      "start": "2026-07-23T22:00:00.000Z",
+      "end": "2026-07-24T01:00:00.000Z",
+      "allDay": false,
+      "tz": "America/New_York",
+      "location": "Atlanta, GA, US",
+      "lat": 33.7544657,
+      "lon": -84.3898151,
+      "organizer": "The AI Collective — Atlanta",
+      "url": "https://lu.ma/aicatl",
+      "sourceDomain": "lu.ma",
+      "aic": true,
+      "type": "meetup",
+      "price": "check",
+      "capacity": null,
+      "market": "atlanta"
+    },
+    {
+      "id": "evt-TuoJEvmhRObN7bE@events.lu.ma",
+      "title": "Gemini Student Build — Portland (w/ The AI Collective)",
+      "start": "2026-07-25T18:00:00.000Z",
+      "end": "2026-07-25T21:30:00.000Z",
+      "allDay": false,
+      "tz": null,
+      "location": "University of Portland, 5000 N Willamette Blvd, Portland, OR 97203, USA",
+      "lat": 45.5732046,
+      "lon": -122.72757120000001,
       "organizer": "The AI Collective",
       "url": "https://lu.ma/genai-collective",
       "sourceDomain": "lu.ma",
