@@ -181,6 +181,12 @@ table{width:100%;border-collapse:collapse;font-size:12px}
 /* brochure specifics */
 .bro-banner{display:block;width:100%;height:auto;margin-top:20px}
 .bro-collage{display:block;width:100%;height:auto;border-radius:12px;margin-top:4px}
+.bro-gallery{display:grid;gap:8px;margin-top:4px}
+.bro-gallery.g1{grid-template-columns:1fr}
+.bro-gallery.g2{grid-template-columns:repeat(2,1fr)}
+.bro-gallery.g3{grid-template-columns:repeat(3,1fr)}
+.bro-gallery .bro-photo{width:100%;height:100%;object-fit:cover;border-radius:12px;display:block;aspect-ratio:4/3}
+.bro-gallery.g1 .bro-photo{aspect-ratio:16/7}
 .figcap{font-size:10.5px;color:#6E7484;letter-spacing:.05em;text-transform:uppercase;margin-top:7px;text-align:center}
 .bro-hero{background:#232B8C;color:#fff;padding:26px 36px;margin-top:22px;position:relative}
 .hero-logo{position:absolute;top:22px;right:26px;max-height:58px;max-width:180px;object-fit:contain}
@@ -203,6 +209,9 @@ table{width:100%;border-collapse:collapse;font-size:12px}
 .bro-cta p{color:rgba(255,255,255,.88);margin-bottom:14px}
 .bro-cta a{display:inline-block;background:#fff;color:#B4470D;border-radius:99px;padding:10px 26px;
   font-weight:800;font-size:13px;text-decoration:none}
+.bro-cta a.cta-alt{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.55)}
+.bro-cta a.cta-learn{background:transparent;color:#fff;border:none;text-decoration:underline;
+  font-weight:600;font-size:12px;padding:6px 10px;flex-basis:100%}
 .bro-cta .cta-actions{display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap}
 .bro-cta button.print-cta{display:inline-flex;align-items:center;gap:8px;background:transparent;color:#fff;
   border:1.5px solid rgba(255,255,255,.55);border-radius:99px;padding:10px 24px;font-weight:800;font-size:13px}
@@ -679,11 +688,20 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
 <script>
 /* ═══════════════ CONFIG & DEFAULTS ═══════════════ */
 const CFG_KEY='aic-studio-v6';
+/* Fallback sponsor contact shown on every brochure until a chapter sets its own
+   in Settings → Sponsor contact. Fill in Erich's real email and/or calendar link
+   here to make the default live for every chapter. */
+const DEFAULT_CONTACT={name:'Erich', email:'', cal:''};
+/* Default community-photo image shown on the brochure when a chapter has NOT
+   uploaded any of its own event photos. Paste the AIC group photo as a data: URI
+   (data:image/...) here. Leave '' to show nothing when a chapter has no photos. */
+const DEFAULT_COLLAGE='';
 const DEFAULTS={
   org:{fiscal:'Fiscal Sponsor Allies', ein:'', hq:'The AI Collective', logo:'', banner:'', collage:'',
     w9:'A completed IRS Form W-9 for our fiscal sponsor is available on request.'},
   chapter:{name:'', prefix:'', members:0, scope:'chapter', lang:'en', currency:'USD', fx:1,
-    ctaUrl:'', email:'', statEvents:'', tierOver:{}, logo:'', photos:'', nextNum:1,
+    ctaUrl:'', email:'', statEvents:'', tierOver:{}, logo:'', photos:'', photos3:[], nextNum:1,
+    spName:'', spEmail:'', spCal:'', chapterUrl:'',
     regionName:'', regionMembers:0, regionChapters:''},
   story:{history:'', thesis:''},
   sales:{name:'', email:'', phone:''},
@@ -717,12 +735,17 @@ let cfg=loadCfg();
 function loadCfg(){
   try{const raw=localStorage.getItem(CFG_KEY);
     if(raw){const c=JSON.parse(raw);
-      return {org:{...DEFAULTS.org,...c.org},chapter:{...DEFAULTS.chapter,...c.chapter},
+      const merged={org:{...DEFAULTS.org,...c.org},chapter:{...DEFAULTS.chapter,...c.chapter},
         story:{...DEFAULTS.story,...c.story},sales:{...DEFAULTS.sales,...c.sales},
         banking:{...DEFAULTS.banking,...c.banking},news:{...DEFAULTS.news,...c.news},
         comm:{...DEFAULTS.comm,...c.comm},multsC:c.multsC||DEFAULTS.multsC,multsR:c.multsR||DEFAULTS.multsR,
         annual:c.annual||JSON.parse(JSON.stringify(DEFAULTS.annual)),
-        events:c.events||JSON.parse(JSON.stringify(DEFAULTS.events))};}
+        events:c.events||JSON.parse(JSON.stringify(DEFAULTS.events))};
+      // Migrate the old single chapter photo into the up-to-3 photo array.
+      if(!Array.isArray(merged.chapter.photos3))merged.chapter.photos3=[];
+      if(merged.chapter.photos && !merged.chapter.photos3.length){merged.chapter.photos3=[merged.chapter.photos];}
+      merged.chapter.photos='';
+      return merged;}
   }catch(e){}
   return JSON.parse(JSON.stringify(DEFAULTS));
 }
@@ -735,7 +758,7 @@ const T={
 en:{nav_calc:'Calculator',nav_prop:'Proposal',nav_agr:'Agreement',nav_ann:'Annual',nav_evt:'Events',nav_com:'Commissions',nav_bro:'Brochure',nav_set:'Settings',
 chapter:'Chapter',region:'Region',members:'members',annual:'Annual',event:'Event',potential:'potential',base:'base',
 mult_note:'Member multiplier: {m}× ({n} members) — prices adjusted accordingly.',
-spots:'spots',evt_disc:'event discount',per_year:'per year',attendees:'attendees',print:'Print / save PDF',dl_pdf:'Download PDF (8.5×11)',dl_wait:'Generating PDF…',
+spots:'spots',evt_disc:'event discount',per_year:'per year',attendees:'attendees',print:'Print / save PDF',dl_pdf:'Download PDF (8.5×11)',dl_wait:'Generating PDF…',cta_call:'Book a sponsorship call',cta_email:'Email us about sponsorship',cta_learn:'Learn about our chapter',cta_need:'⚠ Add your sponsor contact (email or calendar link) in Settings',
 add_prop:'Add to proposal',qty:'Qty',price:'Price',item:'Item',subtotal:'Subtotal',discount:'Discount',total:'Total',
 prop_title:'Sponsorship Proposal',prepared_for:'Prepared for',sponsor_co:'Sponsor company',contact:'Contact name',
 email:'Email',date:'Date',valid:'Valid until',list_price:'List price',line_disc:'Discount %',
@@ -776,7 +799,7 @@ room_t:'The room you are sponsoring'},
 es:{nav_calc:'Calculadora',nav_prop:'Propuesta',nav_agr:'Acuerdo',nav_ann:'Anual',nav_evt:'Eventos',nav_com:'Comisiones',nav_bro:'Folleto',nav_set:'Ajustes',
 chapter:'Capítulo',region:'Región',members:'miembros',annual:'Anual',event:'Evento',potential:'potencial',base:'base',
 mult_note:'Multiplicador por miembros: {m}× ({n} miembros) — precios ajustados.',
-spots:'espacios',evt_disc:'descuento en eventos',per_year:'por año',attendees:'asistentes',print:'Imprimir / guardar PDF',dl_pdf:'Descargar PDF (8.5×11)',dl_wait:'Generando PDF…',
+spots:'espacios',evt_disc:'descuento en eventos',per_year:'por año',attendees:'asistentes',print:'Imprimir / guardar PDF',dl_pdf:'Descargar PDF (8.5×11)',dl_wait:'Generando PDF…',cta_call:'Agenda una llamada de patrocinio',cta_email:'Escríbenos sobre patrocinio',cta_learn:'Conoce nuestro capítulo',cta_need:'⚠ Añade tu contacto de patrocinio (correo o enlace de calendario) en Ajustes',
 add_prop:'Añadir a la propuesta',qty:'Cant.',price:'Precio',item:'Concepto',subtotal:'Subtotal',discount:'Descuento',total:'Total',
 prop_title:'Propuesta de patrocinio',prepared_for:'Preparada para',sponsor_co:'Empresa patrocinadora',contact:'Nombre de contacto',
 email:'Correo',date:'Fecha',valid:'Válida hasta',list_price:'Precio de lista',line_disc:'Descuento %',
@@ -817,7 +840,7 @@ room_t:'La sala que usted patrocina'},
 fr:{nav_calc:'Calculateur',nav_prop:'Proposition',nav_agr:'Accord',nav_ann:'Annuel',nav_evt:'Événements',nav_com:'Commissions',nav_bro:'Brochure',nav_set:'Réglages',
 chapter:'Chapitre',region:'Région',members:'membres',annual:'Annuel',event:'Événement',potential:'potentiel',base:'base',
 mult_note:'Multiplicateur membres : {m}× ({n} membres) — prix ajustés.',
-spots:'places',evt_disc:'remise événements',per_year:'par an',attendees:'participants',print:'Imprimer / PDF',dl_pdf:'Télécharger le PDF (8,5×11)',dl_wait:'Génération du PDF…',
+spots:'places',evt_disc:'remise événements',per_year:'par an',attendees:'participants',print:'Imprimer / PDF',dl_pdf:'Télécharger le PDF (8,5×11)',dl_wait:'Génération du PDF…',cta_call:'Planifier un appel sponsoring',cta_email:'Écrivez-nous au sujet du sponsoring',cta_learn:'Découvrir notre chapitre',cta_need:'⚠ Ajoutez votre contact sponsoring (e-mail ou lien d’agenda) dans Réglages',
 add_prop:'Ajouter à la proposition',qty:'Qté',price:'Prix',item:'Poste',subtotal:'Sous-total',discount:'Remise',total:'Total',
 prop_title:'Proposition de parrainage',prepared_for:'Préparée pour',sponsor_co:'Entreprise sponsor',contact:'Contact',
 email:'E-mail',date:'Date',valid:'Valable jusqu’au',list_price:'Prix catalogue',line_disc:'Remise %',
@@ -858,7 +881,7 @@ room_t:'La salle que vous parrainez'},
 de:{nav_calc:'Rechner',nav_prop:'Angebot',nav_agr:'Vereinbarung',nav_ann:'Jährlich',nav_evt:'Events',nav_com:'Provisionen',nav_bro:'Broschüre',nav_set:'Einstellungen',
 chapter:'Chapter',region:'Region',members:'Mitglieder',annual:'Jährlich',event:'Event',potential:'Potenzial',base:'Basis',
 mult_note:'Mitglieder-Multiplikator: {m}× ({n} Mitglieder) — Preise entsprechend angepasst.',
-spots:'Plätze',evt_disc:'Event-Rabatt',per_year:'pro Jahr',attendees:'Teilnehmende',print:'Drucken / PDF',dl_pdf:'PDF herunterladen (8,5×11)',dl_wait:'PDF wird erstellt…',
+spots:'Plätze',evt_disc:'Event-Rabatt',per_year:'pro Jahr',attendees:'Teilnehmende',print:'Drucken / PDF',dl_pdf:'PDF herunterladen (8,5×11)',dl_wait:'PDF wird erstellt…',cta_call:'Sponsoring-Gespräch buchen',cta_email:'Schreiben Sie uns zum Sponsoring',cta_learn:'Über unser Chapter',cta_need:'⚠ Fügen Sie Ihren Sponsoring-Kontakt (E-Mail oder Kalenderlink) in den Einstellungen hinzu',
 add_prop:'Zum Angebot hinzufügen',qty:'Anz.',price:'Preis',item:'Position',subtotal:'Zwischensumme',discount:'Rabatt',total:'Gesamt',
 prop_title:'Sponsoring-Angebot',prepared_for:'Erstellt für',sponsor_co:'Sponsor-Unternehmen',contact:'Ansprechpartner',
 email:'E-Mail',date:'Datum',valid:'Gültig bis',list_price:'Listenpreis',line_disc:'Rabatt %',
@@ -899,7 +922,7 @@ room_t:'Der Raum, den Sie sponsern'},
 pt:{nav_calc:'Calculadora',nav_prop:'Proposta',nav_agr:'Acordo',nav_ann:'Anual',nav_evt:'Eventos',nav_com:'Comissões',nav_bro:'Folheto',nav_set:'Ajustes',
 chapter:'Capítulo',region:'Região',members:'membros',annual:'Anual',event:'Evento',potential:'potencial',base:'base',
 mult_note:'Multiplicador de membros: {m}× ({n} membros) — preços ajustados.',
-spots:'vagas',evt_disc:'desconto em eventos',per_year:'por ano',attendees:'participantes',print:'Imprimir / salvar PDF',dl_pdf:'Baixar PDF (8,5×11)',dl_wait:'Gerando PDF…',
+spots:'vagas',evt_disc:'desconto em eventos',per_year:'por ano',attendees:'participantes',print:'Imprimir / salvar PDF',dl_pdf:'Baixar PDF (8,5×11)',dl_wait:'Gerando PDF…',cta_call:'Agende uma chamada de patrocínio',cta_email:'Fale conosco sobre patrocínio',cta_learn:'Conheça nosso capítulo',cta_need:'⚠ Adicione seu contato de patrocínio (e-mail ou link de calendário) em Ajustes',
 add_prop:'Adicionar à proposta',qty:'Qtd.',price:'Preço',item:'Item',subtotal:'Subtotal',discount:'Desconto',total:'Total',
 prop_title:'Proposta de patrocínio',prepared_for:'Preparada para',sponsor_co:'Empresa patrocinadora',contact:'Nome do contato',
 email:'E-mail',date:'Data',valid:'Válida até',list_price:'Preço de tabela',line_disc:'Desconto %',
@@ -940,7 +963,7 @@ room_t:'A sala que você patrocina'},
 ja:{nav_calc:'計算ツール',nav_prop:'提案書',nav_agr:'契約書',nav_ann:'年間',nav_evt:'イベント',nav_com:'コミッション',nav_bro:'パンフレット',nav_set:'設定',
 chapter:'チャプター',region:'リージョン',members:'名のメンバー',annual:'年間',event:'イベント',potential:'見込み',base:'基準',
 mult_note:'メンバー係数：{m}×（{n}名）— 価格は調整済みです。',
-spots:'枠',evt_disc:'イベント割引',per_year:'年間',attendees:'参加者',print:'印刷 / PDF保存',dl_pdf:'PDFをダウンロード (8.5×11)',dl_wait:'PDFを生成中…',
+spots:'枠',evt_disc:'イベント割引',per_year:'年間',attendees:'参加者',print:'印刷 / PDF保存',dl_pdf:'PDFをダウンロード (8.5×11)',dl_wait:'PDFを生成中…',cta_call:'スポンサーシップ相談を予約',cta_email:'スポンサーシップについて連絡',cta_learn:'支部について知る',cta_need:'⚠ 設定でスポンサー窓口（メールまたはカレンダーリンク）を追加してください',
 add_prop:'提案書に追加',qty:'数量',price:'価格',item:'項目',subtotal:'小計',discount:'割引',total:'合計',
 prop_title:'スポンサーシップ提案書',prepared_for:'宛先',sponsor_co:'スポンサー企業',contact:'担当者名',
 email:'メール',date:'日付',valid:'有効期限',list_price:'定価',line_disc:'割引 %',
@@ -1482,10 +1505,17 @@ function renderBrochure(){
   const c=cfg.chapter,m=mult();
   const d=T[c.lang]||T.en;
   const cta=c.ctaUrl||'';
+  // Effective sponsor contact: this chapter's own, else the Erich default.
+  const sc={
+    name:(c.spName||DEFAULT_CONTACT.name||'').trim(),
+    email:(c.spEmail||DEFAULT_CONTACT.email||'').trim(),
+    cal:(c.spCal||DEFAULT_CONTACT.cal||'').trim()
+  };
+  const hasContact=!!(sc.cal||sc.email);
   document.getElementById('sec-brochure').innerHTML=`
   <div class="toolrow no-print">
     <button class="btn btn-pri" onclick="downloadBrochurePDF(this)">${t('dl_pdf')}</button>
-    ${!cta?`<span class="badge warn">⚠ “Sponsor” button inactive — set this chapter's CTA link in Settings</span>`:''}
+    ${!hasContact?`<span class="badge warn">${t('cta_need')}</span>`:''}
   </div>
   <div class="sheet">
     ${sheetHead()}
@@ -1510,10 +1540,13 @@ function renderBrochure(){
       <p><strong>${esc(c.regionName)}</strong>${c.regionMembers?` — ${(c.regionMembers||0).toLocaleString()} ${t('members')}`:''}${c.regionChapters?`: ${esc(c.regionChapters)}`:''}</p>`:''}
       <h3>${t('why_t')}</h3>
       <div class="why">${(d.why||T.en.why).map(([h,p])=>`<div class="wc"><h4>${h}</h4><p>${p}</p></div>`).join('')}</div>
-      ${(c.photos||cfg.org.collage)?`
-      <h3>${t('room_t')}</h3>
-      <img class="bro-collage" src="${c.photos||cfg.org.collage}" alt="${esc(c.name)} community events">
-      <div class="figcap">${esc(c.scope==='region'?(c.regionName||c.name):c.name)} · ${t('bro_tag')}</div>`:''}
+      ${(()=>{
+        const ph=(c.photos3&&c.photos3.length)?c.photos3.slice(0,3):((DEFAULT_COLLAGE||cfg.org.collage)?[DEFAULT_COLLAGE||cfg.org.collage]:[]);
+        if(!ph.length)return '';
+        return `<h3>${t('room_t')}</h3>
+        <div class="bro-gallery g${ph.length}">${ph.map(src=>`<img class="bro-photo" src="${src}" alt="${esc(c.name)} community events">`).join('')}</div>
+        <div class="figcap">${esc(c.scope==='region'?(c.regionName||c.name):c.name)} · ${t('bro_tag')}</div>`;
+      })()}
       <h3>${t('recog_t')}</h3>
       <div class="recog"><p>${t('recog_p')}</p>
         <ul>${(d.recog_l||T.en.recog_l).map(x=>`<li>${x}</li>`).join('')}</ul></div>
@@ -1536,8 +1569,11 @@ function renderBrochure(){
         <h3 style="color:#fff;margin-top:0">${t('cta_t')}</h3>
         <p>${t('cta_p')}</p>
         <div class="cta-actions">
-          <a href="${cta?esc(cta):(c.email?'mailto:'+esc(c.email):'#')}" ${cta?'target="_blank" rel="noopener"':''}>${tf('cta_b',{chapter:esc(c.name)})}</a>
+          ${sc.cal?`<a href="${esc(sc.cal)}" target="_blank" rel="noopener">${t('cta_call')}</a>`:''}
+          ${sc.email?`<a href="mailto:${esc(sc.email)}?subject=${encodeURIComponent('Sponsorship — '+(c.name||'The AI Collective'))}"${sc.cal?' class="cta-alt"':''}>${t('cta_email')}</a>`:''}
+          ${!hasContact?`<span class="badge warn no-print">${t('cta_need')}</span>`:''}
           <button type="button" class="print-cta no-print" onclick="downloadBrochurePDF(this)">${t('dl_pdf')}</button>
+          ${c.chapterUrl?`<a href="${esc(c.chapterUrl)}" target="_blank" rel="noopener" class="cta-learn">${t('cta_learn')}</a>`:''}
         </div>
       </div>
     </div>
@@ -1606,7 +1642,7 @@ function renderSettings(){
   const c=cfg.chapter,o=cfg.org,cm=cfg.comm;
   document.getElementById('sec-settings').innerHTML=`
   <div class="ibox brand">Settings are stored in this browser and drive every tab, document, and price. Use Export to share a chapter's configuration with another organizer.</div>
-  ${!c.ctaUrl?`<div class="ibox warn">⚠ <strong>Chapter &amp; region directors — action needed:</strong> set your <strong>Brochure CTA link</strong> in Chapter profile below before sharing the brochure. It's your chapter's Luma / signup URL, and it's what the brochure's <em>“Sponsor”</em> button points to. Until it's set, that button has nowhere to send prospects.</div>`:''}
+  ${!((c.spCal||DEFAULT_CONTACT.cal)||(c.spEmail||DEFAULT_CONTACT.email))?`<div class="ibox warn">⚠ <strong>Chapter &amp; region directors — action needed:</strong> add your <strong>Sponsor contact</strong> in Chapter profile below (an email, a calendar link like Calendly, or both). It's where the brochure's <em>“Book a sponsorship call”</em> button sends prospects. Leave it blank only if the organization-wide default contact is set.</div>`:''}
   <details open><summary>Chapter profile</summary><div class="inner">
     <div class="grid3">
       <div class="fg"><label>Chapter / region name</label><input value="${esc(c.name)}" placeholder="e.g. AIC Atlanta" onchange="cfg.chapter.name=this.value;saveCfg()"></div>
@@ -1619,16 +1655,22 @@ function renderSettings(){
       <div class="fg"><label>Currency</label><select onchange="cfg.chapter.currency=this.value;saveCfg();renderSettings()">
         ${['USD','EUR','GBP','CAD','AUD','JPY','INR','BRL','MXN','SGD','AED','CHF','SEK','KRW','ZAR','NGN'].map(x=>`<option ${c.currency===x?'selected':''}>${x}</option>`).join('')}</select></div>
       <div class="fg"><label>FX rate (1 USD = ? ${esc(c.currency)})</label><input type="number" step="0.0001" min="0" value="${c.fx}" onchange="cfg.chapter.fx=Number(this.value)||1;saveCfg()"></div>
-      <div class="fg full"><label>Brochure CTA link (chapter Luma / signup URL) <span style="color:var(--warn)">— required</span></label><input value="${esc(c.ctaUrl)}" placeholder="https://luma.com/your-chapter" style="${!c.ctaUrl?'border-color:var(--warn)':''}" onchange="cfg.chapter.ctaUrl=this.value.trim();saveCfg();renderSettings()">
-        ${!c.ctaUrl?`<div style="color:var(--warn);font-size:11px;font-weight:600;margin-top:5px">⚠ Required for every chapter and region — the brochure “Sponsor” button stays inactive until this is set.</div>`:''}</div>
+      <div class="fg full" style="border-top:1px dashed var(--line);padding-top:12px;margin-top:2px">
+        <div style="font-weight:800;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink)">Sponsor contact — the brochure's “Book a sponsorship call” button</div>
+        <div style="color:var(--mut);font-size:11px;margin-top:3px">Add an email, a calendar link (e.g. Calendly), or both. Leave blank to use the organization default${DEFAULT_CONTACT.name?` (a call with ${esc(DEFAULT_CONTACT.name)})`:''}.</div></div>
+      <div class="fg"><label>Sponsor contact name</label><input value="${esc(c.spName)}" placeholder="${esc(DEFAULT_CONTACT.name||'e.g. Erich')} (default)" onchange="cfg.chapter.spName=this.value;saveCfg()"></div>
+      <div class="fg"><label>Sponsor contact email</label><input value="${esc(c.spEmail)}" placeholder="you@aicollective.com" onchange="cfg.chapter.spEmail=this.value.trim();saveCfg();renderSettings()"></div>
+      <div class="fg"><label>Sponsor call / calendar link (Calendly, etc.)</label><input value="${esc(c.spCal)}" placeholder="https://calendly.com/your-name" onchange="cfg.chapter.spCal=this.value.trim();saveCfg();renderSettings()"></div>
+      <div class="fg full"><label>Chapter page link on aicollective.com (optional — shows as “Learn about our chapter”)</label><input value="${esc(c.chapterUrl)}" placeholder="https://aicollective.com/your-chapter" onchange="cfg.chapter.chapterUrl=this.value.trim();saveCfg()"></div>
       <div class="fg"><label>Chapter contact email</label><input value="${esc(c.email)}" onchange="cfg.chapter.email=this.value;saveCfg()"></div>
       <div class="fg"><label>"Events hosted" stat</label><input value="${esc(c.statEvents)}" onchange="cfg.chapter.statEvents=this.value;saveCfg()"></div>
       <div class="fg"><label>Proposal ID prefix</label><input value="${esc(c.prefix)}" placeholder="e.g. ATL" onchange="cfg.chapter.prefix=this.value;saveCfg()"></div>
       <div class="fg"><label>Next proposal number</label><input type="number" min="1" value="${c.nextNum||1}" onchange="cfg.chapter.nextNum=parseInt(this.value)||1;saveCfg()"></div>
       <div class="fg"><label>Chapter logo — reverse white on transparent PNG/SVG (&lt;400KB; shows on the brochure's blue banner)</label><input type="file" accept="image/*" onchange="uploadLogo(this)">
         ${c.logo?`<div style="margin-top:6px;display:flex;align-items:center;gap:8px"><img src="${c.logo}" alt="logo" style="max-height:34px;max-width:120px;object-fit:contain;background:#232B8C;border:1px solid var(--line);border-radius:6px;padding:3px"><button class="btn btn-ghost" onclick="cfg.chapter.logo='';saveCfg();renderSettings()">Remove</button></div>`:''}</div>
-      <div class="fg full"><label>Chapter photo collage — your own event photos (optional; falls back to the master collage)</label><input type="file" accept="image/*" onchange="uploadPhoto(this,v=>cfg.chapter.photos=v,1400)">
-        ${c.photos?`<div style="margin-top:6px;display:flex;align-items:center;gap:8px"><img src="${c.photos}" alt="chapter photos" style="max-height:54px;max-width:120px;object-fit:contain;border:1px solid var(--line);border-radius:6px"><button class="btn btn-ghost" onclick="cfg.chapter.photos='';saveCfg();renderSettings()">Remove</button></div>`:''}</div>
+      <div class="fg full"><label>Chapter event photos — up to 3 (optional, auto-resized). If none are added, the brochure shows the default AIC group photo.</label>
+        ${(c.photos3&&c.photos3.length)?`<div style="display:flex;gap:10px;flex-wrap:wrap;margin:8px 0">${c.photos3.map((src,i)=>`<div style="display:flex;flex-direction:column;align-items:center;gap:4px"><img src="${src}" alt="event photo ${i+1}" style="height:60px;width:84px;object-fit:cover;border:1px solid var(--line);border-radius:6px"><button class="btn btn-ghost" style="padding:2px 8px;font-size:10px" onclick="removeChapterPhoto(${i})">Remove</button></div>`).join('')}</div>`:''}
+        ${(!c.photos3||c.photos3.length<3)?`<input type="file" accept="image/*" onchange="addChapterPhoto(this)"><div style="color:var(--mut);font-size:11px;margin-top:3px">${(c.photos3?c.photos3.length:0)} of 3 added</div>`:`<div style="color:var(--mut);font-size:11px">Maximum of 3 photos reached — remove one to add another.</div>`}</div>
       <div class="fg"><label>Region name</label><input value="${esc(c.regionName)}" placeholder="e.g. AIC South Central" onchange="cfg.chapter.regionName=this.value;saveCfg()"></div>
       <div class="fg"><label>Region members</label><input type="number" min="0" value="${c.regionMembers||''}" placeholder="e.g. 4265" onchange="cfg.chapter.regionMembers=parseInt(this.value)||0;saveCfg()"></div>
       <div class="fg full"><label>Chapters in region (comma-separated, shown in brochure)</label><input value="${esc(c.regionChapters)}" placeholder="Atlanta, Chattanooga, Nashville, Birmingham" onchange="cfg.chapter.regionChapters=this.value;saveCfg()"></div>
@@ -1762,6 +1804,12 @@ function uploadPhoto(inp,setter,maxW){
   };
   r.readAsDataURL(f);
 }
+function addChapterPhoto(inp){
+  if(!Array.isArray(cfg.chapter.photos3))cfg.chapter.photos3=[];
+  if(cfg.chapter.photos3.length>=3){inp.value='';return;}
+  uploadPhoto(inp,v=>{cfg.chapter.photos3.push(v);},1400);
+}
+function removeChapterPhoto(i){cfg.chapter.photos3.splice(i,1);saveCfg();renderSettings();}
 function uploadOrgLogo(inp){
   const f=inp.files[0];if(!f)return;
   if(f.size>400*1024){alert('Logo is over 400KB — please export a smaller PNG so documents stay fast.');inp.value='';return;}
