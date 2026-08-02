@@ -1,0 +1,67 @@
+AIC SPONSORSHIP STUDIO — SETUP KIT
+For regional managers and chapter leads
+===========================================================
+
+WHAT'S IN THIS KIT
+-------------------
+1. AIC-Sponsorship-Studio.html  — The tool. A sponsorship brochure,
+   proposal builder, agreement/invoice generator, and price calculator,
+   all in one file. Runs offline in any web browser.
+
+2. AIC-Studio-Setup-Guide.html  — A one-page visual setup guide.
+   Switch languages in the top-right (English, Español, Français,
+   Deutsch, Português, 日本語).
+
+3. START HERE - Instructions.txt — This file.
+
+
+SETUP IN 4 STEPS (about 5 minutes)
+-----------------------------------
+1. OPEN IT
+   Save "AIC-Sponsorship-Studio.html" to your computer and double-click
+   it. It opens in any browser (Chrome, Safari, Edge, Firefox) and works
+   fully offline. Nothing to install, no login.
+
+2. SET YOUR CHAPTER CTA LINK  ***REQUIRED***
+   Go to  Settings -> Chapter profile  and fill in "Brochure CTA link"
+   with your chapter's Luma / signup URL. This is where the brochure's
+   "Sponsor" button sends prospects. Until it is set, that button has
+   nowhere to go and a warning stays on screen.
+
+   >> Every chapter and region must set its own CTA link. The kit ships
+      blank on purpose — the brochure is not ready to share until yours
+      is filled in.
+
+3. FILL IN YOUR CHAPTER DETAILS
+   Still in Settings, add your chapter name, member count, contact email,
+   logo, and event stats. Everything you enter updates the brochure,
+   proposals, and calculator live.
+
+4. BACK UP YOUR SETUP
+   Use  Settings -> Export  to download a small config file. Keep it
+   safe — Settings -> Import restores everything instantly on another
+   computer or after clearing your browser.
+
+
+HOW YOUR DATA IS STORED
+------------------------
+Everything you type is saved only in your own browser, on your own
+device. Nothing is uploaded or shared automatically, and no other lead
+sees your settings. That is why backing up (Step 4) matters: if you
+switch devices or clear your browser, re-import your config file to pick
+up where you left off.
+
+
+FOR REGIONAL MANAGERS
+----------------------
+- Forward this whole kit (all files) to each chapter lead in your region.
+- Remind every lead to complete Step 2 (the CTA link) before they share
+  their brochure — it is the one step that cannot be skipped.
+- Each lead's setup is independent. If you want a consistent regional
+  baseline, configure one copy, use Settings -> Export, and share that
+  config file for leads to Import and then adjust.
+
+
+QUESTIONS
+----------
+Reply to whoever sent you this kit.
