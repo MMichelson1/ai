@@ -709,7 +709,7 @@ const DEFAULTS={
   sales:{name:'', email:'', phone:''},
   banking:{payableTo:'', remit:''},
   news:{sendCPM:125, sendMin:500, featCPM:75, featMin:300},
-  comm:{member:5, salesRef:15, salesSrc:20, region:20},
+  comm:{member:5, salesRef:15, salesSrc:20, region:20, capUsd:0},
   multsC:[[250,.25],[500,.4],[1000,.7],[5000,1],[10000,1.5],[25000,2],[null,3]],
   multsR:[[1000,1],[5000,1.25],[10000,1.75],[25000,2.5],[null,3.5]],
   annual:[
@@ -1505,7 +1505,7 @@ function renderComm(){
   const cm=cfg.comm;
   document.getElementById('sec-comm').innerHTML=`<div class="panel">
     <h2>${t('nav_com')}</h2>
-    <p style="color:var(--mut);font-size:12px;margin:-2px 0 12px">Internal referral &amp; support stipends — paid only after approval by <strong>${esc(cfg.org.fiscal||'the fiscal sponsor')}</strong>. Never shown on any sponsor-facing document.</p>
+    <p style="color:var(--mut);font-size:12px;margin:-2px 0 12px">Internal referral &amp; support stipends — paid only after approval by <strong>${esc(cfg.org.fiscal||'the fiscal sponsor')}</strong>. Never shown on any sponsor-facing document. Insiders (directors, officers, or anyone with control) are not eligible for percentage-based stipends.${cm.capUsd>0?` Each stipend is capped at $${(cm.capUsd).toLocaleString('en-US')} USD.`:''}</p>
     <div class="tblwrap"><table class="tbl">
       <thead><tr><th>${t('scenario')}</th><th class="r">${t('member_lbl')}</th><th class="r">${t('sales_lbl')}</th><th class="r">${t('com_regsup')}</th></tr></thead>
       <tbody>
@@ -1514,7 +1514,7 @@ function renderComm(){
         <tr><td>${t('region')} — ${t('com_member')}</td><td class="r num" style="color:var(--ok);font-weight:700">${cm.member}%</td><td class="r num" style="color:var(--ok);font-weight:700">${cm.salesRef}%</td><td class="r num" style="color:var(--ok);font-weight:700">${cm.region}%</td></tr>
         <tr><td>${t('region')} — ${t('com_sales')}</td><td class="r mut">—</td><td class="r num" style="color:var(--ok);font-weight:700">${cm.salesSrc}%</td><td class="r num" style="color:var(--ok);font-weight:700">${cm.region}%</td></tr>
       </tbody></table></div>
-    <div class="ibox ok">Total stipend load stays flat at ${cm.member+cm.salesRef}% on referred deals and ${cm.salesSrc}% on sourced deals. These are paid as <strong>stipends</strong> on cash received (not on signed invoices), and only after approval by <strong>${esc(cfg.org.fiscal||'the fiscal sponsor')}</strong>. Edit rates in Settings.</div>
+    <div class="ibox ok">Total stipend load stays flat at ${cm.member+cm.salesRef}% on referred deals and ${cm.salesSrc}% on sourced deals${cm.capUsd>0?`, capped at $${(cm.capUsd).toLocaleString('en-US')} USD per stipend`:''}. These are paid as <strong>stipends</strong> on cash received (not on signed invoices), and only after approval by <strong>${esc(cfg.org.fiscal||'the fiscal sponsor')}</strong>. Edit rates in Settings.</div>
   </div>`;
 }
 
@@ -1803,12 +1803,13 @@ function renderSettings(){
     <p style="color:var(--mut);font-size:11.5px;margin-top:10px">Current pricing at this ${cfg.chapter.scope}'s member count: dedicated send <strong class="num">${fmt(newsSendPrice())}</strong> · feature <strong class="num">${fmt(newsFeatPrice())}</strong>. The AI Collective Daily (national, 290K readers) is HQ inventory — see the separate media kit.</p>
   </div></details>
   <details><summary>Stipend rates</summary><div class="inner">
-    <div style="color:var(--mut);font-size:11px;margin-bottom:8px">Paid as stipends on cash received, only after approval by ${esc(cfg.org.fiscal||'the fiscal sponsor')}.</div>
+    <div style="color:var(--mut);font-size:11px;margin-bottom:8px">Paid as stipends on cash received, only after approval by ${esc(cfg.org.fiscal||'the fiscal sponsor')}. Insiders (directors, officers, or anyone with control) are not eligible for percentage-based stipends; percentage amounts should be capped at a reasonable level.</div>
     <div class="grid4">
       <div class="fg"><label>Member (referral)</label><input type="number" min="0" max="100" value="${cm.member}" onchange="cfg.comm.member=Number(this.value)||0;saveCfg()"></div>
       <div class="fg"><label>Salesperson (on referral)</label><input type="number" min="0" max="100" value="${cm.salesRef}" onchange="cfg.comm.salesRef=Number(this.value)||0;saveCfg()"></div>
       <div class="fg"><label>Salesperson (self-sourced)</label><input type="number" min="0" max="100" value="${cm.salesSrc}" onchange="cfg.comm.salesSrc=Number(this.value)||0;saveCfg()"></div>
       <div class="fg"><label>Region support (regional deals)</label><input type="number" min="0" max="100" value="${cm.region}" onchange="cfg.comm.region=Number(this.value)||0;saveCfg()"></div>
+      <div class="fg"><label>Per-stipend cap (USD) — 0 = no cap</label><input type="number" min="0" value="${cm.capUsd||0}" onchange="cfg.comm.capUsd=Number(this.value)||0;saveCfg();renderComm()"></div>
     </div>
   </div></details>
   <div class="toolrow" style="margin-top:16px">
