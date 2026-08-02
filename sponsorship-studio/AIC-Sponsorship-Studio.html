@@ -1,0 +1,1327 @@
+<!doctype html>
+<html lang="en">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8">
+<title>AIC Sponsorship Studio</title>
+<style>
+:root{
+  --bg:#F7F5F1; --panel:#FFFFFF; --ink:#22283A; --mut:#6E7484; --line:#E5E1D8;
+  --brand:#E05A14; --brand-ink:#B4470D; --brand-soft:#FBEADF;
+  --indigo:#232B8C; --indigo-soft:#E8EAF7;
+  --ok:#187A4B; --ok-soft:#E3F3EA;
+  --gold:#8F6E00; --gold-soft:#F9F1DA;
+  --silver:#5B6E86; --silver-soft:#EDF1F6;
+  --bronze:#8A5A33; --bronze-soft:#F4EBE2;
+  --warn:#8A6D00; --warn-soft:#FBF3D4;
+  --sheet:#FFFFFF; --sheet-ink:#22283A; --sheet-mut:#6E7484; --sheet-line:#E5E1D8;
+  --shadow:0 1px 2px rgba(34,40,58,.06),0 8px 24px rgba(34,40,58,.07);
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#14161D; --panel:#1D2029; --ink:#ECEDF2; --mut:#9AA0AD; --line:#2E323E;
+    --brand:#F0742F; --brand-ink:#F58B52; --brand-soft:#392315;
+    --indigo:#98A2E8; --indigo-soft:#23273E;
+    --ok:#4CBB84; --ok-soft:#16301F;
+    --gold:#D4B44A; --gold-soft:#2E2812; --silver:#9DB0C6; --silver-soft:#232A33;
+    --bronze:#C78F5C; --bronze-soft:#2E2115; --warn:#D9B83B; --warn-soft:#2E2810;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35); }
+}
+:root[data-theme="light"]{ --bg:#F7F5F1; --panel:#FFFFFF; --ink:#22283A; --mut:#6E7484; --line:#E5E1D8;
+  --brand:#E05A14; --brand-ink:#B4470D; --brand-soft:#FBEADF; --indigo:#232B8C; --indigo-soft:#E8EAF7;
+  --ok:#187A4B; --ok-soft:#E3F3EA; --gold:#8F6E00; --gold-soft:#F9F1DA; --silver:#5B6E86; --silver-soft:#EDF1F6;
+  --bronze:#8A5A33; --bronze-soft:#F4EBE2; --warn:#8A6D00; --warn-soft:#FBF3D4;
+  --shadow:0 1px 2px rgba(34,40,58,.06),0 8px 24px rgba(34,40,58,.07); }
+:root[data-theme="dark"]{ --bg:#14161D; --panel:#1D2029; --ink:#ECEDF2; --mut:#9AA0AD; --line:#2E323E;
+  --brand:#F0742F; --brand-ink:#F58B52; --brand-soft:#392315; --indigo:#98A2E8; --indigo-soft:#23273E;
+  --ok:#4CBB84; --ok-soft:#16301F; --gold:#D4B44A; --gold-soft:#2E2812; --silver:#9DB0C6; --silver-soft:#232A33;
+  --bronze:#C78F5C; --bronze-soft:#2E2115; --warn:#D9B83B; --warn-soft:#2E2810;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35); }
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{font-family:"Seravek","Gill Sans Nova",Ubuntu,Calibri,"Segoe UI",system-ui,-apple-system,sans-serif;
+  background:var(--bg);color:var(--ink);font-size:14px;line-height:1.5}
+button{font:inherit;cursor:pointer}
+input,select,textarea{font:inherit;color:var(--ink);background:var(--panel);border:1.5px solid var(--line);
+  border-radius:8px;padding:8px 10px;width:100%}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--brand);outline-offset:1px;border-color:var(--brand)}
+label{display:block;font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);margin-bottom:5px}
+.num{font-variant-numeric:tabular-nums}
+
+/* ── app chrome ── */
+.appbar{position:sticky;top:0;z-index:20;background:var(--panel);border-bottom:1px solid var(--line)}
+.appbar-in{max-width:1020px;margin:0 auto;display:flex;align-items:center;gap:6px;padding:10px 16px;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:9px;margin-right:10px}
+.logo .nm{font-weight:800;font-size:14px;letter-spacing:-.01em}
+.logo .sb{font-size:10px;color:var(--mut);letter-spacing:.06em;text-transform:uppercase}
+.tabs{display:flex;gap:2px;flex-wrap:wrap}
+.tabs button{border:none;background:transparent;color:var(--mut);font-size:12.5px;font-weight:600;
+  padding:7px 12px;border-radius:8px;transition:.13s}
+.tabs button:hover{background:var(--brand-soft);color:var(--brand-ink)}
+.tabs button.active{background:var(--brand);color:#fff}
+.tabs button:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.spacer{flex:1}
+main{max-width:1020px;margin:0 auto;padding:22px 16px 80px}
+.sec{display:none}
+.sec.active{display:block}
+body.client-mode .appbar{display:none}
+body.client-mode main{padding-top:14px}
+.exit-pill{display:none;position:fixed;top:14px;left:14px;z-index:30;background:var(--ink);color:var(--bg);
+  border:none;border-radius:99px;padding:8px 16px;font-size:12px;font-weight:700;box-shadow:var(--shadow)}
+body.client-mode .exit-pill{display:block}
+
+/* ── panels / forms ── */
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:16px}
+.panel h2{font-size:15px;font-weight:800;margin-bottom:14px;letter-spacing:-.01em}
+.eyebrow{font-size:10.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--brand);margin-bottom:10px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.fg{display:flex;flex-direction:column}
+.full{grid-column:1/-1}
+@media(max-width:640px){.grid2,.grid3,.grid4{grid-template-columns:1fr}}
+
+.seg{display:grid;grid-template-columns:1fr 1fr;border:1.5px solid var(--line);border-radius:9px;overflow:hidden}
+.seg button{border:none;background:transparent;color:var(--mut);font-weight:600;font-size:12.5px;padding:8px}
+.seg button.active{background:var(--brand);color:#fff}
+
+.btn{display:inline-flex;align-items:center;gap:7px;border:none;border-radius:9px;padding:9px 16px;
+  font-size:12.5px;font-weight:700;transition:.13s}
+.btn-pri{background:var(--brand);color:#fff}
+.btn-pri:hover{background:var(--brand-ink)}
+.btn-sec{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.btn-sec:hover{border-color:var(--brand);color:var(--brand-ink)}
+.btn-ghost{background:transparent;color:var(--mut);border:none;padding:6px 8px;font-weight:600}
+.btn-ghost:hover{color:var(--brand-ink)}
+.btn:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+
+.chipbar{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1.5px solid var(--line);background:transparent;color:var(--mut);border-radius:99px;
+  padding:5px 12px;font-size:11.5px;font-weight:600}
+.chip.on{border-color:var(--brand);background:var(--brand-soft);color:var(--brand-ink)}
+
+.badge{display:inline-block;border-radius:99px;padding:3px 10px;font-size:10.5px;font-weight:700}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.brand{background:var(--brand-soft);color:var(--brand-ink)}
+.ibox{border-radius:10px;padding:11px 14px;font-size:12.5px;margin:10px 0}
+.ibox.brand{background:var(--brand-soft);color:var(--brand-ink)}
+.ibox.ok{background:var(--ok-soft);color:var(--ok)}
+.ibox.warn{background:var(--warn-soft);color:var(--warn)}
+
+/* tier cards */
+.tcard{border:1.5px solid var(--line);border-radius:12px;overflow:hidden;margin-bottom:10px}
+.thdr{padding:11px 15px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.tnm{font-size:13.5px;font-weight:800}
+.tmt{font-size:11px;opacity:.75;margin-top:1px}
+.tpr{font-size:18px;font-weight:800;text-align:right}
+.tpr .was{display:block;font-size:10.5px;font-weight:600;opacity:.65;text-decoration:none}
+.tbdy{padding:10px 15px;display:flex;flex-wrap:wrap;gap:5px;align-items:center;justify-content:space-between}
+.pills{display:flex;flex-wrap:wrap;gap:5px}
+.pill{font-size:10.5px;padding:3px 10px;border-radius:99px;font-weight:600}
+.t-pl .thdr{background:var(--indigo);color:#fff}.t-pl .tpr,.t-pl .tnm{color:#fff}
+.t-pl{border-color:var(--indigo)} .t-pl .pill{background:var(--indigo-soft);color:var(--indigo)}
+.t-go{border-color:var(--gold)} .t-go .thdr{background:var(--gold-soft);color:var(--gold)}
+.t-go .pill{background:var(--gold-soft);color:var(--gold)}
+.t-si{border-color:var(--silver)} .t-si .thdr{background:var(--silver-soft);color:var(--silver)}
+.t-si .pill{background:var(--silver-soft);color:var(--silver)}
+.t-br{border-color:var(--bronze)} .t-br .thdr{background:var(--bronze-soft);color:var(--bronze)}
+.t-br .pill{background:var(--bronze-soft);color:var(--bronze)}
+
+/* tables */
+table{width:100%;border-collapse:collapse;font-size:12px}
+.tbl th{text-align:left;font-size:10.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+  color:var(--mut);padding:8px 8px;border-bottom:2px solid var(--line)}
+.tbl td{padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
+.tbl .r{text-align:right}
+.tblwrap{overflow-x:auto}
+.stat{border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.stat .v{font-size:20px;font-weight:800;letter-spacing:-.02em}
+.stat .l{font-size:11px;color:var(--mut);margin-top:2px}
+.statrow{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+@media(max-width:640px){.statrow{grid-template-columns:1fr}}
+
+/* proposal line items */
+.li{border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:10px}
+.li-top{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.li-name{font-weight:700;font-size:13px}
+.li-grid{display:grid;grid-template-columns:90px 110px 130px 1fr auto;gap:10px;align-items:end}
+@media(max-width:760px){.li-grid{grid-template-columns:1fr 1fr}}
+.li-net{font-size:15px;font-weight:800;white-space:nowrap}
+.strike{text-decoration:line-through;opacity:.55;font-weight:600;font-size:12px}
+
+/* ── documents (sheets) ── */
+.sheet{background:var(--sheet);color:var(--sheet-ink);border:1px solid var(--line);border-radius:16px;
+  box-shadow:var(--shadow);max-width:820px;margin:0 auto;overflow:hidden}
+.sheet a{color:#B4470D}
+.sh-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding:30px 36px 0}
+.sh-brand{display:flex;align-items:center;gap:10px}
+.sh-brand .t1{font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#22283A}
+.sh-brand .t2{font-size:10px;color:#6E7484;letter-spacing:.05em}
+.sh-chapter{text-align:right;max-width:55%}
+.sh-chapter .cn{font-size:clamp(22px,4.5vw,34px);font-weight:800;letter-spacing:-.025em;line-height:1.05;
+  color:#E05A14;text-wrap:balance}
+.sh-chapter .cs{font-size:11px;color:#6E7484;letter-spacing:.08em;text-transform:uppercase;margin-top:4px}
+.sh-body{padding:22px 36px 36px}
+.sh-rule{height:3px;background:linear-gradient(90deg,#E05A14,#232B8C);border:none;margin:18px 36px 0;border-radius:2px}
+.sheet h1{font-size:24px;font-weight:800;letter-spacing:-.02em;margin:18px 0 6px;text-wrap:balance;color:#22283A}
+.sheet h3{font-size:13px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:#E05A14;margin:26px 0 10px}
+.sheet p{color:#454B5E;line-height:1.65;font-size:13px}
+.sheet .tbl th{color:#6E7484;border-bottom-color:#E5E1D8}
+.sheet .tbl td{border-bottom-color:#EEEBE4;color:#22283A}
+.sheet .mut{color:#6E7484}
+.doc-meta{display:grid;grid-template-columns:1fr 1fr;gap:4px 24px;font-size:12.5px;margin:10px 0 4px}
+.doc-meta .k{color:#6E7484}
+.doc-total td{border-top:2px solid #22283A;border-bottom:none!important;font-weight:800;font-size:14px}
+.sig-row{display:grid;grid-template-columns:1fr 1fr;gap:36px;margin-top:44px}
+.sig .ln{border-bottom:1.5px solid #22283A;height:34px}
+.sig .lb{font-size:10.5px;color:#6E7484;letter-spacing:.07em;text-transform:uppercase;margin-top:6px}
+@media(max-width:640px){.sh-head{flex-direction:column}.sh-chapter{text-align:left;max-width:100%}
+  .sh-body{padding:18px 20px 26px}.sh-head{padding:22px 20px 0}.sh-rule{margin:14px 20px 0}.sig-row{grid-template-columns:1fr}}
+
+/* brochure specifics */
+.bro-banner{display:block;width:100%;height:auto;margin-top:20px}
+.bro-collage{display:block;width:100%;height:auto;border-radius:12px;margin-top:4px}
+.figcap{font-size:10.5px;color:#6E7484;letter-spacing:.05em;text-transform:uppercase;margin-top:7px;text-align:center}
+.bro-hero{background:#232B8C;color:#fff;padding:26px 36px;margin-top:22px;position:relative}
+.hero-logo{position:absolute;top:22px;right:26px;max-height:58px;max-width:180px;object-fit:contain}
+@media(max-width:640px){.hero-logo{position:static;display:block;margin-bottom:12px}}
+.bro-hero h2{font-size:clamp(19px,3.4vw,26px);font-weight:800;letter-spacing:-.02em;line-height:1.2;max-width:480px;text-wrap:balance}
+.bro-hero p{color:rgba(255,255,255,.82);font-size:12.5px;max-width:460px;margin-top:8px;line-height:1.6}
+.bro-stats{display:flex;gap:28px;margin-top:18px;flex-wrap:wrap}
+.bro-stats .hn{font-size:22px;font-weight:800;color:#F0894C}
+.bro-stats .hl{font-size:10.5px;opacity:.75;margin-top:1px;letter-spacing:.04em;text-transform:uppercase}
+.why{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+@media(max-width:680px){.why{grid-template-columns:1fr}}
+.wc{background:#F4F2ED;border-radius:10px;padding:13px}
+.wc h4{font-size:12px;font-weight:800;color:#22283A;margin-bottom:4px}
+.wc p{font-size:11.5px;color:#5A6070;line-height:1.55}
+.recog{background:#FBEADF;border-radius:12px;padding:16px 18px}
+.recog p{color:#8A4213}
+.recog ul{margin:8px 0 0 18px;color:#8A4213;font-size:12.5px;line-height:1.8}
+.bro-cta{background:#E05A14;border-radius:14px;padding:24px;text-align:center;margin-top:28px}
+.bro-cta h3{color:#fff;margin:0 0 6px;font-size:16px;letter-spacing:.02em}
+.bro-cta p{color:rgba(255,255,255,.88);margin-bottom:14px}
+.bro-cta a{display:inline-block;background:#fff;color:#B4470D;border-radius:99px;padding:10px 26px;
+  font-weight:800;font-size:13px;text-decoration:none}
+.bro-cta .cta-actions{display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap}
+.bro-cta button.print-cta{display:inline-flex;align-items:center;gap:8px;background:transparent;color:#fff;
+  border:1.5px solid rgba(255,255,255,.55);border-radius:99px;padding:10px 24px;font-weight:800;font-size:13px}
+.bro-cta button.print-cta:hover{background:rgba(255,255,255,.14);border-color:#fff}
+.bro-cta button.print-cta:focus-visible{outline:2px solid #fff;outline-offset:2px}
+
+.toolrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+.settings-tbl input{padding:6px 8px;border-radius:7px;font-size:12.5px}
+.settings-tbl td{min-width:80px}
+details{border:1px solid var(--line);border-radius:12px;margin-bottom:12px;background:var(--panel)}
+summary{cursor:pointer;font-weight:800;font-size:13.5px;padding:14px 16px;list-style:none;display:flex;justify-content:space-between;align-items:center}
+summary::after{content:"+";font-size:16px;color:var(--mut)}
+details[open] summary::after{content:"–"}
+details .inner{padding:0 16px 16px}
+
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+@media print{
+  body{background:#fff}
+  .appbar,.exit-pill,.no-print{display:none!important}
+  main{padding:0;max-width:none}
+  .sheet{border:none;box-shadow:none;border-radius:0;max-width:none}
+  .panel{display:none}
+  .sec.active .sheet{display:block}
+}
+</style>
+
+<button class="exit-pill no-print" onclick="exitClient()">← Back to app</button>
+
+<div class="appbar"><div class="appbar-in">
+  <div class="logo">
+    <span id="brandmark" style="display:flex"></span>
+    <div><div class="nm">The AI Collective</div><div class="sb">Sponsorship Studio</div></div>
+  </div>
+  <nav class="tabs" id="tabs"></nav>
+  <div class="spacer"></div>
+  <select id="langSel" style="width:auto;padding:6px 8px;font-size:12px" aria-label="Language"></select>
+</div></div>
+
+<main>
+  <div id="sec-calc" class="sec"></div>
+  <div id="sec-proposal" class="sec"></div>
+  <div id="sec-docs" class="sec"></div>
+  <div id="sec-annual" class="sec"></div>
+  <div id="sec-events" class="sec"></div>
+  <div id="sec-comm" class="sec"></div>
+  <div id="sec-brochure" class="sec"></div>
+  <div id="sec-settings" class="sec"></div>
+</main>
+
+<script>
+/* ═══════════════ CONFIG & DEFAULTS ═══════════════ */
+const CFG_KEY='aic-studio-v6';
+const DEFAULTS={
+  org:{fiscal:'Fiscal Sponsor Allies', ein:'', hq:'The AI Collective', logo:'', banner:'', collage:'',
+    w9:'A completed IRS Form W-9 for our fiscal sponsor is available on request.'},
+  chapter:{name:'', prefix:'', members:0, scope:'chapter', lang:'en', currency:'USD', fx:1,
+    ctaUrl:'', email:'', statEvents:'', tierOver:{}, logo:'', photos:'', nextNum:1,
+    regionName:'', regionMembers:0, regionChapters:''},
+  story:{history:'', thesis:''},
+  sales:{name:'', email:'', phone:''},
+  banking:{payableTo:'', remit:''},
+  news:{sendCPM:125, sendMin:500, featCPM:75, featMin:300},
+  comm:{member:5, salesRef:15, salesSrc:20, region:20},
+  multsC:[[250,.25],[500,.4],[1000,.7],[5000,1],[10000,1.5],[25000,2],[null,3]],
+  multsR:[[1000,1],[5000,1.25],[10000,1.75],[25000,2.5],[null,3.5]],
+  annual:[
+    {cls:'pl',name:'Platinum',price:10000,qty:1,disc:20,floor:2500,benefits:['Logo — chapter landing page','Banner signage + callout','Logo on Luma invitations','Link on Luma invitations','Logo on event slides','Registration list','2 dedicated chapter newsletter sends/yr','20% off event sponsorships']},
+    {cls:'go',name:'Gold',price:7500,qty:2,disc:15,floor:2000,benefits:['Logo — chapter landing page','Banner signage + callout','Logo on Luma invitations','Link on Luma invitations','Logo on event slides','Registration list','1 dedicated chapter newsletter send/yr','15% off event sponsorships']},
+    {cls:'si',name:'Silver',price:5000,qty:4,disc:10,floor:1250,benefits:['Logo — chapter landing page','Banner signage + callout','Link on Luma invitations','Feature in chapter newsletter','10% off event sponsorships']},
+    {cls:'br',name:'Bronze',price:1500,qty:6,disc:0,floor:500,benefits:['Banner signage + callout','Link on Luma invitations']}
+  ],
+  events:[
+    {name:'Workshop @ Sponsor Venue',price:3000,qty:4,att:50,fixed:true,detail:'Sponsor provides venue · F&B not included · 5:30–8:30pm'},
+    {name:'Workshop @ AIC Venue',price:3750,qty:10,att:50,fixed:true,detail:'Venue + F&B included · 5:30–8:30pm'},
+    {name:'Online Workshop',price:1500,qty:6,att:40,fixed:true,detail:'Sponsor platform · targeted invitations · 1 hour'},
+    {name:'Demo Night',price:3000,qty:6,att:50,fixed:true,detail:'Up to 3 sponsors per night · venue + F&B included'},
+    {name:'Panel / Discussion',price:3750,qty:4,att:50,fixed:true,detail:'Venue + F&B included · 5:30–8:30pm'},
+    {name:'Private Dinner',price:1500,qty:4,att:20,fixed:true,detail:'Selected invitations · reservations handled'},
+    {name:'Private Social',price:1500,qty:4,att:50,fixed:true,detail:'Selected invitations · venue + F&B not included'},
+    {name:'Open Social — Appetizers',price:375,qty:10,att:50,fixed:true,detail:'Sponsor provides appetizers · open to all members'},
+    {name:'Pitch Night',price:6000,qty:2,att:100,fixed:true,detail:'3 sponsors per night · venue + F&B included'},
+    {name:'Vibe Night',price:750,qty:12,att:50,fixed:true,detail:'Up to 2 sponsors per night · attendee-paid F&B'},
+    {name:'Hackathon',price:3750,qty:6,att:50,fixed:true,detail:'Up to 4 sponsors · Saturday 10am–3pm · venue + F&B included'},
+    {name:'Vendor Tour Stop',price:2000,qty:6,att:60,fixed:true,detail:'Turnkey city stop for vendor roadshows: venue, AV, promotion, curated audience, registration list'}
+  ]
+};
+let cfg=loadCfg();
+function loadCfg(){
+  try{const raw=localStorage.getItem(CFG_KEY);
+    if(raw){const c=JSON.parse(raw);
+      return {org:{...DEFAULTS.org,...c.org},chapter:{...DEFAULTS.chapter,...c.chapter},
+        story:{...DEFAULTS.story,...c.story},sales:{...DEFAULTS.sales,...c.sales},
+        banking:{...DEFAULTS.banking,...c.banking},news:{...DEFAULTS.news,...c.news},
+        comm:{...DEFAULTS.comm,...c.comm},multsC:c.multsC||DEFAULTS.multsC,multsR:c.multsR||DEFAULTS.multsR,
+        annual:c.annual||JSON.parse(JSON.stringify(DEFAULTS.annual)),
+        events:c.events||JSON.parse(JSON.stringify(DEFAULTS.events))};}
+  }catch(e){}
+  return JSON.parse(JSON.stringify(DEFAULTS));
+}
+function saveCfg(){try{localStorage.setItem(CFG_KEY,JSON.stringify(cfg))}catch(e){}}
+
+/* ═══════════════ I18N ═══════════════ */
+const LOCALES={en:'en-US',es:'es-ES',fr:'fr-FR',de:'de-DE',pt:'pt-BR',ja:'ja-JP'};
+const LANG_NAMES={en:'English',es:'Español',fr:'Français',de:'Deutsch',pt:'Português',ja:'日本語'};
+const T={
+en:{nav_calc:'Calculator',nav_prop:'Proposal',nav_agr:'Agreement',nav_ann:'Annual',nav_evt:'Events',nav_com:'Commissions',nav_bro:'Brochure',nav_set:'Settings',
+chapter:'Chapter',region:'Region',members:'members',annual:'Annual',event:'Event',potential:'potential',base:'base',
+mult_note:'Member multiplier: {m}× ({n} members) — prices adjusted accordingly.',
+spots:'spots',evt_disc:'event discount',per_year:'per year',attendees:'attendees',print:'Print / save PDF',
+add_prop:'Add to proposal',qty:'Qty',price:'Price',item:'Item',subtotal:'Subtotal',discount:'Discount',total:'Total',
+prop_title:'Sponsorship Proposal',prepared_for:'Prepared for',sponsor_co:'Sponsor company',contact:'Contact name',
+email:'Email',date:'Date',valid:'Valid until',list_price:'List price',line_disc:'Discount %',
+override:'Override price',note:'Line note',custom:'Custom',order_disc:'Additional order discount %',
+prop_notes:'Proposal notes',savings:'Total savings vs. list',preview:'Preview document',
+back_edit:'Back to editing',add_custom:'Add custom line',remove:'Remove',no_items:'No line items yet. Add annual tiers or event packages below.',
+prop_terms:'Pricing is valid through the date above. Sponsorship payments are received and receipted by our fiscal sponsor. Recognition benefits begin upon receipt of payment.',
+contact_us:'Questions? Contact',
+agr_title:'Sponsorship Agreement & Acknowledgment',sponsor_legal:'Sponsor legal name',address:'Address',
+amt_recv:'Amount received',date_recv:'Date received',descr:'Sponsorship description',
+agr_body:'This confirms that {fiscal} (EIN {ein}), fiscal sponsor of {hq}, received a sponsorship payment of {amt} from {sponsor} on {date} in support of {chapter}.',
+agr_recog:'In consideration of this payment, the sponsor receives name and logo recognition only — for example, a mention on event invitations, banner signage, event slides, or the member directory. No advertising, endorsement, or other substantial return benefit is provided.',
+agr_tax:'No goods or services were provided in exchange for this payment beyond the recognition described above. Please consult your tax advisor regarding treatment of this payment.',
+sig_sponsor:'For the sponsor',sig_org:'For the organization',name_title:'Name & title',date_lbl:'Date',
+missing_ein:'Fiscal sponsor EIN is not set. Add it in Settings before sending this document.',
+bro_tag:'Sponsorship opportunities',
+bro_h:"Sponsor the AI community that's building the future.",
+bro_p:"We connect practitioners, founders, and executives across the fastest-growing professional community in AI. When you sponsor, you're in the room where it happens.",
+bro_members:'Members',bro_events:'Events hosted',bro_formats:'Event formats',
+why_t:'Why sponsor',
+why:[['Credibility by association','Your brand stands alongside the people shaping AI adoption. That positioning is hard to buy anywhere else.'],
+['Real visibility','Your name on invitations, event slides, banner signage, and verbal callouts — before, during, and after events.'],
+['Direct connection','Workshop and demo formats put your team in the room with qualified practitioners, hands-on.'],
+['Attendee list','Select packages include the registration list — names, titles, and companies of everyone who attended.'],
+['Targeted reach','We invite the segment of our membership most relevant to your offer.'],
+['Recurring presence','Annual partners appear at every event all year — consistency that builds recall.']],
+recog_t:'Recognition, not advertising',
+recog_p:'The AI Collective is a nonprofit community. Sponsors are recognized — they do not advertise. Recognition means:',
+recog_l:['A mention on event invitations','A mention at the event itself','Your logo on banner signage (sometimes shared with other sponsors)','Your logo on event slides','A mention in the member directory or at online events'],
+ann_t:'Annual partner tiers',evt_t:'Event sponsorships',benefits:'Benefits',
+cta_t:'Ready to meet the community?',cta_p:'Tell us your goals and we will match you with the right package.',cta_b:'Sponsor {chapter}',
+com_member:'Member referred',com_sales:'Salesperson sourced',com_regsup:'Region support',
+scenario:'Scenario',member_lbl:'Member',sales_lbl:'Salesperson',
+nav_docs:'Documents',inv_title:'Invoice',bill_to:'Bill to',remit_to:'Remit to',due:'Due date',inv_no:'Invoice no.',prop_no:'Proposal no.',payable_to:'Payable to',terms15:'Payment due within 15 days of invoice date.',
+letter_title:'Thank you',letter_body:'On behalf of {chapter} and The AI Collective community, thank you for your sponsorship. Your support of {amt}, received {date}, directly funds the events and programs that bring AI practitioners together in our community.',letter_close:'With gratitude,',your_contact:'Your contact',
+about_t:'About us',region_t:'Our region',news_t:'Reach beyond the room',news_p:'Sponsors can also reach our members between events through our chapter newsletters — and nationally through The AI Collective Daily.',news_send:'Dedicated chapter newsletter send',news_feature:'Feature in chapter newsletter',per_send:'per send',
+room_t:'The room you are sponsoring'},
+es:{nav_calc:'Calculadora',nav_prop:'Propuesta',nav_agr:'Acuerdo',nav_ann:'Anual',nav_evt:'Eventos',nav_com:'Comisiones',nav_bro:'Folleto',nav_set:'Ajustes',
+chapter:'Capítulo',region:'Región',members:'miembros',annual:'Anual',event:'Evento',potential:'potencial',base:'base',
+mult_note:'Multiplicador por miembros: {m}× ({n} miembros) — precios ajustados.',
+spots:'espacios',evt_disc:'descuento en eventos',per_year:'por año',attendees:'asistentes',print:'Imprimir / guardar PDF',
+add_prop:'Añadir a la propuesta',qty:'Cant.',price:'Precio',item:'Concepto',subtotal:'Subtotal',discount:'Descuento',total:'Total',
+prop_title:'Propuesta de patrocinio',prepared_for:'Preparada para',sponsor_co:'Empresa patrocinadora',contact:'Nombre de contacto',
+email:'Correo',date:'Fecha',valid:'Válida hasta',list_price:'Precio de lista',line_disc:'Descuento %',
+override:'Precio especial',note:'Nota',custom:'Especial',order_disc:'Descuento adicional del pedido %',
+prop_notes:'Notas de la propuesta',savings:'Ahorro total vs. lista',preview:'Vista previa del documento',
+back_edit:'Volver a editar',add_custom:'Añadir línea personalizada',remove:'Quitar',no_items:'Sin conceptos aún. Añada niveles anuales o paquetes de eventos abajo.',
+prop_terms:'Los precios son válidos hasta la fecha indicada. Los pagos de patrocinio son recibidos y recibidos fiscalmente por nuestro patrocinador fiscal. Los beneficios de reconocimiento comienzan al recibir el pago.',
+contact_us:'¿Preguntas? Contacte a',
+agr_title:'Acuerdo de patrocinio y reconocimiento',sponsor_legal:'Nombre legal del patrocinador',address:'Dirección',
+amt_recv:'Monto recibido',date_recv:'Fecha de recepción',descr:'Descripción del patrocinio',
+agr_body:'Se confirma que {fiscal} (EIN {ein}), patrocinador fiscal de {hq}, recibió un pago de patrocinio de {amt} de {sponsor} el {date} en apoyo de {chapter}.',
+agr_recog:'A cambio de este pago, el patrocinador recibe únicamente reconocimiento de nombre y logotipo — por ejemplo, una mención en invitaciones, pancartas, diapositivas del evento o el directorio de miembros. No se proporciona publicidad, respaldo ni otro beneficio sustancial.',
+agr_tax:'No se proporcionaron bienes ni servicios a cambio de este pago más allá del reconocimiento descrito. Consulte a su asesor fiscal sobre el tratamiento de este pago.',
+sig_sponsor:'Por el patrocinador',sig_org:'Por la organización',name_title:'Nombre y cargo',date_lbl:'Fecha',
+missing_ein:'Falta el EIN del patrocinador fiscal. Añádalo en Ajustes antes de enviar este documento.',
+bro_tag:'Oportunidades de patrocinio',
+bro_h:'Patrocine a la comunidad de IA que construye el futuro.',
+bro_p:'Conectamos a profesionales, fundadores y ejecutivos en la comunidad profesional de IA de mayor crecimiento. Al patrocinar, usted está en la sala donde todo sucede.',
+bro_members:'Miembros',bro_events:'Eventos realizados',bro_formats:'Formatos de evento',
+why_t:'Por qué patrocinar',
+why:[['Credibilidad por asociación','Su marca junto a quienes impulsan la adopción de la IA. Ese posicionamiento no se compra en otro lugar.'],
+['Visibilidad real','Su nombre en invitaciones, diapositivas, pancartas y menciones verbales — antes, durante y después de los eventos.'],
+['Conexión directa','Los talleres y demos ponen a su equipo frente a profesionales cualificados, de forma práctica.'],
+['Lista de asistentes','Ciertos paquetes incluyen la lista de registro — nombres, cargos y empresas de los asistentes.'],
+['Alcance dirigido','Invitamos al segmento de miembros más relevante para su oferta.'],
+['Presencia recurrente','Los socios anuales aparecen en todos los eventos del año — la constancia que genera recordación.']],
+recog_t:'Reconocimiento, no publicidad',
+recog_p:'The AI Collective es una comunidad sin fines de lucro. Los patrocinadores reciben reconocimiento — no publicidad. El reconocimiento significa:',
+recog_l:['Una mención en las invitaciones','Una mención en el evento','Su logotipo en pancartas (a veces compartidas con otros patrocinadores)','Su logotipo en las diapositivas','Una mención en el directorio de miembros o en eventos en línea'],
+ann_t:'Niveles de socio anual',evt_t:'Patrocinios de eventos',benefits:'Beneficios',
+cta_t:'¿Listo para conocer a la comunidad?',cta_p:'Cuéntenos sus objetivos y le propondremos el paquete adecuado.',cta_b:'Patrocinar {chapter}',
+com_member:'Referido por miembro',com_sales:'Generado por ventas',com_regsup:'Soporte regional',
+scenario:'Escenario',member_lbl:'Miembro',sales_lbl:'Vendedor',
+nav_docs:'Documentos',inv_title:'Factura',bill_to:'Facturar a',remit_to:'Remitir a',due:'Vencimiento',inv_no:'Factura n.º',prop_no:'Propuesta n.º',payable_to:'A nombre de',terms15:'Pago dentro de los 15 días de la fecha de factura.',
+letter_title:'Gracias',letter_body:'En nombre de {chapter} y la comunidad de The AI Collective, gracias por su patrocinio. Su aporte de {amt}, recibido el {date}, financia directamente los eventos y programas que reúnen a los profesionales de IA de nuestra comunidad.',letter_close:'Con gratitud,',your_contact:'Su contacto',
+about_t:'Sobre nosotros',region_t:'Nuestra región',news_t:'Llegue más allá del evento',news_p:'Los patrocinadores también pueden llegar a nuestros miembros entre eventos mediante los boletines del capítulo — y a nivel nacional con The AI Collective Daily.',news_send:'Envío dedicado del boletín del capítulo',news_feature:'Destacado en el boletín del capítulo',per_send:'por envío',
+room_t:'La sala que usted patrocina'},
+fr:{nav_calc:'Calculateur',nav_prop:'Proposition',nav_agr:'Accord',nav_ann:'Annuel',nav_evt:'Événements',nav_com:'Commissions',nav_bro:'Brochure',nav_set:'Réglages',
+chapter:'Chapitre',region:'Région',members:'membres',annual:'Annuel',event:'Événement',potential:'potentiel',base:'base',
+mult_note:'Multiplicateur membres : {m}× ({n} membres) — prix ajustés.',
+spots:'places',evt_disc:'remise événements',per_year:'par an',attendees:'participants',print:'Imprimer / PDF',
+add_prop:'Ajouter à la proposition',qty:'Qté',price:'Prix',item:'Poste',subtotal:'Sous-total',discount:'Remise',total:'Total',
+prop_title:'Proposition de parrainage',prepared_for:'Préparée pour',sponsor_co:'Entreprise sponsor',contact:'Contact',
+email:'E-mail',date:'Date',valid:'Valable jusqu’au',list_price:'Prix catalogue',line_disc:'Remise %',
+override:'Prix négocié',note:'Note',custom:'Négocié',order_disc:'Remise supplémentaire %',
+prop_notes:'Notes',savings:'Économie totale vs. catalogue',preview:'Aperçu du document',
+back_edit:'Retour à l’édition',add_custom:'Ajouter une ligne libre',remove:'Retirer',no_items:'Aucun poste. Ajoutez des niveaux annuels ou des formats d’événement ci-dessous.',
+prop_terms:'Les prix sont valables jusqu’à la date indiquée. Les paiements de parrainage sont encaissés et reçus par notre sponsor fiscal. Les avantages de reconnaissance commencent à réception du paiement.',
+contact_us:'Des questions ? Contactez',
+agr_title:'Accord de parrainage et attestation',sponsor_legal:'Raison sociale du sponsor',address:'Adresse',
+amt_recv:'Montant reçu',date_recv:'Date de réception',descr:'Description du parrainage',
+agr_body:'Le présent document confirme que {fiscal} (EIN {ein}), sponsor fiscal de {hq}, a reçu un paiement de parrainage de {amt} de {sponsor} le {date} au bénéfice de {chapter}.',
+agr_recog:'En contrepartie, le sponsor reçoit uniquement une reconnaissance de nom et de logo — par exemple une mention sur les invitations, la signalétique, les diapositives ou l’annuaire des membres. Aucune publicité, aucun soutien promotionnel ni autre avantage substantiel n’est fourni.',
+agr_tax:'Aucun bien ni service n’a été fourni en échange de ce paiement au-delà de la reconnaissance décrite. Veuillez consulter votre conseiller fiscal.',
+sig_sponsor:'Pour le sponsor',sig_org:'Pour l’organisation',name_title:'Nom et fonction',date_lbl:'Date',
+missing_ein:'L’EIN du sponsor fiscal n’est pas renseigné. Ajoutez-le dans Réglages avant d’envoyer ce document.',
+bro_tag:'Opportunités de parrainage',
+bro_h:'Parrainez la communauté IA qui construit l’avenir.',
+bro_p:'Nous connectons praticiens, fondateurs et dirigeants au sein de la communauté professionnelle IA à la plus forte croissance. En parrainant, vous êtes dans la salle où tout se passe.',
+bro_members:'Membres',bro_events:'Événements organisés',bro_formats:'Formats d’événement',
+why_t:'Pourquoi parrainer',
+why:[['Crédibilité par association','Votre marque aux côtés de ceux qui façonnent l’adoption de l’IA. Un positionnement introuvable ailleurs.'],
+['Visibilité réelle','Votre nom sur les invitations, les diapositives, la signalétique et les annonces — avant, pendant et après.'],
+['Lien direct','Ateliers et démos placent votre équipe face à des praticiens qualifiés, en pratique.'],
+['Liste des participants','Certains formats incluent la liste d’inscription — noms, fonctions et entreprises.'],
+['Portée ciblée','Nous invitons le segment de membres le plus pertinent pour votre offre.'],
+['Présence récurrente','Les partenaires annuels apparaissent à chaque événement de l’année — la régularité qui marque les esprits.']],
+recog_t:'Reconnaissance, pas de publicité',
+recog_p:'The AI Collective est une communauté à but non lucratif. Les sponsors sont reconnus — ils ne font pas de publicité. La reconnaissance signifie :',
+recog_l:['Une mention sur les invitations','Une mention lors de l’événement','Votre logo sur la signalétique (parfois partagée)','Votre logo sur les diapositives','Une mention dans l’annuaire ou lors d’événements en ligne'],
+ann_t:'Niveaux de partenariat annuel',evt_t:'Parrainages d’événements',benefits:'Avantages',
+cta_t:'Prêt à rencontrer la communauté ?',cta_p:'Partagez vos objectifs et nous vous proposerons le bon format.',cta_b:'Parrainer {chapter}',
+com_member:'Recommandé par un membre',com_sales:'Généré par le commercial',com_regsup:'Soutien régional',
+scenario:'Scénario',member_lbl:'Membre',sales_lbl:'Commercial',
+nav_docs:'Documents',inv_title:'Facture',bill_to:'Facturer à',remit_to:'Règlement à',due:'Échéance',inv_no:'Facture n°',prop_no:'Proposition n°',payable_to:'À l’ordre de',terms15:'Paiement sous 15 jours à compter de la date de facture.',
+letter_title:'Merci',letter_body:'Au nom de {chapter} et de la communauté The AI Collective, merci pour votre parrainage. Votre soutien de {amt}, reçu le {date}, finance directement les événements et programmes qui rassemblent les praticiens de l’IA de notre communauté.',letter_close:'Avec gratitude,',your_contact:'Votre contact',
+about_t:'À propos',region_t:'Notre région',news_t:'Au-delà de la salle',news_p:'Les sponsors peuvent aussi toucher nos membres entre les événements via les newsletters du chapitre — et à l’échelle nationale avec The AI Collective Daily.',news_send:'Envoi dédié de la newsletter du chapitre',news_feature:'Encart dans la newsletter du chapitre',per_send:'par envoi',
+room_t:'La salle que vous parrainez'},
+de:{nav_calc:'Rechner',nav_prop:'Angebot',nav_agr:'Vereinbarung',nav_ann:'Jährlich',nav_evt:'Events',nav_com:'Provisionen',nav_bro:'Broschüre',nav_set:'Einstellungen',
+chapter:'Chapter',region:'Region',members:'Mitglieder',annual:'Jährlich',event:'Event',potential:'Potenzial',base:'Basis',
+mult_note:'Mitglieder-Multiplikator: {m}× ({n} Mitglieder) — Preise entsprechend angepasst.',
+spots:'Plätze',evt_disc:'Event-Rabatt',per_year:'pro Jahr',attendees:'Teilnehmende',print:'Drucken / PDF',
+add_prop:'Zum Angebot hinzufügen',qty:'Anz.',price:'Preis',item:'Position',subtotal:'Zwischensumme',discount:'Rabatt',total:'Gesamt',
+prop_title:'Sponsoring-Angebot',prepared_for:'Erstellt für',sponsor_co:'Sponsor-Unternehmen',contact:'Ansprechpartner',
+email:'E-Mail',date:'Datum',valid:'Gültig bis',list_price:'Listenpreis',line_disc:'Rabatt %',
+override:'Sonderpreis',note:'Notiz',custom:'Sonderpreis',order_disc:'Zusätzlicher Auftragsrabatt %',
+prop_notes:'Anmerkungen',savings:'Gesamtersparnis ggü. Liste',preview:'Dokumentvorschau',
+back_edit:'Zurück zur Bearbeitung',add_custom:'Freie Position hinzufügen',remove:'Entfernen',no_items:'Noch keine Positionen. Fügen Sie unten Jahresstufen oder Event-Pakete hinzu.',
+prop_terms:'Die Preise gelten bis zum oben genannten Datum. Sponsoringzahlungen werden von unserem Fiscal Sponsor entgegengenommen und quittiert. Die Anerkennungsleistungen beginnen mit Zahlungseingang.',
+contact_us:'Fragen? Kontakt:',
+agr_title:'Sponsoring-Vereinbarung & Bestätigung',sponsor_legal:'Rechtlicher Name des Sponsors',address:'Adresse',
+amt_recv:'Erhaltener Betrag',date_recv:'Eingangsdatum',descr:'Beschreibung des Sponsorings',
+agr_body:'Hiermit wird bestätigt, dass {fiscal} (EIN {ein}), Fiscal Sponsor von {hq}, am {date} eine Sponsoringzahlung in Höhe von {amt} von {sponsor} zugunsten von {chapter} erhalten hat.',
+agr_recog:'Als Gegenleistung erhält der Sponsor ausschließlich Namens- und Logo-Nennung — etwa auf Einladungen, Bannern, Event-Folien oder im Mitgliederverzeichnis. Werbung, Empfehlungen oder andere wesentliche Gegenleistungen werden nicht erbracht.',
+agr_tax:'Über die beschriebene Nennung hinaus wurden keine Waren oder Dienstleistungen erbracht. Bitte konsultieren Sie Ihren Steuerberater zur Behandlung dieser Zahlung.',
+sig_sponsor:'Für den Sponsor',sig_org:'Für die Organisation',name_title:'Name & Funktion',date_lbl:'Datum',
+missing_ein:'Die EIN des Fiscal Sponsors fehlt. Bitte in den Einstellungen ergänzen, bevor Sie dieses Dokument versenden.',
+bro_tag:'Sponsoring-Möglichkeiten',
+bro_h:'Sponsern Sie die KI-Community, die die Zukunft baut.',
+bro_p:'Wir verbinden Praktiker, Gründer und Führungskräfte in der am schnellsten wachsenden KI-Community. Als Sponsor sind Sie im Raum, in dem es passiert.',
+bro_members:'Mitglieder',bro_events:'Durchgeführte Events',bro_formats:'Event-Formate',
+why_t:'Warum sponsern',
+why:[['Glaubwürdigkeit durch Nähe','Ihre Marke neben den Menschen, die die KI-Einführung prägen. Diese Positionierung ist anderswo nicht zu kaufen.'],
+['Echte Sichtbarkeit','Ihr Name auf Einladungen, Folien, Bannern und in Ansagen — vor, während und nach jedem Event.'],
+['Direkter Kontakt','Workshops und Demos bringen Ihr Team praktisch mit qualifizierten Fachleuten zusammen.'],
+['Teilnehmerliste','Ausgewählte Pakete enthalten die Anmeldeliste — Namen, Funktionen und Unternehmen.'],
+['Gezielte Reichweite','Wir laden das für Ihr Angebot relevanteste Mitgliedersegment ein.'],
+['Wiederkehrende Präsenz','Jahrespartner erscheinen bei jedem Event des Jahres — Konstanz, die im Gedächtnis bleibt.']],
+recog_t:'Anerkennung, keine Werbung',
+recog_p:'The AI Collective ist eine gemeinnützige Community. Sponsoren werden anerkannt — sie werben nicht. Anerkennung bedeutet:',
+recog_l:['Nennung auf Event-Einladungen','Nennung beim Event selbst','Ihr Logo auf Bannern (teils gemeinsam mit anderen Sponsoren)','Ihr Logo auf Event-Folien','Nennung im Mitgliederverzeichnis oder bei Online-Events'],
+ann_t:'Jahrespartner-Stufen',evt_t:'Event-Sponsorings',benefits:'Leistungen',
+cta_t:'Bereit, die Community kennenzulernen?',cta_p:'Nennen Sie uns Ihre Ziele — wir finden das passende Paket.',cta_b:'{chapter} sponsern',
+com_member:'Von Mitglied vermittelt',com_sales:'Vom Vertrieb akquiriert',com_regsup:'Regionale Unterstützung',
+scenario:'Szenario',member_lbl:'Mitglied',sales_lbl:'Vertrieb',
+nav_docs:'Dokumente',inv_title:'Rechnung',bill_to:'Rechnung an',remit_to:'Zahlung an',due:'Fällig am',inv_no:'Rechnungs-Nr.',prop_no:'Angebots-Nr.',payable_to:'Zahlbar an',terms15:'Zahlung innerhalb von 15 Tagen ab Rechnungsdatum.',
+letter_title:'Vielen Dank',letter_body:'Im Namen von {chapter} und der The-AI-Collective-Community danken wir Ihnen für Ihr Sponsoring. Ihr Beitrag von {amt}, eingegangen am {date}, finanziert direkt die Events und Programme, die die KI-Fachleute unserer Community zusammenbringen.',letter_close:'Mit herzlichem Dank,',your_contact:'Ihr Kontakt',
+about_t:'Über uns',region_t:'Unsere Region',news_t:'Reichweite über den Raum hinaus',news_p:'Sponsoren erreichen unsere Mitglieder auch zwischen den Events über Chapter-Newsletter — und landesweit über The AI Collective Daily.',news_send:'Dedizierter Chapter-Newsletter-Versand',news_feature:'Feature im Chapter-Newsletter',per_send:'pro Versand',
+room_t:'Der Raum, den Sie sponsern'},
+pt:{nav_calc:'Calculadora',nav_prop:'Proposta',nav_agr:'Acordo',nav_ann:'Anual',nav_evt:'Eventos',nav_com:'Comissões',nav_bro:'Folheto',nav_set:'Ajustes',
+chapter:'Capítulo',region:'Região',members:'membros',annual:'Anual',event:'Evento',potential:'potencial',base:'base',
+mult_note:'Multiplicador de membros: {m}× ({n} membros) — preços ajustados.',
+spots:'vagas',evt_disc:'desconto em eventos',per_year:'por ano',attendees:'participantes',print:'Imprimir / salvar PDF',
+add_prop:'Adicionar à proposta',qty:'Qtd.',price:'Preço',item:'Item',subtotal:'Subtotal',discount:'Desconto',total:'Total',
+prop_title:'Proposta de patrocínio',prepared_for:'Preparada para',sponsor_co:'Empresa patrocinadora',contact:'Nome do contato',
+email:'E-mail',date:'Data',valid:'Válida até',list_price:'Preço de tabela',line_disc:'Desconto %',
+override:'Preço especial',note:'Observação',custom:'Especial',order_disc:'Desconto adicional do pedido %',
+prop_notes:'Notas da proposta',savings:'Economia total vs. tabela',preview:'Visualizar documento',
+back_edit:'Voltar a editar',add_custom:'Adicionar linha personalizada',remove:'Remover',no_items:'Nenhum item ainda. Adicione níveis anuais ou pacotes de eventos abaixo.',
+prop_terms:'Os preços são válidos até a data acima. Os pagamentos de patrocínio são recebidos e recibados pelo nosso patrocinador fiscal. Os benefícios de reconhecimento começam após o recebimento do pagamento.',
+contact_us:'Dúvidas? Fale com',
+agr_title:'Acordo de patrocínio e reconhecimento',sponsor_legal:'Razão social do patrocinador',address:'Endereço',
+amt_recv:'Valor recebido',date_recv:'Data de recebimento',descr:'Descrição do patrocínio',
+agr_body:'Confirmamos que {fiscal} (EIN {ein}), patrocinador fiscal de {hq}, recebeu um pagamento de patrocínio de {amt} de {sponsor} em {date} em apoio a {chapter}.',
+agr_recog:'Em contrapartida, o patrocinador recebe apenas reconhecimento de nome e logotipo — por exemplo, menção em convites, faixas, slides do evento ou no diretório de membros. Não é fornecida publicidade, endosso ou outro benefício substancial.',
+agr_tax:'Nenhum bem ou serviço foi fornecido em troca deste pagamento além do reconhecimento descrito. Consulte seu consultor tributário sobre o tratamento deste pagamento.',
+sig_sponsor:'Pelo patrocinador',sig_org:'Pela organização',name_title:'Nome e cargo',date_lbl:'Data',
+missing_ein:'O EIN do patrocinador fiscal não está definido. Adicione em Ajustes antes de enviar este documento.',
+bro_tag:'Oportunidades de patrocínio',
+bro_h:'Patrocine a comunidade de IA que está construindo o futuro.',
+bro_p:'Conectamos profissionais, fundadores e executivos na comunidade profissional de IA que mais cresce. Ao patrocinar, você está na sala onde tudo acontece.',
+bro_members:'Membros',bro_events:'Eventos realizados',bro_formats:'Formatos de evento',
+why_t:'Por que patrocinar',
+why:[['Credibilidade por associação','Sua marca ao lado de quem molda a adoção da IA. Esse posicionamento não se compra em outro lugar.'],
+['Visibilidade real','Seu nome em convites, slides, faixas e menções verbais — antes, durante e depois dos eventos.'],
+['Conexão direta','Workshops e demos colocam sua equipe frente a profissionais qualificados, na prática.'],
+['Lista de participantes','Pacotes selecionados incluem a lista de inscrição — nomes, cargos e empresas.'],
+['Alcance direcionado','Convidamos o segmento de membros mais relevante para sua oferta.'],
+['Presença recorrente','Parceiros anuais aparecem em todos os eventos do ano — a constância que gera lembrança.']],
+recog_t:'Reconhecimento, não publicidade',
+recog_p:'The AI Collective é uma comunidade sem fins lucrativos. Patrocinadores são reconhecidos — não anunciam. Reconhecimento significa:',
+recog_l:['Menção nos convites dos eventos','Menção no próprio evento','Seu logotipo em faixas (às vezes compartilhadas com outros patrocinadores)','Seu logotipo nos slides','Menção no diretório de membros ou em eventos on-line'],
+ann_t:'Níveis de parceiro anual',evt_t:'Patrocínios de eventos',benefits:'Benefícios',
+cta_t:'Pronto para conhecer a comunidade?',cta_p:'Conte seus objetivos e indicaremos o pacote certo.',cta_b:'Patrocinar {chapter}',
+com_member:'Indicado por membro',com_sales:'Originado pelo vendedor',com_regsup:'Suporte regional',
+scenario:'Cenário',member_lbl:'Membro',sales_lbl:'Vendedor',
+nav_docs:'Documentos',inv_title:'Fatura',bill_to:'Faturar para',remit_to:'Pagamento para',due:'Vencimento',inv_no:'Fatura n.º',prop_no:'Proposta n.º',payable_to:'Em nome de',terms15:'Pagamento em até 15 dias da data da fatura.',
+letter_title:'Obrigado',letter_body:'Em nome de {chapter} e da comunidade The AI Collective, obrigado pelo seu patrocínio. Seu apoio de {amt}, recebido em {date}, financia diretamente os eventos e programas que reúnem os profissionais de IA da nossa comunidade.',letter_close:'Com gratidão,',your_contact:'Seu contato',
+about_t:'Sobre nós',region_t:'Nossa região',news_t:'Alcance além do evento',news_p:'Patrocinadores também podem alcançar nossos membros entre eventos pelos boletins do capítulo — e nacionalmente pelo The AI Collective Daily.',news_send:'Envio dedicado do boletim do capítulo',news_feature:'Destaque no boletim do capítulo',per_send:'por envio',
+room_t:'A sala que você patrocina'},
+ja:{nav_calc:'計算ツール',nav_prop:'提案書',nav_agr:'契約書',nav_ann:'年間',nav_evt:'イベント',nav_com:'コミッション',nav_bro:'パンフレット',nav_set:'設定',
+chapter:'チャプター',region:'リージョン',members:'名のメンバー',annual:'年間',event:'イベント',potential:'見込み',base:'基準',
+mult_note:'メンバー係数：{m}×（{n}名）— 価格は調整済みです。',
+spots:'枠',evt_disc:'イベント割引',per_year:'年間',attendees:'参加者',print:'印刷 / PDF保存',
+add_prop:'提案書に追加',qty:'数量',price:'価格',item:'項目',subtotal:'小計',discount:'割引',total:'合計',
+prop_title:'スポンサーシップ提案書',prepared_for:'宛先',sponsor_co:'スポンサー企業',contact:'担当者名',
+email:'メール',date:'日付',valid:'有効期限',list_price:'定価',line_disc:'割引 %',
+override:'特別価格',note:'備考',custom:'特別',order_disc:'追加割引 %',
+prop_notes:'提案メモ',savings:'定価からの割引総額',preview:'ドキュメントを表示',
+back_edit:'編集に戻る',add_custom:'カスタム行を追加',remove:'削除',no_items:'項目がありません。下から年間ティアまたはイベントを追加してください。',
+prop_terms:'価格は上記の日付まで有効です。スポンサー料は当団体のフィスカルスポンサーが受領し、領収書を発行します。認知特典は入金確認後に開始されます。',
+contact_us:'お問い合わせ：',
+agr_title:'スポンサーシップ契約および受領確認書',sponsor_legal:'スポンサーの正式名称',address:'住所',
+amt_recv:'受領金額',date_recv:'受領日',descr:'スポンサーシップの内容',
+agr_body:'{hq}のフィスカルスポンサーである{fiscal}（EIN {ein}）は、{date}に{sponsor}より{chapter}支援のためのスポンサー料{amt}を受領したことを確認します。',
+agr_recog:'本支払いの対価として、スポンサーは名称およびロゴの掲出のみを受けます（招待状、バナー、イベントスライド、メンバーディレクトリでの言及など）。広告、推薦、その他の実質的な対価は提供されません。',
+agr_tax:'上記の認知以外に、本支払いと引き換えに商品またはサービスは提供されていません。本支払いの税務上の取り扱いについては税理士にご相談ください。',
+sig_sponsor:'スポンサー側',sig_org:'団体側',name_title:'氏名・役職',date_lbl:'日付',
+missing_ein:'フィスカルスポンサーのEINが未設定です。送付前に設定画面で入力してください。',
+bro_tag:'スポンサーシップのご案内',
+bro_h:'未来を築くAIコミュニティのスポンサーになりませんか。',
+bro_p:'私たちは、最も成長の速いAIプロフェッショナルコミュニティで実務者・創業者・経営者をつなぎます。スポンサーとして、その中心に立つことができます。',
+bro_members:'メンバー',bro_events:'開催イベント数',bro_formats:'イベント形式',
+why_t:'スポンサーになる理由',
+why:[['信頼性の獲得','AI導入を牽引する人々と並ぶブランドポジション。他では得られない価値です。'],
+['確かな認知','招待状、スライド、バナー、アナウンスにお名前を掲出 — イベントの前後を通して。'],
+['直接のつながり','ワークショップやデモで、貴社チームが実務者と直接交流できます。'],
+['参加者リスト','一部パッケージには参加登録リスト（氏名・役職・企業名）が含まれます。'],
+['ターゲットリーチ','貴社に最も関連性の高いメンバー層を招待します。'],
+['継続的な露出','年間パートナーは年間すべてのイベントに登場 — 記憶に残る一貫性。']],
+recog_t:'広告ではなく、認知を',
+recog_p:'The AI Collectiveは非営利コミュニティです。スポンサーは認知されますが、広告は行いません。認知とは：',
+recog_l:['イベント招待状での言及','イベント会場での言及','バナーへのロゴ掲出（複数スポンサー共同の場合あり）','イベントスライドへのロゴ掲出','メンバーディレクトリやオンラインイベントでの言及'],
+ann_t:'年間パートナーティア',evt_t:'イベントスポンサーシップ',benefits:'特典',
+cta_t:'コミュニティに参加しませんか？',cta_p:'目的をお聞かせください。最適なパッケージをご提案します。',cta_b:'{chapter}のスポンサーになる',
+com_member:'メンバー紹介',com_sales:'営業開拓',com_regsup:'リージョンサポート',
+scenario:'シナリオ',member_lbl:'メンバー',sales_lbl:'営業',
+nav_docs:'書類',inv_title:'請求書',bill_to:'請求先',remit_to:'支払先',due:'支払期限',inv_no:'請求書番号',prop_no:'提案書番号',payable_to:'支払名義',terms15:'請求書発行日から15日以内にお支払いください。',
+letter_title:'御礼',letter_body:'{chapter}およびThe AI Collectiveコミュニティを代表し、ご支援に心より感謝申し上げます。{date}に受領した{amt}のご支援は、当地のAI実務者をつなぐイベントとプログラムの運営に直接活用されます。',letter_close:'感謝を込めて',your_contact:'担当者',
+about_t:'私たちについて',region_t:'リージョンのチャプター',news_t:'イベントの先へ',news_p:'スポンサーはチャプターのニュースレター、また全国規模ではThe AI Collective Dailyを通じて、イベント以外でも会員にリーチできます。',news_send:'チャプターニュースレター単独配信',news_feature:'チャプターニュースレター内掲載',per_send:'1配信あたり',
+room_t:'スポンサーとして関わる場'}
+};
+function t(k){const d=T[cfg.chapter.lang]||T.en;let v=d[k];if(v===undefined)v=T.en[k];return v;}
+function tf(k,vars){let s=t(k);for(const key in vars)s=s.replace('{'+key+'}',vars[key]);return s;}
+
+/* ═══════════════ MONEY ═══════════════ */
+function fmt(usd){
+  const c=cfg.chapter;
+  try{return new Intl.NumberFormat(LOCALES[c.lang]||'en-US',
+    {style:'currency',currency:c.currency,maximumFractionDigits:0}).format(Math.round(usd*(c.fx||1)));}
+  catch(e){return '$'+Math.round(usd).toLocaleString();}
+}
+function activeMembers(){
+  return cfg.chapter.scope==='chapter'?(cfg.chapter.members||0):(cfg.chapter.regionMembers||0);
+}
+function mult(){
+  const m=activeMembers();
+  if(!m)return 1;
+  const table=cfg.chapter.scope==='chapter'?cfg.multsC:cfg.multsR;
+  for(const [cap,x] of table){if(cap===null||cap===''||m<Number(cap))return Number(x);}
+  return 1;
+}
+function tierPrice(i){
+  const o=(cfg.chapter.tierOver||{})[i];
+  if(o!==undefined&&o!==null&&o!=='')return Number(o);
+  const tr=cfg.annual[i];
+  return Math.max(Math.round(tr.price*mult()), Number(tr.floor)||0);
+}
+function eventPrice(i){
+  const e=cfg.events[i];
+  return e.fixed?Math.round(e.price):Math.round(e.price*mult());
+}
+function newsSendPrice(){const m=activeMembers();return Math.max(Math.round(m*cfg.news.sendCPM/1000),cfg.news.sendMin);}
+function newsFeatPrice(){const m=activeMembers();return Math.max(Math.round(m*cfg.news.featCPM/1000),cfg.news.featMin);}
+function tierIsOver(i){const o=(cfg.chapter.tierOver||{})[i];return o!==undefined&&o!==null&&o!=='';}
+function setTierOver(i,v){
+  if(!cfg.chapter.tierOver)cfg.chapter.tierOver={};
+  if(v===''||v===null)delete cfg.chapter.tierOver[i];else cfg.chapter.tierOver[i]=Number(v);
+  saveCfg();
+}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+
+/* ═══════════════ TABS / NAV ═══════════════ */
+const TABS=[['calc','nav_calc'],['proposal','nav_prop'],['docs','nav_docs'],['annual','nav_ann'],
+  ['events','nav_evt'],['comm','nav_com'],['brochure','nav_bro'],['settings','nav_set']];
+let activeTab='calc';
+function renderTabs(){
+  document.getElementById('tabs').innerHTML=TABS.map(([id,k])=>
+    `<button class="${activeTab===id?'active':''}" onclick="go('${id}')">${t(k)}</button>`).join('');
+}
+function go(id){
+  activeTab=id;
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
+  document.getElementById('sec-'+id).classList.add('active');
+  document.body.classList.toggle('client-mode',id==='brochure');
+  renderTabs();renderActive();
+  window.scrollTo({top:0});
+}
+function exitClient(){go('calc');}
+function renderActive(){
+  ({calc:renderCalc,proposal:renderProposal,docs:renderDocs,annual:renderAnnual,
+    events:renderEvents,comm:renderComm,brochure:renderBrochure,settings:renderSettings})[activeTab]();
+}
+function rerenderAll(){renderTabs();renderActive();}
+
+/* ═══════════════ CALCULATOR ═══════════════ */
+let calcType='annual', calcEvt=0;
+function renderCalc(){
+  const c=cfg.chapter,m=mult();
+  const el=document.getElementById('sec-calc');
+  const annTotal=cfg.annual.reduce((s,tr,i)=>s+tierPrice(i)*tr.qty,0);
+  let out='';
+  if(calcType==='annual'){
+    out=`<div class="toolrow"><span class="eyebrow" style="margin:0">${esc(c.name)} — ${t('annual')}</span>
+      <span class="spacer"></span><span class="badge ok num">${fmt(annTotal)} ${t('potential')}</span></div>
+      ${m!==1?`<div class="ibox brand">${tf('mult_note',{m:m,n:activeMembers().toLocaleString()})}</div>`:''}
+      ${cfg.annual.map((tr,i)=>tierCard(tr,i,`<button class="btn btn-sec" onclick="addTier(${i})">＋ ${t('add_prop')}</button>`)).join('')}`;
+  }else{
+    const ev=cfg.events[calcEvt]||cfg.events[0];
+    const adj=eventPrice(calcEvt);
+    out=`<div class="chipbar" style="margin-bottom:14px">${cfg.events.map((e,i)=>
+        `<button class="chip ${i===calcEvt?'on':''}" onclick="calcEvt=${i};renderCalc()">${esc(e.name)}</button>`).join('')}</div>
+      ${(m!==1&&!ev.fixed)?`<div class="ibox brand">${tf('mult_note',{m:m,n:activeMembers().toLocaleString()})}</div>`:''}
+      <div class="statrow">
+        <div class="stat"><div class="v num">${fmt(adj)}</div><div class="l">${t('price')}${(m!==1&&!ev.fixed)?` · ${t('base')} ${fmt(ev.price)}`:''}</div></div>
+        <div class="stat"><div class="v num">${ev.qty}</div><div class="l">${t('spots')} ${t('per_year')}</div></div>
+        <div class="stat"><div class="v num">~${ev.att}</div><div class="l">${t('attendees')}</div></div>
+      </div>
+      <p style="color:var(--mut);font-size:12.5px;margin-bottom:12px">${esc(ev.detail)}</p>
+      <div class="tblwrap"><table class="tbl"><thead><tr><th>${t('annual')}</th><th class="r">${t('discount')}</th><th class="r">${t('price')}</th></tr></thead>
+      <tbody>${cfg.annual.filter(tr=>tr.disc>0).map(tr=>`<tr><td>${esc(tr.name)}</td><td class="r num">${tr.disc}%</td>
+        <td class="r num">${fmt(adj*(1-tr.disc/100))}</td></tr>`).join('')}</tbody></table></div>
+      <div style="margin-top:14px"><button class="btn btn-pri" onclick="addEvt(${calcEvt})">＋ ${t('add_prop')}</button></div>`;
+  }
+  el.innerHTML=`<div class="panel">
+    <div class="grid3">
+      <div class="fg"><label>${t('chapter')} / ${t('region')}</label>
+        <div class="seg"><button class="${c.scope==='chapter'?'active':''}" onclick="cfg.chapter.scope='chapter';saveCfg();renderCalc()">${t('chapter')}</button>
+        <button class="${c.scope==='region'?'active':''}" onclick="cfg.chapter.scope='region';saveCfg();renderCalc()">${t('region')}</button></div></div>
+      ${c.scope==='chapter'?`
+      <div class="fg"><label>${t('chapter')}</label><input value="${esc(c.name)}" placeholder="e.g. AIC Atlanta" onchange="cfg.chapter.name=this.value;saveCfg();"></div>
+      <div class="fg"><label>${t('members')}</label><input type="number" min="0" value="${c.members||''}" placeholder="e.g. 4000" onchange="cfg.chapter.members=parseInt(this.value)||0;saveCfg();renderCalc()"></div>`
+      :`
+      <div class="fg"><label>${t('region')}</label><input value="${esc(c.regionName)}" placeholder="e.g. AIC South Central" onchange="cfg.chapter.regionName=this.value;saveCfg();"></div>
+      <div class="fg"><label>${t('members')} (${t('region')})</label><input type="number" min="0" value="${c.regionMembers||''}" placeholder="e.g. 4265" onchange="cfg.chapter.regionMembers=parseInt(this.value)||0;saveCfg();renderCalc()"></div>`}
+    </div>
+    <div style="margin-top:12px" class="fg"><label>${t('annual')} / ${t('event')}</label>
+      <div class="seg" style="max-width:280px"><button class="${calcType==='annual'?'active':''}" onclick="calcType='annual';renderCalc()">${t('annual')}</button>
+      <button class="${calcType==='event'?'active':''}" onclick="calcType='event';renderCalc()">${t('event')}</button></div></div>
+  </div>
+  <div class="panel">${out}</div>`;
+}
+function tierCard(tr,i,action){
+  const adj=tierPrice(i);
+  const showBase=!tierIsOver(i)&&mult()!==1;
+  return `<div class="tcard t-${tr.cls}">
+    <div class="thdr"><div><div class="tnm">${esc(tr.name)}</div>
+      <div class="tmt">${tr.qty} ${t('spots')}${tr.disc?` · ${tr.disc}% ${t('evt_disc')}`:''}</div></div>
+      <div class="tpr num">${fmt(adj)}${showBase?`<span class="was">${t('base')} ${fmt(tr.price)}</span>`:''}</div></div>
+    <div class="tbdy"><div class="pills">${tr.benefits.map(b=>`<span class="pill">${esc(b)}</span>`).join('')}</div>
+    ${action||''}</div></div>`;
+}
+
+/* ═══════════════ PROPOSAL ═══════════════ */
+let prop={sponsor:'',contact:'',email:'',date:today(),valid:plusDays(30),items:[],orderDisc:0,notes:'',
+  previewing:false,number:null,sales:null,ref:null,sow:null};
+function ensureProp(){
+  if(!prop.sales)prop.sales={name:cfg.sales.name,email:cfg.sales.email,phone:cfg.sales.phone};
+  if(!prop.ref)prop.ref={name:'',email:''};
+  if(!prop.sow)prop.sow={title:'',date:'',loc:'',checks:{},notes:''};
+}
+function assignNumber(){
+  if(prop.number)return;
+  const p=(cfg.chapter.prefix||'AIC').toUpperCase().replace(/[^A-Z0-9]/g,'');
+  const n=cfg.chapter.nextNum||1;
+  prop.number=p+String(n).padStart(3,'0');
+  cfg.chapter.nextNum=n+1;saveCfg();
+}
+function addNewsSend(){prop.items.push({label:t('news_send'),listUsd:newsSendPrice(),qty:1,disc:0,over:null,note:''});go('proposal');}
+function addNewsFeat(){prop.items.push({label:t('news_feature'),listUsd:newsFeatPrice(),qty:1,disc:0,over:null,note:''});go('proposal');}
+function today(){return new Date().toISOString().slice(0,10);}
+function plusDays(d){const x=new Date();x.setDate(x.getDate()+d);return x.toISOString().slice(0,10);}
+function addTier(i){const tr=cfg.annual[i];
+  prop.items.push({label:tr.name+' — '+t('annual'),listUsd:tierPrice(i),qty:1,disc:0,over:null,note:''});
+  go('proposal');}
+function addEvt(i){const ev=cfg.events[i];
+  prop.items.push({label:ev.name,listUsd:eventPrice(i),qty:1,disc:0,over:null,note:''});
+  go('proposal');}
+function addCustom(){prop.items.push({label:'',listUsd:0,qty:1,disc:0,over:null,note:''});renderProposal();}
+function delItem(i){prop.items.splice(i,1);renderProposal();}
+function lineNet(it){const unit=(it.over!==null&&it.over!=='')?Number(it.over):it.listUsd*(1-(it.disc||0)/100);return unit*(it.qty||1);}
+function propTotals(){
+  const list=prop.items.reduce((s,it)=>s+it.listUsd*(it.qty||1),0);
+  const net0=prop.items.reduce((s,it)=>s+lineNet(it),0);
+  const net=net0*(1-(prop.orderDisc||0)/100);
+  return {list,net,save:list-net};
+}
+function renderProposal(){
+  const el=document.getElementById('sec-proposal');
+  ensureProp();
+  if(prop.previewing){el.innerHTML=proposalDoc();return;}
+  const {list,net,save}=propTotals();
+  el.innerHTML=`<div class="panel">
+    <div class="toolrow" style="margin-bottom:12px">
+      <h2 style="margin:0">${t('prop_title')}</h2><span class="spacer"></span>
+      ${prop.number?`<span class="badge brand num" style="font-size:13px">${esc(prop.number)}</span>`
+        :`<button class="btn btn-sec" onclick="assignNumber();renderProposal()">＃ ${t('prop_no')}</button>`}
+    </div>
+    <div class="grid3">
+      <div class="fg"><label>${t('sponsor_co')}</label><input value="${esc(prop.sponsor)}" onchange="prop.sponsor=this.value"></div>
+      <div class="fg"><label>${t('contact')}</label><input value="${esc(prop.contact)}" onchange="prop.contact=this.value"></div>
+      <div class="fg"><label>${t('email')}</label><input value="${esc(prop.email)}" onchange="prop.email=this.value"></div>
+      <div class="fg"><label>${t('date')}</label><input type="date" value="${prop.date}" onchange="prop.date=this.value"></div>
+      <div class="fg"><label>${t('valid')}</label><input type="date" value="${prop.valid}" onchange="prop.valid=this.value"></div>
+      <div class="fg"><label>${t('order_disc')}</label><input type="number" min="0" max="100" value="${prop.orderDisc}" onchange="prop.orderDisc=Number(this.value)||0;renderProposal()"></div>
+      <div class="fg"><label>${t('sales_lbl')}</label><input value="${esc(prop.sales.name)}" onchange="prop.sales.name=this.value"></div>
+      <div class="fg"><label>${t('sales_lbl')} — ${t('email')}</label><input value="${esc(prop.sales.email)}" onchange="prop.sales.email=this.value"></div>
+      <div class="fg"><label>${t('sales_lbl')} — ☎</label><input value="${esc(prop.sales.phone)}" onchange="prop.sales.phone=this.value"></div>
+      <div class="fg"><label>${t('com_member')} 🔒</label><input value="${esc(prop.ref.name)}" placeholder="internal only" onchange="prop.ref.name=this.value"></div>
+      <div class="fg"><label>${t('com_member')} — ${t('email')} 🔒</label><input value="${esc(prop.ref.email)}" placeholder="internal only" onchange="prop.ref.email=this.value"></div>
+    </div>
+    <p style="color:var(--mut);font-size:11px;margin-top:8px">🔒 Referring member is for commission tracking only — it never appears on any sponsor-facing document. The salesperson appears on proposals, invoices, and letters.</p>
+  </div>
+  <div class="panel">
+    <div class="toolrow"><span class="eyebrow" style="margin:0">${t('item')}s</span><span class="spacer"></span>
+      <button class="btn btn-sec" onclick="addNewsSend()">＋ ${t('news_send')} · <span class="num">${fmt(newsSendPrice())}</span></button>
+      <button class="btn btn-sec" onclick="addNewsFeat()">＋ ${t('news_feature')} · <span class="num">${fmt(newsFeatPrice())}</span></button>
+      <button class="btn btn-sec" onclick="addCustom()">＋ ${t('add_custom')}</button></div>
+    ${prop.items.length===0?`<p style="color:var(--mut)">${t('no_items')}</p>`:prop.items.map((it,i)=>{
+      const overridden=it.over!==null&&it.over!=='';
+      return `<div class="li">
+      <div class="li-top">
+        <input class="li-name" style="max-width:340px" value="${esc(it.label)}" placeholder="${t('item')}" onchange="prop.items[${i}].label=this.value">
+        <div><span class="li-net num">${fmt(lineNet(it))}</span>
+          ${(overridden||it.disc>0)?` <span class="strike num">${fmt(it.listUsd*(it.qty||1))}</span>`:''}
+          ${overridden?` <span class="badge brand">${t('custom')}</span>`:''}</div>
+      </div>
+      <div class="li-grid">
+        <div class="fg"><label>${t('qty')}</label><input type="number" min="1" value="${it.qty}" onchange="prop.items[${i}].qty=Number(this.value)||1;renderProposal()"></div>
+        <div class="fg"><label>${t('line_disc')}</label><input type="number" min="0" max="100" value="${it.disc}" ${overridden?'disabled':''} onchange="prop.items[${i}].disc=Number(this.value)||0;renderProposal()"></div>
+        <div class="fg"><label>${t('override')}</label><input type="number" min="0" placeholder="${Math.round(it.listUsd*(cfg.chapter.fx||1))}" value="${it.over===null?'':it.over}" onchange="prop.items[${i}].over=this.value===''?null:Number(this.value)/(cfg.chapter.fx||1);renderProposal()"></div>
+        <div class="fg"><label>${t('note')}</label><input value="${esc(it.note)}" onchange="prop.items[${i}].note=this.value"></div>
+        <button class="btn btn-ghost" onclick="delItem(${i})" aria-label="${t('remove')}">✕</button>
+      </div></div>`;}).join('')}
+    <div class="fg" style="margin-top:12px"><label>${t('prop_notes')}</label>
+      <textarea rows="2" onchange="prop.notes=this.value">${esc(prop.notes)}</textarea></div>
+  </div>
+  <div class="panel">
+    <div class="tblwrap"><table class="tbl"><tbody>
+      <tr><td>${t('subtotal')}</td><td class="r num">${fmt(list)}</td></tr>
+      <tr><td>${t('savings')}</td><td class="r num" style="color:var(--ok)">−${fmt(save)}</td></tr>
+      <tr class="doc-total"><td style="border-top:2px solid var(--ink)">${t('total')}</td><td class="r num" style="border-top:2px solid var(--ink)">${fmt(net)}</td></tr>
+    </tbody></table></div>
+    <div class="toolrow" style="margin-top:14px;margin-bottom:0">
+      <button class="btn btn-pri" onclick="prop.previewing=true;renderProposal()">${t('preview')}</button>
+    </div>
+  </div>`;
+}
+function fmtDate(iso){
+  if(!iso)return '';
+  try{return new Intl.DateTimeFormat(LOCALES[cfg.chapter.lang]||'en-US',{dateStyle:'long'}).format(new Date(iso+'T12:00:00'));}
+  catch(e){return iso;}
+}
+function proposalDoc(){
+  const {list,net,save}=propTotals();
+  const c=cfg.chapter;
+  return `<div class="toolrow no-print">
+    <button class="btn btn-sec" onclick="prop.previewing=false;renderProposal()">← ${t('back_edit')}</button>
+    <button class="btn btn-pri" onclick="window.print()">${t('print')}</button></div>
+  <div class="sheet">
+    ${sheetHead()}
+    <hr class="sh-rule">
+    <div class="sh-body">
+      <h1>${t('prop_title')}</h1>
+      <div class="doc-meta">
+        <div><span class="k">${t('prepared_for')}: </span><strong>${esc(prop.sponsor)||'—'}</strong>${prop.contact?` · ${esc(prop.contact)}`:''}</div>
+        <div><span class="k">${t('prop_no')}: </span><strong class="num">${esc(prop.number)||'—'}</strong></div>
+        <div>${prop.email?`<span class="k">${t('email')}: </span>${esc(prop.email)}`:''}</div>
+        <div><span class="k">${t('date')}: </span>${fmtDate(prop.date)}</div>
+        <div></div>
+        <div><span class="k">${t('valid')}: </span>${fmtDate(prop.valid)}</div>
+      </div>
+      <h3>${t('item')}s</h3>
+      <div class="tblwrap"><table class="tbl"><thead><tr>
+        <th>${t('item')}</th><th class="r">${t('qty')}</th><th class="r">${t('list_price')}</th><th class="r">${t('price')}</th></tr></thead>
+      <tbody>
+        ${prop.items.map(it=>{const netL=lineNet(it);const discd=netL<it.listUsd*(it.qty||1);
+          return `<tr><td><strong>${esc(it.label)}</strong>${it.note?`<div class="mut" style="font-size:11px">${esc(it.note)}</div>`:''}</td>
+          <td class="r num">${it.qty}</td>
+          <td class="r num ${discd?'strike':''}">${fmt(it.listUsd*(it.qty||1))}</td>
+          <td class="r num"><strong>${fmt(netL)}</strong></td></tr>`;}).join('')}
+        ${prop.orderDisc>0?`<tr><td colspan="3">${t('order_disc').replace(' %','')}</td><td class="r num">−${prop.orderDisc}%</td></tr>`:''}
+        <tr class="doc-total"><td colspan="3">${t('total')}</td><td class="r num">${fmt(net)}</td></tr>
+      </tbody></table></div>
+      ${save>0?`<p style="margin-top:8px"><span class="badge ok num">${t('savings')}: ${fmt(save)}</span></p>`:''}
+      ${prop.notes?`<h3>${t('prop_notes')}</h3><p>${esc(prop.notes)}</p>`:''}
+      <h3>${t('agr_title').split('&')[0]}</h3>
+      <p>${t('prop_terms')}</p>
+      <p style="margin-top:14px"><strong>${t('your_contact')}:</strong> ${esc(prop.sales.name)||esc(c.email)||'—'}${prop.sales.email?` · ${esc(prop.sales.email)}`:''}${prop.sales.phone?` · ${esc(prop.sales.phone)}`:''}</p>
+    </div>
+  </div>`;
+}
+function brandMark(size){
+  if(cfg.org.logo)return `<img src="${cfg.org.logo}" alt="" style="width:${size}px;height:${size}px;border-radius:50%;object-fit:contain" aria-hidden="true">`;
+  const id='g'+Math.random().toString(36).slice(2,7);
+  return `<svg width="${size}" height="${size}" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs><linearGradient id="${id}" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1F2CD6"/><stop offset="35%" stop-color="#2A2199"/>
+      <stop offset="60%" stop-color="#83202C"/><stop offset="80%" stop-color="#D94A10"/>
+      <stop offset="100%" stop-color="#FB8B1D"/></linearGradient></defs>
+    <circle cx="50" cy="50" r="50" fill="url(#${id})"/>
+    <path d="M74 26 C63 17 47 15 36 22 C22 30 16 46 20 60 C25 76 41 85 57 81 C66 79 73 74 77 67" fill="none" stroke="white" stroke-width="9" stroke-linecap="round"/>
+    <path d="M40 36 C48 31 60 32 66 39" fill="none" stroke="white" stroke-width="8" stroke-linecap="round"/>
+  </svg>`;
+}
+function sheetHead(){
+  const c=cfg.chapter;
+  return `<div class="sh-head">
+    <div class="sh-brand">
+      ${brandMark(36)}
+      <div><div class="t1">The AI Collective</div><div class="t2">${t('bro_tag')}</div></div>
+    </div>
+    <div class="sh-chapter">
+      <div class="cn">${esc(c.scope==='region'?(c.regionName||c.name):c.name)}</div>
+      <div class="cs">${activeMembers().toLocaleString()} ${t('members')}</div></div>
+  </div>`;
+}
+
+/* ═══════════════ DOCUMENTS ═══════════════ */
+let agr={sponsor:'',address:'',amount:'',date:today(),descr:'',previewing:false};
+let docState='menu';
+const SOW_ITEMS=['Signed proposal / agreement on file','Invoice sent via fiscal sponsor','Payment received','Sponsor logo received (PNG or SVG)','Logo + link on Luma listing','Logo on event slides','Banner printed & placed','Verbal callout scripted for host','Targeted invitations sent','Venue confirmed','F&B ordered','Sponsor table / demo space arranged','Registration list export scheduled','Post-event report & photos sent','Thank-you letter sent'];
+function amtDisp(){
+  try{return new Intl.NumberFormat(LOCALES[cfg.chapter.lang]||'en-US',{style:'currency',currency:cfg.chapter.currency,maximumFractionDigits:0}).format(Number(agr.amount)||0);}
+  catch(e){return agr.amount;}
+}
+function plusDaysFrom(iso,d){const x=new Date((iso||today())+'T12:00:00');x.setDate(x.getDate()+d);return x.toISOString().slice(0,10);}
+function renderDocs(){
+  ensureProp();
+  const el=document.getElementById('sec-docs');
+  if(docState==='agreement'){el.innerHTML=agreementDoc();return;}
+  if(docState==='invoice'){el.innerHTML=invoiceDoc();return;}
+  if(docState==='sow'){el.innerHTML=sowDoc();return;}
+  if(docState==='letter'){el.innerHTML=letterDoc();return;}
+  const einMissing=!cfg.org.ein;
+  el.innerHTML=`<div class="panel">
+    <div class="toolrow" style="margin-bottom:12px">
+      <h2 style="margin:0">${t('nav_docs')}</h2><span class="spacer"></span>
+      ${prop.number?`<span class="badge brand num" style="font-size:13px">${esc(prop.number)}</span>`
+        :`<button class="btn btn-sec" onclick="assignNumber();renderDocs()">＃ ${t('prop_no')}</button>`}
+    </div>
+    ${einMissing?`<div class="ibox warn">⚠ ${t('missing_ein')}</div>`:''}
+    <div class="eyebrow">${t('agr_title')}</div>
+    <div class="grid2">
+      <div class="fg"><label>${t('sponsor_legal')}</label><input value="${esc(agr.sponsor)}" placeholder="${esc(prop.sponsor)}" onchange="agr.sponsor=this.value"></div>
+      <div class="fg"><label>${t('address')}</label><input value="${esc(agr.address)}" onchange="agr.address=this.value"></div>
+      <div class="fg"><label>${t('amt_recv')} (${cfg.chapter.currency})</label><input type="number" min="0" value="${esc(agr.amount)}" onchange="agr.amount=this.value"></div>
+      <div class="fg"><label>${t('date_recv')}</label><input type="date" value="${agr.date}" onchange="agr.date=this.value"></div>
+      <div class="fg full"><label>${t('descr')}</label>
+        <input value="${esc(agr.descr)}" placeholder="${esc(prop.items.map(i=>i.label).join(', '))}" onchange="agr.descr=this.value"></div>
+    </div>
+    <div class="eyebrow" style="margin-top:18px">Event production (scope of work)</div>
+    <div class="grid3">
+      <div class="fg"><label>Event title</label><input value="${esc(prop.sow.title)}" onchange="prop.sow.title=this.value"></div>
+      <div class="fg"><label>Event date</label><input type="date" value="${prop.sow.date}" onchange="prop.sow.date=this.value"></div>
+      <div class="fg"><label>Location / venue</label><input value="${esc(prop.sow.loc)}" onchange="prop.sow.loc=this.value"></div>
+      <div class="fg full"><label>Production notes</label><textarea rows="2" onchange="prop.sow.notes=this.value">${esc(prop.sow.notes)}</textarea></div>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="eyebrow">${t('preview')}</div>
+    <div class="toolrow" style="margin-bottom:0;flex-wrap:wrap">
+      <button class="btn btn-pri" onclick="prop.previewing=true;go('proposal')">${t('prop_title')}</button>
+      <button class="btn btn-pri" onclick="docState='invoice';renderDocs()">${t('inv_title')}</button>
+      <button class="btn btn-pri" onclick="docState='agreement';renderDocs()">${t('agr_title')}</button>
+      <button class="btn btn-pri" onclick="docState='sow';renderDocs()">Scope of work</button>
+      <button class="btn btn-pri" onclick="docState='letter';renderDocs()">${t('letter_title')}</button>
+    </div>
+  </div>`;
+}
+function docBack(){
+  return `<div class="toolrow no-print">
+    <button class="btn btn-sec" onclick="docState='menu';renderDocs()">← ${t('back_edit')}</button>
+    <button class="btn btn-pri" onclick="window.print()">${t('print')}</button></div>`;
+}
+function invoiceDoc(){
+  assignNumber();
+  const c=cfg.chapter,o=cfg.org,b=cfg.banking;
+  const {net}=propTotals();
+  const due=plusDaysFrom(prop.date,15);
+  return docBack()+`<div class="sheet">
+    ${sheetHead()}
+    <hr class="sh-rule">
+    <div class="sh-body">
+      <h1>${t('inv_title')}</h1>
+      <div class="doc-meta">
+        <div><span class="k">${t('inv_no')}: </span><strong class="num">${esc(prop.number)}-INV</strong></div>
+        <div><span class="k">${t('date')}: </span>${fmtDate(prop.date)}</div>
+        <div><span class="k">${t('prop_no')}: </span><span class="num">${esc(prop.number)}</span></div>
+        <div><span class="k">${t('due')}: </span><strong>${fmtDate(due)}</strong></div>
+      </div>
+      <h3>${t('bill_to')}</h3>
+      <p><strong>${esc(agr.sponsor)||esc(prop.sponsor)||'—'}</strong>${agr.address?`<br>${esc(agr.address)}`:''}${prop.contact?`<br>${esc(prop.contact)}`:''}${prop.email?` · ${esc(prop.email)}`:''}</p>
+      <h3>${t('item')}s</h3>
+      <div class="tblwrap"><table class="tbl"><thead><tr>
+        <th>${t('item')}</th><th class="r">${t('qty')}</th><th class="r">${t('price')}</th></tr></thead>
+      <tbody>
+        ${prop.items.map(it=>`<tr><td><strong>${esc(it.label)}</strong>${it.note?`<div class="mut" style="font-size:11px">${esc(it.note)}</div>`:''}</td>
+          <td class="r num">${it.qty}</td><td class="r num">${fmt(lineNet(it))}</td></tr>`).join('')}
+        ${prop.orderDisc>0?`<tr><td colspan="2">${t('discount')}</td><td class="r num">−${prop.orderDisc}%</td></tr>`:''}
+        <tr class="doc-total"><td colspan="2">${t('total')}</td><td class="r num">${fmt(net)}</td></tr>
+      </tbody></table></div>
+      <h3>${t('remit_to')}</h3>
+      <p><strong>${t('payable_to')}:</strong> ${esc(b.payableTo)||esc(o.fiscal)}<br>
+      <span class="k">EIN:</span> ${esc(o.ein)||'____________'}</p>
+      ${b.remit?`<p style="white-space:pre-line;margin-top:8px">${esc(b.remit)}</p>`:''}
+      <p style="margin-top:12px">${t('terms15')} ${esc(o.w9)}</p>
+      <p style="margin-top:12px"><strong>${t('your_contact')}:</strong> ${esc(prop.sales.name)}${prop.sales.email?` · ${esc(prop.sales.email)}`:''}${prop.sales.phone?` · ${esc(prop.sales.phone)}`:''}</p>
+    </div>
+  </div>`;
+}
+function sowDoc(){
+  const items=prop.items.map(i=>i.label).join(', ');
+  return docBack()+`<div class="sheet">
+    ${sheetHead()}
+    <hr class="sh-rule">
+    <div class="sh-body">
+      <h1>Scope of Work</h1>
+      <div class="doc-meta">
+        <div><span class="k">${t('prop_no')}: </span><strong class="num">${esc(prop.number)||'—'}</strong></div>
+        <div><span class="k">Sponsor: </span><strong>${esc(prop.sponsor)||esc(agr.sponsor)||'—'}</strong></div>
+        <div><span class="k">Sponsorship: </span>${esc(items)||'—'}</div>
+        <div><span class="k">${t('sales_lbl')}: </span>${esc(prop.sales.name)||'—'}</div>
+        <div><span class="k">Event: </span><strong>${esc(prop.sow.title)||'—'}</strong></div>
+        <div><span class="k">${t('date')}: </span>${prop.sow.date?fmtDate(prop.sow.date):'—'}</div>
+        <div><span class="k">Location: </span>${esc(prop.sow.loc)||'—'}</div>
+      </div>
+      <h3>Production checklist</h3>
+      <div class="tblwrap"><table class="tbl"><tbody>
+        ${SOW_ITEMS.map((s,i)=>`<tr>
+          <td style="width:34px"><input type="checkbox" style="width:16px;height:16px" ${prop.sow.checks[i]?'checked':''} onchange="prop.sow.checks[${i}]=this.checked"></td>
+          <td>${esc(s)}</td></tr>`).join('')}
+      </tbody></table></div>
+      ${prop.sow.notes?`<h3>Notes</h3><p style="white-space:pre-line">${esc(prop.sow.notes)}</p>`:''}
+    </div>
+  </div>`;
+}
+function letterDoc(){
+  const c=cfg.chapter;
+  const who=c.scope==='region'?(c.regionName||c.name):c.name;
+  const body=tf('letter_body',{chapter:'<strong>'+esc(who)+'</strong>',amt:'<strong>'+amtDisp()+'</strong>',date:fmtDate(agr.date)});
+  return docBack()+`<div class="sheet">
+    ${sheetHead()}
+    <hr class="sh-rule">
+    <div class="sh-body">
+      <h1>${t('letter_title')}</h1>
+      <p class="mut">${fmtDate(today())}</p>
+      <p style="margin-top:14px">${esc(prop.contact)||esc(agr.sponsor)||esc(prop.sponsor)||''}</p>
+      <p style="margin-top:14px">${body}</p>
+      <p style="margin-top:10px">${t('agr_recog')}</p>
+      <p style="margin-top:10px">${t('agr_tax')}</p>
+      <p style="margin-top:22px">${t('letter_close')}</p>
+      <p style="margin-top:26px"><strong>${esc(prop.sales.name)||''}</strong><br>
+      ${esc(who)} · ${esc(cfg.org.hq)}${prop.sales.email?`<br>${esc(prop.sales.email)}`:''}</p>
+    </div>
+  </div>`;
+}
+function agreementDoc(){
+  const c=cfg.chapter,o=cfg.org;
+  const amtDisp=(()=>{try{return new Intl.NumberFormat(LOCALES[c.lang]||'en-US',{style:'currency',currency:c.currency,maximumFractionDigits:0}).format(Number(agr.amount)||0);}catch(e){return agr.amount;}})();
+  const body=tf('agr_body',{fiscal:esc(o.fiscal),ein:esc(o.ein)||'____________',hq:esc(o.hq),
+    amt:'<strong>'+amtDisp+'</strong>',sponsor:'<strong>'+(esc(agr.sponsor)||'____________')+'</strong>',
+    date:fmtDate(agr.date),chapter:'<strong>'+esc(c.name)+'</strong>'});
+  return `<div class="toolrow no-print">
+    <button class="btn btn-sec" onclick="docState='menu';renderDocs()">← ${t('back_edit')}</button>
+    <button class="btn btn-pri" onclick="window.print()">${t('print')}</button>
+    ${!cfg.org.ein?`<span class="badge warn">⚠ EIN</span>`:''}</div>
+  <div class="sheet">
+    ${sheetHead()}
+    <hr class="sh-rule">
+    <div class="sh-body">
+      <h1>${t('agr_title')}</h1>
+      <div class="doc-meta">
+        <div><span class="k">${t('sponsor_legal')}: </span><strong>${esc(agr.sponsor)||'—'}</strong></div>
+        <div><span class="k">${t('date_recv')}: </span>${fmtDate(agr.date)}</div>
+        ${agr.address?`<div class="full"><span class="k">${t('address')}: </span>${esc(agr.address)}</div>`:''}
+      </div>
+      <p style="margin-top:14px">${body}</p>
+      ${agr.descr||prop.items.length?`<h3>${t('descr')}</h3><p>${esc(agr.descr)||esc(prop.items.map(i=>i.label).join(', '))}</p>`:''}
+      <h3>${t('recog_t')}</h3>
+      <p>${t('agr_recog')}</p>
+      <p style="margin-top:10px">${t('agr_tax')}</p>
+      <div class="sig-row">
+        <div class="sig"><div class="ln"></div><div class="lb">${t('sig_sponsor')} — ${t('name_title')} · ${t('date_lbl')}</div></div>
+        <div class="sig"><div class="ln"></div><div class="lb">${t('sig_org')} — ${t('name_title')} · ${t('date_lbl')}</div></div>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ═══════════════ REFERENCE TABS ═══════════════ */
+function renderAnnual(){
+  const m=mult();
+  document.getElementById('sec-annual').innerHTML=`<div class="panel">
+    <h2>${t('ann_t')} — ${esc(cfg.chapter.name)}</h2>
+    ${m!==1?`<div class="ibox brand">${tf('mult_note',{m:m,n:activeMembers().toLocaleString()})}</div>`:''}
+    ${cfg.annual.map((tr,i)=>tierCard(tr,i,`<button class="btn btn-sec" onclick="addTier(${i})">＋ ${t('add_prop')}</button>`)).join('')}
+  </div>`;
+}
+function renderEvents(){
+  const m=mult();
+  document.getElementById('sec-events').innerHTML=`<div class="panel">
+    <h2>${t('evt_t')} — ${esc(cfg.chapter.name)}</h2>
+    ${(m!==1&&cfg.events.some(e=>!e.fixed))?`<div class="ibox brand">${tf('mult_note',{m:m,n:activeMembers().toLocaleString()})}</div>`:''}
+    <div class="tblwrap"><table class="tbl">
+      <thead><tr><th>${t('event')}</th><th class="r">${t('price')}</th><th class="r">${t('spots')}</th><th class="r">${t('attendees')}</th><th></th></tr></thead>
+      <tbody>${cfg.events.map((e,i)=>`<tr>
+        <td><strong>${esc(e.name)}</strong><div style="color:var(--mut);font-size:11px">${esc(e.detail)}</div></td>
+        <td class="r num"><strong>${fmt(eventPrice(i))}</strong></td>
+        <td class="r num">${e.qty}</td><td class="r num">~${e.att}</td>
+        <td class="r"><button class="btn btn-ghost" onclick="addEvt(${i})">＋</button></td></tr>`).join('')}
+      </tbody></table></div>
+  </div>`;
+}
+function renderComm(){
+  const cm=cfg.comm;
+  document.getElementById('sec-comm').innerHTML=`<div class="panel">
+    <h2>${t('nav_com')}</h2>
+    <div class="tblwrap"><table class="tbl">
+      <thead><tr><th>${t('scenario')}</th><th class="r">${t('member_lbl')}</th><th class="r">${t('sales_lbl')}</th><th class="r">${t('com_regsup')}</th></tr></thead>
+      <tbody>
+        <tr><td>${t('chapter')} — ${t('com_member')}</td><td class="r num" style="color:var(--ok);font-weight:700">${cm.member}%</td><td class="r num" style="color:var(--ok);font-weight:700">${cm.salesRef}%</td><td class="r mut">—</td></tr>
+        <tr><td>${t('chapter')} — ${t('com_sales')}</td><td class="r mut">—</td><td class="r num" style="color:var(--ok);font-weight:700">${cm.salesSrc}%</td><td class="r mut">—</td></tr>
+        <tr><td>${t('region')} — ${t('com_member')}</td><td class="r num" style="color:var(--ok);font-weight:700">${cm.member}%</td><td class="r num" style="color:var(--ok);font-weight:700">${cm.salesRef}%</td><td class="r num" style="color:var(--ok);font-weight:700">${cm.region}%</td></tr>
+        <tr><td>${t('region')} — ${t('com_sales')}</td><td class="r mut">—</td><td class="r num" style="color:var(--ok);font-weight:700">${cm.salesSrc}%</td><td class="r num" style="color:var(--ok);font-weight:700">${cm.region}%</td></tr>
+      </tbody></table></div>
+    <div class="ibox ok">Total commission load stays flat at ${cm.member+cm.salesRef}% on referred deals and ${cm.salesSrc}% on sourced deals. Commissions are paid on cash received, not on signed invoices. Edit rates in Settings.</div>
+  </div>`;
+}
+
+/* ═══════════════ BROCHURE ═══════════════ */
+function renderBrochure(){
+  const c=cfg.chapter,m=mult();
+  const d=T[c.lang]||T.en;
+  const cta=c.ctaUrl||'';
+  document.getElementById('sec-brochure').innerHTML=`
+  <div class="toolrow no-print">
+    <button class="btn btn-pri" onclick="window.print()">${t('print')}</button>
+    ${!cta?`<span class="badge warn">⚠ “Sponsor” button inactive — set this chapter's CTA link in Settings</span>`:''}
+  </div>
+  <div class="sheet">
+    ${sheetHead()}
+    ${cfg.org.banner?`<img class="bro-banner" src="${cfg.org.banner}" alt="The Human Side of AI">`:''}
+    <div class="bro-hero" ${cfg.org.banner?'style="margin-top:0"':''}>
+      ${c.logo?`<img class="hero-logo" src="${c.logo}" alt="${esc(c.name)}">`:''}
+      <h2>${t('bro_h')}</h2>
+      <p>${t('bro_p')}</p>
+      <div class="bro-stats">
+        <div><div class="hn num">${activeMembers().toLocaleString()}</div><div class="hl">${t('bro_members')}</div></div>
+        <div><div class="hn num">${esc(c.statEvents)}</div><div class="hl">${t('bro_events')}</div></div>
+        <div><div class="hn num">${cfg.events.length}</div><div class="hl">${t('bro_formats')}</div></div>
+      </div>
+    </div>
+    <div class="sh-body">
+      ${(cfg.story.history||cfg.story.thesis)?`
+      <h3>${t('about_t')}</h3>
+      ${cfg.story.history?`<p style="white-space:pre-line">${esc(cfg.story.history)}</p>`:''}
+      ${cfg.story.thesis?`<p style="white-space:pre-line;margin-top:8px"><em>${esc(cfg.story.thesis)}</em></p>`:''}`:''}
+      ${(c.regionName&&(c.regionChapters||c.regionMembers))?`
+      <h3>${t('region_t')}</h3>
+      <p><strong>${esc(c.regionName)}</strong>${c.regionMembers?` — ${(c.regionMembers||0).toLocaleString()} ${t('members')}`:''}${c.regionChapters?`: ${esc(c.regionChapters)}`:''}</p>`:''}
+      <h3>${t('why_t')}</h3>
+      <div class="why">${(d.why||T.en.why).map(([h,p])=>`<div class="wc"><h4>${h}</h4><p>${p}</p></div>`).join('')}</div>
+      ${(c.photos||cfg.org.collage)?`
+      <h3>${t('room_t')}</h3>
+      <img class="bro-collage" src="${c.photos||cfg.org.collage}" alt="${esc(c.name)} community events">
+      <div class="figcap">${esc(c.scope==='region'?(c.regionName||c.name):c.name)} · ${t('bro_tag')}</div>`:''}
+      <h3>${t('recog_t')}</h3>
+      <div class="recog"><p>${t('recog_p')}</p>
+        <ul>${(d.recog_l||T.en.recog_l).map(x=>`<li>${x}</li>`).join('')}</ul></div>
+      <h3>${t('ann_t')}</h3>
+      <div class="tblwrap"><table class="tbl">
+        <thead><tr><th></th>${cfg.annual.map((tr,i)=>`<th class="r">${esc(tr.name)}<br><span class="num" style="font-size:13px;color:#22283A">${fmt(tierPrice(i))}</span></th>`).join('')}</tr></thead>
+        <tbody>${broBenefitRows(m)}</tbody></table></div>
+      <h3>${t('evt_t')}</h3>
+      <div class="tblwrap"><table class="tbl">
+        <thead><tr><th>${t('event')}</th><th class="r">${t('price')}</th><th class="r">${t('spots')} ${t('per_year')}</th><th class="r">${t('attendees')}</th></tr></thead>
+        <tbody>${cfg.events.map((e,i)=>`<tr><td><strong>${esc(e.name)}</strong><div class="mut" style="font-size:11px">${esc(e.detail)}</div></td>
+          <td class="r num"><strong>${fmt(eventPrice(i))}</strong></td><td class="r num">${e.qty}</td><td class="r num">~${e.att}</td></tr>`).join('')}</tbody></table></div>
+      <h3>${t('news_t')}</h3>
+      <p>${t('news_p')}</p>
+      <div class="tblwrap" style="margin-top:8px"><table class="tbl"><tbody>
+        <tr><td><strong>${t('news_send')}</strong></td><td class="r num"><strong>${fmt(newsSendPrice())}</strong> <span class="mut">${t('per_send')}</span></td></tr>
+        <tr><td><strong>${t('news_feature')}</strong></td><td class="r num"><strong>${fmt(newsFeatPrice())}</strong> <span class="mut">${t('per_send')}</span></td></tr>
+      </tbody></table></div>
+      <div class="bro-cta">
+        <h3 style="color:#fff;margin-top:0">${t('cta_t')}</h3>
+        <p>${t('cta_p')}</p>
+        <div class="cta-actions">
+          <a href="${cta?esc(cta):(c.email?'mailto:'+esc(c.email):'#')}" ${cta?'target="_blank" rel="noopener"':''}>${tf('cta_b',{chapter:esc(c.name)})}</a>
+          <button type="button" class="print-cta no-print" onclick="window.print()">${t('print')}</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+function broBenefitRows(m){
+  const all=[...new Set(cfg.annual.flatMap(tr=>tr.benefits))];
+  return all.map(b=>`<tr><td style="font-size:11.5px">${esc(b)}</td>
+    ${cfg.annual.map(tr=>`<td class="r">${tr.benefits.includes(b)?'<span style="color:#E05A14;font-weight:800">✓</span>':'<span style="color:#C9C4B8">—</span>'}</td>`).join('')}</tr>`).join('');
+}
+
+/* ═══════════════ SETTINGS ═══════════════ */
+function renderSettings(){
+  const c=cfg.chapter,o=cfg.org,cm=cfg.comm;
+  document.getElementById('sec-settings').innerHTML=`
+  <div class="ibox brand">Settings are stored in this browser and drive every tab, document, and price. Use Export to share a chapter's configuration with another organizer.</div>
+  ${!c.ctaUrl?`<div class="ibox warn">⚠ <strong>Chapter &amp; region directors — action needed:</strong> set your <strong>Brochure CTA link</strong> in Chapter profile below before sharing the brochure. It's your chapter's Luma / signup URL, and it's what the brochure's <em>“Sponsor”</em> button points to. Until it's set, that button has nowhere to send prospects.</div>`:''}
+  <details open><summary>Chapter profile</summary><div class="inner">
+    <div class="grid3">
+      <div class="fg"><label>Chapter / region name</label><input value="${esc(c.name)}" placeholder="e.g. AIC Atlanta" onchange="cfg.chapter.name=this.value;saveCfg()"></div>
+      <div class="fg"><label>Members</label><input type="number" min="0" value="${c.members||''}" placeholder="e.g. 4000" onchange="cfg.chapter.members=parseInt(this.value)||0;saveCfg()"></div>
+      <div class="fg"><label>Scope</label><select onchange="cfg.chapter.scope=this.value;saveCfg()">
+        <option value="chapter" ${c.scope==='chapter'?'selected':''}>Chapter</option>
+        <option value="region" ${c.scope==='region'?'selected':''}>Region</option></select></div>
+      <div class="fg"><label>Language</label><select onchange="cfg.chapter.lang=this.value;saveCfg();rerenderAll();syncLangSel()">
+        ${Object.keys(T).map(l=>`<option value="${l}" ${c.lang===l?'selected':''}>${LANG_NAMES[l]}</option>`).join('')}</select></div>
+      <div class="fg"><label>Currency</label><select onchange="cfg.chapter.currency=this.value;saveCfg();renderSettings()">
+        ${['USD','EUR','GBP','CAD','AUD','JPY','INR','BRL','MXN','SGD','AED','CHF','SEK','KRW','ZAR','NGN'].map(x=>`<option ${c.currency===x?'selected':''}>${x}</option>`).join('')}</select></div>
+      <div class="fg"><label>FX rate (1 USD = ? ${esc(c.currency)})</label><input type="number" step="0.0001" min="0" value="${c.fx}" onchange="cfg.chapter.fx=Number(this.value)||1;saveCfg()"></div>
+      <div class="fg full"><label>Brochure CTA link (chapter Luma / signup URL) <span style="color:var(--warn)">— required</span></label><input value="${esc(c.ctaUrl)}" placeholder="https://luma.com/your-chapter" style="${!c.ctaUrl?'border-color:var(--warn)':''}" onchange="cfg.chapter.ctaUrl=this.value.trim();saveCfg();renderSettings()">
+        ${!c.ctaUrl?`<div style="color:var(--warn);font-size:11px;font-weight:600;margin-top:5px">⚠ Required for every chapter and region — the brochure “Sponsor” button stays inactive until this is set.</div>`:''}</div>
+      <div class="fg"><label>Chapter contact email</label><input value="${esc(c.email)}" onchange="cfg.chapter.email=this.value;saveCfg()"></div>
+      <div class="fg"><label>"Events hosted" stat</label><input value="${esc(c.statEvents)}" onchange="cfg.chapter.statEvents=this.value;saveCfg()"></div>
+      <div class="fg"><label>Proposal ID prefix</label><input value="${esc(c.prefix)}" placeholder="e.g. ATL" onchange="cfg.chapter.prefix=this.value;saveCfg()"></div>
+      <div class="fg"><label>Next proposal number</label><input type="number" min="1" value="${c.nextNum||1}" onchange="cfg.chapter.nextNum=parseInt(this.value)||1;saveCfg()"></div>
+      <div class="fg"><label>Chapter logo — reverse white on transparent PNG/SVG (&lt;400KB; shows on the brochure's blue banner)</label><input type="file" accept="image/*" onchange="uploadLogo(this)">
+        ${c.logo?`<div style="margin-top:6px;display:flex;align-items:center;gap:8px"><img src="${c.logo}" alt="logo" style="max-height:34px;max-width:120px;object-fit:contain;background:#232B8C;border:1px solid var(--line);border-radius:6px;padding:3px"><button class="btn btn-ghost" onclick="cfg.chapter.logo='';saveCfg();renderSettings()">Remove</button></div>`:''}</div>
+      <div class="fg full"><label>Chapter photo collage — your own event photos (optional; falls back to the master collage)</label><input type="file" accept="image/*" onchange="uploadPhoto(this,v=>cfg.chapter.photos=v,1400)">
+        ${c.photos?`<div style="margin-top:6px;display:flex;align-items:center;gap:8px"><img src="${c.photos}" alt="chapter photos" style="max-height:54px;max-width:120px;object-fit:contain;border:1px solid var(--line);border-radius:6px"><button class="btn btn-ghost" onclick="cfg.chapter.photos='';saveCfg();renderSettings()">Remove</button></div>`:''}</div>
+      <div class="fg"><label>Region name</label><input value="${esc(c.regionName)}" placeholder="e.g. AIC South Central" onchange="cfg.chapter.regionName=this.value;saveCfg()"></div>
+      <div class="fg"><label>Region members</label><input type="number" min="0" value="${c.regionMembers||''}" placeholder="e.g. 4265" onchange="cfg.chapter.regionMembers=parseInt(this.value)||0;saveCfg()"></div>
+      <div class="fg full"><label>Chapters in region (comma-separated, shown in brochure)</label><input value="${esc(c.regionChapters)}" placeholder="Atlanta, Chattanooga, Nashville, Birmingham" onchange="cfg.chapter.regionChapters=this.value;saveCfg()"></div>
+    </div>
+    <p style="color:var(--mut);font-size:11.5px;margin-top:10px">Base prices are set in USD below; the FX rate converts displayed prices. Tier and event names/benefits can be rewritten in your local language here in Settings.</p>
+  </div></details>
+  <details><summary>Story &amp; sales team</summary><div class="inner">
+    <div class="grid2">
+      <div class="fg full"><label>Chapter / region history (shown in brochure "About us")</label>
+        <textarea rows="3" onchange="cfg.story.history=this.value;saveCfg()">${esc(cfg.story.history)}</textarea></div>
+      <div class="fg full"><label>Chapter thesis (shown in brochure, italicized)</label>
+        <textarea rows="2" onchange="cfg.story.thesis=this.value;saveCfg()">${esc(cfg.story.thesis)}</textarea></div>
+      <div class="fg"><label>Salesperson name</label><input value="${esc(cfg.sales.name)}" onchange="cfg.sales.name=this.value;saveCfg()"></div>
+      <div class="fg"><label>Salesperson email</label><input value="${esc(cfg.sales.email)}" onchange="cfg.sales.email=this.value;saveCfg()"></div>
+      <div class="fg"><label>Salesperson phone</label><input value="${esc(cfg.sales.phone)}" onchange="cfg.sales.phone=this.value;saveCfg()"></div>
+    </div>
+    <p style="color:var(--mut);font-size:11.5px;margin-top:10px">The salesperson appears on proposals, invoices, and letters. New proposals prefill from here.</p>
+  </div></details>
+  <details><summary>Banking &amp; remittance (shown on invoices)</summary><div class="inner">
+    <div class="grid2">
+      <div class="fg"><label>Payable to</label><input value="${esc(cfg.banking.payableTo)}" placeholder="defaults to fiscal sponsor name" onchange="cfg.banking.payableTo=this.value;saveCfg()"></div>
+      <div class="fg full"><label>Remittance instructions (check address, ACH portal link, reference format…)</label>
+        <textarea rows="3" onchange="cfg.banking.remit=this.value;saveCfg()">${esc(cfg.banking.remit)}</textarea></div>
+    </div>
+    <p style="color:var(--mut);font-size:11.5px;margin-top:10px">Funds must be received by the fiscal sponsor's account (Allies' banking or your Mercury access under their control) — avoid putting full account numbers here; link to a payment portal or provide details on request.</p>
+  </div></details>
+  <details><summary>Organization & fiscal sponsor</summary><div class="inner">
+    <div class="grid3">
+      <div class="fg"><label>Organization</label><input value="${esc(o.hq)}" onchange="cfg.org.hq=this.value;saveCfg()"></div>
+      <div class="fg"><label>Fiscal sponsor legal name</label><input value="${esc(o.fiscal)}" onchange="cfg.org.fiscal=this.value;saveCfg()"></div>
+      <div class="fg"><label>Fiscal sponsor EIN</label><input value="${esc(o.ein)}" placeholder="xx-xxxxxxx" onchange="cfg.org.ein=this.value;saveCfg()"></div>
+      <div class="fg full"><label>W-9 note (shown on invoices)</label><input value="${esc(o.w9)}" onchange="cfg.org.w9=this.value;saveCfg()"></div>
+      <div class="fg full"><label>Master logo — the official AI Collective mark (PNG, &lt;400KB; used on the app bar and every document header)</label><input type="file" accept="image/*" onchange="uploadOrgLogo(this)">
+        ${o.logo?`<div style="margin-top:6px;display:flex;align-items:center;gap:8px"><img src="${o.logo}" alt="master logo" style="height:36px;width:36px;border-radius:50%;object-fit:contain"><button class="btn btn-ghost" onclick="cfg.org.logo='';saveCfg();renderBrand();renderSettings()">Remove</button></div>`:''}</div>
+      <div class="fg full"><label>Masthead banner — "The Human Side of AI" wide image (runs full-width at the top of the brochure)</label><input type="file" accept="image/*" onchange="uploadPhoto(this,v=>cfg.org.banner=v,1600)">
+        ${o.banner?`<div style="margin-top:6px;display:flex;align-items:center;gap:8px"><img src="${o.banner}" alt="banner" style="max-height:46px;max-width:220px;object-fit:contain;border:1px solid var(--line);border-radius:6px"><button class="btn btn-ghost" onclick="cfg.org.banner='';saveCfg();renderSettings()">Remove</button></div>`:''}</div>
+      <div class="fg full"><label>Community photo collage — master fallback used by any chapter that hasn't uploaded its own</label><input type="file" accept="image/*" onchange="uploadPhoto(this,v=>cfg.org.collage=v,1400)">
+        ${o.collage?`<div style="margin-top:6px;display:flex;align-items:center;gap:8px"><img src="${o.collage}" alt="collage" style="max-height:54px;max-width:120px;object-fit:contain;border:1px solid var(--line);border-radius:6px"><button class="btn btn-ghost" onclick="cfg.org.collage='';saveCfg();renderSettings()">Remove</button></div>`:''}</div>
+    </div>
+    <p style="color:var(--mut);font-size:11.5px;margin-top:10px">Images are downscaled and compressed automatically on upload, then travel with Export configuration — upload once, export, and every organizer's brochure is on-brand.</p>
+    <p style="color:var(--mut);font-size:11.5px;margin-top:10px">The EIN appears on the Agreement & Acknowledgment document sponsors use for tax reporting. Invoicing runs through the fiscal sponsor.</p>
+  </div></details>
+  <details><summary>Annual tiers (base USD)</summary><div class="inner tblwrap">
+    <table class="tbl settings-tbl"><thead><tr><th>Tier</th><th>Base price</th><th>This chapter (USD)</th><th>Min price (floor)</th><th>Spots</th><th>Event disc %</th><th>Benefits (one per line)</th></tr></thead>
+    <tbody>${cfg.annual.map((tr,i)=>`<tr>
+      <td><input value="${esc(tr.name)}" onchange="cfg.annual[${i}].name=this.value;saveCfg()"></td>
+      <td><input type="number" min="0" value="${tr.price}" onchange="cfg.annual[${i}].price=Number(this.value)||0;saveCfg();renderSettings()"></td>
+      <td><input type="number" min="0" placeholder="auto ${tierPrice(i)}" value="${tierIsOver(i)?cfg.chapter.tierOver[i]:''}" onchange="setTierOver(${i},this.value)"></td>
+      <td><input type="number" min="0" value="${tr.floor||0}" onchange="cfg.annual[${i}].floor=Number(this.value)||0;saveCfg()"></td>
+      <td><input type="number" min="0" value="${tr.qty}" onchange="cfg.annual[${i}].qty=Number(this.value)||0;saveCfg()"></td>
+      <td><input type="number" min="0" max="100" value="${tr.disc}" onchange="cfg.annual[${i}].disc=Number(this.value)||0;saveCfg()"></td>
+      <td><textarea rows="3" style="min-width:220px" onchange="cfg.annual[${i}].benefits=this.value.split('\\n').filter(Boolean);saveCfg()">${esc(tr.benefits.join('\n'))}</textarea></td>
+    </tr>`).join('')}</tbody></table>
+    <p style="color:var(--mut);font-size:11.5px;margin-top:8px">"This chapter" pins the tier to an exact local price (in USD, before currency conversion), replacing the auto member-multiplier price. Leave blank to use the auto price. Use it to land on round local numbers — e.g. pin Platinum to 10000 when the auto price would be 11250.</p>
+  </div></details>
+  <details><summary>Event packages (base USD)</summary><div class="inner tblwrap">
+    <table class="tbl settings-tbl"><thead><tr><th>Event</th><th>Price (USD)</th><th>Fixed</th><th>Spots/yr</th><th>Attendees</th><th>Detail</th></tr></thead>
+    <tbody>${cfg.events.map((e,i)=>`<tr>
+      <td><input style="min-width:160px" value="${esc(e.name)}" onchange="cfg.events[${i}].name=this.value;saveCfg()"></td>
+      <td><input type="number" min="0" value="${e.price}" onchange="cfg.events[${i}].price=Number(this.value)||0;saveCfg()"></td>
+      <td style="text-align:center"><input type="checkbox" style="width:16px;height:16px" ${e.fixed?'checked':''} onchange="cfg.events[${i}].fixed=this.checked;saveCfg()"></td>
+      <td><input type="number" min="0" value="${e.qty}" onchange="cfg.events[${i}].qty=Number(this.value)||0;saveCfg()"></td>
+      <td><input type="number" min="0" value="${e.att}" onchange="cfg.events[${i}].att=Number(this.value)||0;saveCfg()"></td>
+      <td><input style="min-width:220px" value="${esc(e.detail)}" onchange="cfg.events[${i}].detail=this.value;saveCfg()"></td>
+    </tr>`).join('')}</tbody></table>
+  </div></details>
+  <details><summary>Member multipliers</summary><div class="inner">
+    <div class="grid2">
+      ${['C','R'].map(k=>`
+      <div><label>${k==='C'?'Chapter scope':'Region scope'}</label><div class="tblwrap"><table class="tbl settings-tbl">
+      <thead><tr><th>Members under</th><th>×</th><th></th></tr></thead>
+      <tbody>${cfg['mults'+k].map((r,i)=>`<tr>
+        <td><input type="number" min="0" placeholder="∞ (top bracket)" value="${r[0]===null?'':r[0]}" onchange="setMultCap('${k}',${i},this.value)"></td>
+        <td><input type="number" step="0.05" min="0" value="${r[1]}" onchange="cfg.mults${k}[${i}][1]=Number(this.value)||0;saveCfg()"></td>
+        <td><button class="btn btn-ghost" onclick="delMult('${k}',${i})" aria-label="Remove">✕</button></td></tr>`).join('')}
+      </tbody></table></div>
+      <button class="btn btn-sec" style="margin-top:8px" onclick="addMult('${k}')">＋ Add bracket</button></div>`).join('')}
+    </div>
+    <p style="color:var(--mut);font-size:11.5px;margin-top:10px">Brackets are checked top to bottom: the first row whose "members under" exceeds the member count applies. Leave the last row's threshold blank for ∞. Tier minimum floors (Annual tiers table) protect prices in the smallest brackets.</p>
+  </div></details>
+  <details><summary>Newsletter rates</summary><div class="inner">
+    <div class="grid4">
+      <div class="fg"><label>Dedicated send CPM ($/1,000)</label><input type="number" min="0" value="${cfg.news.sendCPM}" onchange="cfg.news.sendCPM=Number(this.value)||0;saveCfg()"></div>
+      <div class="fg"><label>Dedicated send minimum ($)</label><input type="number" min="0" value="${cfg.news.sendMin}" onchange="cfg.news.sendMin=Number(this.value)||0;saveCfg()"></div>
+      <div class="fg"><label>Feature CPM ($/1,000)</label><input type="number" min="0" value="${cfg.news.featCPM}" onchange="cfg.news.featCPM=Number(this.value)||0;saveCfg()"></div>
+      <div class="fg"><label>Feature minimum ($)</label><input type="number" min="0" value="${cfg.news.featMin}" onchange="cfg.news.featMin=Number(this.value)||0;saveCfg()"></div>
+    </div>
+    <p style="color:var(--mut);font-size:11.5px;margin-top:10px">Current pricing at this ${cfg.chapter.scope}'s member count: dedicated send <strong class="num">${fmt(newsSendPrice())}</strong> · feature <strong class="num">${fmt(newsFeatPrice())}</strong>. The AI Collective Daily (national, 290K readers) is HQ inventory — see the separate media kit.</p>
+  </div></details>
+  <details><summary>Commission rates</summary><div class="inner">
+    <div class="grid4">
+      <div class="fg"><label>Member (referral)</label><input type="number" min="0" max="100" value="${cm.member}" onchange="cfg.comm.member=Number(this.value)||0;saveCfg()"></div>
+      <div class="fg"><label>Salesperson (on referral)</label><input type="number" min="0" max="100" value="${cm.salesRef}" onchange="cfg.comm.salesRef=Number(this.value)||0;saveCfg()"></div>
+      <div class="fg"><label>Salesperson (self-sourced)</label><input type="number" min="0" max="100" value="${cm.salesSrc}" onchange="cfg.comm.salesSrc=Number(this.value)||0;saveCfg()"></div>
+      <div class="fg"><label>Region support (regional deals)</label><input type="number" min="0" max="100" value="${cm.region}" onchange="cfg.comm.region=Number(this.value)||0;saveCfg()"></div>
+    </div>
+  </div></details>
+  <div class="toolrow" style="margin-top:16px">
+    <button class="btn btn-sec" onclick="exportCfg()">Export configuration</button>
+    <button class="btn btn-sec" onclick="document.getElementById('impFile').click()">Import configuration</button>
+    <input type="file" id="impFile" accept=".json" style="display:none" onchange="importCfg(this)">
+    <span class="spacer"></span>
+    <button class="btn btn-ghost" onclick="if(confirm('Reset all settings and pricing to defaults?')){localStorage.removeItem(CFG_KEY);cfg=loadCfg();rerenderAll();syncLangSel();}">Reset to defaults</button>
+  </div>`;
+}
+function uploadLogo(inp){
+  const f=inp.files[0];if(!f)return;
+  if(f.size>400*1024){alert('Logo is over 400KB — please export a smaller PNG/SVG so documents stay fast.');inp.value='';return;}
+  const r=new FileReader();
+  r.onload=()=>{cfg.chapter.logo=r.result;saveCfg();renderSettings();};
+  r.readAsDataURL(f);
+}
+function uploadPhoto(inp,setter,maxW){
+  const f=inp.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=()=>{
+    const img=new Image();
+    img.onload=()=>{
+      const scale=Math.min(1,(maxW||1500)/img.width);
+      const w=Math.round(img.width*scale),h=Math.round(img.height*scale);
+      const cv=document.createElement('canvas');cv.width=w;cv.height=h;
+      const ctx=cv.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,w,h);ctx.drawImage(img,0,0,w,h);
+      let out=cv.toDataURL('image/jpeg',0.82);
+      if(out.length>1400000)out=cv.toDataURL('image/jpeg',0.68);
+      try{setter(out);saveCfg();}
+      catch(e){alert('Storage is full — remove another image or use a smaller file.');return;}
+      renderSettings();
+    };
+    img.onerror=()=>alert('That file could not be read as an image.');
+    img.src=r.result;
+  };
+  r.readAsDataURL(f);
+}
+function uploadOrgLogo(inp){
+  const f=inp.files[0];if(!f)return;
+  if(f.size>400*1024){alert('Logo is over 400KB — please export a smaller PNG so documents stay fast.');inp.value='';return;}
+  const r=new FileReader();
+  r.onload=()=>{cfg.org.logo=r.result;saveCfg();renderBrand();renderSettings();};
+  r.readAsDataURL(f);
+}
+function renderBrand(){const el=document.getElementById('brandmark');if(el)el.innerHTML=brandMark(30);}
+function setMultCap(k,i,v){cfg['mults'+k][i][0]=(v===''?null:Number(v));saveCfg();}
+function delMult(k,i){cfg['mults'+k].splice(i,1);saveCfg();renderSettings();}
+function addMult(k){cfg['mults'+k].splice(Math.max(cfg['mults'+k].length-1,0),0,[1000,1]);saveCfg();renderSettings();}
+function exportCfg(){
+  const blob=new Blob([JSON.stringify(cfg,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download=(cfg.chapter.name||'aic').toLowerCase().replace(/[^a-z0-9]+/g,'-')+'-config.json';
+  a.click();URL.revokeObjectURL(a.href);
+}
+function importCfg(inp){
+  const f=inp.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=()=>{try{const c=JSON.parse(r.result);
+    cfg={org:{...DEFAULTS.org,...c.org},chapter:{...DEFAULTS.chapter,...c.chapter},comm:{...DEFAULTS.comm,...c.comm},
+      multsC:c.multsC||DEFAULTS.multsC,multsR:c.multsR||DEFAULTS.multsR,
+      annual:c.annual||DEFAULTS.annual,events:c.events||DEFAULTS.events};
+    saveCfg();rerenderAll();syncLangSel();}catch(e){alert('Invalid configuration file.');}};
+  r.readAsText(f);inp.value='';
+}
+
+/* ═══════════════ BOOT ═══════════════ */
+function syncLangSel(){
+  const s=document.getElementById('langSel');
+  s.innerHTML=Object.keys(T).map(l=>`<option value="${l}" ${cfg.chapter.lang===l?'selected':''}>${LANG_NAMES[l]}</option>`).join('');
+}
+document.getElementById('langSel').addEventListener('change',e=>{cfg.chapter.lang=e.target.value;saveCfg();rerenderAll();});
+syncLangSel();
+renderBrand();
+go('calc');
+</script>
+</html>

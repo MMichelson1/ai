@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AIC Sponsorship Studio — Director Setup Guide</title>
+<style>
+:root{
+  --bg:#F7F5F1; --panel:#FFFFFF; --ink:#22283A; --mut:#6E7484; --line:#E5E1D8;
+  --brand:#E05A14; --brand-ink:#B4470D; --brand-soft:#FBEADF;
+  --indigo:#232B8C; --indigo-soft:#E8EAF7;
+  --warn:#8A6D00; --warn-soft:#FBF3D4;
+  --shadow:0 1px 2px rgba(34,40,58,.06),0 10px 30px rgba(34,40,58,.08);
+}
+@media (prefers-color-scheme:dark){
+  :root{ --bg:#14161D; --panel:#1D2029; --ink:#ECEDF2; --mut:#9AA0AD; --line:#2E323E;
+    --brand:#F0742F; --brand-ink:#F58B52; --brand-soft:#392315;
+    --indigo:#98A2E8; --indigo-soft:#23273E; --warn:#D9B83B; --warn-soft:#2E2810;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px rgba(0,0,0,.4); }
+}
+:root[data-theme="light"]{ --bg:#F7F5F1; --panel:#FFFFFF; --ink:#22283A; --mut:#6E7484; --line:#E5E1D8;
+  --brand:#E05A14; --brand-ink:#B4470D; --brand-soft:#FBEADF; --indigo:#232B8C; --indigo-soft:#E8EAF7;
+  --warn:#8A6D00; --warn-soft:#FBF3D4; --shadow:0 1px 2px rgba(34,40,58,.06),0 10px 30px rgba(34,40,58,.08); }
+:root[data-theme="dark"]{ --bg:#14161D; --panel:#1D2029; --ink:#ECEDF2; --mut:#9AA0AD; --line:#2E323E;
+  --brand:#F0742F; --brand-ink:#F58B52; --brand-soft:#392315; --indigo:#98A2E8; --indigo-soft:#23273E;
+  --warn:#D9B83B; --warn-soft:#2E2810; --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px rgba(0,0,0,.4); }
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{font-family:"Seravek","Gill Sans Nova",Ubuntu,Calibri,"Segoe UI",system-ui,-apple-system,sans-serif;
+  background:var(--bg);color:var(--ink);line-height:1.6;font-size:15px;
+  padding:40px 20px;-webkit-font-smoothing:antialiased}
+.page{max-width:720px;margin:0 auto;background:var(--panel);border:1px solid var(--line);
+  border-radius:18px;box-shadow:var(--shadow);overflow:hidden}
+
+.langbar{display:flex;justify-content:flex-end;padding:14px 40px 0}
+.langbar select{font:inherit;font-size:12.5px;font-weight:600;color:var(--ink);background:var(--panel);
+  border:1.5px solid var(--line);border-radius:8px;padding:6px 10px;cursor:pointer}
+.langbar select:focus-visible{outline:2px solid var(--brand);outline-offset:1px;border-color:var(--brand)}
+
+.masthead{padding:16px 40px 24px;border-bottom:1px solid var(--line)}
+.eyebrow{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--brand);margin-bottom:9px}
+h1{font-size:clamp(22px,4vw,28px);font-weight:800;letter-spacing:-.02em;line-height:1.15;text-wrap:balance}
+.sub{color:var(--mut);font-size:13.5px;margin-top:8px;max-width:60ch}
+.rule{height:3px;background:linear-gradient(90deg,var(--brand),var(--indigo));border:none}
+
+.body{padding:28px 40px 34px}
+
+.steps{list-style:none;display:flex;flex-direction:column;gap:20px}
+.step{display:grid;grid-template-columns:38px 1fr;gap:16px;align-items:start}
+.num{width:38px;height:38px;border-radius:50%;background:var(--brand);color:#fff;
+  font-weight:800;font-size:16px;display:flex;align-items:center;justify-content:center;
+  font-variant-numeric:tabular-nums;flex:none}
+.step h2{font-size:15.5px;font-weight:800;letter-spacing:-.01em;margin-bottom:3px;text-wrap:balance}
+.step p{color:var(--mut);font-size:13.5px}
+.step .path{color:var(--indigo);font-weight:700}
+.step code{background:var(--indigo-soft);color:var(--indigo);border-radius:5px;padding:1px 6px;
+  font-family:inherit;font-weight:700;font-size:12.5px;overflow-wrap:anywhere}
+
+.callout{margin:22px 0 4px;background:var(--warn-soft);border:1.5px solid color-mix(in srgb,var(--warn) 40%,transparent);
+  border-radius:12px;padding:14px 16px;font-size:13.5px;color:var(--ink)}
+.callout strong{color:var(--warn)}
+.callout .lead{display:block;font-weight:800;color:var(--warn);margin-bottom:3px}
+
+.note{margin-top:26px;padding-top:20px;border-top:1px solid var(--line);
+  color:var(--mut);font-size:12.5px;line-height:1.65}
+.note strong{color:var(--ink)}
+.foot{margin-top:14px;font-size:11.5px;color:var(--mut);letter-spacing:.02em}
+
+@media(max-width:560px){
+  body{padding:20px 12px}
+  .langbar{padding:12px 22px 0}
+  .masthead,.body{padding-left:24px;padding-right:24px}
+  .step{grid-template-columns:32px 1fr;gap:12px}
+  .num{width:32px;height:32px;font-size:14px}
+}
+@media print{
+  body{background:#fff;padding:0;font-size:12.5px}
+  .page{border:none;box-shadow:none;border-radius:0;max-width:none}
+  .langbar,.no-print{display:none!important}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="page">
+  <div class="langbar no-print">
+    <select id="lang" aria-label="Language / Idioma"></select>
+  </div>
+  <div class="masthead">
+    <div class="eyebrow">The AI Collective · Sponsorship Studio</div>
+    <h1 id="h1"></h1>
+    <p class="sub" id="sub"></p>
+  </div>
+  <div class="rule"></div>
+  <div class="body">
+    <ol class="steps" id="steps"></ol>
+    <div class="callout">
+      <span class="lead" id="clead"></span>
+      <span id="cbody"></span>
+    </div>
+    <div class="note">
+      <p id="note"></p>
+      <p class="foot" id="foot"></p>
+    </div>
+  </div>
+</div>
+
+<script>
+const NAMES={en:'English',es:'Español',fr:'Français',de:'Deutsch',pt:'Português',ja:'日本語'};
+const G={
+en:{h1:"Setup guide for chapter &amp; region directors",
+ sub:"A four-step setup to get your chapter's sponsorship brochure, proposals, and price calculator running on your own device. Takes about five minutes.",
+ steps:[
+  ["Open the file","Save <code>AIC-Sponsorship-Studio.html</code> to your computer and <strong>double-click it</strong> — it opens in any web browser and runs fully offline. Nothing to install, no login, no build step."],
+  ["Set your Chapter CTA link — required","Go to <span class='path'>Settings &rarr; Chapter profile</span> and fill in <strong>Brochure CTA link</strong> with your chapter's Luma / signup URL. This is where the brochure's <em>&ldquo;Sponsor&rdquo;</em> button sends prospects. Until it's set, that button has nowhere to go and a warning stays on screen."],
+  ["Fill in your chapter details","Still in <span class='path'>Settings</span>, add your chapter name, member count, contact email, logo, and event stats. Everything you enter updates the brochure, proposals, and calculator live."],
+  ["Back up your setup","Use <span class='path'>Settings &rarr; Export</span> to download a small config file. Keep it safe — <span class='path'>Import</span> restores everything instantly on another computer or after clearing your browser."]],
+ clead:"⚠ The one step you can't skip",
+ cbody:"Every chapter and region must set its own <strong>CTA link</strong> (Step 2). It ships blank on purpose — the brochure isn't ready to share until yours is filled in.",
+ note:"<strong>Your data stays with you.</strong> Everything you type is saved only in your own browser on your own device — nothing is uploaded or shared automatically, and no other director sees your settings. That's also why backing up (Step 4) matters: if you switch devices or clear your browser, re-import your config file to pick up where you left off.",
+ foot:"Questions? Reply to the person who sent you this file."},
+
+es:{h1:"Guía de configuración para directores de capítulo y región",
+ sub:"Una configuración de cuatro pasos para poner en marcha el folleto de patrocinio, las propuestas y la calculadora de precios de tu capítulo en tu propio dispositivo. Toma unos cinco minutos.",
+ steps:[
+  ["Abre el archivo","Guarda <code>AIC-Sponsorship-Studio.html</code> en tu computadora y <strong>haz doble clic</strong> — se abre en cualquier navegador y funciona totalmente sin conexión. Nada que instalar, sin inicio de sesión, sin pasos de compilación."],
+  ["Configura el enlace CTA de tu capítulo — obligatorio","Ve a <span class='path'>Ajustes &rarr; Chapter profile</span> y completa <strong>Brochure CTA link</strong> con la URL de Luma / registro de tu capítulo. Ahí es donde el botón <em>&ldquo;Patrocinar&rdquo;</em> del folleto envía a los interesados. Hasta que se configure, ese botón no tiene destino y aparece una advertencia en pantalla."],
+  ["Completa los datos de tu capítulo","Aún en <span class='path'>Ajustes</span>, agrega el nombre de tu capítulo, el número de miembros, el correo de contacto, el logotipo y las estadísticas de eventos. Todo lo que ingresas actualiza el folleto, las propuestas y la calculadora en tiempo real."],
+  ["Respalda tu configuración","Usa <span class='path'>Ajustes &rarr; Export</span> para descargar un pequeño archivo de configuración. Guárdalo bien — <span class='path'>Import</span> restaura todo al instante en otra computadora o después de borrar los datos del navegador."]],
+ clead:"⚠ El paso que no puedes omitir",
+ cbody:"Cada capítulo y región debe configurar su propio <strong>enlace CTA</strong> (paso 2). Viene en blanco a propósito — el folleto no está listo para compartir hasta que completes el tuyo.",
+ note:"<strong>Tus datos se quedan contigo.</strong> Todo lo que escribes se guarda solo en tu propio navegador y dispositivo — nada se sube ni se comparte automáticamente, y ningún otro director ve tu configuración. Por eso también importa respaldar (paso 4): si cambias de dispositivo o borras el navegador, vuelve a importar tu archivo de configuración para continuar donde lo dejaste.",
+ foot:"¿Preguntas? Responde a la persona que te envió este archivo."},
+
+fr:{h1:"Guide de configuration pour les directeurs de chapitre et de région",
+ sub:"Une configuration en quatre étapes pour lancer la brochure de parrainage, les propositions et le calculateur de prix de votre chapitre sur votre propre appareil. Environ cinq minutes.",
+ steps:[
+  ["Ouvrez le fichier","Enregistrez <code>AIC-Sponsorship-Studio.html</code> sur votre ordinateur et <strong>double-cliquez dessus</strong> — il s'ouvre dans n'importe quel navigateur et fonctionne entièrement hors ligne. Rien à installer, aucune connexion, aucune étape de compilation."],
+  ["Renseignez le lien CTA de votre chapitre — obligatoire","Allez dans <span class='path'>Réglages &rarr; Chapter profile</span> et renseignez <strong>Brochure CTA link</strong> avec l'URL Luma / d'inscription de votre chapitre. C'est là que le bouton <em>&laquo;&nbsp;Parrainer&nbsp;&raquo;</em> de la brochure envoie les prospects. Tant qu'il n'est pas défini, ce bouton n'a aucune destination et un avertissement reste affiché."],
+  ["Renseignez les informations de votre chapitre","Toujours dans <span class='path'>Réglages</span>, ajoutez le nom de votre chapitre, le nombre de membres, l'e-mail de contact, le logo et les statistiques d'événements. Tout ce que vous saisissez met à jour la brochure, les propositions et le calculateur en direct."],
+  ["Sauvegardez votre configuration","Utilisez <span class='path'>Réglages &rarr; Export</span> pour télécharger un petit fichier de configuration. Conservez-le précieusement — <span class='path'>Import</span> restaure tout instantanément sur un autre ordinateur ou après avoir effacé votre navigateur."]],
+ clead:"⚠ L'étape à ne pas sauter",
+ cbody:"Chaque chapitre et région doit définir son propre <strong>lien CTA</strong> (étape 2). Il est vide volontairement — la brochure n'est pas prête à être partagée tant que le vôtre n'est pas renseigné.",
+ note:"<strong>Vos données restent avec vous.</strong> Tout ce que vous saisissez est enregistré uniquement dans votre propre navigateur, sur votre appareil — rien n'est téléversé ni partagé automatiquement, et aucun autre directeur ne voit vos réglages. C'est aussi pourquoi la sauvegarde (étape 4) compte : si vous changez d'appareil ou effacez votre navigateur, réimportez votre fichier de configuration pour reprendre où vous en étiez.",
+ foot:"Des questions ? Répondez à la personne qui vous a envoyé ce fichier."},
+
+de:{h1:"Einrichtungsleitfaden für Chapter- und Regionsdirektoren",
+ sub:"Eine Einrichtung in vier Schritten, um die Sponsoring-Broschüre, Angebote und den Preisrechner Ihres Chapters auf Ihrem eigenen Gerät zum Laufen zu bringen. Dauert etwa fünf Minuten.",
+ steps:[
+  ["Datei öffnen","Speichern Sie <code>AIC-Sponsorship-Studio.html</code> auf Ihrem Computer und <strong>doppelklicken Sie darauf</strong> — sie öffnet sich in jedem Browser und läuft vollständig offline. Nichts zu installieren, keine Anmeldung, kein Build-Schritt."],
+  ["Chapter-CTA-Link festlegen — erforderlich","Gehen Sie zu <span class='path'>Einstellungen &rarr; Chapter profile</span> und tragen Sie unter <strong>Brochure CTA link</strong> die Luma- / Anmelde-URL Ihres Chapters ein. Dorthin schickt die Schaltfläche <em>&bdquo;sponsern&ldquo;</em> der Broschüre Interessenten. Solange sie nicht gesetzt ist, hat die Schaltfläche kein Ziel und ein Warnhinweis bleibt sichtbar."],
+  ["Chapter-Details ausfüllen","Fügen Sie weiterhin in <span class='path'>Einstellungen</span> Ihren Chapter-Namen, die Mitgliederzahl, die Kontakt-E-Mail, das Logo und die Event-Statistiken hinzu. Alles, was Sie eingeben, aktualisiert Broschüre, Angebote und Rechner live."],
+  ["Einrichtung sichern","Verwenden Sie <span class='path'>Einstellungen &rarr; Export</span>, um eine kleine Konfigurationsdatei herunterzuladen. Bewahren Sie sie sicher auf — <span class='path'>Import</span> stellt alles sofort auf einem anderen Computer oder nach dem Leeren des Browsers wieder her."]],
+ clead:"⚠ Der Schritt, den Sie nicht überspringen dürfen",
+ cbody:"Jedes Chapter und jede Region muss den eigenen <strong>CTA-Link</strong> festlegen (Schritt 2). Er ist absichtlich leer — die Broschüre ist erst teilbar, wenn Ihrer ausgefüllt ist.",
+ note:"<strong>Ihre Daten bleiben bei Ihnen.</strong> Alles, was Sie eingeben, wird nur in Ihrem eigenen Browser auf Ihrem Gerät gespeichert — nichts wird hochgeladen oder automatisch geteilt, und kein anderer Direktor sieht Ihre Einstellungen. Deshalb ist auch das Sichern (Schritt 4) wichtig: Wenn Sie das Gerät wechseln oder den Browser leeren, importieren Sie Ihre Konfigurationsdatei erneut, um dort weiterzumachen, wo Sie aufgehört haben.",
+ foot:"Fragen? Antworten Sie der Person, die Ihnen diese Datei geschickt hat."},
+
+pt:{h1:"Guia de configuração para diretores de capítulo e região",
+ sub:"Uma configuração em quatro passos para colocar o folheto de patrocínio, as propostas e a calculadora de preços do seu capítulo funcionando no seu próprio dispositivo. Leva cerca de cinco minutos.",
+ steps:[
+  ["Abra o arquivo","Salve <code>AIC-Sponsorship-Studio.html</code> no seu computador e <strong>dê dois cliques</strong> — ele abre em qualquer navegador e funciona totalmente offline. Nada para instalar, sem login, sem etapa de compilação."],
+  ["Defina o link de CTA do seu capítulo — obrigatório","Vá em <span class='path'>Configurações &rarr; Chapter profile</span> e preencha <strong>Brochure CTA link</strong> com a URL de Luma / inscrição do seu capítulo. É para lá que o botão <em>&ldquo;Patrocinar&rdquo;</em> do folheto envia os interessados. Enquanto não for definido, esse botão não tem destino e um aviso permanece na tela."],
+  ["Preencha os dados do seu capítulo","Ainda em <span class='path'>Configurações</span>, adicione o nome do capítulo, o número de membros, o e-mail de contato, o logotipo e as estatísticas de eventos. Tudo o que você inserir atualiza o folheto, as propostas e a calculadora em tempo real."],
+  ["Faça backup da sua configuração","Use <span class='path'>Configurações &rarr; Export</span> para baixar um pequeno arquivo de configuração. Guarde-o com segurança — <span class='path'>Import</span> restaura tudo na hora em outro computador ou depois de limpar o navegador."]],
+ clead:"⚠ O passo que você não pode pular",
+ cbody:"Cada capítulo e região deve definir o seu próprio <strong>link de CTA</strong> (passo 2). Ele vem em branco de propósito — o folheto não está pronto para compartilhar até você preencher o seu.",
+ note:"<strong>Seus dados ficam com você.</strong> Tudo o que você digita é salvo apenas no seu próprio navegador, no seu dispositivo — nada é enviado ou compartilhado automaticamente, e nenhum outro diretor vê suas configurações. Por isso o backup (passo 4) importa: se você trocar de dispositivo ou limpar o navegador, importe novamente seu arquivo de configuração para continuar de onde parou.",
+ foot:"Dúvidas? Responda à pessoa que enviou este arquivo."},
+
+ja:{h1:"チャプター・リージョンディレクター向けセットアップガイド",
+ sub:"チャプターの協賛ブローシャー、提案書、料金計算ツールをご自身のデバイスで使い始めるための4ステップのセットアップです。所要時間は約5分です。",
+ steps:[
+  ["ファイルを開く","<code>AIC-Sponsorship-Studio.html</code> をコンピューターに保存して<strong>ダブルクリック</strong>してください。あらゆるブラウザーで開き、完全にオフラインで動作します。インストール不要、ログイン不要、ビルド作業も不要です。"],
+  ["チャプターのCTAリンクを設定 — 必須","<span class='path'>設定 &rarr; Chapter profile</span> を開き、<strong>Brochure CTA link</strong> にチャプターの Luma / 申込ページの URL を入力します。ブローシャーの<em>「スポンサーになる」</em>ボタンはここへ見込み客を案内します。未設定の場合、このボタンには遷移先がなく、警告が画面に表示され続けます。"],
+  ["チャプター情報を入力","引き続き <span class='path'>設定</span> で、チャプター名、メンバー数、連絡先メール、ロゴ、イベント実績を追加します。入力した内容はブローシャー、提案書、計算ツールにリアルタイムで反映されます。"],
+  ["設定をバックアップ","<span class='path'>設定 &rarr; Export</span> で小さな設定ファイルをダウンロードできます。大切に保管してください — <span class='path'>Import</span> で別のコンピューターやブラウザーのデータ消去後もすぐにすべてを復元できます。"]],
+ clead:"⚠ 省略できない唯一のステップ",
+ cbody:"すべてのチャプターとリージョンは、それぞれ自分の <strong>CTAリンク</strong> を設定する必要があります（ステップ2）。意図的に空白で配布されています — ご自身の分を入力するまで、ブローシャーは共有できる状態になりません。",
+ note:"<strong>データはあなたの手元に残ります。</strong> 入力した内容はご自身のデバイスのブラウザーにのみ保存されます — 自動的にアップロードや共有はされず、他のディレクターが設定を見ることもありません。だからこそバックアップ（ステップ4）が重要です。デバイスを変更したりブラウザーを消去した場合は、設定ファイルを再度インポートすれば続きから再開できます。",
+ foot:"ご不明な点は、このファイルを送った担当者にご返信ください。"}
+};
+
+const sel=document.getElementById('lang');
+Object.keys(NAMES).forEach(k=>{const o=document.createElement('option');o.value=k;o.textContent=NAMES[k];sel.appendChild(o);});
+
+function render(lang){
+  const g=G[lang]||G.en;
+  document.documentElement.lang=lang;
+  document.getElementById('h1').innerHTML=g.h1;
+  document.getElementById('sub').innerHTML=g.sub;
+  document.getElementById('steps').innerHTML=g.steps.map((s,i)=>
+    `<li class="step"><div class="num">${i+1}</div><div><h2>${s[0]}</h2><p>${s[1]}</p></div></li>`).join('');
+  document.getElementById('clead').innerHTML=g.clead;
+  document.getElementById('cbody').innerHTML=g.cbody;
+  document.getElementById('note').innerHTML=g.note;
+  document.getElementById('foot').innerHTML=g.foot;
+  sel.value=lang;
+}
+const initial=(navigator.language||'en').slice(0,2).toLowerCase();
+const start=G[initial]?initial:'en';
+sel.addEventListener('change',()=>render(sel.value));
+render(start);
+</script>
+</html>
