@@ -13,7 +13,11 @@ builder produces:
 
 - **Luma listing** — event title, description, and promo copy for the audience.
 - **Agenda / run-of-show** — timed segments for the session.
-- **Slides** — a slide-by-slide outline you can hand to a deck.
+- **Slides** — a slide-by-slide brief plus a runnable **pptxgenjs** script that
+  builds an actual widescreen `.pptx`, styled with **AIC Atlanta brand colors**
+  (orange `#F97316`, blue `#0276D9`, slate `#374151`) and the **AIC logo on every
+  slide**. Logo use follows the brand rule — AIC for in-person, Stitchs for Maven
+  (added when that logo is supplied). Toggle the logo in the **Brand** section.
 - **Handouts** — audience-specific take-home material.
 - **`me.md` context file** — a personal-context file to paste into Claude,
   ChatGPT, or Gemini so the tools answer as *this* professional.
