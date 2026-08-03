@@ -1,5 +1,5 @@
 # Refreshes event data from calendar feeds and deploys the site (event calendar
-# + AIC Sponsorship Studio) to GitHub Pages.
+# + AIC Sponsorship Studio + AI Fundamentals Workshop Builder) to GitHub Pages.
 # Runs entirely on GitHub's servers with plain HTTP — no AI tokens are used, ever.
 name: Update events & deploy site
 
@@ -11,6 +11,7 @@ on:
     paths:
       - "event-calendar/**"
       - "sponsorship-studio/**"
+      - "workshop-builder/**"
       - ".github/workflows/update-events.yml"
 
 permissions:
@@ -45,17 +46,22 @@ jobs:
           git add event-calendar/data/events.json event-calendar/data/geocache.json
           git diff --cached --quiet || git commit -m "chore: refresh event data [skip ci]"
           git push
-      - name: Assemble site (calendar at root + sponsorship studio at /sponsorship-studio/)
+      - name: Assemble site (calendar at root + sponsorship studio + workshop builder)
         run: |
           rm -rf _site
           cp -r event-calendar _site
+          # AIC Sponsorship Studio -> /sponsorship-studio/ (served as index.html,
+          # with the named file kept for anyone who has that direct link).
           mkdir -p _site/sponsorship-studio
-          # Clean URL: the Studio is served as /sponsorship-studio/ (index.html),
-          # with the named file kept for anyone who has that direct link.
           cp sponsorship-studio/AIC-Sponsorship-Studio.html _site/sponsorship-studio/index.html
           cp sponsorship-studio/AIC-Sponsorship-Studio.html _site/sponsorship-studio/AIC-Sponsorship-Studio.html
           cp sponsorship-studio/AIC-Studio-Setup-Guide.html _site/sponsorship-studio/setup-guide.html
-          # (The backups/, scripts/, and README are intentionally NOT published.)
+          # AI Fundamentals Workshop Builder -> /workshop-builder/
+          mkdir -p _site/workshop-builder
+          cp workshop-builder/index.html _site/workshop-builder/index.html
+          cp workshop-builder/manifest.webmanifest _site/workshop-builder/manifest.webmanifest
+          cp workshop-builder/icon-192.png workshop-builder/icon-512.png workshop-builder/apple-touch-icon.png _site/workshop-builder/
+          # (backups/, scripts/, and READMEs are intentionally NOT published.)
       - name: Upload site
         uses: actions/upload-pages-artifact@v3
         with:
