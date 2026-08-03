@@ -17,6 +17,12 @@ builder produces:
 - **Handouts** — audience-specific take-home material.
 - **`me.md` context file** — a personal-context file to paste into Claude,
   ChatGPT, or Gemini so the tools answer as *this* professional.
+- **Facilitator credibility** — the **Facilitator** tab holds the lead's own
+  me.md (editable, saved in the browser) and maps it to each topic in the
+  session as a ready-to-say *"why I'm qualified to lead this"* line, drawn from
+  the facilitator's background. Toggle it on to weave those lines into the slide
+  speaker notes (Slide Brief + pptx). Deep-dive tools get a credibility line
+  matched to their category.
 - **A prep reminder** — under **Event details**, the builder computes a reminder
   a set number of weeks before the event (default **3**, adjustable) and exports
   it as an **`.ics` download** or an **Add to Google Calendar** link. A one-click

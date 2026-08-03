@@ -492,6 +492,87 @@ const ME_MD_SECTIONS = [
   ["How to Help You Best","Format, length, and tone you want back"]
 ];
 
+/* ---------- facilitator background (me.md) + per-topic credibility ---------- */
+// The lead facilitator's own me.md, stored so the builder can apply the
+// background as "why I am qualified to lead each topic." Editable in the form
+// and saved in the browser; this is the default seed.
+const FAC_HEADLINE = "42 years as a researcher, consultant, CX expert, conference producer, association founder, and community builder, now teaching AI Fundamentals for Professionals. I teach from inside these disciplines, not from the outside looking in.";
+const FAC_MEMD_DEFAULT = `# Me.md - My AI Knowledge Base
+
+## Who I Am
+- Name: Mark Michelson
+- Role: Strategist, Educator, Entrepreneur, Community Builder
+- Practice: Threads Marketing Research & Strategy (threadsmr.com), Stitchs AI Training & Solutions, The AI Collective ATL (SE Region Director)
+- Industry: Marketing Research, Customer Experience, AI Education, Community Building
+- Location: Atlanta, GA
+- Experience: 42 years as an independent consultant
+
+## Background and Credentials
+Education: B.A. Grady School of Journalism and B.S. Marketing & Business, University of Georgia.
+
+Career:
+- Founder & Principal, Michelson & Associates (1984-2009) - global research firm in 22 countries, Fortune 100 clients including IBM, Ford, Walmart, Samsung, HP, Coca-Cola, ExxonMobil, Goodyear
+- Founder & Principal, Threads Marketing Research & Strategy (2009-present) - B2B/B2C qual and quant research, clients include Google, Salesforce, Johnson & Johnson, Bridgestone/Firestone, Mitsubishi
+- Founder & CEO, Stitchs AI Training & Solutions (2025-present)
+- Region Director (South Central US), The AI Collective - founded the Atlanta chapter and grew it from 0 to 4,000 members in 11 months
+
+Customer Experience:
+- Co-founder, Mystery Shopping Providers Association (MSPA-Global.org, 1997)
+- Founder & Chapter Lead, Atlanta CXPA Chapter (2011-2023)
+- Founder & Producer, CX Forums and CX Talks (2016-2024) - CX conferences across 8 U.S. markets
+- Deep practitioner across UX, UI, VOC programs, journey design, and loyalty measurement
+
+Associations co-founded: QRCA, MMRA, SMRA, IDEA, CXPA and more - 8 associations total.
+
+AI background: Built custom automation for research workflows since 1984 (Macintosh), before off-the-shelf tools existed. Worked with Microsoft to train models on unstructured data (2010-2011). Took a year to study AI education before teaching it. Current skills: AI strategy, agent building, deployment and orchestration, app building with Claude Code, workflow automation.
+
+Global: Worked in 78 countries and 49 states. Lifelong professional musician with synesthesia.
+
+## My Voice and Communication Style
+Direct, warm, conversational. Lead with the insight, plain language, address readers as "you." No em dashes (hyphens only), no semicolons, no passive voice, no AI filler, no sycophancy.`;
+
+// Credibility lines in the facilitator's voice, matched to a topic. First match wins.
+const CRED_RULES = [
+  {kw:["your hosts","host"], line:"42 years as a researcher and consultant, founder of Michelson & Associates and Threads, co-founder of 8 professional associations, and founder of the Atlanta AI Collective, now 4,000 members."},
+  {kw:["moment we","where ai fits","your work","why ai"], line:"I have built with AI since 1984 and took a year off to study how to teach it. This is 42 years of practice meeting a new set of tools, not a bandwagon."},
+  {kw:["me.md","personaliz"], line:"I wrote my own me.md and run it every day. I am teaching you the exact system I use."},
+  {kw:["llm","compared","claude","chatgpt","gemini","models"], line:"I use these tools daily in real client work and build apps and agents with Claude Code. I can tell you which to reach for because I reach for them myself."},
+  {kw:["notebook","document","pdf"], line:"I trained models to analyze unstructured data with Microsoft back in 2010. Pulling answers out of documents is work I have done for years."},
+  {kw:["notetaker","meeting","transcript"], line:"I have run thousands of interviews, focus groups, and VOC sessions. I know what matters in a transcript and what to cut."},
+  {kw:["research","insight","discovery","perplexity"], line:"Research is my 42-year discipline. I have run studies for Google, Salesforce, and Johnson & Johnson, and I know what good sourcing looks like."},
+  {kw:["integration","wrapper","automation","cowork","stack","agent"], line:"I built custom research automation on Macintosh before off-the-shelf tools existed. Handing repetitive work to machines is a 40-year habit for me."},
+  {kw:["customer experience","journey","voc"," cx","cx "], line:"I co-founded the Mystery Shopping Providers Association and the Atlanta CXPA chapter, and produced CX Forums across 8 markets. CX is a career for me, not a slide."},
+  {kw:["community"], line:"I founded the Atlanta AI Collective and grew it from zero to 4,000 members in 11 months. I know how communities actually grow."},
+  {kw:["demo","action plan","hands-on"], line:"Everything I show you, I run in my own practice. Watch me do it, then do it yourself."}
+];
+// Deep-dive tool category -> credibility line
+const CRED_BY_KIND = {
+  llm:"I use these tools daily in real client work and build apps and agents with Claude Code. I teach what I actually run.",
+  research:"Research is my 42-year discipline. I have built insights businesses on good sourcing for clients like Google and Salesforce.",
+  docintel:"I trained models to analyze unstructured data with Microsoft in 2010. Getting answers out of documents is old ground for me.",
+  notetaker:"I have run thousands of interviews and VOC sessions. I know what to keep in a transcript and what to throw away.",
+  automation:"I built custom research automation before off-the-shelf tools existed. Automating the repetitive work is a 40-year habit.",
+  writing:"I have written for clients and published since college. I know when AI copy works and when it sounds like a robot.",
+  image:"I am a lifelong professional musician with synesthesia. I bring a real eye and ear to visual and media tools.",
+  voice:"I am a lifelong professional musician. Voice and audio tools sit right in my wheelhouse."
+};
+const CRED_FALLBACK = "I have spent 42 years serving professionals as a consultant and researcher. I teach from inside your world, not from the outside looking in.";
+
+// Return the credibility line for a slide, or null.
+function credForSlide(s){
+  if(!s || !s.title) return null;
+  const t=String(s.title).toLowerCase();
+  if(/^deep dive:/.test(t)){
+    const tool=s.title.slice(s.title.indexOf(":")+1).trim();
+    const meta=TOOL_KIND[tool];
+    return (meta && CRED_BY_KIND[meta.kind]) || CRED_FALLBACK;
+  }
+  for(const r of CRED_RULES){ if(r.kw.some(k=>t.includes(k))) return r.line; }
+  // topic slides carry the audience-fit line; pure title/thank-you slides get nothing
+  if(s.kind==="title" || /thank you|resources|agenda|continue learning/.test(t)) return null;
+  return CRED_FALLBACK;
+}
+
 /* ============================================================ STATE ============================================================ */
 const state = {
   audience:"",
@@ -510,6 +591,8 @@ const state = {
   deep:[],             // ordered tool names (max 4)
   angle:"",
   maven:{on:false, title:"", start:"", price:"", url:""},
+  facMemd:FAC_MEMD_DEFAULT,   // the lead facilitator's me.md (editable, saved in browser)
+  credNotes:true,             // weave "why I can lead this" into slide speaker notes
   activeTab:"luma"
 };
 
@@ -533,6 +616,7 @@ function loadStore(){ try{ return JSON.parse(localStorage.getItem(LS_KEY)||"{}")
 function saveStore(o){ try{ localStorage.setItem(LS_KEY, JSON.stringify(o)); }catch(e){} }
 function customAudList(){ return (loadStore().customAudiences)||[]; }
 function persistReminder(){ const s=loadStore(); s.remindWeeks=state.remindWeeks; saveStore(s); }
+function persistFacilitator(){ const s=loadStore(); s.facMemd=state.facMemd; s.credNotes=state.credNotes; saveStore(s); }
 function primaryName(){ return state.audience==="__custom__" ? (state.customName.trim()||"Custom Audience") : state.audience; }
 function persistIcp(){
   if(!state.audience || state.audience2) return;   // persist single-audience ICPs only
@@ -881,6 +965,11 @@ function buildModel(){
     ],
     note:"Warm close. Invite them to stay, network, and grab another slice. Point to the QR code one more time."});
 
+  // Weave the facilitator's credibility into speaker notes ("why I can lead this")
+  if(state.credNotes){
+    S.forEach(s=>{ const c=credForSlide(s); if(c) s.note = (s.note? s.note+"  " : "") + "Why you can lead this: " + c; });
+  }
+
   return S;
 }
 
@@ -1211,6 +1300,7 @@ const TABS = [
   {id:"linkedin", label:"LinkedIn", accent:"var(--p1)"},
   {id:"brief", label:"Slide Brief", accent:"var(--p2)"},
   {id:"pptx", label:"pptxgenjs", accent:"var(--p3)"},
+  {id:"cred", label:"Facilitator", accent:"var(--p2)"},
   {id:"maven", label:"Maven", accent:"var(--p2)"}
 ];
 
@@ -1274,6 +1364,31 @@ function renderOutput(){
     out.appendChild(docHead("Maven Cohort Materials", "Page copy, 3-week outline, and Lightning Lesson", genMaven, "maven_"+slug(audLabel())+".txt"));
     const d=el("div","doc md"); d.appendChild(paraBlock(genMaven())); out.appendChild(d);
   }
+  else if(tab==="cred"){
+    out.appendChild(docHead("Facilitator Credibility", "Why you are qualified to lead each topic, plus your me.md", ()=>genFacilitator(model), "facilitator_"+slug(audLabel())+".md"));
+    const d=el("div","doc md"); d.appendChild(paraBlock(genFacilitator(model))); out.appendChild(d);
+  }
+}
+
+// Per-topic credibility + the facilitator me.md, as one copy/paste document.
+function genFacilitator(model){
+  const aud = audLabel() || "your audience";
+  const lead = state.lead.name || "The facilitator";
+  let out = "FACILITATOR CREDIBILITY - AI Fundamentals for "+aud+"\n\n";
+  out += lead+"\n"+FAC_HEADLINE+"\n\n";
+  out += "WHY I CAN LEAD EACH TOPIC TONIGHT\n";
+  out += "(One line per topic - say it, or fold it into the slide.)\n\n";
+  const seen = {};
+  model.forEach(s=>{
+    const c = credForSlide(s);
+    if(!c || seen[c]) return;      // one line per distinct credential
+    seen[c] = 1;
+    out += "- "+clean(s.title)+"\n  "+c+"\n";
+  });
+  out += "\n----------------------------------------\n\n";
+  out += "MY ME.MD (paste at the start of any AI session)\n\n";
+  out += state.facMemd.trim()+"\n";
+  return out;
 }
 
 function paraBlock(text){
@@ -1530,6 +1645,24 @@ function buildForm(){
       body.appendChild(fld("Maven URL", inp(state.maven.url, v=>{state.maven.url=v; rerenderOut();}, "maven.com/..."), null));
     }
   }));
+
+  // SECTION 6 - Facilitator background (me.md)
+  f.appendChild(section(6,"Facilitator (me.md)", state.credNotes?"Credibility on":"Credibility off", body=>{
+    const tg=el("div","toggle"); tg.setAttribute("data-on", state.credNotes?"1":"0"); tg.tabIndex=0;
+    tg.innerHTML='<span class="switch"></span><span>Add "why I can lead this" to slide speaker notes</span>';
+    const flip=()=>{ state.credNotes=!state.credNotes; persistFacilitator(); rerenderAll(); };
+    tg.onclick=flip; tg.onkeydown=e=>{ if(e.key===" "||e.key==="Enter"){e.preventDefault();flip();} };
+    body.appendChild(tg);
+    const note=el("div","hint"); note.style.marginTop="8px";
+    note.innerHTML="Your background maps to each topic on the <b>Facilitator</b> tab and, when on, into the Slide Brief and pptx notes.";
+    body.appendChild(note);
+    const t=ta(state.facMemd, v=>{ state.facMemd=v; persistFacilitator(); rerenderOut(); });
+    t.style.minHeight="220px"; t.style.fontFamily="var(--mono)"; t.style.fontSize="12px";
+    body.appendChild(fld("My me.md", t, "Edit freely - saved in this browser. Appears in full on the Facilitator tab and its download."));
+    const reset=el("button","btn ghost sm","Restore default me.md"); reset.style.marginTop="4px";
+    reset.onclick=()=>{ if(confirm("Replace the me.md with the built-in default?")){ state.facMemd=FAC_MEMD_DEFAULT; persistFacilitator(); rerenderAll(); } };
+    body.appendChild(reset);
+  }));
 }
 
 /* ---- form helpers ---- */
@@ -1582,7 +1715,12 @@ $("#themeBtn").onclick=()=>{
 };
 
 // initial
-(function(){ const s=loadStore(); if(typeof s.remindWeeks==="number") state.remindWeeks=Math.min(12,Math.max(0,s.remindWeeks)); })();
+(function(){
+  const s=loadStore();
+  if(typeof s.remindWeeks==="number") state.remindWeeks=Math.min(12,Math.max(0,s.remindWeeks));
+  if(typeof s.facMemd==="string" && s.facMemd.trim()) state.facMemd=s.facMemd;
+  if(typeof s.credNotes==="boolean") state.credNotes=s.credNotes;
+})();
 rerenderAll();
 </script>
 
