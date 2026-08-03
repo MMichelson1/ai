@@ -39,6 +39,13 @@ option to merge two audiences or define a custom one.
 Your edits to an audience profile (ICP) and any custom audiences you add are
 saved in the browser (`localStorage`), so they carry over month to month.
 
+**Add your own tools.** New AI tools ship constantly, so under **Tools this
+session** there's an *"Your added tools"* area: type any tool name, pick a
+category (LLM, research, notetaker, document intelligence, automation, writing,
+image/video, voice), and **Add**. It then behaves like a built-in — feature it,
+deep-dive it, and it picks up category-matched talking points and facilitator
+credibility. Added tools are saved in the browser and can be removed anytime.
+
 ## Monthly workflow
 
 1. Open the hosted page (link below) and bookmark it.

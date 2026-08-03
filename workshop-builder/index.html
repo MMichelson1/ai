@@ -623,6 +623,41 @@ const LS_KEY="wsb_store_v1";
 function loadStore(){ try{ return JSON.parse(localStorage.getItem(LS_KEY)||"{}"); }catch(e){ return {}; } }
 function saveStore(o){ try{ localStorage.setItem(LS_KEY, JSON.stringify(o)); }catch(e){} }
 function customAudList(){ return (loadStore().customAudiences)||[]; }
+// ----- custom tools (user-added; new tools ship constantly) -----
+// Friendly category label -> internal kind used by templates and credibility.
+const TOOL_KINDS = [
+  ["llm","Core LLM / Chatbot"],
+  ["research","Research & Discovery"],
+  ["notetaker","Notetaker & Meeting AI"],
+  ["docintel","Document Intelligence"],
+  ["automation","Automation & Agents"],
+  ["writing","Writing & Content"],
+  ["image","Image, Video & Media"],
+  ["voice","Voice & Audio"]
+];
+function kindLabelFor(kind){ const m=TOOL_KINDS.find(k=>k[0]===kind); return m?m[1]:"Core LLM / Chatbot"; }
+function customToolList(){ return (loadStore().customTools)||[]; }
+function saveCustomTools(list){ const s=loadStore(); s.customTools=list; saveStore(s); }
+// Register custom tools into TOOL_KIND so templates, stack roles, and credibility work on them.
+function registerCustomTools(){ customToolList().forEach(t=>{ if(t&&t.name) TOOL_KIND[t.name]={kind:t.kind||"llm", field:null}; }); }
+function toolExists(name){ const n=name.trim().toLowerCase(); return !!TOOL_KIND[Object.keys(TOOL_KIND).find(k=>k.toLowerCase()===n)] || customToolList().some(t=>t.name.toLowerCase()===n); }
+function addCustomTool(name, kind){
+  name=(name||"").trim();
+  if(!name){ toast("Type a tool name first"); return false; }
+  if(toolExists(name)){ toast("That tool is already in the list"); return false; }
+  const list=customToolList(); list.push({name, kind:kind||"llm"}); saveCustomTools(list);
+  TOOL_KIND[name]={kind:kind||"llm", field:null};
+  state.include[name]=true;   // added tools start ON so they show up right away
+  rerenderAll();
+  return true;
+}
+function removeCustomTool(name){
+  saveCustomTools(customToolList().filter(t=>t.name!==name));
+  delete TOOL_KIND[name];
+  delete state.include[name];
+  state.deep=state.deep.filter(x=>x!==name);
+  rerenderAll();
+}
 function persistReminder(){ const s=loadStore(); s.remindWeeks=state.remindWeeks; saveStore(s); }
 function persistFacilitator(){ const s=loadStore(); s.facMemd=state.facMemd; s.credNotes=state.credNotes; saveStore(s); }
 function primaryName(){ return state.audience==="__custom__" ? (state.customName.trim()||"Custom Audience") : state.audience; }
@@ -1601,35 +1636,67 @@ function buildForm(){
   // SECTION 4 - Tools
   const ddCount=state.deep.filter(t=>state.include[t]).length;
   f.appendChild(section(4,"Tools this session", (Object.values(state.include).filter(Boolean).length)+" on, "+ddCount+" deep-dive", body=>{
+    // one tool row (used for both built-in and custom tools)
+    const toolRow=(t, removable)=>{
+      const row=el("div","tool");
+      const chk=el("div","chk"); chk.setAttribute("role","checkbox"); chk.tabIndex=0;
+      chk.setAttribute("data-on", state.include[t]?"1":"0");
+      const toggle=()=>{
+        state.include[t]=!state.include[t];
+        if(!state.include[t]){ state.deep=state.deep.filter(x=>x!==t); }
+        rerenderAll();
+      };
+      chk.onclick=toggle; chk.onkeydown=e=>{ if(e.key===" "||e.key==="Enter"){e.preventDefault();toggle();} };
+      row.appendChild(chk);
+      row.appendChild(el("span","nm",t));
+      const dd=el("button","dd","Deep dive");
+      const isDeep=state.deep.includes(t);
+      dd.setAttribute("data-on", isDeep?"1":"0");
+      const atMax = state.deep.filter(x=>state.include[x]).length>=4;
+      if(!state.include[t] || (atMax && !isDeep)) dd.disabled=true;
+      dd.onclick=()=>{
+        if(isDeep){ state.deep=state.deep.filter(x=>x!==t); }
+        else { if(state.deep.filter(x=>state.include[x]).length>=4) return; state.deep.push(t); }
+        rerenderAll();
+      };
+      row.appendChild(dd);
+      if(removable){
+        const rm=el("button","rm","×"); rm.title="Remove this tool"; rm.style.cssText="border:none;background:transparent;color:var(--faint);cursor:pointer;font-size:16px;line-height:1;padding:2px 5px;border-radius:5px;margin-left:2px";
+        rm.onclick=()=>{ if(confirm('Remove "'+t+'" from your tools?')) removeCustomTool(t); };
+        row.appendChild(rm);
+      }
+      return row;
+    };
+
     TOOL_CATS.forEach(cat=>{
       const wrap=el("div","toolcat"); wrap.appendChild(el("h4",null,cat.cat));
-      cat.tools.forEach(t=>{
-        const row=el("div","tool");
-        const chk=el("div","chk"); chk.setAttribute("role","checkbox"); chk.tabIndex=0;
-        chk.setAttribute("data-on", state.include[t]?"1":"0");
-        const toggle=()=>{
-          state.include[t]=!state.include[t];
-          if(!state.include[t]){ state.deep=state.deep.filter(x=>x!==t); }
-          rerenderAll();
-        };
-        chk.onclick=toggle; chk.onkeydown=e=>{ if(e.key===" "||e.key==="Enter"){e.preventDefault();toggle();} };
-        row.appendChild(chk);
-        row.appendChild(el("span","nm",t));
-        const dd=el("button","dd","Deep dive");
-        const isDeep=state.deep.includes(t);
-        dd.setAttribute("data-on", isDeep?"1":"0");
-        const atMax = state.deep.filter(x=>state.include[x]).length>=4;
-        if(!state.include[t] || (atMax && !isDeep)) dd.disabled=true;
-        dd.onclick=()=>{
-          if(isDeep){ state.deep=state.deep.filter(x=>x!==t); }
-          else { if(state.deep.filter(x=>state.include[x]).length>=4) return; state.deep.push(t); }
-          rerenderAll();
-        };
-        row.appendChild(dd);
-        wrap.appendChild(row);
-      });
+      cat.tools.forEach(t=> wrap.appendChild(toolRow(t,false)) );
       body.appendChild(wrap);
     });
+
+    // ---- Your added tools (new tools are always being released) ----
+    const customs=customToolList();
+    const cwrap=el("div","toolcat"); cwrap.appendChild(el("h4",null,"Your added tools"));
+    customs.forEach(ct=> cwrap.appendChild(toolRow(ct.name,true)) );
+    if(!customs.length){ const e=el("div","hint"); e.style.margin="2px 0 8px"; e.textContent="Add any new or niche tool. It behaves like the built-ins - feature it, deep-dive it, and it picks up talking points and your credibility from its category."; cwrap.appendChild(e); }
+    // add-tool form
+    const addBox=el("div"); addBox.style.cssText="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;margin-top:6px";
+    const nameWrap=el("div"); nameWrap.style.cssText="flex:1 1 150px;min-width:120px";
+    nameWrap.appendChild(el("span","lab","New tool name"));
+    const nameI=el("input"); nameI.type="text"; nameI.placeholder="e.g. Comet, NotebookLM, Suno"; nameWrap.appendChild(nameI);
+    const kindWrap=el("div"); kindWrap.style.cssText="flex:1 1 150px;min-width:120px";
+    kindWrap.appendChild(el("span","lab","Category"));
+    const kindS=el("select"); TOOL_KINDS.forEach(k=> kindS.appendChild(opt(k[0],k[1])) ); kindWrap.appendChild(kindS);
+    const addBtn=el("button","btn primary sm","Add tool"); addBtn.style.flex="0 0 auto";
+    const doAdd=()=>{ if(addCustomTool(nameI.value, kindS.value)) {/* rerender clears inputs */} };
+    addBtn.onclick=doAdd;
+    nameI.onkeydown=e=>{ if(e.key==="Enter"){ e.preventDefault(); doAdd(); } };
+    addBox.appendChild(nameWrap); addBox.appendChild(kindWrap); addBox.appendChild(addBtn);
+    cwrap.appendChild(addBox);
+    const hint=el("div","hint"); hint.style.marginTop="6px"; hint.textContent="Category sets its talking points and which of your credentials apply. Saved in this browser.";
+    cwrap.appendChild(hint);
+    body.appendChild(cwrap);
+
     const info=el("div","ddcount");
     const dds=state.deep.filter(t=>state.include[t]);
     info.innerHTML="Deep-dive slides: <b>"+dds.length+" of 4</b>"+(dds.length?(" - "+dds.map(esc).join(", ")):"")+(dds.length>=4?' <span class="over">(max reached)</span>':"")+"<br>Each featured tool becomes one Part 3 deep-dive slide.";
@@ -1728,6 +1795,7 @@ $("#themeBtn").onclick=()=>{
   if(typeof s.remindWeeks==="number") state.remindWeeks=Math.min(12,Math.max(0,s.remindWeeks));
   if(typeof s.facMemd==="string" && s.facMemd.trim()) state.facMemd=s.facMemd;
   if(typeof s.credNotes==="boolean") state.credNotes=s.credNotes;
+  registerCustomTools();
 })();
 rerenderAll();
 </script>
