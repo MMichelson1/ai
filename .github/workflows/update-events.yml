@@ -1,6 +1,7 @@
-# Refreshes event data from calendar feeds and deploys the calendar to GitHub Pages.
+# Refreshes event data from calendar feeds and deploys the site (event calendar
+# + AI Fundamentals Workshop Builder) to GitHub Pages.
 # Runs entirely on GitHub's servers with plain HTTP — no AI tokens are used, ever.
-name: Update events & deploy calendar
+name: Update events & deploy site
 
 on:
   schedule:
@@ -9,6 +10,7 @@ on:
   push:
     paths:
       - "event-calendar/**"
+      - "workshop-builder/**"
       - ".github/workflows/update-events.yml"
 
 permissions:
@@ -23,6 +25,10 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
+    # Only run on the repo's default branch — the branch GitHub Pages publishes
+    # from. This keeps feature-branch pushes from committing event data or
+    # deploying to the live site.
+    if: github.ref_name == github.event.repository.default_branch
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -39,14 +45,22 @@ jobs:
           git add event-calendar/data/events.json event-calendar/data/geocache.json
           git diff --cached --quiet || git commit -m "chore: refresh event data [skip ci]"
           git push
+      - name: Assemble site (calendar at root + workshop builder at /workshop-builder/)
+        run: |
+          rm -rf _site
+          cp -r event-calendar _site
+          mkdir -p _site/workshop-builder
+          cp workshop-builder/index.html _site/workshop-builder/index.html
+          # (The scripts/ and README are intentionally NOT published.)
       - name: Upload site
         uses: actions/upload-pages-artifact@v3
         with:
-          path: event-calendar
+          path: _site
 
   deploy:
     needs: update
     runs-on: ubuntu-latest
+    if: github.ref_name == github.event.repository.default_branch
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

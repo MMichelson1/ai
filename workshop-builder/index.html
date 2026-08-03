@@ -1,0 +1,1487 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Build a complete AI Fundamentals for Professionals workshop — Luma listing, agenda, slides, handouts, and AI context files — from a single audience selection. Self-contained, no tokens, works offline.">
+<title>AI Fundamentals Workshop Builder</title>
+<style>
+  :root{
+    --bg:#0F172A; --surface:#131E33; --surface2:#0B1424; --raise:#1C2A44;
+    --border:rgba(148,163,184,.16); --border-strong:rgba(148,163,184,.28);
+    --text:#E7EDF6; --muted:#94A3B8; --faint:#64748B;
+    --p1:#22B8D6; --p2:#A78BFA; --p3:#34D399;
+    --p1-ink:#0891B2; --p2-ink:#7C3AED; --p3-ink:#059669;
+    --amber:#D97706; --danger:#F87171; --ok:#34D399;
+    --field:#0E1A2E; --field-focus:#12233d;
+    --shadow:0 1px 0 rgba(255,255,255,.03), 0 8px 24px -12px rgba(0,0,0,.6);
+    --radius:10px; --radius-sm:7px;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  :root[data-theme="light"]{
+    --bg:#F5F7FB; --surface:#FFFFFF; --surface2:#EEF2F8; --raise:#FFFFFF;
+    --border:#E2E8F0; --border-strong:#CBD5E1;
+    --text:#1E293B; --muted:#475569; --faint:#94A3B8;
+    --p1:#0891B2; --p2:#7C3AED; --p3:#059669;
+    --p1-ink:#0891B2; --p2-ink:#7C3AED; --p3-ink:#059669;
+    --field:#FFFFFF; --field-focus:#FFFFFF;
+    --shadow:0 1px 2px rgba(15,23,42,.06), 0 10px 30px -18px rgba(15,23,42,.25);
+  }
+  @media (prefers-color-scheme: light){
+    :root{
+      --bg:#F5F7FB; --surface:#FFFFFF; --surface2:#EEF2F8; --raise:#FFFFFF;
+      --border:#E2E8F0; --border-strong:#CBD5E1;
+      --text:#1E293B; --muted:#475569; --faint:#94A3B8;
+      --p1:#0891B2; --p2:#7C3AED; --p3:#059669;
+      --field:#FFFFFF; --field-focus:#FFFFFF;
+      --shadow:0 1px 2px rgba(15,23,42,.06), 0 10px 30px -18px rgba(15,23,42,.25);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0F172A; --surface:#131E33; --surface2:#0B1424; --raise:#1C2A44;
+    --border:rgba(148,163,184,.16); --border-strong:rgba(148,163,184,.28);
+    --text:#E7EDF6; --muted:#94A3B8; --faint:#64748B;
+    --p1:#22B8D6; --p2:#A78BFA; --p3:#34D399;
+    --field:#0E1A2E; --field-focus:#12233d;
+    --shadow:0 1px 0 rgba(255,255,255,.03), 0 8px 24px -12px rgba(0,0,0,.6);
+  }
+
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+  ::selection{background:color-mix(in srgb,var(--p1) 35%,transparent)}
+
+  /* ---------- shell ---------- */
+  .app{min-height:100vh;display:flex;flex-direction:column}
+  header.top{
+    position:sticky;top:0;z-index:20;
+    display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+    padding:12px 20px;background:color-mix(in srgb,var(--bg) 82%,transparent);
+    backdrop-filter:blur(10px);border-bottom:1px solid var(--border);
+  }
+  .brand{display:flex;align-items:center;gap:11px;margin-right:auto}
+  .glyph{width:30px;height:30px;border-radius:8px;flex:none;position:relative;background:var(--surface);border:1px solid var(--border-strong);display:grid;place-items:center}
+  .glyph i{display:block;width:12px;height:12px;border-radius:3px;background:linear-gradient(135deg,var(--p1),var(--p2) 55%,var(--p3))}
+  .brand h1{font-size:14px;font-weight:650;margin:0;letter-spacing:-.01em;line-height:1.1}
+  .brand h1 span{display:block;font-size:11px;font-weight:500;color:var(--muted);letter-spacing:.02em}
+  .top-actions{display:flex;align-items:center;gap:8px}
+
+  .btn{font-family:inherit;font-size:13px;font-weight:560;color:var(--text);background:var(--raise);border:1px solid var(--border-strong);
+    padding:8px 13px;border-radius:var(--radius-sm);cursor:pointer;display:inline-flex;align-items:center;gap:7px;transition:border-color .15s,background .15s,transform .05s;white-space:nowrap}
+  .btn:hover{border-color:var(--p1)}
+  .btn:active{transform:translateY(1px)}
+  .btn:focus-visible{outline:2px solid var(--p1);outline-offset:2px}
+  .btn.primary{background:linear-gradient(180deg,var(--p1-ink),color-mix(in srgb,var(--p1-ink) 78%,#000));color:#fff;border-color:transparent;font-weight:640}
+  .btn.primary:hover{filter:brightness(1.08)}
+  .btn.ghost{background:transparent;border-color:var(--border)}
+  .btn.sm{padding:5px 9px;font-size:12px}
+  .btn[disabled]{opacity:.45;cursor:not-allowed}
+
+  .main{flex:1;display:grid;grid-template-columns:minmax(360px,440px) 1fr;gap:0;align-items:start}
+  @media (max-width:940px){.main{grid-template-columns:1fr}}
+
+  /* ---------- form pane ---------- */
+  .pane-form{border-right:1px solid var(--border);min-height:calc(100vh - 55px);background:var(--surface2)}
+  @media (max-width:940px){.pane-form{border-right:none;border-bottom:1px solid var(--border);min-height:0}}
+  .scroll{padding:18px 18px 120px}
+
+  .sect{margin-bottom:14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+  .sect > summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:13px 15px;font-weight:600;font-size:13.5px;user-select:none}
+  .sect > summary::-webkit-details-marker{display:none}
+  .sect > summary .chev{margin-left:auto;color:var(--faint);transition:transform .18s}
+  .sect[open] > summary .chev{transform:rotate(90deg)}
+  .sect .step{width:22px;height:22px;flex:none;border-radius:6px;background:var(--surface2);border:1px solid var(--border-strong);display:grid;place-items:center;font-size:11px;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums}
+  .sect .body{padding:4px 15px 16px;border-top:1px solid var(--border)}
+  .summ-tag{margin-left:8px;font-size:11px;font-weight:500;color:var(--p1);background:color-mix(in srgb,var(--p1) 14%,transparent);padding:2px 7px;border-radius:20px;max-width:170px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+  label.fld{display:block;margin-top:13px}
+  label.fld:first-child{margin-top:6px}
+  .lab{display:block;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+  .hint{font-size:11.5px;color:var(--faint);margin-top:4px;line-height:1.35}
+  input[type=text],input[type=url],input[type=date],input[type=number],select,textarea{
+    width:100%;font-family:inherit;font-size:13.5px;color:var(--text);background:var(--field);
+    border:1px solid var(--border-strong);border-radius:var(--radius-sm);padding:9px 11px;transition:border-color .15s,background .15s}
+  textarea{resize:vertical;min-height:60px;line-height:1.45}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--p1);background:var(--field-focus)}
+  select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--faint) 50%),linear-gradient(135deg,var(--faint) 50%,transparent 50%);background-position:calc(100% - 16px) 51%,calc(100% - 11px) 51%;background-size:5px 5px,5px 5px;background-repeat:no-repeat;padding-right:32px}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .row2 label.fld{margin-top:13px}
+
+  /* guest cards */
+  .guest{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;margin-top:11px;position:relative}
+  .guest .rm{position:absolute;top:8px;right:8px;border:none;background:transparent;color:var(--faint);cursor:pointer;font-size:16px;line-height:1;padding:2px 5px;border-radius:5px}
+  .guest .rm:hover{color:var(--danger);background:color-mix(in srgb,var(--danger) 14%,transparent)}
+  .guest .gh{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--p2);margin-bottom:2px}
+
+  /* tools */
+  .toolcat{margin-top:14px}
+  .toolcat:first-child{margin-top:6px}
+  .toolcat h4{margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:8px}
+  .toolcat h4::after{content:"";flex:1;height:1px;background:var(--border)}
+  .tool{display:flex;align-items:center;gap:9px;padding:6px 4px;border-radius:6px}
+  .tool:hover{background:var(--surface2)}
+  .tool .nm{font-size:13px;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .chk{width:17px;height:17px;flex:none;border-radius:5px;border:1.5px solid var(--border-strong);background:var(--field);cursor:pointer;display:grid;place-items:center;transition:.12s}
+  .chk[data-on="1"]{background:var(--p1-ink);border-color:var(--p1-ink)}
+  .chk[data-on="1"]::after{content:"";width:9px;height:5px;border-left:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(-45deg) translateY(-1px)}
+  .dd{font-size:11px;font-weight:600;color:var(--faint);border:1px solid var(--border-strong);background:var(--field);border-radius:20px;padding:3px 9px;cursor:pointer;transition:.12s;white-space:nowrap}
+  .dd[data-on="1"]{color:#fff;background:var(--p3-ink);border-color:var(--p3-ink)}
+  .dd[disabled]{opacity:.4;cursor:not-allowed}
+  .ddcount{font-size:11.5px;color:var(--muted);margin-top:10px;padding:8px 11px;background:var(--surface2);border-radius:7px;border:1px solid var(--border)}
+  .ddcount b{color:var(--p3)}
+  .ddcount .over{color:var(--danger)}
+
+  .toggle{display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none}
+  .switch{width:38px;height:22px;border-radius:20px;background:var(--border-strong);position:relative;transition:.16s;flex:none}
+  .switch::after{content:"";position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;transition:.16s;box-shadow:0 1px 3px rgba(0,0,0,.4)}
+  .toggle[data-on="1"] .switch{background:var(--p2-ink)}
+  .toggle[data-on="1"] .switch::after{left:18px}
+
+  .icp-note{font-size:11.5px;color:var(--faint);margin:2px 0 0;display:flex;gap:6px;align-items:flex-start}
+  .icp-note b{color:var(--p1)}
+  .taglist{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+
+  /* ---------- output pane ---------- */
+  .pane-out{min-height:calc(100vh - 55px);display:flex;flex-direction:column}
+  .tabs{position:sticky;top:55px;z-index:10;display:flex;gap:2px;padding:10px 18px 0;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);flex-wrap:wrap}
+  .tab{font-family:inherit;font-size:13px;font-weight:560;color:var(--muted);background:transparent;border:none;border-bottom:2px solid transparent;padding:9px 12px 11px;cursor:pointer;display:flex;align-items:center;gap:7px}
+  .tab:hover{color:var(--text)}
+  .tab[data-on="1"]{color:var(--text);border-bottom-color:var(--accent,var(--p1))}
+  .tab .dot{width:7px;height:7px;border-radius:50%;background:var(--accent,var(--p1))}
+  .out-wrap{padding:18px;flex:1}
+  .out-head{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+  .out-head h2{font-size:16px;margin:0;font-weight:650;letter-spacing:-.01em}
+  .out-head .sub{font-size:12.5px;color:var(--muted)}
+  .out-head .sp{margin-left:auto;display:flex;gap:8px}
+  .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--raise);border:1px solid var(--p3);color:var(--text);padding:10px 16px;border-radius:8px;font-size:13px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:.22s;z-index:60}
+  .toast[data-on="1"]{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  .doc{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:26px 30px;box-shadow:var(--shadow);max-width:760px}
+  .doc.code{padding:0;max-width:none;overflow:hidden}
+  .doc.code pre{margin:0;padding:20px 22px;overflow:auto;max-height:calc(100vh - 210px);font-family:var(--mono);font-size:12px;line-height:1.55;color:var(--text)}
+  .doc.code pre::-webkit-scrollbar{height:10px;width:10px}
+  .doc.code pre::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:6px}
+
+  /* rendered markdown-ish */
+  .md h3{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--p1);margin:26px 0 6px;font-weight:700}
+  .md h3:first-child{margin-top:0}
+  .md h4{font-size:14.5px;margin:20px 0 4px;font-weight:650}
+  .md p{margin:0 0 11px;white-space:pre-wrap}
+  .md ul{margin:0 0 12px;padding-left:20px}
+  .md li{margin:0 0 5px}
+  .md .rule{height:1px;background:var(--border);margin:20px 0;border:none}
+  .md .muted{color:var(--muted)}
+  .md .slidecard{border:1px solid var(--border);border-radius:8px;padding:13px 15px;margin:0 0 10px;background:var(--surface2)}
+  .md .slidecard .sn{display:flex;align-items:center;gap:9px;margin-bottom:8px}
+  .md .slidecard .num{font-variant-numeric:tabular-nums;font-weight:700;font-size:12px;color:#fff;background:var(--faint);border-radius:5px;padding:2px 7px;min-width:26px;text-align:center}
+  .md .slidecard .num.p1{background:var(--p1-ink)}
+  .md .slidecard .num.p2{background:var(--p2-ink)}
+  .md .slidecard .num.p3{background:var(--p3-ink)}
+  .md .slidecard .num.dk{background:#0F172A;border:1px solid var(--border-strong)}
+  .md .slidecard .tt{font-weight:640;font-size:13.5px}
+  .md .slidecard .kind{margin-left:auto;font-size:10.5px;color:var(--faint);text-transform:uppercase;letter-spacing:.05em}
+  .md .slidecard .cp{font-size:13px;white-space:pre-wrap;color:var(--text)}
+  .md .slidecard .cp b{color:var(--text)}
+  .md .slidecard .note{font-size:12px;color:var(--muted);margin-top:8px;padding-top:8px;border-top:1px dashed var(--border)}
+  .md .slidecard table{border-collapse:collapse;width:100%;font-size:11.5px;margin-top:6px}
+  .md .slidecard th,.md .slidecard td{border:1px solid var(--border);padding:5px 7px;text-align:left;vertical-align:top}
+  .md .slidecard th{background:var(--surface);font-weight:650}
+  .flag{color:var(--amber);font-weight:600}
+
+  .empty{display:grid;place-items:center;min-height:60vh;text-align:center;color:var(--muted);padding:20px}
+  .empty .big{font-size:15px;color:var(--text);font-weight:600;margin-bottom:6px}
+
+  a.lnk{color:var(--p1);text-decoration:none}
+  a.lnk:hover{text-decoration:underline}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div class="brand">
+      <span class="glyph"><i></i></span>
+      <h1>Workshop Builder<span>AI Fundamentals for Professionals - Atlanta</span></h1>
+    </div>
+    <div class="top-actions">
+      <button class="btn ghost sm" id="themeBtn" title="Toggle theme">Theme</button>
+      <button class="btn ghost sm" id="resetBtn" title="Clear all fields">Reset</button>
+      <button class="btn primary" id="genBtn">Generate all</button>
+    </div>
+  </header>
+
+  <div class="main">
+    <!-- FORM -->
+    <section class="pane-form">
+      <div class="scroll" id="form"></div>
+    </section>
+
+    <!-- OUTPUT -->
+    <section class="pane-out">
+      <div class="tabs" id="tabs"></div>
+      <div class="out-wrap" id="out"></div>
+    </section>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+/* ============================================================ DATA ============================================================ */
+
+const VENUE_DEFAULT = "Improving - Alpharetta, GA";
+const SEATS_DEFAULT = 60;
+const URL_THREADS = "threadsmr.com";
+const URL_AIC = "aicollective.com/chapters/atlanta";
+
+const AUDIENCES = [
+  "Community Builders & Managers","Conference Organizers","Consultants & Solopreneurs",
+  "Customer Experience Professionals","Customer Success","Financial Advisors",
+  "Healthcare Administrators","HR & People Operations Leaders","Legal Professionals",
+  "Marketing Professionals","Nonprofit Leaders","Product Designers","Product Managers",
+  "Qualitative Research Professionals","Real Estate Professionals","Sales Professionals",
+  "Small Business Owners"
+];
+
+// noun form used in sentences, and a short hashtag token
+const AUD_META = {
+  "Consultants & Solopreneurs":{noun:"consultant", short:"Consulting"},
+  "Small Business Owners":{noun:"small business owner", short:"SmallBiz"},
+  "Qualitative Research Professionals":{noun:"researcher", short:"Research"},
+  "Customer Experience Professionals":{noun:"CX professional", short:"CX"},
+  "Community Builders & Managers":{noun:"community builder", short:"Community"},
+  "Marketing Professionals":{noun:"marketer", short:"Marketing"},
+  "HR & People Operations Leaders":{noun:"people leader", short:"HR"},
+  "Conference Organizers":{noun:"event organizer", short:"Events"},
+  "Sales Professionals":{noun:"sales pro", short:"Sales"},
+  "Nonprofit Leaders":{noun:"nonprofit leader", short:"Nonprofit"},
+  "Healthcare Administrators":{noun:"healthcare administrator", short:"Healthcare"},
+  "Real Estate Professionals":{noun:"real estate pro", short:"RealEstate"},
+  "Financial Advisors":{noun:"advisor", short:"WealthTech"},
+  "Product Designers":{noun:"product designer", short:"ProductDesign"},
+  "Product Managers":{noun:"product manager", short:"ProductManagement"},
+  "Customer Success":{noun:"CS leader", short:"CustomerSuccess"},
+  "Legal Professionals":{noun:"legal professional", short:"LegalTech"}
+};
+
+// Full ICP database (arrays). Fields blank for audiences without a profile in the brief.
+const ICP = {
+  "Consultants & Solopreneurs":{
+    titles:"Independent Consultant, Freelancer, Solopreneur, Fractional Executive, Business Coach",
+    pains:["Writing proposals from scratch","Manual client research","Wearing every hat alone","Staying current across industries"],
+    winning:["Closing more work faster","Doing in two hours what used to take a full day"],
+    tools:["Google Workspace","Zoom","Notion","HubSpot","LinkedIn"],
+    claude:["Proposal drafts","SOW templates","Client email sequences","Strategic frameworks"],
+    gemini:["Drafting in Google Docs","Summarizing Gmail threads","Meet recaps"],
+    perplexity:["Pre-call client industry research","Prospect intel","Competitive landscapes"],
+    notebooklm:["Analyzing RFPs","Competitor reports","Discovery transcripts"],
+    cowork:["File cleanup","Automated follow-up templates","Recurring deliverables"]
+  },
+  "Small Business Owners":{
+    titles:"Owner, Founder, Proprietor, Managing Partner, Operator",
+    pains:["Wearing every hat with no time","Marketing and sales on top of running the business","Cash flow and admin overload","No budget for specialists","Keeping up with tools and tech"],
+    winning:["Getting hours back each week","Looking bigger and more professional than your headcount","Running like a team when you are a team of one"],
+    tools:["QuickBooks","Google Workspace","Square","Canva","Mailchimp","Meta and Instagram"],
+    claude:["Marketing copy and emails","Proposals and quotes","Policies and simple SOPs","Customer replies and FAQs"],
+    gemini:["Docs and Sheets work","Summarizing your inbox","Simple reports"],
+    perplexity:["Local market and competitor research","Vendor and pricing research","Sourced answers to how-to questions"],
+    notebooklm:["Contracts and leases","Vendor docs and manuals for quick answers"],
+    cowork:["Recurring admin and reports","Organizing files","Onboarding and template docs"]
+  },
+  "Qualitative Research Professionals":{
+    titles:"Qual Researcher, Insights Manager, Focus Group Moderator, UX Researcher, Research Director",
+    pains:["Manual transcript analysis","Writing discussion guides from scratch","Synthesizing hours of raw data","Translating findings for non-research audiences"],
+    winning:["Cutting analysis time in half","Tighter discussion guides","Executive summaries in minutes"],
+    tools:["Otter.ai","Dovetail","Miro","Google Docs","Qualtrics","Zoom"],
+    claude:["Discussion guide drafts","Insight synthesis","Executive summaries","Debrief reports"],
+    gemini:["Auto-summarizing recordings","Pulling themes from Google Docs transcripts"],
+    perplexity:["Secondary research before fieldwork","Competitive context for client briefs"],
+    notebooklm:["Uploading transcripts for thematic Q&A","Cross-session pattern analysis"],
+    cowork:["Organizing transcript files","Generating recurring report templates"]
+  },
+  "Customer Experience Professionals":{
+    titles:"CX Manager, VoC Analyst, Journey Mapping Lead, CCO, Experience Designer, CS Leader",
+    pains:["Manual VOC analysis","Writing journey maps","Presenting data to skeptical executives","Keeping up with shifting customer expectations"],
+    winning:["Real-time insight synthesis","Faster journey documentation","AI-generated CX strategy briefs"],
+    tools:["Medallia","Qualtrics","Salesforce","Miro","Tableau","Slack"],
+    claude:["Journey map narratives","VOC synthesis reports","CX strategy docs","Executive briefings"],
+    gemini:["Summarizing feedback threads in Gmail","CX scorecards in Sheets"],
+    perplexity:["Benchmarking industry CX leaders","Emerging experience trends"],
+    notebooklm:["Survey results or call center transcripts for theme analysis"],
+    cowork:["Automating recurring VOC reports","Organizing feedback files by touchpoint"]
+  },
+  "Community Builders & Managers":{
+    titles:"Community Manager, Head of Community, Membership Director, Chapter Lead, Online Community Strategist",
+    pains:["Content creation burnout","Low event attendance","Member retention","Manually tracking engagement","Justifying ROI"],
+    winning:["Consistent content without burning out","AI-drafted member communications","Data-driven engagement"],
+    tools:["Slack","Discord","Mighty Networks","Luma","Beehiiv","Notion","Airtable"],
+    claude:["Member welcome sequences","Newsletter drafts","Event descriptions","Campaign copy"],
+    gemini:["Community updates in Google Docs","Feedback summaries in Sheets"],
+    perplexity:["Community best practices","Benchmarking member engagement strategies"],
+    notebooklm:["Analyzing member survey responses","Reviewing engagement data"],
+    cowork:["Scheduling email blasts","Organizing event assets","Automating member onboarding docs"]
+  },
+  "Marketing Professionals":{
+    titles:"Marketing Manager, Content Strategist, Brand Manager, Demand Gen Lead, CMO, Growth Marketer",
+    pains:["Content volume demands","Campaign brief writing","Keeping messaging consistent","Staying ahead of trends"],
+    winning:["10x content output","Briefing-to-draft in minutes","Always-on research without a dedicated analyst"],
+    tools:["HubSpot","Canva","GA4","Semrush","Mailchimp","Figma","Hootsuite"],
+    claude:["Campaign briefs","Blog drafts","Email sequences","Ad copy","Brand voice guidelines"],
+    gemini:["Google Ads integration","Analytics summaries","Content in Docs at scale"],
+    perplexity:["Trend research","Competitor campaign monitoring","Real-time industry intel"],
+    notebooklm:["Brand guidelines and competitive reports for strategic insight extraction"],
+    cowork:["Content calendar population","Campaign asset organization","Recurring performance reports"]
+  },
+  "HR & People Operations Leaders":{
+    titles:"HR Business Partner, Talent Acquisition Lead, People Ops Director, CHRO, L&D Manager",
+    pains:["Writing job descriptions","Policy documentation","Onboarding materials","Performance review prep","Staying compliant"],
+    winning:["Faster hiring documentation","Personalized onboarding at scale","AI-assisted interview prep"],
+    tools:["Workday","Greenhouse","Lattice","Google Workspace","Slack","Culture Amp"],
+    claude:["Job description drafts","Offer letters","Performance review frameworks","Policy docs"],
+    gemini:["HR communications in Gmail","Employee survey results in Sheets"],
+    perplexity:["Benchmarking compensation","HR compliance changes","Talent market trends"],
+    notebooklm:["Engagement survey analysis","Exit interview transcript themes"],
+    cowork:["Automating onboarding doc generation","Organizing candidate files","HR reports"]
+  },
+  "Conference Organizers":{
+    titles:"Event Producer, Conference Director, Program Chair, Event Marketer, Sponsorship Lead",
+    pains:["Building agendas and speaker lineups from scratch","Writing session descriptions and marketing copy","Chasing sponsors and filling seats","Juggling logistics across many moving parts","Post-event reporting and follow-up"],
+    winning:["Agendas and copy drafted in a fraction of the time","Sharper sponsor and attendee outreach","Higher registration with less scramble"],
+    tools:["Cvent","Sched","Luma","Eventbrite","Mailchimp","Canva","Airtable"],
+    claude:["Session descriptions and speaker bios","Sponsor decks and prospectus copy","Attendee email campaigns","Post-event reports and recaps"],
+    gemini:["Run-of-show and planning docs","Budget and registration tracking in Sheets"],
+    perplexity:["Speaker and sponsor research","Venue and vendor comparisons","Topic and trend scouting"],
+    notebooklm:["Past event surveys and debriefs","Sponsor contracts and vendor docs"],
+    cowork:["Recurring task and deadline tracking","Organizing speaker and sponsor files","Templated attendee communications"]
+  },
+  "Sales Professionals":{
+    titles:"Account Executive, SDR, Sales Manager, VP Sales, Business Development Rep, Revenue Leader",
+    pains:["Generic cold outreach","Manual CRM updates","Proposal writing","Research before calls"],
+    winning:["Personalized outreach at scale","CRM summaries in seconds","Closing faster with better-prepared calls"],
+    tools:["Salesforce","HubSpot","LinkedIn Sales Navigator","Gong","Outreach","ZoomInfo"],
+    claude:["Cold email sequences","Proposal drafts","Objection handling scripts","Follow-up copy"],
+    gemini:["Meeting recaps in Google Meet","Deal info in Sheets"],
+    perplexity:["Pre-call prospect and company research","Industry news before outreach"],
+    notebooklm:["Call transcripts for patterns","Competitor battle cards"],
+    cowork:["Follow-up email automation","Deal document organization","Pipeline reports"]
+  },
+  "Nonprofit Leaders":{
+    titles:"Executive Director, Development Director, Program Manager, Grants Manager, Communications Lead",
+    pains:["Grant writing is time-consuming","Donor communications feel templated","Limited staff","Reporting requirements"],
+    winning:["Faster grant applications","More personalized donor outreach","AI-assisted impact reporting"],
+    tools:["Salesforce Nonprofit","Google Workspace","Mailchimp","Canva","DonorPerfect"],
+    claude:["Grant proposal drafts","Donor thank-you sequences","Impact reports","Board memos"],
+    gemini:["Program data in Sheets","Reports in Google Docs"],
+    perplexity:["Grant opportunities","Benchmarking peer organizations","Impact data"],
+    notebooklm:["Program evaluation reports","Past grant application review"],
+    cowork:["Donor report generation","Grant file organization","Board update templates"]
+  },
+  "Healthcare Administrators":{
+    titles:"Practice Manager, Hospital Administrator, Health System Director, Clinic Operations Lead, CMO",
+    pains:["Documentation overload","Policy writing","Communicating complex info to patients and staff","Compliance demands"],
+    winning:["Faster policy documentation","Clearer patient communications","AI-assisted operational reporting"],
+    tools:["Epic","Microsoft 365","Slack","Zoom","Tableau","Smartsheet"],
+    claude:["Policy drafts","Staff memos","Patient-facing FAQs","Operational reports"],
+    gemini:["Summarizing emails","Drafting reports in Google Docs"],
+    perplexity:["Regulatory updates","Operational best practices"],
+    notebooklm:["Patient satisfaction data","Accreditation documents"],
+    cowork:["Recurring compliance reports","Policy document organization","Staff update templates"]
+  },
+  "Real Estate Professionals":{
+    titles:"Real Estate Agent, Broker, Property Manager, Real Estate Investor, Commercial RE Advisor",
+    pains:["Writing listing descriptions","Client follow-up volume","Market research for every deal","Repetitive contract explanations"],
+    winning:["Listing copy in minutes","Personalized follow-up at scale","Instant market intelligence"],
+    tools:["Zillow","MLS","Google Workspace","kvCORE","Follow Up Boss","DocuSign"],
+    claude:["Listing descriptions","Buyer/seller email sequences","Offer summary memos","Neighborhood guides"],
+    gemini:["Client update emails in Gmail","Market summary docs in Google Docs"],
+    perplexity:["Real-time market data","Neighborhood research","Interest rate trends"],
+    notebooklm:["Inspection reports","HOA documents for key issue analysis"],
+    cowork:["Client status update automation","Transaction file organization","Market reports"]
+  },
+  "Financial Advisors":{
+    titles:"Financial Advisor, Wealth Manager, CFP, RIA, Estate Planner, Retirement Specialist",
+    pains:["Writing client-facing reports","Staying current on markets","Proposal prep","Compliance documentation"],
+    winning:["Client reports drafted in minutes","Always-current market intelligence","AI-assisted compliance docs"],
+    tools:["Salesforce","Orion","MoneyGuidePro","Microsoft 365","Zoom","DocuSign"],
+    claude:["Client summary letters","Financial plan narratives","Market commentary","Meeting follow-ups"],
+    gemini:["Client emails in Gmail","Meeting notes in Google Docs"],
+    perplexity:["Real-time market research","Economic indicator tracking","Competitor products"],
+    notebooklm:["Prospectus documents","Client financial plans","Regulatory guidance Q&A"],
+    cowork:["Recurring client report generation","Account file organization","Compliance doc templates"]
+  },
+  "Product Designers":{
+    titles:"Product Designer, UX Designer, UI Designer, Design Lead, UX Researcher",
+    pains:["Turning fuzzy requirements into clear flows","Writing UX copy and specs","Synthesizing user research","Keeping design systems consistent","Explaining design decisions to stakeholders"],
+    winning:["Faster from brief to prototype","Research synthesized in minutes","Clearer specs and rationale"],
+    tools:["Figma","FigJam","Notion","Miro","Maze","Linear"],
+    claude:["UX copy and microcopy","Design specs and rationale","User research synthesis","Persona and journey drafts"],
+    gemini:["Notes and specs in Docs","Research data in Sheets"],
+    perplexity:["Competitive UX teardowns","Design pattern and accessibility research"],
+    notebooklm:["Research transcripts and reports for themes","Design system docs for quick answers"],
+    cowork:["Organizing research files","Recurring design QA checklists"]
+  },
+  "Product Managers":{
+    titles:"Product Manager, Senior PM, Group PM, Product Owner, Director of Product",
+    pains:["Writing PRDs and specs","Synthesizing customer feedback","Prioritizing a crowded backlog","Aligning stakeholders","Turning data into decisions"],
+    winning:["PRDs and updates drafted fast","Feedback themes in minutes","Clearer, faster stakeholder alignment"],
+    tools:["Jira","Linear","Notion","Productboard","Amplitude","Figma"],
+    claude:["PRDs and one-pagers","Feature specs and user stories","Feedback synthesis","Stakeholder updates and launch notes"],
+    gemini:["Roadmap docs and notes","Metrics summaries in Sheets"],
+    perplexity:["Market and competitor research","Pricing and positioning intel"],
+    notebooklm:["Customer interviews and support logs for themes","Spec and research archives"],
+    cowork:["Recurring status reports","Organizing feedback and research files"]
+  },
+  "Customer Success":{
+    titles:"Customer Success Manager, CS Lead, Onboarding Manager, Renewals Manager, VP Customer Success",
+    pains:["Manual account notes and updates","Writing QBRs and health summaries","Spotting churn risk early","Repetitive onboarding docs","Keeping up across a book of accounts"],
+    winning:["QBRs and recaps drafted in minutes","Earlier read on risk and expansion","More time with customers, less admin"],
+    tools:["Gainsight","Salesforce","HubSpot","Zendesk","Slack","Zoom"],
+    claude:["QBR narratives and account summaries","Onboarding and adoption playbooks","Renewal and expansion emails","Risk and save plans"],
+    gemini:["Account notes in Docs","Health and usage tracking in Sheets"],
+    perplexity:["Account and industry research before calls","Benchmarking success best practices"],
+    notebooklm:["Call transcripts and tickets for themes","Product docs for fast answers"],
+    cowork:["Recurring health reports","Organizing account files","Templated onboarding docs"]
+  },
+  "Legal Professionals":{
+    titles:"Attorney, In-house Counsel, Paralegal, Legal Operations, Compliance Manager",
+    pains:["Reviewing long contracts and documents","Drafting standard agreements and memos","Legal research across sources","Plain-language explanations for clients","Keeping up with regulatory change"],
+    winning:["Faster first-pass contract review","Drafts and memos in less time","Research and summaries in minutes"],
+    tools:["Microsoft 365","iManage","Clio","DocuSign","Westlaw","Relativity"],
+    claude:["First-draft agreements and clauses","Memos and client-ready summaries","Plain-language explainers","Policy and compliance docs"],
+    gemini:["Drafting and notes in Docs","Matter tracking in Sheets"],
+    perplexity:["Preliminary legal and regulatory research with sources","Company and counterparty background"],
+    notebooklm:["Contracts, filings, and case files for Q&A","Regulatory guidance for fast answers"],
+    cowork:["Organizing matter files","Recurring compliance reports and templates"]
+  }
+};
+
+const TOOL_CATS = [
+  {cat:"Core LLMs", tools:["Claude Code","Claude Chat","ChatGPT","Gemini"]},
+  {cat:"Research & Discovery", tools:["Perplexity","Elicit","Consensus","You.com","Google Deep Research"]},
+  {cat:"Notetakers & Meeting AI", tools:["Otter.ai","Fireflies.ai","Granola","Fathom","Circleback","Tactiq","Avoma"]},
+  {cat:"Document Intelligence", tools:["Gemini Notebook","ChatPDF","PDF.ai"]},
+  {cat:"Automation & Task Delegation", tools:["Claude Cowork","Make.com","Zapier","n8n","Manus"]},
+  {cat:"Writing & Content", tools:["Notion AI","Jasper","Copy.ai","Gamma","Writesonic"]},
+  {cat:"Image, Video & Media", tools:["DALL-E","Midjourney","Canva AI","Runway","HeyGen","Sora"]},
+  {cat:"Voice & Audio", tools:["ElevenLabs","Whisper","Podcast.ai"]}
+];
+
+// map tool -> {kind, icpField}, kind drives the generic deep-dive template when no ICP field exists
+const TOOL_KIND = {};
+(function(){
+  const m = {
+    "Claude Code":["llm","claude"],"Claude Chat":["llm","claude"],"ChatGPT":["llm",null],"Gemini":["llm","gemini"],
+    "Perplexity":["research","perplexity"],"Elicit":["research",null],"Consensus":["research",null],"You.com":["research",null],"Google Deep Research":["research",null],
+    "Otter.ai":["notetaker",null],"Fireflies.ai":["notetaker",null],"Granola":["notetaker",null],"Fathom":["notetaker",null],"Circleback":["notetaker",null],"Tactiq":["notetaker",null],"Avoma":["notetaker",null],
+    "Gemini Notebook":["docintel","notebooklm"],"ChatPDF":["docintel",null],"PDF.ai":["docintel",null],
+    "Claude Cowork":["automation","cowork"],"Make.com":["automation",null],"Zapier":["automation",null],"n8n":["automation",null],"Manus":["automation",null],
+    "Notion AI":["writing",null],"Jasper":["writing",null],"Copy.ai":["writing",null],"Gamma":["writing",null],"Writesonic":["writing",null],
+    "DALL-E":["image",null],"Midjourney":["image",null],"Canva AI":["image",null],"Runway":["image",null],"HeyGen":["image",null],"Sora":["image",null],
+    "ElevenLabs":["voice",null],"Whisper":["voice",null],"Podcast.ai":["voice",null]
+  };
+  for(const k in m) TOOL_KIND[k]={kind:m[k][0], field:m[k][1]};
+})();
+
+const ME_MD_SECTIONS = [
+  ["Who You Are","Your role, business, and what you do day to day"],
+  ["Your Clients","Who you serve and what they care about"],
+  ["Your Voice & Style","How you write, words you use, words you avoid"],
+  ["Current Priorities","What you are focused on this quarter"],
+  ["Tools You Use","The stack AI should assume you work inside"],
+  ["How to Help You Best","Format, length, and tone you want back"]
+];
+
+/* ============================================================ STATE ============================================================ */
+const state = {
+  audience:"",
+  audience2:"",        // optional second audience to merge
+  label:"",            // optional custom title label override
+  noun:"",             // optional custom singular noun override
+  customName:"",       // name for an "Other" custom audience
+  icp:null,            // editable working copy
+  date:"",
+  venue:VENUE_DEFAULT,
+  seats:SEATS_DEFAULT,
+  lead:{ name:"Mark Michelson", credit:"Global Leadership Team and Regional Director for The AI Collective, and founder of Threads Marketing Research & Strategy and Stitchs AI Training", cohortBio:"" },
+  guests:[],
+  include:{},          // toolName -> true
+  deep:[],             // ordered tool names (max 4)
+  angle:"",
+  maven:{on:false, title:"", start:"", price:"", url:""},
+  activeTab:"luma"
+};
+
+function freshIcp(aud){
+  const s = ICP[aud] || {titles:"",pains:[],winning:[],tools:[],claude:[],gemini:[],perplexity:[],notebooklm:[],cowork:[]};
+  return JSON.parse(JSON.stringify(s));
+}
+function mergeIcp(a1,a2){
+  const s1=freshIcp(a1);
+  if(!a2) return s1;
+  const s2=freshIcp(a2);
+  const uniq=arr=>{ const seen={}, out=[]; arr.filter(Boolean).forEach(x=>{ const k=x.toLowerCase(); if(!seen[k]){seen[k]=1; out.push(x);} }); return out; };
+  const m={};
+  ["pains","winning","tools","claude","gemini","perplexity","notebooklm","cowork"].forEach(k=> m[k]=uniq((s1[k]||[]).concat(s2[k]||[])) );
+  m.titles=[s1.titles,s2.titles].filter(Boolean).join(", ");
+  return m;
+}
+// ----- persistence (saves ICP edits and custom audiences in the browser) -----
+const LS_KEY="wsb_store_v1";
+function loadStore(){ try{ return JSON.parse(localStorage.getItem(LS_KEY)||"{}"); }catch(e){ return {}; } }
+function saveStore(o){ try{ localStorage.setItem(LS_KEY, JSON.stringify(o)); }catch(e){} }
+function customAudList(){ return (loadStore().customAudiences)||[]; }
+function primaryName(){ return state.audience==="__custom__" ? (state.customName.trim()||"Custom Audience") : state.audience; }
+function persistIcp(){
+  if(!state.audience || state.audience2) return;   // persist single-audience ICPs only
+  const name=primaryName();
+  if(!name || name==="Custom Audience") return;
+  const s=loadStore(); s.overrides=s.overrides||{}; s.overrides[name]=state.icp;
+  if(state.audience==="__custom__"){ s.customAudiences=s.customAudiences||[]; if(s.customAudiences.indexOf(name)<0) s.customAudiences.push(name); }
+  saveStore(s);
+}
+function applyAud(){
+  if(!state.audience2){
+    const name=primaryName(), s=loadStore();
+    if(s.overrides && s.overrides[name]){ state.icp=JSON.parse(JSON.stringify(s.overrides[name])); return; }
+  }
+  state.icp = mergeIcp(state.audience==="__custom__"?"":state.audience, state.audience2);
+}
+function baseName(a){ return (a||"").replace(/ (Professionals|Leaders|Managers|Administrators|Advisors|Solopreneurs|Owners)$/,""); }
+function defaultLabel(){ if(!state.audience) return ""; if(state.audience2) return baseName(primaryName())+" & "+baseName(state.audience2)+" Professionals"; return primaryName(); }
+function audLabel(){ return (state.label&&state.label.trim())?state.label.trim():defaultLabel(); }
+function defaultNoun(){ if(state.audience2) return (baseName(primaryName())+" and "+baseName(state.audience2)+" professional").toLowerCase(); return (AUD_META[primaryName()]||{}).noun||"professional"; }
+function audNoun(){ return (state.noun&&state.noun.trim())?state.noun.trim():defaultNoun(); }
+function audNounPl(){ const n=audNoun(); return /s$/.test(n)?n:n.replace(/y$/,"ie")+"s"; }
+
+/* ============================================================ HELPERS ============================================================ */
+const $ = (s,r=document)=>r.querySelector(s);
+const el = (t,c,txt)=>{const e=document.createElement(t); if(c)e.className=c; if(txt!=null)e.textContent=txt; return e;};
+const esc = s => (s==null?"":String(s)).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+const clean = s => (s==null?"":String(s))
+  .replace(/[—–]/g,"-")
+  .replace(/;/g,",")
+  .replace(/[‘’]/g,"'")
+  .replace(/[“”]/g,'"');
+const slug = s => (s||"").replace(/[^A-Za-z0-9]+/g,"_").replace(/^_|_$/g,"");
+const cap = s => s ? s[0].toUpperCase()+s.slice(1) : s;
+
+function fmtDate(d){
+  if(!d) return "";
+  const dt = new Date(d+"T12:00:00");
+  if(isNaN(dt)) return d;
+  return dt.toLocaleDateString("en-US",{weekday:"long", month:"long", day:"numeric", year:"numeric"});
+}
+function monthYear(d){
+  if(!d) return {m:"Month", y:"Year"};
+  const dt = new Date(d+"T12:00:00");
+  if(isNaN(dt)) return {m:"Month", y:"Year"};
+  return {m:dt.toLocaleDateString("en-US",{month:"long"}), y:String(dt.getFullYear())};
+}
+function list(arr){ return (arr||[]).filter(Boolean); }
+function firstN(arr,n){ return list(arr).slice(0,n); }
+function nn(){ const g=state.guests.filter(x=>x.name.trim()); return g; }
+function guestsFor(kind){ return state.guests.filter(g=>g.name.trim() && g[kind]); }
+function deepTools(){ return state.deep.filter(t=>state.include[t]); }
+
+function toast(msg){
+  const t=$("#toast"); t.textContent=msg; t.setAttribute("data-on","1");
+  clearTimeout(toast._t); toast._t=setTimeout(()=>t.removeAttribute("data-on"),1600);
+}
+async function copyText(txt){
+  try{ await navigator.clipboard.writeText(txt); toast("Copied to clipboard"); }
+  catch(e){
+    const ta=document.createElement("textarea"); ta.value=txt; document.body.appendChild(ta); ta.select();
+    try{ document.execCommand("copy"); toast("Copied to clipboard"); }catch(_){ toast("Copy failed"); }
+    ta.remove();
+  }
+}
+async function saveFile(filename, data){
+  if(window.claude && window.claude.downloads && typeof window.claude.downloads.save==="function"){
+    try{ await window.claude.downloads.save({filename, data}); toast("Saved "+filename); return; }
+    catch(e){ /* fall through to blob */ }
+  }
+  try{
+    const blob=new Blob([data],{type:"text/plain"}); const url=URL.createObjectURL(blob);
+    const a=document.createElement("a"); a.href=url; a.download=filename; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),1500); toast("Downloaded "+filename);
+  }catch(e){ toast("Download blocked"); }
+}
+
+/* ============================================================ SLIDE MODEL ============================================================ */
+// returns array of slide objects: {kind, part, accent, title, subtitle, bullets[], columns[], table{}, footer, note}
+function buildModel(){
+  const c = state, icp = c.icp || freshIcp(c.audience);
+  const aud = audLabel() || "Your Audience";
+  const nounRaw = audNoun();
+  const nounPl = audNounPl();
+  const dateStr = fmtDate(c.date);
+  const guests = guestsFor("inperson");
+  const hostLine = [state.lead.name+" - lead instructor"]
+    .concat(guests.map(g=>[g.name, g.role].filter(Boolean).join(" - ")));
+  const dd = deepTools();
+  const S=[];
+  const A={p1:"0891B2",p2:"7C3AED",p3:"059669",dk:"0F172A"};
+
+  // 1 Title
+  S.push({kind:"title", part:"dk", title:"AI Fundamentals for "+aud,
+    subtitle:"A hands-on workshop with The AI Collective ATL",
+    footer:[dateStr, c.venue].filter(Boolean).join("   |   "),
+    note:"Open warm. One line on why tonight is worth their two hours. Set the tone: practical, no hype, leave with something you can use tomorrow."});
+
+  // 2 Agenda
+  S.push({kind:"content", part:"p1", title:"Tonight's Agenda",
+    bullets:[
+      "Part 1 - Your work and where AI fits",
+      "Part 2 - The AI ecosystem: LLMs, notetakers, your Me.md, integrations",
+      "Part 3 - Deep dives on "+(dd.length?dd.join(", "):"tonight's featured tools"),
+      "Live demo and Q&A",
+      "Your 7-day action plan"
+    ],
+    note:"Keep it to a glance. Tell them the format repeats so they can relax and follow along."});
+
+  // 3 Hosts
+  S.push({kind:"content", part:"p1", title:"Your Hosts",
+    bullets:hostLine,
+    note:"30 seconds each. Mention Threads ("+URL_THREADS+") and the Atlanta chapter naturally. If a guest is here, hand them a sentence to introduce their own topic."});
+
+  // 4 Part 1 break
+  S.push({kind:"section", part:"p1", accent:A.p1, subtitle:"PART 1", title:"Your Work And Where AI Fits",
+    note:"This part is about them, not the tools. Ask the room what eats their week."});
+
+  // 5 The Moment We're In (3 stats)
+  S.push({kind:"content", part:"p1", title:"The Moment We're In",
+    bullets:[
+      "Stat 1: [X]% of "+nounPl+" now use AI weekly - VERIFY figure and source",
+      "Stat 2: "+cap(nounRaw)+"s save [X] hours a week on "+(list(icp.pains)[0]||"repetitive work").toLowerCase()+" - VERIFY",
+      "Stat 3: [X]x faster turnaround on "+(list(icp.winning)[0]||"core deliverables").toLowerCase()+" - VERIFY"
+    ],
+    flagNote:true,
+    note:"FILL THESE WITH REAL, SOURCED NUMBERS before the event. Three stats specific to "+aud+". The point is not fear, it is momentum: the people in your field who adopt early are pulling ahead."});
+
+  // 6 Your Workflows Today
+  S.push({kind:"content", part:"p1", title:"Your Workflows Today",
+    subtitle:"Where "+nounPl+" spend their time",
+    bullets: list(icp.pains).length ? list(icp.pains).map(p=>p) : ["List the core workflows this audience repeats every week","Where the manual hours go","What they dread starting"],
+    note:"Read the room. Ask which of these hurts most. This sets up every tool later as an answer to a real pain."});
+
+  // 7 Where AI Helps Most
+  {
+    const pains = list(icp.pains); const wins = list(icp.winning);
+    const rows = pains.slice(0,4).map((p,i)=>[p, wins[i] || wins[wins.length-1] || "Faster, cleaner output"]);
+    S.push({kind:"table", part:"p1", title:"Where AI Helps Most",
+      table:{headers:["What slows you down","What changes with AI"], rows: rows.length?rows:[["Add this audience's pains","Add the corresponding win"]]},
+      note:"Move left to right. Every pain has an AI answer you will show tonight. Do not name tools yet, name outcomes."});
+  }
+
+  // 8 Part 2 break
+  S.push({kind:"section", part:"p2", accent:A.p2, subtitle:"PART 2", title:"The AI Ecosystem",
+    note:"Now the map. Four layers, then the tools that live in each."});
+
+  // 9 Ecosystem 4 layers
+  S.push({kind:"content", part:"p2", title:"The AI Ecosystem: 4 Layers",
+    columns:[
+      {head:"Foundation", items:["Large language models (LLMs)","The engines: Claude, ChatGPT, Gemini"]},
+      {head:"Capture", items:["Notetakers and meeting AI","Turn talk into text and action"]},
+      {head:"Context", items:["Your Me.md and document intelligence","Give AI your world to work in"]},
+      {head:"Delegation", items:["Integrations, wrappers, automation","Let work move on its own"]}
+    ],
+    note:"Give them a mental model they keep. Everything tonight fits in one of these four layers."});
+
+  // 10 LLMs compared (table)
+  S.push({kind:"table", part:"p2", title:"LLMs Compared",
+    table:{headers:["Tool","Best for","Watch-out"], rows:[
+      ["Claude Code","Deep writing, reasoning, working across your files","Learn where it lives (desktop and terminal)"],
+      ["ChatGPT","All-round tasks, images, wide plugin world","Verify facts, it sounds sure even when wrong"],
+      ["Gemini","Living inside Google Docs, Gmail, and Sheets","Best value if you already run Google Workspace"],
+      ["Perplexity","Research with real, clickable sources","Not a writer, it is a finder"],
+      ["Notebook","Answering questions from your own documents","Only knows what you upload"]
+    ]},
+    note:"Frame it as a team, not a contest. You will use two or three of these together. Show the table, then say which you reach for first."});
+
+  // 11 Me.md
+  S.push({kind:"content", part:"p2", title:"Personalizing Your AI: The Me.md",
+    bullets:[
+      "A plain-text file you write once about you and your work",
+      "Paste it at the start of any AI session for instant context",
+      "The AI stops guessing and starts sounding like you",
+      "Portable: it works in Claude, ChatGPT, Gemini, anywhere"
+    ],
+    note:"This is the through-line of the whole series. Hold up the QR code. Everyone leaves with a template tonight."});
+
+  // 12 What goes in your Me.md
+  S.push({kind:"content", part:"p2", title:"What Goes In Your Me.md",
+    columns:[
+      {head:"Section 1-3", items:ME_MD_SECTIONS.slice(0,3).map(s=>s[0]+" - "+s[1].toLowerCase())},
+      {head:"Section 4-6", items:ME_MD_SECTIONS.slice(3).map(s=>s[0]+" - "+s[1].toLowerCase())}
+    ],
+    note:"Six short sections. Walk one example live using a "+nounRaw+"'s details so the room sees themselves in it."});
+
+  // 13 Notetakers
+  S.push({kind:"content", part:"p2", title:"Notetakers That Do The Work",
+    subtitle:"Never take meeting notes by hand again",
+    bullets:[
+      "Pocket, Otter, Fireflies, and Granola join your calls and write it all down",
+      "You get summaries, action items, and searchable transcripts",
+      "Feed those transcripts straight into an LLM for the real analysis",
+      "Pick one, use it for a week, and feel the difference"
+    ],
+    note:"Show one recording turning into a summary and a follow-up email. This always lands."});
+
+  // 14 Integrations & wrappers
+  S.push({kind:"content", part:"p2", title:"Integrations & Wrappers",
+    bullets:[
+      "Wrappers put AI inside tools you already use, no new tab needed",
+      "Integrations connect your tools so output flows automatically",
+      "Automation platforms like Make, Zapier, and n8n move work while you sleep",
+      "Claude Cowork hands off whole recurring tasks, not just single prompts"
+    ],
+    note:"This is the payoff of the ecosystem. Keep it concrete: one workflow they run weekly, now on autopilot."});
+
+  // 15 Part 3 break
+  S.push({kind:"section", part:"p3", accent:A.p3, subtitle:"PART 3",
+    title:"Deep Dives For "+aud,
+    note:"Now the hands-on part. "+(dd.length?dd.length+" tools, each tied to your work.":"Pick the featured tools in the builder to fill this section.")});
+
+  // 16 Live demo (dark)
+  S.push({kind:"dark", part:"p3", title:"Live Demo",
+    bullets:[
+      "Watch one real "+nounRaw+" task go from blank page to finished",
+      "We build it together, prompt by prompt",
+      "Then you try the same on your laptop"
+    ],
+    note:"The energy peak. Pick a task everyone recognizes. Narrate your prompting out loud."});
+
+  // deep dive slides, one per featured tool
+  dd.forEach((tool,i)=>{
+    const meta = TOOL_KIND[tool] || {kind:"llm", field:null};
+    let bullets;
+    if(meta.field && list(icp[meta.field]).length){
+      bullets = list(icp[meta.field]);
+    } else {
+      bullets = genericToolUses(meta.kind, tool, nounRaw, nounPl);
+    }
+    S.push({kind:"content", part:"p3", title:"Deep Dive: "+tool,
+      subtitle:"For "+aud,
+      bullets:bullets,
+      note:"Show, do not tell. Run one of these live. Then give the room 3 minutes to try it themselves before you move on."});
+  });
+
+  // Building your stack
+  {
+    const stack = [];
+    const core = deepTools().slice(0,4);
+    core.forEach(t=>stack.push(t+" - "+stackRole(t)));
+    if(!stack.length) stack.push("Pick your featured tools to auto-fill this stack");
+    stack.push("Your Me.md - the context you paste into all of them");
+    S.push({kind:"content", part:"p3", title:"Building Your Personal AI Stack",
+      subtitle:"You do not need every tool, you need the right few",
+      bullets:stack,
+      note:"Bring it together. Three or four tools plus your Me.md beats a pile of subscriptions you never open."});
+  }
+
+  // 7-day action plan (dark)
+  {
+    const t1 = dd[0] || "your first LLM";
+    const t2 = dd[1] || "a notetaker";
+    S.push({kind:"dark", part:"p3", title:"Your 7-Day Action Plan",
+      bullets:[
+        "Day 1 - Write your Me.md using tonight's template",
+        "Day 2 - Set up "+t1+" and run one real task through it",
+        "Day 3 - Add "+t2+" to your next meeting",
+        "Day 4 - Redo a task you dread, this time with AI",
+        "Day 5 - Save the prompts that worked",
+        "Day 6 - Teach one teammate what you learned",
+        "Day 7 - Pick the one tool you will keep and commit"
+      ],
+      note:"Make it doable. Small daily reps beat one big weekend push. Tell them to start tonight with the Me.md."});
+  }
+
+  // Resources
+  {
+    const res = [
+      "Slides, Me.md template, and tonight's prompts: sent to every attendee",
+      "The AI Collective ATL: "+URL_AIC,
+      "Mark and Threads Marketing: "+URL_THREADS,
+      "Next month's session: watch the chapter page to register early"
+    ];
+    if(c.maven.on) res.push("Go deeper in the "+ (c.maven.title||"Maven cohort") +" - details next slide");
+    S.push({kind:"content", part:"p3", title:"Resources & Next Steps",
+      bullets:res,
+      note:"Tell them exactly what lands in their inbox and when. Make the next step obvious."});
+  }
+
+  // Continue learning (maven)
+  if(c.maven.on){
+    S.push({kind:"content", part:"p3", title:"Continue Learning: "+(c.maven.title||"The 4-Week Cohort"),
+      bullets:[
+        "Everything tonight, expanded into a hands-on online cohort",
+        "Week by week, you build your stack with feedback",
+        c.maven.start ? ("Starts "+fmtDate(c.maven.start)) : "Start date on the Maven page",
+        [c.maven.price?("Price: "+c.maven.price):"", c.maven.url?("Register: "+c.maven.url):""].filter(Boolean).join("   |   ") || "Details on the Maven page"
+      ],
+      note:"Soft invite, not a hard sell. It is for the people who want to go further than one night allows."});
+  }
+
+  // Thank you (dark)
+  S.push({kind:"dark", part:"dk", title:"Thank You",
+    bullets:[
+      "You showed up, that is the hard part",
+      "Start with your Me.md tonight",
+      "See you next month - bring someone who needs this",
+      URL_AIC
+    ],
+    note:"Warm close. Invite them to stay, network, and grab another slice. Point to the QR code one more time."});
+
+  return S;
+}
+
+function genericToolUses(kind, tool, noun, nounPl){
+  const T = {
+    llm:["Draft "+noun+" deliverables from a short prompt in your voice","Turn messy notes into a clean first version","Ask it to pressure-test your thinking before you send"],
+    research:["Run pre-work research on people, companies, and trends","Get sourced answers you can drop straight into your work","Replace an hour of tab-hopping with one good prompt"],
+    notetaker:["Let it join every call so you never type a note again","Turn recordings into summaries, action items, and follow-ups","Search past meetings by topic instead of scrubbing audio"],
+    docintel:["Upload long documents and ask questions in plain language","Pull the themes and key points from dense "+noun+" files","Turn source material into a briefing in minutes"],
+    automation:["Hand off a repetitive "+noun+" task to a workflow that runs itself","Connect the tools you already use so output flows automatically","Build a recurring deliverable once, then let it run"],
+    writing:["Draft "+noun+" content in your voice, faster","Go from outline to polished draft without the blank page","Keep tone and messaging consistent across everything you ship"],
+    image:["Create on-brand visuals without a designer in the loop","Produce "+noun+" graphics and media in minutes","Test a concept visually before you commit budget"],
+    voice:["Generate natural voice and audio for your content","Turn a script into finished audio without a studio","Scale spoken content on demand"]
+  };
+  return T[kind] || T.llm;
+}
+function stackRole(tool){
+  const k = (TOOL_KIND[tool]||{}).kind;
+  const map = {llm:"your main writing and thinking engine",research:"your research and fact-finding",notetaker:"capturing every meeting",docintel:"reading your long documents",automation:"running work on autopilot",writing:"fast content drafting",image:"visuals and media",voice:"audio and voice"};
+  return map[k] || "a core part of your stack";
+}
+
+/* ============================================================ GENERATORS ============================================================ */
+
+function genLuma(){
+  const c=state, icp=c.icp||freshIcp(c.audience), aud=audLabel()||"Your Audience";
+  const noun=audNoun();
+  const nounPl=audNounPl();
+  const dd=deepTools(), guests=guestsFor("inperson");
+  const dateStr=fmtDate(c.date);
+  const win=(list(icp.winning)[0]||"do your best work in a fraction of the time").toLowerCase();
+  const pain=(list(icp.pains)[0]||"the manual work that eats your week").toLowerCase();
+
+  const learn=[];
+  learn.push("🗺️ The AI tool landscape - the LLMs, notetakers, and helpers worth your time");
+  const g0=guests[0];
+  learn.push("🎙️ "+ (g0 ? (g0.name+(g0.topic?(" on "+g0.topic):(g0.role?(", "+g0.role):" - live segment"))) : "A guest instructor on a hands-on topic"));
+  learn.push("🔧 "+ (dd[0] ? ("Deep dive: "+dd[0]+" for "+noun+" work") : "Deep dive on a featured tool"));
+  learn.push("⚡ "+ (dd[1] ? ("Deep dive: "+dd[1]+" in action") : "A second featured tool in action"));
+  learn.push("✅ The Me.md - build your portable AI context file and leave using it");
+
+  const bring=["Your laptop"];
+  const acct = firstN(dd.length?dd:["Claude","ChatGPT","Perplexity","a notetaker"],4);
+  bring.push("Free accounts for: "+acct.join(", "));
+
+  let out="";
+  out += clean("AI Fundamentals for "+aud)+"\n";
+  if(dateStr) out += dateStr+"  |  "+clean(c.venue)+"\n";
+  out += "\n";
+  // hook
+  out += clean("You already know AI could take work off your plate. Tonight you find out exactly how, hands on your own laptop.")+"\n\n";
+  // about
+  out += clean("This is a free, hands-on workshop built for "+nounPl+". The "+nounPl+" who use AI well are already pulling ahead. They spend less time on "+pain+" and more time on what actually moves the work forward. This session bridges that gap. You leave with tools you can use tomorrow and a personal AI setup that is yours to keep.")+"\n\n";
+  // what you'll learn
+  out += "What You'll Learn\n";
+  learn.forEach(l=>out+=clean(l)+"\n");
+  out+="\n";
+  // agenda
+  out += "Agenda\n";
+  out += "5:30 PM - Doors open, pizza and networking\n6:15 PM - Workshop begins\n8:00 PM - Workshop ends, networking and cleanup\n8:30 PM - Doors close\n\n";
+  // bring
+  out += "What to Bring\n";
+  bring.forEach(b=>out+="- "+clean(b)+"\n");
+  out+="\n";
+  // hosts
+  out += "Your Hosts\n";
+  out += clean(c.lead.name+", "+c.lead.credit+" ("+URL_THREADS+", "+URL_AIC+"). 42 years helping "+nounPl+" and teams work smarter.")+"\n";
+  guests.forEach(g=>{
+    out += clean(g.name + (g.role?(", "+g.role):"") + ". " + (g.bio||"[ICP bio - Claude drafts this in chat]")) + (g.linkedin?(" "+g.linkedin):"") + "\n";
+  });
+  out+="\n";
+  // maven
+  if(c.maven.on){
+    out += "Want To Go Deeper\n";
+    out += clean("This workshop is also a 4-week online cohort, "+(c.maven.title||"AI Fundamentals")+". "+(c.maven.start?("Starts "+fmtDate(c.maven.start)+". "):"")+(c.maven.price?("Price "+c.maven.price+". "):"")+(c.maven.url?("Register at "+c.maven.url+"."):"Details at the event."))+"\n\n";
+  }
+  // close
+  out += clean("Free. "+ (c.seats||SEATS_DEFAULT) +" seats. Register to hold your spot.")+"\n";
+  return out;
+}
+
+function genLinkedIn(){
+  const c=state, icp=c.icp||freshIcp(c.audience), aud=audLabel()||"your field";
+  const noun=audNoun();
+  const nounPl=audNounPl();
+  const dd=deepTools(), guests=guestsFor("inperson");
+  const dateStr=fmtDate(c.date);
+  const win=(list(icp.winning)[0]||"do more of your best work in less time").toLowerCase();
+  const g=guests[0];
+
+  let p="";
+  p += clean("If you are one of Atlanta's "+nounPl+", this one is built for you.")+"\n\n";
+  p += clean("On "+(dateStr||"our next date")+" I am running a free, hands-on AI Fundamentals workshop for "+aud.toLowerCase()+" at "+c.venue+". Not a lecture. You bring your laptop and leave using the tools.")+"\n\n";
+  if(g){
+    p += clean((g.name)+" joins me"+(g.role?(", "+g.role):"")+(g.topic?(", on "+g.topic):", sharing how they use this in the field")+".")+"\n\n";
+  }
+  const tnames = dd.length ? dd.join(", ") : "the LLMs, notetakers, and tools worth your time";
+  p += clean("We go deep on "+tnames+", and everyone builds a Me.md - a portable context file that makes any AI sound like you. The goal is simple: help you "+win+".")+"\n\n";
+  if(c.maven.on){
+    p += clean("Can't make it in person or want more? It also runs as a 4-week online cohort"+(c.maven.start?(" starting "+fmtDate(c.maven.start)):"")+".")+"\n\n";
+  }
+  p += clean("Free admission. "+(c.seats||SEATS_DEFAULT)+" seats.")+"\n\n";
+  p += "Link in comments.\n\n";
+  // hashtags
+  const shortTag=(AUD_META[state.audience]||{}).short||"AI";
+  const shortTag2=state.audience2?((AUD_META[state.audience2]||{}).short):null;
+  const tags=["#AI","#ArtificialIntelligence","#Atlanta","#"+shortTag]; if(shortTag2&&shortTag2!==shortTag) tags.push("#"+shortTag2); tags.push("#TheAICollective");
+  p += tags.join(" ");
+  return p;
+}
+
+function renderSlideBriefText(model){
+  const c=state;
+  let out="AI FUNDAMENTALS SLIDE CONTENT BRIEF\n"+(state.audience||"")+(c.date?("  |  "+fmtDate(c.date)):"")+"\n"+model.length+" slides\n\n";
+  model.forEach((s,i)=>{
+    const n=i+1;
+    out += "----------------------------------------\n";
+    out += "SLIDE "+n+" - "+clean(s.title)+"   ["+kindLabel(s)+"]\n";
+    if(s.subtitle) out += "Subtitle: "+clean(s.subtitle)+"\n";
+    out += "\n";
+    if(s.bullets){ s.bullets.forEach(b=> out+="  - "+clean(b)+"\n"); }
+    if(s.columns){ s.columns.forEach(col=>{ out+="  "+clean(col.head)+":\n"; col.items.forEach(it=>out+="    - "+clean(it)+"\n"); }); }
+    if(s.table){ out+="  Table columns: "+s.table.headers.map(clean).join(" | ")+"\n"; s.table.rows.forEach(r=> out+="    "+r.map(clean).join("  |  ")+"\n"); }
+    out += "\n  TALKING POINTS: "+clean(s.note)+"\n\n";
+  });
+  return out;
+}
+function kindLabel(s){
+  if(s.kind==="title") return "TITLE - dark";
+  if(s.kind==="section") return "SECTION BREAK - dark";
+  if(s.kind==="dark") return "DARK SLIDE";
+  if(s.kind==="table") return "TABLE";
+  return "CONTENT - white";
+}
+
+function genMaven(){
+  const c=state, aud=audLabel()||"Your Audience", noun=audNoun();
+  const nounPl=audNounPl();
+  const dd=deepTools(), title=c.maven.title||("AI Fundamentals for "+aud);
+  let out="";
+  out += "MAVEN COHORT MATERIALS\n\n";
+  out += "=== PAGE COPY ===\n\n";
+  out += "Title: "+clean(title)+"\n";
+  out += "Tagline: "+clean("Build your personal AI stack in four weeks, with feedback the whole way.")+"\n\n";
+  out += "About\n"+clean("This cohort turns one night of AI Fundamentals into a hands-on month. Built for "+nounPl+", it takes you from curious to fluent. You build your Me.md, set up the right tools for your work, and wire them into a stack you actually use. Every week you ship something real and get feedback on it.")+"\n\n";
+  out += "Week By Week\n";
+  out += clean("Week 1 - Foundation: your Me.md, the LLM landscape, and your first real task done with AI.")+"\n";
+  out += clean("Week 2 - Tool application: go deep on "+(dd.length?dd.join(", "):"your featured tools")+" against your own work.")+"\n";
+  out += clean("Week 3 - Stack integration: connect your tools, add automation, and build a repeatable workflow.")+"\n";
+  out += clean("Week 4 - Put it to work: bring a live project, get feedback, and leave with a stack you trust.")+"\n\n";
+  out += "Who It's For\n"+clean("Working "+nounPl+" who want to use AI well, not just talk about it. No coding required.")+"\n\n";
+  out += "Instructors\n"+clean(c.lead.name+". "+(c.lead.cohortBio || (c.lead.credit+". 42 years helping professionals and teams work smarter.")))+"\n";
+  guestsFor("cohort").forEach(g=> out += clean(g.name+(g.role?(", "+g.role):"")+". "+(g.bio||"[ICP bio - Claude drafts this in chat]"))+(g.linkedin?(" "+g.linkedin):"")+"\n");
+  out += "\n";
+  out += "FAQ\n";
+  out += clean("Do I need any AI experience? No. We start from zero and build up.")+"\n";
+  out += clean("How much time per week? Plan on two to three hours, most of it hands-on.")+"\n";
+  out += clean("What if I miss a session? Sessions are recorded and the community keeps going between them.")+"\n\n";
+  out += "CTA: "+clean("Save your seat"+(c.maven.url?(" at "+c.maven.url):"")+(c.maven.price?(". "+c.maven.price):"")+".")+"\n\n";
+
+  out += "=== 3-WEEK CURRICULUM OUTLINE ===\n\n";
+  out += clean("Week 1 - Foundation")+"\n"+clean("The AI ecosystem in four layers. Write your Me.md. Pick your primary LLM and run one real "+noun+" task end to end.")+"\n\n";
+  out += clean("Week 2 - Tool Application")+"\n"+clean("Hands-on with "+(dd.length?dd.join(", "):"your featured tools")+". Each person applies them to their own work and shares the result.")+"\n\n";
+  out += clean("Week 3 - Stack Integration")+"\n"+clean("Connect the tools. Add a notetaker and one automation. Build a workflow you will run every week, then present it.")+"\n\n";
+
+  out += "=== LIGHTNING LESSON PROMO (free 30-min preview) ===\n\n";
+  out += clean("Free 30-Minute Lightning Lesson: The One AI File Every "+cap(noun)+" Should Have")+"\n\n";
+  out += clean("Most "+nounPl+" open an AI tool, type a request, and get back something generic. The fix takes five minutes and one file. In this free 30-minute session you build a Me.md, the portable context file that makes any AI - Claude, ChatGPT, Gemini - sound like you and understand your work. You will see it turn a flat, generic answer into something you would actually send. Bring a laptop and leave with your file done. It is the same foundation we build on in the full cohort, and it is the fastest upgrade you can make to how you work with AI. Come find out why every "+noun+" who tries it stops working without it.")+"\n";
+  return out;
+}
+
+/* ---------- pptxgenjs script generator ---------- */
+function genPptx(model){
+  const c=state;
+  const my = monthYear(c.date);
+  const fname = "AI_Fundamentals_"+slug(audLabel()||"Audience")+"_"+my.m+my.y+".pptx";
+  // sanitize model to plain data for embedding, clean text
+  const clModel = model.map(s=>{
+    const o={kind:s.kind, part:s.part, accent:s.accent||null, title:clean(s.title), subtitle:s.subtitle?clean(s.subtitle):null,
+      bullets:s.bullets?s.bullets.map(clean):null,
+      columns:s.columns?s.columns.map(col=>({head:clean(col.head), items:col.items.map(clean)})):null,
+      table:s.table?{headers:s.table.headers.map(clean), rows:s.table.rows.map(r=>r.map(clean))}:null,
+      footer:s.footer?clean(s.footer):null};
+    return o;
+  });
+  const header =
+"// "+fname+"\n"+
+"// Generated by the AI Fundamentals Workshop Builder\n"+
+"// Run:  npm i pptxgenjs   then   node build-deck.js\n"+
+"// Design system: white content slides, dark section/closer slides, Calibri, thin rules, RECTANGLE only.\n\n"+
+'const pptxgen = require("pptxgenjs");\n\n'+
+"const META = "+JSON.stringify({file:fname, audience:audLabel(), date:fmtDate(c.date), venue:c.venue}, null, 2)+";\n\n"+
+"const SLIDES = "+JSON.stringify(clModel, null, 2)+";\n\n";
+
+  return header + PPTX_BODY;
+}
+
+// static Node body: uses double quotes and + only, no backticks / no template literals, no em dashes
+const PPTX_BODY = [
+'const C = {',
+'  dark: "0F172A", cyan: "0891B2", purple: "7C3AED", green: "059669",',
+'  amber: "D97706", red: "DC2626", indigo: "4F46E5",',
+'  text1: "1E293B", text2: "475569", text3: "94A3B8", rule: "E2E8F0", white: "FFFFFF"',
+'};',
+'const RULE_Y = 1.0;',
+'const PART = { p1: C.cyan, p2: C.purple, p3: C.green, dk: C.dark };',
+'',
+'const pres = new pptxgen();',
+'pres.defineLayout({ name: "W", width: 13.333, height: 7.5 });',
+'pres.layout = "W";',
+'pres.author = "Mark Michelson";',
+'',
+'function addRule(slide, x, w, y, color) {',
+'  slide.addShape("rect", { x: x, y: y, w: w, h: 0.015, fill: { color: color || C.rule }, line: { type: "none" } });',
+'}',
+'',
+'function titleBlock(slide, title, accent) {',
+'  slide.addText(title, { x: 0.6, y: 0.42, w: 12.13, h: 0.7, fontFace: "Calibri", fontSize: 32, bold: true, color: C.text1 });',
+'  addRule(slide, 0.6, 12.13, RULE_Y, C.rule);',
+'  slide.addShape("rect", { x: 0.6, y: RULE_Y, w: 0.9, h: 0.03, fill: { color: accent }, line: { type: "none" } });',
+'}',
+'',
+'function bulletText(slide, items, x, y, w, h, color, size) {',
+'  const arr = items.map(function (t) {',
+'    return { text: t, options: { bullet: { code: "2022", indent: 16 }, fontSize: size || 15, color: color || C.text2, paraSpaceAfter: 10 } };',
+'  });',
+'  slide.addText(arr, { x: x, y: y, w: w, h: h, fontFace: "Calibri", valign: "top", lineSpacingMultiple: 1.05 });',
+'}',
+'',
+'function renderTitle(s) {',
+'  const slide = pres.addSlide();',
+'  slide.background = { color: C.dark };',
+'  slide.addShape("rect", { x: 0.8, y: 2.05, w: 1.4, h: 0.06, fill: { color: C.cyan }, line: { type: "none" } });',
+'  slide.addText(s.title, { x: 0.8, y: 2.3, w: 11.7, h: 1.6, fontFace: "Calibri", fontSize: 40, bold: true, color: C.white });',
+'  if (s.subtitle) slide.addText(s.subtitle, { x: 0.8, y: 3.95, w: 11.7, h: 0.6, fontFace: "Calibri", fontSize: 20, color: C.text3 });',
+'  if (s.footer) slide.addText(s.footer, { x: 0.8, y: 6.5, w: 11.7, h: 0.5, fontFace: "Calibri", fontSize: 14, color: C.text3 });',
+'}',
+'',
+'function renderSection(s) {',
+'  const slide = pres.addSlide();',
+'  slide.background = { color: C.dark };',
+'  const accent = s.accent || PART[s.part] || C.cyan;',
+'  if (s.subtitle) slide.addText(s.subtitle, { x: 0.8, y: 2.7, w: 11.7, h: 0.5, fontFace: "Calibri", fontSize: 16, bold: true, color: accent, charSpacing: 3 });',
+'  slide.addShape("rect", { x: 0.82, y: 3.2, w: 1.1, h: 0.05, fill: { color: accent }, line: { type: "none" } });',
+'  slide.addText(s.title, { x: 0.8, y: 3.35, w: 11.7, h: 1.4, fontFace: "Calibri", fontSize: 36, bold: true, color: C.white });',
+'}',
+'',
+'function renderDark(s) {',
+'  const slide = pres.addSlide();',
+'  slide.background = { color: C.dark };',
+'  const accent = s.accent || PART[s.part] || C.cyan;',
+'  slide.addText(s.title, { x: 0.6, y: 0.5, w: 12.13, h: 0.8, fontFace: "Calibri", fontSize: 32, bold: true, color: C.white });',
+'  slide.addShape("rect", { x: 0.6, y: 1.3, w: 12.13, h: 0.015, fill: { color: "334155" }, line: { type: "none" } });',
+'  slide.addShape("rect", { x: 0.6, y: 1.3, w: 0.9, h: 0.03, fill: { color: accent }, line: { type: "none" } });',
+'  if (s.bullets) bulletText(slide, s.bullets, 0.6, 1.7, 12.13, 5.3, C.text3, 17);',
+'}',
+'',
+'function renderContent(s) {',
+'  const slide = pres.addSlide();',
+'  slide.background = { color: C.white };',
+'  const accent = s.accent || PART[s.part] || C.cyan;',
+'  titleBlock(slide, s.title, accent);',
+'  let top = 1.25;',
+'  if (s.subtitle) { slide.addText(s.subtitle, { x: 0.6, y: top, w: 12.13, h: 0.4, fontFace: "Calibri", fontSize: 15, italic: true, color: C.text3 }); top += 0.55; }',
+'  if (s.columns) {',
+'    const n = s.columns.length;',
+'    const gap = 0.5; const cw = (12.13 - gap * (n - 1)) / n;',
+'    s.columns.forEach(function (col, i) {',
+'      const cx = 0.6 + i * (cw + gap);',
+'      slide.addText(col.head, { x: cx, y: top, w: cw, h: 0.4, fontFace: "Calibri", fontSize: 15, bold: true, color: accent });',
+'      slide.addShape("rect", { x: cx, y: top + 0.45, w: cw, h: 0.012, fill: { color: C.rule }, line: { type: "none" } });',
+'      bulletText(slide, col.items, cx, top + 0.6, cw, 4.6, C.text2, 14);',
+'    });',
+'  } else if (s.bullets) {',
+'    bulletText(slide, s.bullets, 0.6, top + 0.05, 12.13, 7.0 - top, C.text2, 16);',
+'  }',
+'}',
+'',
+'function renderTable(s) {',
+'  const slide = pres.addSlide();',
+'  slide.background = { color: C.white };',
+'  const accent = s.accent || PART[s.part] || C.cyan;',
+'  titleBlock(slide, s.title, accent);',
+'  let top = 1.35;',
+'  if (s.subtitle) { slide.addText(s.subtitle, { x: 0.6, y: top, w: 12.13, h: 0.4, fontFace: "Calibri", fontSize: 15, italic: true, color: C.text3 }); top += 0.5; }',
+'  const head = s.table.headers.map(function (h) {',
+'    return { text: h, options: { bold: true, color: C.white, fill: { color: accent }, fontSize: 14, align: "left", valign: "middle" } };',
+'  });',
+'  const body = s.table.rows.map(function (r, ri) {',
+'    return r.map(function (cell, ci) {',
+'      return { text: cell, options: { color: ci === 0 ? C.text1 : C.text2, bold: ci === 0, fontSize: 13, fill: { color: ri % 2 ? "F8FAFC" : "FFFFFF" }, valign: "middle" } };',
+'    });',
+'  });',
+'  slide.addTable([head].concat(body), {',
+'    x: 0.6, y: top + 0.1, w: 12.13, fontFace: "Calibri", border: { type: "solid", pt: 0.5, color: C.rule },',
+'    rowH: 0.5, valign: "middle", autoPage: false',
+'  });',
+'}',
+'',
+'SLIDES.forEach(function (s) {',
+'  if (s.kind === "title") renderTitle(s);',
+'  else if (s.kind === "section") renderSection(s);',
+'  else if (s.kind === "dark") renderDark(s);',
+'  else if (s.kind === "table") renderTable(s);',
+'  else renderContent(s);',
+'});',
+'',
+'pres.writeFile({ fileName: "/mnt/user-data/outputs/" + META.file }).then(function (fn) {',
+'  console.log("Saved: /mnt/user-data/outputs/" + META.file);',
+'}).catch(function (e) { console.error(e); });',
+''
+].join("\n");
+
+function genBundle(model){
+  let out="# AI FUNDAMENTALS - WORKSHOP PACKAGE\n";
+  out += (state.audience||"")+(state.date?("  |  "+fmtDate(state.date)):"")+"  |  "+state.venue+"\n\n\n";
+  out += "==================== 1. LUMA EVENT PAGE ====================\n\n"+genLuma()+"\n\n";
+  out += "==================== 2. LINKEDIN POST ====================\n\n"+genLinkedIn()+"\n\n";
+  out += "==================== 3. SLIDE CONTENT BRIEF ====================\n\n"+renderSlideBriefText(model)+"\n";
+  if(state.maven.on){ out += "==================== 4. MAVEN COHORT MATERIALS ====================\n\n"+genMaven()+"\n\n"; }
+  out += "==================== 5. PPTXGENJS SCRIPT ====================\n\n(Use the Download .js button in the builder for the runnable file.)\n";
+  return out;
+}
+
+/* ============================================================ OUTPUT RENDER ============================================================ */
+const TABS = [
+  {id:"luma", label:"Luma Page", accent:"var(--p1)"},
+  {id:"linkedin", label:"LinkedIn", accent:"var(--p1)"},
+  {id:"brief", label:"Slide Brief", accent:"var(--p2)"},
+  {id:"pptx", label:"pptxgenjs", accent:"var(--p3)"},
+  {id:"maven", label:"Maven", accent:"var(--p2)"}
+];
+
+function renderTabs(){
+  const t=$("#tabs"); t.innerHTML="";
+  TABS.forEach(tab=>{
+    if(tab.id==="maven" && !state.maven.on) return;
+    const b=el("button","tab"); b.style.setProperty("--accent",tab.accent);
+    b.innerHTML='<span class="dot"></span>'+esc(tab.label);
+    if(state.activeTab===tab.id) b.setAttribute("data-on","1");
+    b.onclick=()=>{ state.activeTab=tab.id; renderTabs(); renderOutput(); };
+    t.appendChild(b);
+  });
+}
+
+function docHead(title, sub, plainGetter, dlName){
+  const h=el("div","out-head");
+  const box=el("div"); box.appendChild(el("h2",null,title));
+  if(sub){ const sp=el("div","sub",sub); box.appendChild(sp); }
+  h.appendChild(box);
+  const sp=el("div","sp");
+  const copyBtn=el("button","btn sm","Copy"); copyBtn.onclick=()=>copyText(plainGetter());
+  sp.appendChild(copyBtn);
+  if(dlName){ const dl=el("button","btn sm ghost","Download"); dl.onclick=()=>saveFile(dlName, plainGetter()); sp.appendChild(dl); }
+  h.appendChild(sp);
+  return h;
+}
+
+function renderOutput(){
+  const out=$("#out"); out.innerHTML="";
+  if(!state.audience){
+    const e=el("div","empty");
+    e.innerHTML='<div><div class="big">Pick an audience to begin</div>Choose this month\'s profession on the left. The ICP auto-fills and every deliverable builds from it.</div>';
+    out.appendChild(e); return;
+  }
+  if(state.activeTab==="maven" && !state.maven.on){ state.activeTab="luma"; renderTabs(); }
+
+  const model = buildModel();
+  const tab=state.activeTab;
+
+  if(tab==="luma"){
+    out.appendChild(docHead("Luma Event Page", "Paste into your Luma event description", genLuma, "luma_"+slug(audLabel())+".txt"));
+    const d=el("div","doc md"); d.appendChild(paraBlock(genLuma())); out.appendChild(d);
+  }
+  else if(tab==="linkedin"){
+    const words=genLinkedIn().split(/\s+/).filter(Boolean).length;
+    out.appendChild(docHead("LinkedIn Post", words+" words - target 160 to 230", genLinkedIn, "linkedin_"+slug(audLabel())+".txt"));
+    const d=el("div","doc md"); d.appendChild(paraBlock(genLinkedIn())); out.appendChild(d);
+  }
+  else if(tab==="brief"){
+    out.appendChild(docHead("Slide Content Brief", model.length+" slides - real copy and talking points", ()=>renderSlideBriefText(model), "slide_brief_"+slug(audLabel())+".txt"));
+    const d=el("div","doc md"); renderBriefCards(d, model); out.appendChild(d);
+  }
+  else if(tab==="pptx"){
+    const my=monthYear(state.date);
+    const fn="build_deck_"+slug(audLabel())+".js";
+    out.appendChild(docHead("pptxgenjs Script", "Runnable Node.js - saves the .pptx to /mnt/user-data/outputs/", ()=>genPptx(model), fn));
+    const d=el("div","doc code"); const pre=el("pre"); pre.textContent=genPptx(model); d.appendChild(pre); out.appendChild(d);
+  }
+  else if(tab==="maven"){
+    out.appendChild(docHead("Maven Cohort Materials", "Page copy, 3-week outline, and Lightning Lesson", genMaven, "maven_"+slug(audLabel())+".txt"));
+    const d=el("div","doc md"); d.appendChild(paraBlock(genMaven())); out.appendChild(d);
+  }
+}
+
+function paraBlock(text){
+  const wrap=el("div");
+  text.split(/\n\n+/).forEach(chunk=>{
+    const lines=chunk.split("\n");
+    // heading if single short line with no trailing period and next lines exist, keep simple: render as <p>
+    const p=el("p"); p.textContent=chunk; wrap.appendChild(p);
+  });
+  return wrap;
+}
+
+function renderBriefCards(container, model){
+  model.forEach((s,i)=>{
+    const card=el("div","slidecard");
+    const head=el("div","sn");
+    const num=el("span","num "+(s.kind==="title"||s.kind==="dark"&&s.part==="dk"?"dk":s.part)); num.textContent=i+1;
+    head.appendChild(num);
+    head.appendChild(el("span","tt",s.title));
+    head.appendChild(el("span","kind",kindLabel(s)));
+    card.appendChild(head);
+    const cp=el("div","cp");
+    let html="";
+    if(s.subtitle) html+='<i style="color:var(--muted)">'+esc(clean(s.subtitle))+'</i>\n';
+    if(s.bullets) html+=s.bullets.map(b=>"- "+flagize(esc(clean(b)))).join("\n");
+    if(s.columns) html+=s.columns.map(col=>"<b>"+esc(clean(col.head))+"</b>\n"+col.items.map(it=>"  - "+esc(clean(it))).join("\n")).join("\n\n");
+    cp.innerHTML=html;
+    card.appendChild(cp);
+    if(s.table){
+      const tb=el("table");
+      const tr=el("tr"); s.table.headers.forEach(h=>{const th=el("th",null,clean(h)); tr.appendChild(th);}); tb.appendChild(tr);
+      s.table.rows.forEach(r=>{const rr=el("tr"); r.forEach(cell=>{const td=el("td",null,clean(cell)); rr.appendChild(td);}); tb.appendChild(rr);});
+      card.appendChild(tb);
+    }
+    const note=el("div","note"); note.innerHTML="<b>Talking points:</b> "+esc(clean(s.note)); card.appendChild(note);
+    container.appendChild(card);
+  });
+}
+function flagize(s){ return s.replace(/VERIFY|FILL THESE[^.]*/g, m=>'<span class="flag">'+m+'</span>'); }
+
+/* ============================================================ FORM UI ============================================================ */
+function buildForm(){
+  const f=$("#form"); f.innerHTML="";
+
+  // SECTION 1 - Audience
+  f.appendChild(section(1,"Audience", audLabel() || "Not selected", body=>{
+    const sel=el("select"); sel.appendChild(opt("","Select a profession..."));
+    AUDIENCES.forEach(a=>{ const o=opt(a,a + (ICP[a]&&ICP[a].titles?"":"  (blank ICP)")); sel.appendChild(o); });
+    customAudList().forEach(a=>{ sel.appendChild(opt(a, a+"  (saved)")); });
+    sel.appendChild(opt("__custom__","Other (type your own)..."));
+    sel.value=state.audience;
+    sel.onchange=()=>{ state.audience=sel.value; if(state.audience2===state.audience) state.audience2=""; state.label=""; state.noun=""; if(state.audience!=="__custom__") state.customName=""; applyAud(); rerenderAll(); };
+    body.appendChild(fld("Primary audience", sel, "Pick a preset, a saved custom audience, or Other to add your own."));
+
+    if(state.audience==="__custom__"){
+      body.appendChild(fld("Custom audience name", inp(state.customName, v=>{state.customName=v; persistIcp(); rerenderOut();}, "e.g. Franchise Owners"), "Name it, then fill in the ICP below."));
+    }
+
+    const sel2=el("select"); sel2.appendChild(opt("","None (single audience)"));
+    AUDIENCES.filter(a=>a!==state.audience).forEach(a=>{ sel2.appendChild(opt(a,a)); });
+    sel2.value=state.audience2; sel2.disabled=!state.audience || state.audience==="__custom__";
+    sel2.onchange=()=>{ state.audience2=sel2.value; state.label=""; state.noun=""; applyAud(); rerenderAll(); };
+    body.appendChild(fld("Combine a second audience (optional)", sel2, "Merges both ICPs into one class, for example Sales plus Marketing."));
+
+    if(state.audience && (state.audience2 || !AUD_META[primaryName()])){
+      body.appendChild(fld("Title audience label", inp(audLabel(), v=>{state.label=v; rerenderOut();}), "Goes into the title: AI Fundamentals for [label]. The platform adds (w/The AI Collective)."));
+      body.appendChild(fld("Audience noun, singular", inp(audNoun(), v=>{state.noun=v; rerenderOut();}), "Used through the body copy. Plural is automatic."));
+    }
+
+    if(state.audience){
+      const icp=state.icp;
+      const note=el("div","icp-note"); note.style.margin="6px 0 2px";
+      note.innerHTML="<b>ICP details</b> - edit any field. Blank audiences start empty. Your changes save in this browser.";
+      body.appendChild(note);
+      body.appendChild(fld("Titles", inp(icp.titles, v=>{icp.titles=v; persistIcp();}), null));
+      body.appendChild(fld("Pain points (one per line)", ta(icp.pains.join("\n"), v=>{icp.pains=splitLines(v); persistIcp(); rerenderOut();}), "Feeds slide 5 stats framing, slide 6, and slide 7."));
+      body.appendChild(fld("Winning looks like (one per line)", ta(icp.winning.join("\n"), v=>{icp.winning=splitLines(v); persistIcp(); rerenderOut();}), null));
+      body.appendChild(fld("Everyday tools (comma or line)", ta(icp.tools.join("\n"), v=>{icp.tools=splitAny(v); persistIcp(); rerenderOut();}), null));
+      const grid=el("div");
+      grid.appendChild(fld("Claude use cases", ta(icp.claude.join("\n"), v=>{icp.claude=splitLines(v); persistIcp(); rerenderOut();}), null));
+      grid.appendChild(fld("Gemini use cases", ta(icp.gemini.join("\n"), v=>{icp.gemini=splitLines(v); persistIcp(); rerenderOut();}), null));
+      grid.appendChild(fld("Perplexity use cases", ta(icp.perplexity.join("\n"), v=>{icp.perplexity=splitLines(v); persistIcp(); rerenderOut();}), null));
+      grid.appendChild(fld("NotebookLM use cases", ta(icp.notebooklm.join("\n"), v=>{icp.notebooklm=splitLines(v); persistIcp(); rerenderOut();}), null));
+      grid.appendChild(fld("Cowork use cases", ta(icp.cowork.join("\n"), v=>{icp.cowork=splitLines(v); persistIcp(); rerenderOut();}), "These fill the deep-dive slides when the matching tool is featured."));
+      body.appendChild(grid);
+    }
+  }, true));
+
+  // SECTION 2 - Event details
+  f.appendChild(section(2,"Event details", state.date?fmtDate(state.date):"No date", body=>{
+    const dt=el("input"); dt.type="date"; dt.value=state.date; dt.oninput=()=>{state.date=dt.value; rerenderAll();};
+    body.appendChild(fld("Event date", dt, "In-person runs the 2nd Wednesday of each month at Improving, Alpharetta."));
+    const row=el("div","row2");
+    row.appendChild(fld("Venue", inp(state.venue, v=>{state.venue=v; rerenderOut();}), null));
+    const seat=el("input"); seat.type="number"; seat.value=state.seats; seat.min=1; seat.oninput=()=>{state.seats=+seat.value||SEATS_DEFAULT; rerenderOut();};
+    row.appendChild(fld("Seats", seat, null));
+    body.appendChild(row);
+    body.appendChild(fld("Event focus / angle (optional)", inp(state.angle, v=>{state.angle=v; rerenderOut();}), "A special theme for the month, if any."));
+  }));
+
+  // SECTION 3 - Instructors
+  const gCount=state.guests.filter(g=>g.name.trim()).length;
+  f.appendChild(section(3,"Instructors", gCount?("Mark + "+gCount+" guest"+(gCount>1?"s":"")):"Mark (lead only)", body=>{
+    // Lead instructor
+    const lead=el("div","guest");
+    lead.appendChild(el("div","gh","Lead instructor"));
+    lead.appendChild(fld("Name", inp(state.lead.name, v=>{state.lead.name=v; rerenderOut();}), null));
+    lead.appendChild(fld("Credit line (events)", ta(state.lead.credit, v=>{state.lead.credit=v; rerenderOut();}), "Short credit for in-person and Lightning promos."));
+    lead.appendChild(fld("Cohort bio (Mark)", ta(state.lead.cohortBio, v=>{state.lead.cohortBio=v; rerenderOut();}), "Cohort promos only. Lead with your marketing background and client types, not company names. Claude drafts this in chat."));
+    body.appendChild(lead);
+
+    // Guest instructors
+    state.guests.forEach((g,i)=>{
+      const card=el("div","guest");
+      const rm=el("button","rm","×"); rm.title="Remove"; rm.onclick=()=>{state.guests.splice(i,1); rerenderAll();};
+      card.appendChild(rm);
+      card.appendChild(el("div","gh","Guest instructor "+(i+1)));
+      card.appendChild(fld("Name (required)", reqInp(g.name, v=>{g.name=v; rerenderAll();}), null));
+      card.appendChild(fld("LinkedIn URL (required)", reqInp(g.linkedin, v=>{g.linkedin=v; rerenderOut();}, "linkedin.com/in/..."), null));
+      card.appendChild(fld("Role in the program", inp(g.role, v=>{g.role=v; rerenderOut();}, "e.g. Co-teaches Week 2, sales workflows"), null));
+      card.appendChild(fld("Session topic (optional)", inp(g.topic, v=>{g.topic=v; rerenderOut();}, "What they present live"), null));
+      const wrap=el("div"); wrap.style.marginTop="12px";
+      wrap.appendChild(el("span","lab","Appears in"));
+      const chips=el("div","taglist");
+      [["inperson","In-person"],["lightning","Lightning Lesson"],["cohort","Cohort"]].forEach(pair=>{
+        const b=el("button","dd",pair[1]); b.setAttribute("data-on", g[pair[0]]?"1":"0");
+        b.onclick=()=>{ g[pair[0]]=!g[pair[0]]; b.setAttribute("data-on", g[pair[0]]?"1":"0"); rerenderOut(); };
+        chips.appendChild(b);
+      });
+      wrap.appendChild(chips);
+      card.appendChild(wrap);
+      card.appendChild(fld("ICP bio (Claude drafts this in chat)", ta(g.bio, v=>{g.bio=v; rerenderOut();}), "Paste the ICP-tailored bio Claude writes. Leave blank and promos show a placeholder."));
+      body.appendChild(card);
+    });
+
+    if(state.guests.length<4){
+      const add=el("button","btn ghost sm","+ Add guest instructor"); add.style.marginTop="12px";
+      add.onclick=()=>{ state.guests.push({name:"",linkedin:"",role:"",topic:"",inperson:true,lightning:true,cohort:true,bio:""}); rerenderAll(); };
+      body.appendChild(add);
+    } else {
+      const note=el("div","ddcount"); note.style.marginTop="12px"; note.textContent="Maximum of 4 guest instructors reached.";
+      body.appendChild(note);
+    }
+    const help=el("div","icp-note"); help.style.marginTop="10px";
+    help.innerHTML="<b>Default:</b> no guests, Mark leads. Each guest needs a name and LinkedIn. Use <b>Appears in</b> to control which promos credit them.";
+    body.appendChild(help);
+  }));
+
+  // SECTION 4 - Tools
+  const ddCount=state.deep.filter(t=>state.include[t]).length;
+  f.appendChild(section(4,"Tools this session", (Object.values(state.include).filter(Boolean).length)+" on, "+ddCount+" deep-dive", body=>{
+    TOOL_CATS.forEach(cat=>{
+      const wrap=el("div","toolcat"); wrap.appendChild(el("h4",null,cat.cat));
+      cat.tools.forEach(t=>{
+        const row=el("div","tool");
+        const chk=el("div","chk"); chk.setAttribute("role","checkbox"); chk.tabIndex=0;
+        chk.setAttribute("data-on", state.include[t]?"1":"0");
+        const toggle=()=>{
+          state.include[t]=!state.include[t];
+          if(!state.include[t]){ state.deep=state.deep.filter(x=>x!==t); }
+          rerenderAll();
+        };
+        chk.onclick=toggle; chk.onkeydown=e=>{ if(e.key===" "||e.key==="Enter"){e.preventDefault();toggle();} };
+        row.appendChild(chk);
+        row.appendChild(el("span","nm",t));
+        const dd=el("button","dd","Deep dive");
+        const isDeep=state.deep.includes(t);
+        dd.setAttribute("data-on", isDeep?"1":"0");
+        const atMax = state.deep.filter(x=>state.include[x]).length>=4;
+        if(!state.include[t] || (atMax && !isDeep)) dd.disabled=true;
+        dd.onclick=()=>{
+          if(isDeep){ state.deep=state.deep.filter(x=>x!==t); }
+          else { if(state.deep.filter(x=>state.include[x]).length>=4) return; state.deep.push(t); }
+          rerenderAll();
+        };
+        row.appendChild(dd);
+        wrap.appendChild(row);
+      });
+      body.appendChild(wrap);
+    });
+    const info=el("div","ddcount");
+    const dds=state.deep.filter(t=>state.include[t]);
+    info.innerHTML="Deep-dive slides: <b>"+dds.length+" of 4</b>"+(dds.length?(" - "+dds.map(esc).join(", ")):"")+(dds.length>=4?' <span class="over">(max reached)</span>':"")+"<br>Each featured tool becomes one Part 3 deep-dive slide.";
+    body.appendChild(info);
+  }));
+
+  // SECTION 5 - Maven
+  f.appendChild(section(5,"Maven cohort", state.maven.on?"Enabled":"Off", body=>{
+    const tg=el("div","toggle"); tg.setAttribute("data-on", state.maven.on?"1":"0"); tg.tabIndex=0;
+    tg.innerHTML='<span class="switch"></span><span>Package this event into a 4-week Maven cohort</span>';
+    const flip=()=>{ state.maven.on=!state.maven.on; rerenderAll(); };
+    tg.onclick=flip; tg.onkeydown=e=>{ if(e.key===" "||e.key==="Enter"){e.preventDefault();flip();} };
+    body.appendChild(tg);
+    if(state.maven.on){
+      body.appendChild(fld("Cohort title", inp(state.maven.title, v=>{state.maven.title=v; rerenderOut();}, "AI Fundamentals for "+state.audience), null));
+      const r=el("div","row2");
+      const sd=el("input"); sd.type="date"; sd.value=state.maven.start; sd.oninput=()=>{state.maven.start=sd.value; rerenderOut();};
+      r.appendChild(fld("Start date", sd, null));
+      r.appendChild(fld("Price", inp(state.maven.price, v=>{state.maven.price=v; rerenderOut();}, "$X"), null));
+      body.appendChild(r);
+      body.appendChild(fld("Maven URL", inp(state.maven.url, v=>{state.maven.url=v; rerenderOut();}, "maven.com/..."), null));
+    }
+  }));
+}
+
+/* ---- form helpers ---- */
+function section(num,title,summary,fill,openDefault){
+  const d=el("details","sect"); if(openDefault) d.open=true;
+  const s=el("summary");
+  s.appendChild(el("span","step",num));
+  s.appendChild(el("span",null,title));
+  const tag=el("span","summ-tag",summary); tag.dataset.sumfor=title; s.appendChild(tag);
+  const chev=el("span","chev",">"); s.appendChild(chev);
+  d.appendChild(s);
+  const body=el("div","body"); fill(body); d.appendChild(body);
+  return d;
+}
+function fld(label, control, hint){
+  const l=el("label","fld"); l.appendChild(el("span","lab",label)); l.appendChild(control);
+  if(hint){ l.appendChild(el("div","hint",hint)); }
+  return l;
+}
+function inp(val, on, ph){ const e=el("input"); e.type="text"; e.value=val||""; if(ph)e.placeholder=ph; e.oninput=()=>on(e.value); return e; }
+function reqInp(val, on, ph){ const e=inp(val,on,ph); const mark=()=>{ e.style.borderColor = e.value.trim() ? "" : "var(--danger)"; }; mark(); e.addEventListener("input",mark); return e; }
+function ta(val, on){ const e=el("textarea"); e.value=val||""; e.oninput=()=>on(e.value); return e; }
+function opt(v,t){ const o=el("option",null,t); o.value=v; return o; }
+function splitLines(v){ return v.split("\n").map(x=>x.trim()).filter(Boolean); }
+function splitAny(v){ return v.split(/[\n,]/).map(x=>x.trim()).filter(Boolean); }
+
+function updateSummaries(){
+  // cheap: rebuild form summaries by re-render (form only)
+}
+
+/* ============================================================ WIRING ============================================================ */
+function rerenderAll(){ buildForm(); renderTabs(); renderOutput(); }
+function rerenderOut(){ renderTabs(); renderOutput(); }
+
+$("#genBtn").onclick=()=>{
+  if(!state.audience){ toast("Pick an audience first"); return; }
+  renderTabs(); renderOutput(); toast("All deliverables generated");
+};
+$("#resetBtn").onclick=()=>{
+  if(!confirm("Clear all fields and start over?")) return;
+  state.audience=""; state.audience2=""; state.label=""; state.noun=""; state.customName=""; state.icp=null; state.date=""; state.venue=VENUE_DEFAULT; state.seats=SEATS_DEFAULT;
+  state.guests=[]; state.include={}; state.deep=[]; state.angle="";
+  state.maven={on:false,title:"",start:"",price:"",url:""}; state.activeTab="luma";
+  rerenderAll();
+};
+$("#themeBtn").onclick=()=>{
+  const cur=document.documentElement.getAttribute("data-theme");
+  const next = cur==="light" ? "dark" : (cur==="dark" ? "light" : (matchMedia("(prefers-color-scheme: dark)").matches?"light":"dark"));
+  document.documentElement.setAttribute("data-theme", next);
+};
+
+// initial
+rerenderAll();
+</script>
+
+</body></html>
