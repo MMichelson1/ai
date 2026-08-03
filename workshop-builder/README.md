@@ -74,3 +74,11 @@ on every push to the default branch that touches `workshop-builder/**`.
 `index.html` and merging republishes the live page automatically — your own
 settings live in your browser (`localStorage`) and survive updates. The single
 HTML file also works fully offline, so it doubles as a downloadable backup.
+
+**Install it like an app.** The page ships a web app manifest and icons
+(`manifest.webmanifest`, `icon-192.png`, `icon-512.png`, `apple-touch-icon.png`),
+so from the hosted URL you can **Add to Home Screen** on a phone or tablet, or
+**Install** from the browser on desktop, for a one-tap, full-screen launch. Note
+that saved settings (`localStorage`) are per-device and do not sync across
+devices; your me.md ships as the built-in default so it is present everywhere out
+of the box.
