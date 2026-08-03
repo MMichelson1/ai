@@ -503,6 +503,7 @@ const state = {
   date:"",
   venue:VENUE_DEFAULT,
   seats:SEATS_DEFAULT,
+  remindWeeks:3,       // reminder = event date minus this many weeks (user-settable)
   lead:{ name:"Mark Michelson", credit:"Global Leadership Team and Regional Director for The AI Collective, and founder of Threads Marketing Research & Strategy and Stitchs AI Training", cohortBio:"" },
   guests:[],
   include:{},          // toolName -> true
@@ -531,6 +532,7 @@ const LS_KEY="wsb_store_v1";
 function loadStore(){ try{ return JSON.parse(localStorage.getItem(LS_KEY)||"{}"); }catch(e){ return {}; } }
 function saveStore(o){ try{ localStorage.setItem(LS_KEY, JSON.stringify(o)); }catch(e){} }
 function customAudList(){ return (loadStore().customAudiences)||[]; }
+function persistReminder(){ const s=loadStore(); s.remindWeeks=state.remindWeeks; saveStore(s); }
 function primaryName(){ return state.audience==="__custom__" ? (state.customName.trim()||"Custom Audience") : state.audience; }
 function persistIcp(){
   if(!state.audience || state.audience2) return;   // persist single-audience ICPs only
@@ -606,6 +608,52 @@ async function saveFile(filename, data){
     const a=document.createElement("a"); a.href=url; a.download=filename; document.body.appendChild(a); a.click(); a.remove();
     setTimeout(()=>URL.revokeObjectURL(url),1500); toast("Downloaded "+filename);
   }catch(e){ toast("Download blocked"); }
+}
+
+/* ---------- reminder / calendar helpers ---------- */
+// 2nd Wednesday of a given year & 0-based month
+function secondWednesday(y,m){
+  const first=new Date(y,m,1);
+  const off=(3 - first.getDay() + 7)%7;      // days until the first Wednesday (Wed=3)
+  return new Date(y,m,1+off+7);
+}
+// the next upcoming 2nd Wednesday from a reference date (defaults to today)
+function nextSecondWednesday(ref){
+  const t = ref ? new Date(ref.getFullYear(),ref.getMonth(),ref.getDate()) : (()=>{const n=new Date();return new Date(n.getFullYear(),n.getMonth(),n.getDate());})();
+  let w=secondWednesday(t.getFullYear(),t.getMonth());
+  if(w<t){ const nm=new Date(t.getFullYear(),t.getMonth()+1,1); w=secondWednesday(nm.getFullYear(),nm.getMonth()); }
+  return w;
+}
+function toISODate(d){ return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+// reminder date = event date minus N weeks (returns a Date, or null if no event date)
+function reminderDate(eventISO,weeks){
+  if(!eventISO) return null;
+  const [y,mo,da]=eventISO.split("-").map(Number);
+  if(!y||!mo||!da) return null;
+  const d=new Date(y,mo-1,da); d.setDate(d.getDate()-(weeks||0)*7); return d;
+}
+function ymdCompact(d){ return d.getFullYear()+String(d.getMonth()+1).padStart(2,"0")+String(d.getDate()).padStart(2,"0"); }
+function icsEsc(s){ return String(s||"").replace(/\\/g,"\\\\").replace(/;/g,"\\;").replace(/,/g,"\\,").replace(/\r?\n/g,"\\n"); }
+// an all-day reminder VEVENT with a same-day display alarm
+function buildIcs(remDate,title,desc){
+  const start=ymdCompact(remDate);
+  const end=ymdCompact(new Date(remDate.getFullYear(),remDate.getMonth(),remDate.getDate()+1));
+  const stamp=new Date().toISOString().replace(/[-:]/g,"").replace(/\.\d{3}Z$/,"Z");
+  const uid="wsb-"+start+"-"+Math.random().toString(36).slice(2,8)+"@ai-fundamentals-workshop";
+  return [
+    "BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//AIC//AI Fundamentals Workshop Builder//EN","CALSCALE:GREGORIAN","METHOD:PUBLISH",
+    "BEGIN:VEVENT","UID:"+uid,"DTSTAMP:"+stamp,
+    "DTSTART;VALUE=DATE:"+start,"DTEND;VALUE=DATE:"+end,
+    "SUMMARY:"+icsEsc(title),"DESCRIPTION:"+icsEsc(desc),
+    "BEGIN:VALARM","TRIGGER:PT0S","ACTION:DISPLAY","DESCRIPTION:"+icsEsc(title),"END:VALARM",
+    "END:VEVENT","END:VCALENDAR"
+  ].join("\r\n");
+}
+function gcalUrl(remDate,title,desc){
+  const s=ymdCompact(remDate);
+  const e=ymdCompact(new Date(remDate.getFullYear(),remDate.getMonth(),remDate.getDate()+1));
+  const p=new URLSearchParams({action:"TEMPLATE",text:title,dates:s+"/"+e,details:desc});
+  return "https://calendar.google.com/calendar/render?"+p.toString();
 }
 
 /* ============================================================ SLIDE MODEL ============================================================ */
@@ -1324,6 +1372,59 @@ function buildForm(){
     row.appendChild(fld("Seats", seat, null));
     body.appendChild(row);
     body.appendChild(fld("Event focus / angle (optional)", inp(state.angle, v=>{state.angle=v; rerenderOut();}), "A special theme for the month, if any."));
+
+    // ----- reminder / add to calendar -----
+    const rem=el("div"); rem.style.cssText="margin-top:16px;padding:13px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm)";
+    const rh=el("div","gh","Reminder"); rh.style.color="var(--p3)"; rem.appendChild(rh);
+
+    const qb=el("button","btn ghost sm","Use 2nd Wednesday of next month");
+    qb.style.margin="4px 0 4px";
+    qb.onclick=()=>{ state.date=toISODate(nextSecondWednesday()); rerenderAll(); };
+    rem.appendChild(qb);
+    const qh=el("div","hint"); qh.textContent="Default cadence for this series. You can pick any date above — the reminder follows whatever you set.";
+    rem.appendChild(qh);
+
+    const wk=el("input"); wk.type="number"; wk.min=0; wk.max=12; wk.value=state.remindWeeks;
+    const wkFld=fld("Remind me (weeks before event)", wk, null); wkFld.style.marginTop="12px";
+    rem.appendChild(wkFld);
+
+    const line=el("div","hint"); line.style.marginTop="10px";
+    const btns=el("div"); btns.style.cssText="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap";
+    const dl=el("button","btn primary sm","Download .ics");
+    const gc=el("a","btn ghost sm","Add to Google Calendar"); gc.target="_blank"; gc.rel="noopener";
+    btns.appendChild(dl); btns.appendChild(gc);
+
+    function reminderTexts(){
+      const aud=audLabel()||"AI Fundamentals";
+      const title="Prep: AI Fundamentals for Professionals — "+aud;
+      const evTxt=state.date?fmtDate(state.date):"(date TBD)";
+      const desc="Start prepping this month's AI Fundamentals for Professionals workshop ("+state.remindWeeks+" week"+(state.remindWeeks===1?"":"s")+" out).\n\n"
+        +"Event: "+evTxt+"\nVenue: "+(state.venue||"")+"\nAudience: "+aud+"\n\n"
+        +"Build the assets: https://mmichelson1.github.io/ai/workshop-builder/";
+      return {title,desc};
+    }
+    function refreshRem(){
+      const rd=reminderDate(state.date,state.remindWeeks);
+      if(!rd){
+        line.textContent="Set an event date above to schedule the reminder.";
+        dl.disabled=true; gc.removeAttribute("href"); gc.style.opacity=".45"; gc.style.pointerEvents="none";
+        return;
+      }
+      dl.disabled=false; gc.style.opacity=""; gc.style.pointerEvents="";
+      line.innerHTML="Reminder on <b>"+fmtDate(toISODate(rd))+"</b> — "+state.remindWeeks+" week"+(state.remindWeeks===1?"":"s")+" before "+fmtDate(state.date)+".";
+      const {title,desc}=reminderTexts();
+      gc.href=gcalUrl(rd,title,desc);
+    }
+    wk.oninput=()=>{ state.remindWeeks=Math.min(12,Math.max(0,Math.round(+wk.value||0))); persistReminder(); refreshRem(); };
+    dl.onclick=()=>{
+      const rd=reminderDate(state.date,state.remindWeeks);
+      if(!rd){ toast("Set an event date first"); return; }
+      const {title,desc}=reminderTexts();
+      saveFile("workshop-reminder-"+toISODate(rd)+".ics", buildIcs(rd,title,desc));
+    };
+    rem.appendChild(line); rem.appendChild(btns);
+    body.appendChild(rem);
+    refreshRem();
   }));
 
   // SECTION 3 - Instructors
@@ -1481,6 +1582,7 @@ $("#themeBtn").onclick=()=>{
 };
 
 // initial
+(function(){ const s=loadStore(); if(typeof s.remindWeeks==="number") state.remindWeeks=Math.min(12,Math.max(0,s.remindWeeks)); })();
 rerenderAll();
 </script>
 

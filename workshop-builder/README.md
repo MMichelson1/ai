@@ -17,6 +17,12 @@ builder produces:
 - **Handouts** — audience-specific take-home material.
 - **`me.md` context file** — a personal-context file to paste into Claude,
   ChatGPT, or Gemini so the tools answer as *this* professional.
+- **A prep reminder** — under **Event details**, the builder computes a reminder
+  a set number of weeks before the event (default **3**, adjustable) and exports
+  it as an **`.ics` download** or an **Add to Google Calendar** link. A one-click
+  **"Use 2nd Wednesday of next month"** button fills the series' default date, but
+  the reminder follows whatever date you enter, so a one-off date or venue works
+  the same way. Your weeks-before preference is saved in the browser.
 
 It ships pre-loaded with the Atlanta chapter defaults (Mark Michelson, Threads
 Marketing Research & Strategy, AIC Atlanta, Improving — Alpharetta) and covers 17
@@ -30,9 +36,12 @@ saved in the browser (`localStorage`), so they carry over month to month.
 ## Monthly workflow
 
 1. Open the hosted page (link below) and bookmark it.
-2. Pick the month's **audience**, set the **date / venue / seats**.
-3. Choose the **AI tools** to feature and up to four to **deep-dive**.
-4. Click **Generate all**, then copy each tab into Luma, your deck, and handouts.
+2. Pick the month's **audience**, set the **date / venue / seats** (use the
+   **2nd Wednesday** button for the default cadence, or set your own date).
+3. Add the **prep reminder** to your calendar (`.ics` or Google Calendar) so the
+   next build is scheduled — 3 weeks out by default.
+4. Choose the **AI tools** to feature and up to four to **deep-dive**.
+5. Click **Generate all**, then copy each tab into Luma, your deck, and handouts.
 
 ## Files
 
