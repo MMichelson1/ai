@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-02T11:19:14.765Z",
+  "generatedAt": "2026-08-03T06:18:02.947Z",
   "sample": false,
   "markets": {
     "atlanta": {
@@ -21,7 +21,7 @@
       "aic": true,
       "status": "ok",
       "count": 6,
-      "lastChecked": "2026-08-02T11:19:14.766Z",
+      "lastChecked": "2026-08-03T06:18:02.947Z",
       "note": ""
     },
     {
@@ -32,7 +32,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-08-02T11:19:15.903Z",
+      "lastChecked": "2026-08-03T06:18:03.801Z",
       "note": "Get the section's public iCal feed URL from events.vtools.ieee.org (Events → Export/iCal for the Atlanta Section), paste it into 'url', then set enabled:true."
     },
     {
@@ -43,7 +43,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-08-02T11:19:15.903Z",
+      "lastChecked": "2026-08-03T06:18:03.801Z",
       "note": "Any Meetup group exposes an iCal feed at https://www.meetup.com/<group-slug>/events/ical/ — add one source entry per local AI group and set enabled:true."
     },
     {
@@ -54,7 +54,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-08-02T11:19:15.903Z",
+      "lastChecked": "2026-08-03T06:18:03.801Z",
       "note": "Most university event calendars (Localist, Google Calendar) publish an ICS feed — paste it here. AI keyword filtering is applied automatically."
     },
     {
@@ -65,7 +65,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-08-02T11:19:15.903Z",
+      "lastChecked": "2026-08-03T06:18:03.801Z",
       "note": "Eventbrite retired public event search; per-organizer listings work via their free API. Add EVENTBRITE_TOKEN as a repo secret and organizer IDs here — see README."
     },
     {
@@ -76,7 +76,7 @@
       "aic": false,
       "status": "manual",
       "count": 0,
-      "lastChecked": "2026-08-02T11:19:15.903Z",
+      "lastChecked": "2026-08-03T06:18:03.801Z",
       "note": "LinkedIn and Facebook publish no feeds. Chapter leads add validated in-person events to data/manual-events.json via pull request; each entry must link to a live listing on a trusted site."
     },
     {
@@ -86,8 +86,8 @@
       "type": "luma-calendar",
       "aic": true,
       "status": "ok",
-      "count": 19,
-      "lastChecked": "2026-08-02T11:19:15.903Z",
+      "count": 21,
+      "lastChecked": "2026-08-03T06:18:03.801Z",
       "note": ""
     }
   ],
@@ -283,6 +283,25 @@
       "market": "atlanta"
     },
     {
+      "id": "evt-6vVCg10iExHy54v@events.lu.ma",
+      "title": "Sunday AI cafe at Burnside library (w/ The AI Collective)",
+      "start": "2026-08-15T02:30:00.000Z",
+      "end": "2026-08-15T04:30:00.000Z",
+      "allDay": false,
+      "tz": null,
+      "location": "Burnside Library, 401 Greenhill Rd, Tusmore SA 5065, Australia",
+      "lat": -34.938546599999995,
+      "lon": 138.643486,
+      "organizer": "The AI Collective",
+      "url": "https://lu.ma/genai-collective",
+      "sourceDomain": "lu.ma",
+      "aic": true,
+      "type": "meetup",
+      "price": "check",
+      "capacity": null,
+      "market": "global"
+    },
+    {
       "id": "evt-OWdQ2XytK0GSA8E@events.lu.ma",
       "title": "Cumming AI + Coffee (w/ The AI Collective)",
       "start": "2026-08-24T12:00:00.000Z",
@@ -368,6 +387,25 @@
       "location": "Robert B. Rowling Hall, 300 W Martin Luther King Jr Blvd, Austin, TX 78705, USA",
       "lat": 30.2818617,
       "lon": -97.7412324,
+      "organizer": "The AI Collective",
+      "url": "https://lu.ma/genai-collective",
+      "sourceDomain": "lu.ma",
+      "aic": true,
+      "type": "meetup",
+      "price": "check",
+      "capacity": null,
+      "market": "global"
+    },
+    {
+      "id": "evt-V7lRxw0dVCyajwY@events.lu.ma",
+      "title": "RESONATE → A 757 music, art, tech, business, & community collision",
+      "start": "2026-08-28T22:00:00.000Z",
+      "end": "2026-08-29T02:00:00.000Z",
+      "allDay": false,
+      "tz": null,
+      "location": "Assembly, 400 Granby St, Norfolk, VA 23510, USA",
+      "lat": 36.851318299999996,
+      "lon": -76.2894515,
       "organizer": "The AI Collective",
       "url": "https://lu.ma/genai-collective",
       "sourceDomain": "lu.ma",
