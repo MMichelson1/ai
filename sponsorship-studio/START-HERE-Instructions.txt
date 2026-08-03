@@ -1,0 +1,67 @@
+AIC SPONSORSHIP STUDIO — SETUP KIT
+For regional managers and chapter leads
+===========================================================
+
+WHAT THIS IS
+------------
+The AIC Sponsorship Studio is a browser tool for building sponsorship
+brochures, proposals, agreements/invoices, and price quotes — all from
+your chapter's own settings, in nine languages. Nothing to install.
+
+
+HOW TO OPEN IT
+--------------
+1. LIVE LINK (use this):
+   https://mmichelson1.github.io/ai/sponsorship-studio/
+   Open it in any browser (Chrome, Safari, Edge, Firefox). You always get
+   the latest version, and your settings are saved in your own browser.
+
+2. OFFLINE BACKUP:
+   A copy of "AIC-Sponsorship-Studio.html" is kept in the shared Drive
+   folder. Download it and double-click to run fully offline if needed.
+
+
+SETUP IN 3 STEPS (about 5 minutes)
+-----------------------------------
+1. SETTINGS — set up your chapter
+   Open Settings and add your chapter name, member count, logo, and event
+   stats. Everything you enter updates the brochure, proposals, and
+   calculator live.
+
+2. SPONSOR CONTACT & REFERRAL CREDIT
+   By default, the brochure's "Book a sponsorship call" button routes
+   prospects to Erich Starrett, Director of Sponsor Partnerships, who runs
+   the conversation and closes the deal -- so you don't have to. Leave this
+   default in place unless your chapter has its own trained closer (then set
+   your own Sponsor contact in Settings: email, calendar link, or both).
+   Whenever you send a brochure, add YOUR name and email in
+   Settings -> "Referred by" so the leads you bring are credited to you under
+   the referral program. In short: let Erich close, and list yourself as the
+   referrer. (Referral credit is paid as a stipend, subject to fiscal-sponsor
+   approval.)
+
+3. BACK UP YOUR SETUP
+   Use  Settings -> Export  to download a small config file. Keep it safe —
+   Settings -> Import restores everything instantly on another computer or
+   after clearing your browser.
+
+
+HOW YOUR DATA IS STORED
+------------------------
+Everything you type is saved only in your own browser, on your own device.
+Nothing is uploaded or shared automatically, and no other lead sees your
+settings. That is why backing up (Step 3) matters: if you switch devices or
+clear your browser, re-import your config file to pick up where you left off.
+
+
+FOR REGIONAL MANAGERS
+----------------------
+- Send each chapter lead the live link above.
+- Each lead's setup is independent. If you want a consistent regional
+  baseline, configure one copy, use Settings -> Export, and share that
+  config file for leads to Import and then adjust.
+
+
+QUESTIONS
+----------
+Reply to whoever sent you this kit.
