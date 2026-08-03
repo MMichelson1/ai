@@ -15,9 +15,10 @@ builder produces:
 - **Agenda / run-of-show** — timed segments for the session.
 - **Slides** — a slide-by-slide brief plus a runnable **pptxgenjs** script that
   builds an actual widescreen `.pptx`, styled with **AIC Atlanta brand colors**
-  (orange `#F97316`, blue `#0276D9`, slate `#374151`) and the **AIC logo on every
-  slide**. Logo use follows the brand rule — AIC for in-person, Stitchs for Maven
-  (added when that logo is supplied). Toggle the logo in the **Brand** section.
+  (orange `#F97316`, blue `#0276D9`, slate `#374151`) and a **logo on every
+  slide**. Per the brand rule, the **Brand** section lets you pick the logo:
+  **AIC** (in-person), **Stitchs** (Maven cohorts, transparent-background logo),
+  or **None**. On dark slides the logo sits on a small white chip for legibility.
 - **Handouts** — audience-specific take-home material.
 - **`me.md` context file** — a personal-context file to paste into Claude,
   ChatGPT, or Gemini so the tools answer as *this* professional.
