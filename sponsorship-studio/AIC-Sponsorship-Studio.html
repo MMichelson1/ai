@@ -693,6 +693,9 @@ const CFG_KEY='aic-studio-v6';
 /* Fallback sponsor contact shown on every brochure until a chapter sets its own
    in Settings → Sponsor contact. Fill in Erich's real email and/or calendar link
    here to make the default live for every chapter. */
+/* Reporting endpoint — the Google Apps Script /exec URL. Empty = reporting OFF.
+   See sponsorship-studio/reporting/README.md for setup. */
+const REPORT_ENDPOINT='https://script.google.com/macros/s/AKfycbwd_40XRkADXwwGWuX5QfiGjbS2ob5bWVs8-xvyGfAmILnnDD728o-IY1WeVsctUrIuKg/exec';
 const DEFAULT_CONTACT={name:'Erich Starrett', title:'Director, Sponsor Partnerships', email:'erich@aicollective.com', cal:'https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ3dEwLuNgiBeaH5LUMo0VdjPYl0kOpRxWG3yQyGeW6_cIGcOvffGSK5Rt-fr9JMyCXxmJ9cgx8t'};
 /* Default community-photo image shown on the brochure when a chapter has NOT
    uploaded any of its own event photos. Paste the AIC group photo as a data: URI
@@ -753,7 +756,31 @@ function loadCfg(){
   }catch(e){}
   return JSON.parse(JSON.stringify(DEFAULTS));
 }
-function saveCfg(){try{localStorage.setItem(CFG_KEY,JSON.stringify(cfg))}catch(e){}}
+function saveCfg(){try{localStorage.setItem(CFG_KEY,JSON.stringify(cfg))}catch(e){}reportSetupOnce();}
+
+/* ═══════════════ REPORTING (optional; no-op until REPORT_ENDPOINT is set) ═══════════════ */
+function report(event,extra){
+  if(!REPORT_ENDPOINT)return;
+  try{
+    const c=cfg.chapter;
+    const payload=Object.assign({
+      event:event, chapter:c.name||'', region:c.regionName||'', lang:c.lang||'en',
+      referredByName:c.refByName||'', referredByEmail:c.refByEmail||''
+    }, extra||{});
+    fetch(REPORT_ENDPOINT,{method:'POST',mode:'no-cors',keepalive:true,
+      headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});
+  }catch(e){}
+}
+function reportSetupOnce(){
+  if(!REPORT_ENDPOINT)return;
+  try{ if(cfg.chapter.name && !localStorage.getItem('aic-reported-setup')){
+    localStorage.setItem('aic-reported-setup','1'); report('setup'); } }catch(e){}
+}
+function reportUsageOnce(){
+  if(!REPORT_ENDPOINT)return;
+  try{ if(cfg.chapter.name && !sessionStorage.getItem('aic-reported-usage')){
+    sessionStorage.setItem('aic-reported-usage','1'); report('usage'); } }catch(e){}
+}
 
 /* ═══════════════ I18N ═══════════════ */
 const LOCALES={en:'en-US',es:'es-ES',fr:'fr-FR',de:'de-DE',pt:'pt-BR',ja:'ja-JP',it:'it-IT',ar:'ar-u-nu-latn',sv:'sv-SE'};
@@ -1153,6 +1180,15 @@ function assignNumber(){
   const n=cfg.chapter.nextNum||1;
   prop.number=p+String(n).padStart(3,'0');
   cfg.chapter.nextNum=n+1;saveCfg();
+  try{
+    const tot=propTotals();
+    report('proposal',{
+      sponsor:prop.sponsor||'', amount:fmt(tot.net), proposalNo:prop.number,
+      items:(prop.items||[]).map(it=>'• '+(it.label||'item')+' ×'+(it.qty||1)).join('\n'),
+      referredByName:(prop.referredBy&&prop.referredBy.name)||cfg.chapter.refByName||'',
+      referredByEmail:(prop.referredBy&&prop.referredBy.email)||cfg.chapter.refByEmail||''
+    });
+  }catch(e){}
 }
 function addNewsSend(){prop.items.push({label:t('news_send'),listUsd:newsSendPrice(),qty:1,disc:0,over:null,note:''});go('proposal');}
 function addNewsFeat(){prop.items.push({label:t('news_feature'),listUsd:newsFeatPrice(),qty:1,disc:0,over:null,note:''});go('proposal');}
@@ -1681,6 +1717,7 @@ function renderSettings(){
   const c=cfg.chapter,o=cfg.org,cm=cfg.comm;
   document.getElementById('sec-settings').innerHTML=`
   <div class="ibox brand">Settings are stored in this browser and drive every tab, document, and price. Use Export to share a chapter's configuration with another organizer.</div>
+  ${REPORT_ENDPOINT?`<div class="ibox" style="font-size:11.5px;color:var(--mut)">Chapter setup, usage, and proposals created here are shared with the AIC sponsor-partnerships team.</div>`:''}
   ${!((c.spCal||DEFAULT_CONTACT.cal)||(c.spEmail||DEFAULT_CONTACT.email))?`<div class="ibox warn">⚠ <strong>Chapter &amp; region directors — action needed:</strong> add your <strong>Sponsor contact</strong> in Chapter profile below (an email, a calendar link like Calendly, or both). It's where the brochure's <em>“Book a sponsorship call”</em> button sends prospects. Leave it blank only if the organization-wide default contact is set.</div>`:''}
   <details open><summary>Chapter profile</summary><div class="inner">
     <div class="grid3">
@@ -1894,5 +1931,6 @@ syncLangSel();
 renderBrand();
 applyDir();
 go('calc');
+reportUsageOnce();
 </script>
 </html>
