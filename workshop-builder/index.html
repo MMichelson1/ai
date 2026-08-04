@@ -245,11 +245,13 @@ const URL_AIC = "aicollective.com/chapters/atlanta";
 
 const AUDIENCES = [
   "Community Builders & Managers","Conference Organizers","Consultants & Solopreneurs",
-  "Customer Experience Professionals","Customer Success","Financial Advisors",
+  "Customer Experience Professionals","Customer Service","Customer Success","Customer Support",
+  "CX Design","CX Management","Enterprise Teams","Financial Advisors","Founders",
   "Healthcare Administrators","HR & People Operations Leaders","Legal Professionals",
-  "Marketing Professionals","Nonprofit Leaders","Product Designers","Product Managers",
-  "Qualitative Research Professionals","Real Estate Professionals","Sales Professionals",
-  "Small Business Owners"
+  "Marketing Professionals","Merchandising","Mystery Shopping","Nonprofit Leaders",
+  "Product Designers","Product Managers","Qualitative Research Professionals",
+  "Real Estate Professionals","Retail Design","Sales Professionals",
+  "Small Business Owners","SMB"
 ];
 
 // noun form used in sentences, and a short hashtag token
@@ -270,7 +272,17 @@ const AUD_META = {
   "Product Designers":{noun:"product designer", short:"ProductDesign"},
   "Product Managers":{noun:"product manager", short:"ProductManagement"},
   "Customer Success":{noun:"CS leader", short:"CustomerSuccess"},
-  "Legal Professionals":{noun:"legal professional", short:"LegalTech"}
+  "Legal Professionals":{noun:"legal professional", short:"LegalTech"},
+  "SMB":{noun:"SMB leader", short:"SMB"},
+  "Enterprise Teams":{noun:"enterprise team lead", short:"Enterprise"},
+  "Founders":{noun:"founder", short:"Founders"},
+  "Retail Design":{noun:"retail designer", short:"RetailDesign"},
+  "Merchandising":{noun:"merchandiser", short:"Merchandising"},
+  "Customer Service":{noun:"customer service pro", short:"CustomerService"},
+  "Customer Support":{noun:"support pro", short:"CustomerSupport"},
+  "Mystery Shopping":{noun:"mystery shopping pro", short:"MysteryShopping"},
+  "CX Design":{noun:"CX designer", short:"CXDesign"},
+  "CX Management":{noun:"CX leader", short:"CXManagement"}
 };
 
 // Full ICP database (arrays). Fields blank for audiences without a profile in the brief.
@@ -461,6 +473,116 @@ const ICP = {
     perplexity:["Preliminary legal and regulatory research with sources","Company and counterparty background"],
     notebooklm:["Contracts, filings, and case files for Q&A","Regulatory guidance for fast answers"],
     cowork:["Organizing matter files","Recurring compliance reports and templates"]
+  },
+  "SMB":{
+    titles:"Owner, General Manager, Operations Lead, Office Manager, Managing Partner",
+    pains:["Too few people for too much work","Marketing, sales, and ops all on one plate","No budget for specialists","Tools and tech piling up unused","Slow, manual back-office work"],
+    winning:["Hours back every week","Running like a bigger team than you are","Professional output without more headcount"],
+    tools:["Google Workspace","Microsoft 365","QuickBooks","Slack","HubSpot","Canva"],
+    claude:["Marketing and sales copy","Proposals and quotes","SOPs and policies","Customer replies and FAQs"],
+    gemini:["Docs and Sheets work","Inbox summaries","Simple reports"],
+    perplexity:["Market and competitor research","Vendor and pricing research","Sourced how-to answers"],
+    notebooklm:["Contracts and vendor docs for quick answers","Manuals and policies"],
+    cowork:["Recurring admin and reports","Organizing files","Onboarding and template docs"]
+  },
+  "Enterprise Teams":{
+    titles:"Team Lead, Program Manager, Director, VP, Department Head, Center of Excellence Lead",
+    pains:["Coordination across many stakeholders","Status reports and updates eat time","Knowledge scattered across systems","Slow approvals and handoffs","Rolling out AI safely at scale"],
+    winning:["Faster reporting and alignment","Reusable playbooks across the team","AI adopted consistently, not ad hoc"],
+    tools:["Microsoft 365","Slack","Jira","Confluence","Salesforce","Tableau"],
+    claude:["Status updates and exec summaries","Process docs and playbooks","Meeting recaps and decisions","Cross-team comms drafts"],
+    gemini:["Docs and Sheets at scale","Inbox and thread summaries","Reporting support"],
+    perplexity:["Market and vendor research","Benchmarking and best practices","Fast sourced answers for briefs"],
+    notebooklm:["Policy, spec, and research archives for Q&A","Onboarding knowledge bases"],
+    cowork:["Recurring team reports","Organizing shared files","Templated cross-team workflows"]
+  },
+  "Founders":{
+    titles:"Founder, Co-founder, CEO, Solo Founder, Startup Operator",
+    pains:["Wearing every hat at once","Fundraising and investor updates","Building product, sales, and ops together","No time and no team yet","Deciding what to do next"],
+    winning:["Move faster with a lean team","Investor-ready materials in less time","Do the work of several roles yourself"],
+    tools:["Notion","Google Workspace","Slack","Linear","Stripe","Figma"],
+    claude:["Pitch and investor update drafts","Landing page and marketing copy","Product specs and user stories","Hiring and ops docs"],
+    gemini:["Docs and notes","Metrics in Sheets","Inbox triage"],
+    perplexity:["Market sizing and competitor scans","Investor and customer research","Fast technical answers"],
+    notebooklm:["Customer interviews for themes","Data rooms and research for Q&A"],
+    cowork:["Recurring investor and metrics reports","Organizing docs","Repeatable ops workflows"]
+  },
+  "Retail Design":{
+    titles:"Retail Designer, Store Designer, Visual Merchandiser, Store Planning Lead, Environments Designer",
+    pains:["Turning briefs into store concepts fast","Documenting design intent and specs","Synthesizing shopper research","Coordinating vendors and rollouts","Keeping brand standards consistent across stores"],
+    winning:["Concepts and specs drafted faster","Shopper insights folded into design","Cleaner rollout documentation"],
+    tools:["SketchUp","AutoCAD","Adobe Creative Cloud","Figma","Miro","Procore"],
+    claude:["Design briefs and concept narratives","Spec and fixture documentation","Research synthesis for concepts","Rollout and field guides"],
+    gemini:["Docs and notes","Store and rollout tracking in Sheets"],
+    perplexity:["Retail trends and materials research","Competitor store teardowns","Vendor and product sourcing"],
+    notebooklm:["Shopper studies and brand standards for Q&A","Store audit reports"],
+    cowork:["Recurring rollout status","Organizing drawings and assets","Templated field documentation"]
+  },
+  "Merchandising":{
+    titles:"Merchandiser, Merchandising Manager, Category Manager, Buyer, Planner",
+    pains:["Assortment and planogram decisions","Analyzing sales and category data","Vendor negotiations and line reviews","Seasonal planning under deadline","Turning data into a clear story"],
+    winning:["Faster assortment and planning decisions","Category stories drafted in minutes","More time on strategy, less on spreadsheets"],
+    tools:["Excel","Blue Yonder","NielsenIQ","Tableau","SAP","Retail Link"],
+    claude:["Category review narratives","Vendor and line review summaries","Assortment rationale docs","Seasonal plan write-ups"],
+    gemini:["Sales and category analysis in Sheets","Report drafting in Docs"],
+    perplexity:["Category trends and competitor research","Pricing and promotion scans","Supplier research"],
+    notebooklm:["Sales reports and vendor decks for Q&A","Category and market studies"],
+    cowork:["Recurring category reports","Organizing vendor files","Templated line review docs"]
+  },
+  "Customer Service":{
+    titles:"Customer Service Rep, CS Team Lead, Contact Center Manager, Service Manager, Head of Customer Service",
+    pains:["High volume of repetitive questions","Keeping tone consistent across the team","Writing and updating help content","Training and onboarding reps","Turning complaints into fixes"],
+    winning:["Faster, on-brand responses","Self-service content that deflects tickets","New reps productive sooner"],
+    tools:["Zendesk","Salesforce Service Cloud","Intercom","Gorgias","Talkdesk","Slack"],
+    claude:["Reply templates and macros","Help center articles and FAQs","Tone and policy guides","Escalation and apology drafts"],
+    gemini:["Response drafting in Docs","Ticket and CSAT tracking in Sheets"],
+    perplexity:["Product and policy research for answers","Benchmarking service best practices"],
+    notebooklm:["Ticket logs and transcripts for themes","Product docs for fast answers"],
+    cowork:["Recurring CSAT and volume reports","Organizing macros and content","Onboarding materials"]
+  },
+  "Customer Support":{
+    titles:"Support Engineer, Technical Support Rep, Support Team Lead, Head of Support, Customer Support Specialist",
+    pains:["Diagnosing technical issues fast","Writing clear troubleshooting steps","Keeping docs current with the product","Reducing repeat tickets","Handing off to engineering cleanly"],
+    winning:["Faster, clearer troubleshooting","Docs that keep up with releases","Fewer repeat tickets"],
+    tools:["Zendesk","Jira","Intercom","Linear","Notion","Slack"],
+    claude:["Troubleshooting guides and runbooks","Bug report and handoff summaries","Release notes for support","Reply drafts for tricky cases"],
+    gemini:["Docs and runbooks","Ticket trends in Sheets"],
+    perplexity:["Technical research and error lookups","Product and integration research"],
+    notebooklm:["Docs, tickets, and logs for Q&A","Knowledge base for fast answers"],
+    cowork:["Recurring ticket-trend reports","Organizing runbooks","Templated handoff docs"]
+  },
+  "Mystery Shopping":{
+    titles:"Mystery Shopping Provider, CX Measurement Lead, Field Program Manager, Evaluator Coordinator, Quality Auditor",
+    pains:["Writing evaluation forms and scenarios","Analyzing large volumes of shop reports","Turning field data into client insights","Managing shoppers and scheduling","Reporting to clients on time"],
+    winning:["Faster shop analysis and reporting","Sharper evaluation design","Client-ready insights in less time"],
+    tools:["Google Workspace","Excel","Survey platforms","Tableau","Zoom","Airtable"],
+    claude:["Evaluation forms and scenarios","Shop report synthesis","Client insight summaries","Program comms to shoppers"],
+    gemini:["Report drafting in Docs","Shop data analysis in Sheets"],
+    perplexity:["Industry and competitor CX research","Benchmarking measurement practices"],
+    notebooklm:["Shop reports and transcripts for themes","Client briefs and standards for Q&A"],
+    cowork:["Recurring client reports","Organizing field files","Templated evaluation docs"]
+  },
+  "CX Design":{
+    titles:"CX Designer, Service Designer, Journey Designer, Experience Designer, CX Strategist",
+    pains:["Turning research into journey maps","Documenting service blueprints","Aligning stakeholders on the experience","Synthesizing VoC and research","Showing the value of design work"],
+    winning:["Journeys and blueprints drafted faster","Research synthesized in minutes","Clearer stakeholder alignment"],
+    tools:["Figma","FigJam","Miro","Dovetail","Qualtrics","Notion"],
+    claude:["Journey map and blueprint narratives","Research and VoC synthesis","Experience principles and briefs","Stakeholder-ready summaries"],
+    gemini:["Docs and notes","Research data in Sheets"],
+    perplexity:["CX trends and pattern research","Competitor experience teardowns"],
+    notebooklm:["Research transcripts and VoC for themes","Journey and service docs for Q&A"],
+    cowork:["Organizing research files","Recurring experience reports","Templated blueprint docs"]
+  },
+  "CX Management":{
+    titles:"CX Manager, VoC Manager, Head of CX, Chief Customer Officer, CX Program Lead",
+    pains:["Making sense of VoC and survey data","Presenting CX to skeptical executives","Prioritizing fixes across the journey","Proving CX ROI","Keeping programs moving across teams"],
+    winning:["Real-time insight synthesis","Executive-ready CX stories","Data-driven prioritization"],
+    tools:["Medallia","Qualtrics","Salesforce","Tableau","Slack","Microsoft 365"],
+    claude:["VoC synthesis and CX reports","Executive briefings and business cases","CX strategy and program docs","Closed-loop follow-up drafts"],
+    gemini:["Feedback summaries in Gmail","CX scorecards in Sheets"],
+    perplexity:["CX benchmarking and trends","Competitor and industry research"],
+    notebooklm:["Survey verbatims and call transcripts for themes","Program docs for Q&A"],
+    cowork:["Recurring VoC reports","Organizing feedback by touchpoint","Templated exec updates"]
   }
 };
 
@@ -641,8 +763,9 @@ const LS_KEY="wsb_store_v1";
 function loadStore(){ try{ return JSON.parse(localStorage.getItem(LS_KEY)||"{}"); }catch(e){ return {}; } }
 function saveStore(o){ try{ localStorage.setItem(LS_KEY, JSON.stringify(o)); }catch(e){} }
 function customAudList(){ return (loadStore().customAudiences)||[]; }
-// ----- custom tools (user-added; new tools ship constantly) -----
-// Friendly category label -> internal kind used by templates and credibility.
+// ----- custom tools & categories (user-added; new tools ship constantly) -----
+// Built-in behavior kinds -> friendly label. A tool's category maps to one of
+// these kinds, which drives its talking points, stack role, and credibility.
 const TOOL_KINDS = [
   ["llm","Core LLM / Chatbot"],
   ["research","Research & Discovery"],
@@ -654,18 +777,34 @@ const TOOL_KINDS = [
   ["voice","Voice & Audio"]
 ];
 function kindLabelFor(kind){ const m=TOOL_KINDS.find(k=>k[0]===kind); return m?m[1]:"Core LLM / Chatbot"; }
-function customToolList(){ return (loadStore().customTools)||[]; }
+function isBuiltinCat(key){ return TOOL_KINDS.some(k=>k[0]===key); }
+// user-defined categories: {key,label,kind}. Let the facilitator group added tools their own way.
+function customCatList(){ return (loadStore().customCats)||[]; }
+function saveCustomCats(list){ const s=loadStore(); s.customCats=list; saveStore(s); }
+function catLabel(cat){ if(isBuiltinCat(cat)) return kindLabelFor(cat); const c=customCatList().find(x=>x.key===cat); return c?c.label:cat; }
+function catKind(cat){ if(isBuiltinCat(cat)) return cat; const c=customCatList().find(x=>x.key===cat); return c?c.kind:"llm"; }
+function addCustomCat(label, kind){
+  label=(label||"").trim(); if(!label){ toast("Name the category first"); return null; }
+  const key="c_"+label.toLowerCase().replace(/[^a-z0-9]+/g,"_").replace(/^_+|_+$/g,"");
+  const list=customCatList();
+  if(!list.some(c=>c.key===key)){ list.push({key, label, kind:kind||"llm"}); saveCustomCats(list); }
+  return key;
+}
+// custom tools: {name,cat}. (Older saves used {name,kind} -> read as cat.)
+function customToolList(){ return (loadStore().customTools||[]).map(t=>({name:t.name, cat:t.cat||t.kind||"llm"})); }
 function saveCustomTools(list){ const s=loadStore(); s.customTools=list; saveStore(s); }
 // Register custom tools into TOOL_KIND so templates, stack roles, and credibility work on them.
-function registerCustomTools(){ customToolList().forEach(t=>{ if(t&&t.name) TOOL_KIND[t.name]={kind:t.kind||"llm", field:null}; }); }
+function registerCustomTools(){ customToolList().forEach(t=>{ if(t&&t.name) TOOL_KIND[t.name]={kind:catKind(t.cat), field:null}; }); }
 function toolExists(name){ const n=name.trim().toLowerCase(); return !!TOOL_KIND[Object.keys(TOOL_KIND).find(k=>k.toLowerCase()===n)] || customToolList().some(t=>t.name.toLowerCase()===n); }
-function addCustomTool(name, kind){
+function addCustomTool(name, cat){
   name=(name||"").trim();
   if(!name){ toast("Type a tool name first"); return false; }
-  if(toolExists(name)){ toast("That tool is already in the list"); return false; }
-  const list=customToolList(); list.push({name, kind:kind||"llm"}); saveCustomTools(list);
-  TOOL_KIND[name]={kind:kind||"llm", field:null};
+  if(toolExists(name)){ toast('"'+name+'" is already in the list'); return false; }
+  cat=cat||"llm";
+  const list=customToolList(); list.push({name, cat}); saveCustomTools(list);
+  TOOL_KIND[name]={kind:catKind(cat), field:null};
   state.include[name]=true;   // added tools start ON so they show up right away
+  lastToolCat=cat;            // keep the category sticky for adding several in a row
   rerenderAll();
   return true;
 }
@@ -676,6 +815,8 @@ function removeCustomTool(name){
   state.deep=state.deep.filter(x=>x!==name);
   rerenderAll();
 }
+let lastToolCat="llm";  // remembers the last category used, so multi-add stays fast
+const openSections=new Set();  // remembers which form sections are expanded across re-renders
 function persistReminder(){ const s=loadStore(); s.remindWeeks=state.remindWeeks; saveStore(s); }
 function persistFacilitator(){ const s=loadStore(); s.facMemd=state.facMemd; s.credNotes=state.credNotes; saveStore(s); }
 function persistBrand(){ const s=loadStore(); s.deckLogo=state.deckLogo; saveStore(s); }
@@ -1713,26 +1854,67 @@ function buildForm(){
       body.appendChild(wrap);
     });
 
-    // ---- Your added tools (new tools are always being released) ----
+    // ---- Your added tools (add as many as you like, grouped by category) ----
     const customs=customToolList();
     const cwrap=el("div","toolcat"); cwrap.appendChild(el("h4",null,"Your added tools"));
-    customs.forEach(ct=> cwrap.appendChild(toolRow(ct.name,true)) );
-    if(!customs.length){ const e=el("div","hint"); e.style.margin="2px 0 8px"; e.textContent="Add any new or niche tool. It behaves like the built-ins - feature it, deep-dive it, and it picks up talking points and your credibility from its category."; cwrap.appendChild(e); }
-    // add-tool form
-    const addBox=el("div"); addBox.style.cssText="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;margin-top:6px";
+    if(!customs.length){
+      const e=el("div","hint"); e.style.margin="2px 0 8px";
+      e.textContent="Add any new or niche tool - as many as you like. Group them under a built-in category or make your own. Each tool can be featured, deep-dived, and picks up talking points and your credibility from its category.";
+      cwrap.appendChild(e);
+    } else {
+      const order=TOOL_KINDS.map(k=>k[0]).concat(customCatList().map(c=>c.key));
+      const byCat={}; customs.forEach(t=>{ (byCat[t.cat]=byCat[t.cat]||[]).push(t); });
+      Object.keys(byCat).sort((a,b)=>(order.indexOf(a)+1||99)-(order.indexOf(b)+1||99)).forEach(cat=>{
+        const h=el("div"); h.style.cssText="font-size:11px;font-weight:600;color:var(--faint);text-transform:uppercase;letter-spacing:.04em;margin:8px 0 2px";
+        h.textContent=catLabel(cat); cwrap.appendChild(h);
+        byCat[cat].forEach(t=> cwrap.appendChild(toolRow(t.name,true)) );
+      });
+    }
+    // add-tool form (name + category, category includes your own)
+    const addBox=el("div"); addBox.style.cssText="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;margin-top:12px";
     const nameWrap=el("div"); nameWrap.style.cssText="flex:1 1 150px;min-width:120px";
     nameWrap.appendChild(el("span","lab","New tool name"));
     const nameI=el("input"); nameI.type="text"; nameI.placeholder="e.g. Comet, NotebookLM, Suno"; nameWrap.appendChild(nameI);
-    const kindWrap=el("div"); kindWrap.style.cssText="flex:1 1 150px;min-width:120px";
-    kindWrap.appendChild(el("span","lab","Category"));
-    const kindS=el("select"); TOOL_KINDS.forEach(k=> kindS.appendChild(opt(k[0],k[1])) ); kindWrap.appendChild(kindS);
+    const catWrap=el("div"); catWrap.style.cssText="flex:1 1 160px;min-width:130px";
+    catWrap.appendChild(el("span","lab","Category"));
+    const catS=el("select");
+    const grpB=el("optgroup"); grpB.label="Built-in"; TOOL_KINDS.forEach(k=> grpB.appendChild(opt(k[0],k[1])) ); catS.appendChild(grpB);
+    const myCats=customCatList();
+    if(myCats.length){ const grpC=el("optgroup"); grpC.label="Your categories"; myCats.forEach(c=> grpC.appendChild(opt(c.key,c.label)) ); catS.appendChild(grpC); }
+    catS.appendChild(opt("__newcat__","＋ New category…"));
+    catS.value=(isBuiltinCat(lastToolCat)||myCats.some(c=>c.key===lastToolCat))?lastToolCat:"llm";
+    catWrap.appendChild(catS);
     const addBtn=el("button","btn primary sm","Add tool"); addBtn.style.flex="0 0 auto";
-    const doAdd=()=>{ if(addCustomTool(nameI.value, kindS.value)) {/* rerender clears inputs */} };
+    addBox.appendChild(nameWrap); addBox.appendChild(catWrap); addBox.appendChild(addBtn);
+    cwrap.appendChild(addBox);
+
+    // inline "new category" panel
+    const ncPanel=el("div"); ncPanel.style.cssText="display:none;gap:8px;flex-wrap:wrap;align-items:flex-end;margin-top:8px;padding:10px;background:var(--surface2);border:1px solid var(--border);border-radius:7px";
+    const ncName=el("div"); ncName.style.cssText="flex:1 1 150px;min-width:120px";
+    ncName.appendChild(el("span","lab","New category name"));
+    const ncNameI=el("input"); ncNameI.type="text"; ncNameI.placeholder="e.g. Coding, Legal AI, Design"; ncName.appendChild(ncNameI);
+    const ncKind=el("div"); ncKind.style.cssText="flex:1 1 150px;min-width:120px";
+    ncKind.appendChild(el("span","lab","Behaves like"));
+    const ncKindS=el("select"); TOOL_KINDS.forEach(k=> ncKindS.appendChild(opt(k[0],k[1])) ); ncKind.appendChild(ncKindS);
+    const ncBtn=el("button","btn sm","Create category"); ncBtn.style.flex="0 0 auto";
+    ncPanel.appendChild(ncName); ncPanel.appendChild(ncKind); ncPanel.appendChild(ncBtn);
+    cwrap.appendChild(ncPanel);
+    const ncHint=el("div","hint"); ncHint.style.cssText="margin-top:6px;display:none";
+    ncHint.textContent='"Behaves like" tells the deck which talking points and credentials to use for tools in this category.';
+    cwrap.appendChild(ncHint);
+
+    catS.onchange=()=>{
+      const isNew=catS.value==="__newcat__";
+      ncPanel.style.display=isNew?"flex":"none"; ncHint.style.display=isNew?"block":"none";
+      if(isNew) ncNameI.focus();
+    };
+    ncBtn.onclick=()=>{ const key=addCustomCat(ncNameI.value, ncKindS.value); if(key){ lastToolCat=key; toast("Category added"); rerenderAll(); } };
+    ncNameI.onkeydown=e=>{ if(e.key==="Enter"){ e.preventDefault(); ncBtn.onclick(); } };
+    const doAdd=()=>{ if(catS.value==="__newcat__"){ toast("Create the category first, or pick one"); return; } addCustomTool(nameI.value, catS.value); };
     addBtn.onclick=doAdd;
     nameI.onkeydown=e=>{ if(e.key==="Enter"){ e.preventDefault(); doAdd(); } };
-    addBox.appendChild(nameWrap); addBox.appendChild(kindWrap); addBox.appendChild(addBtn);
-    cwrap.appendChild(addBox);
-    const hint=el("div","hint"); hint.style.marginTop="6px"; hint.textContent="Category sets its talking points and which of your credentials apply. Saved in this browser.";
+
+    const hint=el("div","hint"); hint.style.marginTop="8px"; hint.textContent="Add as many tools as you like. Categories and tools are saved in this browser.";
     cwrap.appendChild(hint);
     body.appendChild(cwrap);
 
@@ -1812,7 +1994,8 @@ function buildForm(){
 
 /* ---- form helpers ---- */
 function section(num,title,summary,fill,openDefault){
-  const d=el("details","sect"); if(openDefault) d.open=true;
+  const d=el("details","sect"); if(openDefault || openSections.has(title)) d.open=true;
+  d.addEventListener("toggle",()=>{ if(d.open) openSections.add(title); else openSections.delete(title); });
   const s=el("summary");
   s.appendChild(el("span","step",num));
   s.appendChild(el("span",null,title));
