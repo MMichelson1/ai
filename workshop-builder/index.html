@@ -280,7 +280,7 @@ const AUD_META = {
   "Merchandising":{noun:"merchandiser", short:"Merchandising"},
   "Customer Service":{noun:"customer service pro", short:"CustomerService"},
   "Customer Support":{noun:"support pro", short:"CustomerSupport"},
-  "Mystery Shopping":{noun:"mystery shopping pro", short:"MysteryShopping"},
+  "Mystery Shopping":{noun:"mystery shopping provider", short:"MysteryShopping"},
   "CX Design":{noun:"CX designer", short:"CXDesign"},
   "CX Management":{noun:"CX leader", short:"CXManagement"}
 };
@@ -552,15 +552,15 @@ const ICP = {
     cowork:["Recurring ticket-trend reports","Organizing runbooks","Templated handoff docs"]
   },
   "Mystery Shopping":{
-    titles:"Mystery Shopping Provider, CX Measurement Lead, Field Program Manager, Evaluator Coordinator, Quality Auditor",
-    pains:["Writing evaluation forms and scenarios","Analyzing large volumes of shop reports","Turning field data into client insights","Managing shoppers and scheduling","Reporting to clients on time"],
-    winning:["Faster shop analysis and reporting","Sharper evaluation design","Client-ready insights in less time"],
-    tools:["Google Workspace","Excel","Survey platforms","Tableau","Zoom","Airtable"],
-    claude:["Evaluation forms and scenarios","Shop report synthesis","Client insight summaries","Program comms to shoppers"],
-    gemini:["Report drafting in Docs","Shop data analysis in Sheets"],
-    perplexity:["Industry and competitor CX research","Benchmarking measurement practices"],
-    notebooklm:["Shop reports and transcripts for themes","Client briefs and standards for Q&A"],
-    cowork:["Recurring client reports","Organizing field files","Templated evaluation docs"]
+    titles:"Mystery Shopping Company Owner, MSP Operations Director, Program Manager, Client Services Lead, CX Measurement Provider",
+    pains:["Designing evaluation forms and program scenarios","Analyzing large volumes of shopper submissions","Turning field data into client-ready insights","Recruiting, scheduling, and managing the shopper panel","Winning accounts and reporting to clients on time"],
+    winning:["Faster program analysis and client reporting","Sharper evaluation and scenario design","More client accounts served with the same team"],
+    tools:["Google Workspace","Excel","Survey and forms platforms","Tableau","Salesforce","Airtable"],
+    claude:["Evaluation forms and scenario design","Client insight reports from shopper data","Proposals and program SOWs","Shopper panel comms and guidelines"],
+    gemini:["Report drafting in Docs","Program and panel tracking in Sheets"],
+    perplexity:["Client industry and competitor CX research","Benchmarking measurement standards"],
+    notebooklm:["Shopper submissions and transcripts for themes","Client briefs and program standards for Q&A"],
+    cowork:["Recurring client program reports","Organizing field and account files","Templated evaluation and onboarding docs"]
   },
   "CX Design":{
     titles:"CX Designer, Service Designer, Journey Designer, Experience Designer, CX Strategist",
@@ -1658,9 +1658,14 @@ function buildForm(){
 
   // SECTION 1 - Audience
   f.appendChild(section(1,"Audience", audLabel() || "Not selected", body=>{
+    const sortAud=list=>list.slice().sort((a,b)=>a.localeCompare(b,undefined,{sensitivity:"base"}));
     const sel=el("select"); sel.appendChild(opt("","Select a profession..."));
-    AUDIENCES.forEach(a=>{ const o=opt(a,a + (ICP[a]&&ICP[a].titles?"":"  (blank ICP)")); sel.appendChild(o); });
-    customAudList().forEach(a=>{ sel.appendChild(opt(a, a+"  (saved)")); });
+    const savedAud=customAudList();
+    sortAud(AUDIENCES.concat(savedAud)).forEach(a=>{
+      const isSaved = savedAud.indexOf(a)>=0 && AUDIENCES.indexOf(a)<0;
+      const label = a + (isSaved ? "  (saved)" : (ICP[a]&&ICP[a].titles?"":"  (blank ICP)"));
+      sel.appendChild(opt(a,label));
+    });
     sel.appendChild(opt("__custom__","Other (type your own)..."));
     sel.value=state.audience;
     sel.onchange=()=>{ state.audience=sel.value; if(state.audience2===state.audience) state.audience2=""; state.label=""; state.noun=""; if(state.audience!=="__custom__") state.customName=""; applyAud(); rerenderAll(); };
@@ -1671,7 +1676,7 @@ function buildForm(){
     }
 
     const sel2=el("select"); sel2.appendChild(opt("","None (single audience)"));
-    AUDIENCES.filter(a=>a!==state.audience).forEach(a=>{ sel2.appendChild(opt(a,a)); });
+    sortAud(AUDIENCES.filter(a=>a!==state.audience)).forEach(a=>{ sel2.appendChild(opt(a,a)); });
     sel2.value=state.audience2; sel2.disabled=!state.audience || state.audience==="__custom__";
     sel2.onchange=()=>{ state.audience2=sel2.value; state.label=""; state.noun=""; applyAud(); rerenderAll(); };
     body.appendChild(fld("Combine a second audience (optional)", sel2, "Merges both ICPs into one class, for example Sales plus Marketing."));
