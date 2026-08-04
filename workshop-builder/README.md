@@ -44,12 +44,23 @@ option to merge two audiences or define a custom one.
 Your edits to an audience profile (ICP) and any custom audiences you add are
 saved in the browser (`localStorage`), so they carry over month to month.
 
-**Add your own tools.** New AI tools ship constantly, so under **Tools this
-session** there's an *"Your added tools"* area: type any tool name, pick a
-category (LLM, research, notetaker, document intelligence, automation, writing,
-image/video, voice), and **Add**. It then behaves like a built-in — feature it,
-deep-dive it, and it picks up category-matched talking points and facilitator
-credibility. Added tools are saved in the browser and can be removed anytime.
+**Add your own tools — as many as you like.** New AI tools ship constantly, so
+under **Tools this session** there's a *"Your added tools"* area: type a tool
+name, pick a **category**, and **Add**. Categories include the built-ins (LLM,
+research, notetaker, document intelligence, automation, writing, image/video,
+voice) **and your own** — choose *"＋ New category…"* to create one (you set what
+it "behaves like" so talking points and credibility still apply). Added tools are
+grouped by category, behave like built-ins (feature, deep-dive, credibility), and
+are saved in the browser. The Tools panel stays open so you can add several in a
+row.
+
+**Audiences (27 built in).** Community Builders, Conference Organizers,
+Consultants, CX Design, CX Management, Customer Experience, Customer Service,
+Customer Success, Customer Support, Enterprise Teams, Financial Advisors,
+Founders, Healthcare, HR, Legal, Marketing, Merchandising, Mystery Shopping,
+Nonprofit, Product Designers, Product Managers, Qualitative Research, Real Estate,
+Retail Design, Sales, Small Business Owners, SMB — plus merge-two and fully custom
+audiences.
 
 ## Monthly workflow
 
