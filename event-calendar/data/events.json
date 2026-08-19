@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-16T10:27:13.824Z",
+  "generatedAt": "2026-08-19T19:59:22.015Z",
   "sample": false,
   "markets": {
     "atlanta": {
@@ -20,8 +20,8 @@
       "type": "luma-calendar",
       "aic": true,
       "status": "ok",
-      "count": 4,
-      "lastChecked": "2026-08-16T10:27:13.824Z",
+      "count": 5,
+      "lastChecked": "2026-08-19T19:59:22.015Z",
       "note": ""
     },
     {
@@ -32,7 +32,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-08-16T10:27:15.386Z",
+      "lastChecked": "2026-08-19T19:59:23.604Z",
       "note": "Get the section's public iCal feed URL from events.vtools.ieee.org (Events → Export/iCal for the Atlanta Section), paste it into 'url', then set enabled:true."
     },
     {
@@ -43,7 +43,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-08-16T10:27:15.386Z",
+      "lastChecked": "2026-08-19T19:59:23.604Z",
       "note": "Any Meetup group exposes an iCal feed at https://www.meetup.com/<group-slug>/events/ical/ — add one source entry per local AI group and set enabled:true."
     },
     {
@@ -54,7 +54,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-08-16T10:27:15.386Z",
+      "lastChecked": "2026-08-19T19:59:23.604Z",
       "note": "Most university event calendars (Localist, Google Calendar) publish an ICS feed — paste it here. AI keyword filtering is applied automatically."
     },
     {
@@ -65,7 +65,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-08-16T10:27:15.386Z",
+      "lastChecked": "2026-08-19T19:59:23.604Z",
       "note": "Eventbrite retired public event search; per-organizer listings work via their free API. Add EVENTBRITE_TOKEN as a repo secret and organizer IDs here — see README."
     },
     {
@@ -76,7 +76,7 @@
       "aic": false,
       "status": "manual",
       "count": 0,
-      "lastChecked": "2026-08-16T10:27:15.386Z",
+      "lastChecked": "2026-08-19T19:59:23.604Z",
       "note": "LinkedIn and Facebook publish no feeds. Chapter leads add validated in-person events to data/manual-events.json via pull request; each entry must link to a live listing on a trusted site."
     },
     {
@@ -86,50 +86,12 @@
       "type": "luma-calendar",
       "aic": true,
       "status": "ok",
-      "count": 24,
-      "lastChecked": "2026-08-16T10:27:15.386Z",
+      "count": 25,
+      "lastChecked": "2026-08-19T19:59:23.604Z",
       "note": ""
     }
   ],
   "events": [
-    {
-      "id": "evt-YnDYCdv2JEEgjAN@events.lu.ma",
-      "title": "AI Founders Lunch & Learn",
-      "start": "2026-08-18T08:30:00.000Z",
-      "end": "2026-08-18T10:00:00.000Z",
-      "allDay": false,
-      "tz": null,
-      "location": "Maria 01, Lapinlahdenkatu 16, 00180 Helsinki, Finland",
-      "lat": 60.16675379999999,
-      "lon": 24.9219224,
-      "organizer": "The AI Collective",
-      "url": "https://lu.ma/genai-collective",
-      "sourceDomain": "lu.ma",
-      "aic": true,
-      "type": "meetup",
-      "price": "check",
-      "capacity": null,
-      "market": "global"
-    },
-    {
-      "id": "evt-jbAgQi0w1J6E1MD@events.lu.ma",
-      "title": "Agentic AI Knight Turku",
-      "start": "2026-08-19T14:00:00.000Z",
-      "end": "2026-08-19T17:30:00.000Z",
-      "allDay": false,
-      "tz": null,
-      "location": "Business Turku, Tykistökatu 4 B, 20520 Turku, Finland",
-      "lat": 60.4499659,
-      "lon": 22.2932523,
-      "organizer": "The AI Collective",
-      "url": "https://lu.ma/genai-collective",
-      "sourceDomain": "lu.ma",
-      "aic": true,
-      "type": "meetup",
-      "price": "check",
-      "capacity": null,
-      "market": "global"
-    },
     {
       "id": "evt-gEbMOEiYb9SRGNh@events.lu.ma",
       "title": "AI Fundamentals for Small Business Owners (w/ The AI Collective)",
@@ -152,7 +114,7 @@
     {
       "id": "evt-6q35JFzEVQJSII9@events.lu.ma",
       "title": "Hack for Humanity: Canberra",
-      "start": "2026-08-21T12:00:00.000Z",
+      "start": "2026-08-22T00:00:00.000Z",
       "end": "2026-08-22T05:00:00.000Z",
       "allDay": false,
       "tz": null,
@@ -164,6 +126,25 @@
       "sourceDomain": "lu.ma",
       "aic": true,
       "type": "meetup",
+      "price": "check",
+      "capacity": null,
+      "market": "global"
+    },
+    {
+      "id": "evt-TD8pBWUAKQtZb3M@events.lu.ma",
+      "title": "AI Collective Mixers 2.0 in Chennai (w/ The AI Collective)",
+      "start": "2026-08-22T12:30:00.000Z",
+      "end": "2026-08-22T15:00:00.000Z",
+      "allDay": false,
+      "tz": null,
+      "location": "Nungambakkam, Chennai, Tamil Nadu, India",
+      "lat": 13.0569467,
+      "lon": 80.242469,
+      "organizer": "The AI Collective",
+      "url": "https://lu.ma/genai-collective",
+      "sourceDomain": "lu.ma",
+      "aic": true,
+      "type": "social",
       "price": "check",
       "capacity": null,
       "market": "global"
@@ -283,6 +264,25 @@
       "market": "global"
     },
     {
+      "id": "evt-pXGkBHZZPmzlcXI@events.lu.ma",
+      "title": "Atlanta | Claude Code Workshop for Marketers",
+      "start": "2026-08-27T12:00:00.000Z",
+      "end": "2026-08-27T16:00:00.000Z",
+      "allDay": false,
+      "tz": "America/New_York",
+      "location": "107 Technology Pkwy NW, Peachtree Corners, GA 30092, USA",
+      "lat": 33.9668211,
+      "lon": -84.2189018,
+      "organizer": "The AI Collective — Atlanta",
+      "url": "https://lu.ma/aicatl",
+      "sourceDomain": "lu.ma",
+      "aic": true,
+      "type": "workshop",
+      "price": "check",
+      "capacity": null,
+      "market": "atlanta"
+    },
+    {
       "id": "evt-eIwmWglPyhTNyxR@events.lu.ma",
       "title": "Step SF 2026: The AI & Tech Startup Festival",
       "start": "2026-08-27T16:00:00.000Z",
@@ -399,13 +399,32 @@
     {
       "id": "evt-cjADctfCTQnvXtA@events.lu.ma",
       "title": "From AI User to AI Builder - Base44 x AI Collective (Portland)",
-      "start": "2026-09-09T01:00:00.000Z",
-      "end": "2026-09-09T04:00:00.000Z",
+      "start": "2026-09-12T17:30:00.000Z",
+      "end": "2026-09-12T20:30:00.000Z",
       "allDay": false,
       "tz": null,
       "location": "Portland, OR, USA",
       "lat": 45.515232,
       "lon": -122.6783853,
+      "organizer": "The AI Collective",
+      "url": "https://lu.ma/genai-collective",
+      "sourceDomain": "lu.ma",
+      "aic": true,
+      "type": "meetup",
+      "price": "check",
+      "capacity": null,
+      "market": "global"
+    },
+    {
+      "id": "evt-XgGL9wbAwxhieQr@events.lu.ma",
+      "title": "The AI Collective Belgrade: Kick Off",
+      "start": "2026-09-15T16:00:00.000Z",
+      "end": "2026-09-15T18:30:00.000Z",
+      "allDay": false,
+      "tz": null,
+      "location": "Kanvas, Skadarska 40c, Beograd 11000, Serbia",
+      "lat": 44.818498999999996,
+      "lon": 20.4657894,
       "organizer": "The AI Collective",
       "url": "https://lu.ma/genai-collective",
       "sourceDomain": "lu.ma",
@@ -509,6 +528,25 @@
       "price": "check",
       "capacity": null,
       "market": "atlanta"
+    },
+    {
+      "id": "evt-divq2gbcEgCnGpF@events.lu.ma",
+      "title": "Hack for Humanity: Finland",
+      "start": "2026-10-03T06:00:00.000Z",
+      "end": "2026-10-03T18:00:00.000Z",
+      "allDay": false,
+      "tz": null,
+      "location": "Tampere University, Hervanta Campus, Korkeakoulunkatu 7, 33720 Tampere, Finland",
+      "lat": 61.449828600000004,
+      "lon": 23.8589986,
+      "organizer": "The AI Collective",
+      "url": "https://lu.ma/genai-collective",
+      "sourceDomain": "lu.ma",
+      "aic": true,
+      "type": "meetup",
+      "price": "check",
+      "capacity": null,
+      "market": "global"
     },
     {
       "id": "evt-szMUe9BCgktlAEh@events.lu.ma",
