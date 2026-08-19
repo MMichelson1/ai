@@ -13,8 +13,11 @@ builder produces:
 
 - **Luma listing** — event title, description, and promo copy for the audience.
 - **Agenda / run-of-show** — timed segments for the session.
-- **Slides** — a slide-by-slide brief plus a runnable **pptxgenjs** script that
-  builds an actual widescreen `.pptx`, styled with **AIC Atlanta brand colors**
+- **Slides** — a slide-by-slide brief, plus a **one-click "Download PowerPoint"**
+  button on the **PowerPoint** tab that builds the real widescreen `.pptx` right in
+  the browser (no coding, works on phone or desktop). A runnable **pptxgenjs**
+  script is still available under "Advanced" for developers. Decks are styled with
+  **AIC Atlanta brand colors**
   (orange `#F97316`, blue `#0276D9`, slate `#374151`) and a **logo on every
   slide**. Per the brand rule, the **Brand** section lets you pick the logo:
   **AIC** (in-person), **Stitchs** (Maven cohorts, transparent-background logo),
