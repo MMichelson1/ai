@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-19T20:18:43.132Z",
+  "generatedAt": "2026-08-20T22:44:53.394Z",
   "sample": false,
   "markets": {
     "atlanta": {
@@ -20,8 +20,8 @@
       "type": "luma-calendar",
       "aic": true,
       "status": "ok",
-      "count": 5,
-      "lastChecked": "2026-08-19T20:18:43.132Z",
+      "count": 4,
+      "lastChecked": "2026-08-20T22:44:53.394Z",
       "note": ""
     },
     {
@@ -32,7 +32,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-08-19T20:18:43.828Z",
+      "lastChecked": "2026-08-20T22:44:54.767Z",
       "note": "Get the section's public iCal feed URL from events.vtools.ieee.org (Events → Export/iCal for the Atlanta Section), paste it into 'url', then set enabled:true."
     },
     {
@@ -43,7 +43,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-08-19T20:18:43.828Z",
+      "lastChecked": "2026-08-20T22:44:54.767Z",
       "note": "Any Meetup group exposes an iCal feed at https://www.meetup.com/<group-slug>/events/ical/ — add one source entry per local AI group and set enabled:true."
     },
     {
@@ -54,7 +54,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-08-19T20:18:43.828Z",
+      "lastChecked": "2026-08-20T22:44:54.767Z",
       "note": "Most university event calendars (Localist, Google Calendar) publish an ICS feed — paste it here. AI keyword filtering is applied automatically."
     },
     {
@@ -65,7 +65,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-08-19T20:18:43.828Z",
+      "lastChecked": "2026-08-20T22:44:54.767Z",
       "note": "Eventbrite retired public event search; per-organizer listings work via their free API. Add EVENTBRITE_TOKEN as a repo secret and organizer IDs here — see README."
     },
     {
@@ -76,7 +76,7 @@
       "aic": false,
       "status": "manual",
       "count": 0,
-      "lastChecked": "2026-08-19T20:18:43.828Z",
+      "lastChecked": "2026-08-20T22:44:54.767Z",
       "note": "LinkedIn and Facebook publish no feeds. Chapter leads add validated in-person events to data/manual-events.json via pull request; each entry must link to a live listing on a trusted site."
     },
     {
@@ -86,31 +86,12 @@
       "type": "luma-calendar",
       "aic": true,
       "status": "ok",
-      "count": 25,
-      "lastChecked": "2026-08-19T20:18:43.828Z",
+      "count": 24,
+      "lastChecked": "2026-08-20T22:44:54.767Z",
       "note": ""
     }
   ],
   "events": [
-    {
-      "id": "evt-gEbMOEiYb9SRGNh@events.lu.ma",
-      "title": "AI Fundamentals for Small Business Owners (w/ The AI Collective)",
-      "start": "2026-08-19T21:30:00.000Z",
-      "end": "2026-08-20T00:00:00.000Z",
-      "allDay": false,
-      "tz": "America/New_York",
-      "location": "Improving, 11675 Rainwater Dr #100, Alpharetta, GA 30009, USA",
-      "lat": 34.065376199999996,
-      "lon": -84.290039,
-      "organizer": "The AI Collective — Atlanta",
-      "url": "https://lu.ma/aicatl",
-      "sourceDomain": "lu.ma",
-      "aic": true,
-      "type": "meetup",
-      "price": "check",
-      "capacity": null,
-      "market": "atlanta"
-    },
     {
       "id": "evt-6q35JFzEVQJSII9@events.lu.ma",
       "title": "Hack for Humanity: Canberra",
@@ -266,7 +247,7 @@
     {
       "id": "evt-pXGkBHZZPmzlcXI@events.lu.ma",
       "title": "Atlanta | Claude Code Workshop for Marketers",
-      "start": "2026-08-27T12:00:00.000Z",
+      "start": "2026-08-27T13:00:00.000Z",
       "end": "2026-08-27T16:00:00.000Z",
       "allDay": false,
       "tz": "America/New_York",
