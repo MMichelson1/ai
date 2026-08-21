@@ -56,6 +56,9 @@ jobs:
           cp sponsorship-studio/AIC-Sponsorship-Studio.html _site/sponsorship-studio/index.html
           cp sponsorship-studio/AIC-Sponsorship-Studio.html _site/sponsorship-studio/AIC-Sponsorship-Studio.html
           cp sponsorship-studio/AIC-Studio-Setup-Guide.html _site/sponsorship-studio/setup-guide.html
+          # Illustrated user guide -> /sponsorship-studio/guide/
+          mkdir -p _site/sponsorship-studio/guide
+          cp sponsorship-studio/guide/index.html _site/sponsorship-studio/guide/index.html
           # AI Fundamentals Workshop Builder -> /workshop-builder/
           mkdir -p _site/workshop-builder
           cp workshop-builder/index.html _site/workshop-builder/index.html
