@@ -1,9 +1,11 @@
 # Reporting — how the Studio reports back to the team
 
 The Studio can notify the AIC sponsor-partnerships team when a chapter **sets up**
-the tool, **uses** it, and each time a **proposal is created** (with details). It
-does this by POSTing small JSON events to a Google Apps Script web app that logs
-to a Google Sheet and emails the team.
+the tool, **uses** it, each time a **proposal is created**, when an **invoice is
+sent**, and — most important — each time a sponsorship is **won** (payment
+received). It does this by POSTing small JSON events to a Google Apps Script web
+app that logs every event to a Google Sheet, keeps a per-chapter **Summary**
+(hits vs. wins vs. $ won), and emails the team.
 
 This only works on the **hosted** Studio (GitHub Pages), not a downloaded file —
 and only once the endpoint is configured (below). Until then, reporting is off
@@ -28,8 +30,20 @@ and the Studio behaves exactly as before.
 | `setup` | first time a chapter configures its name in Settings | Yes |
 | `usage` | once per browser session when a configured chapter opens the Studio | Logged only |
 | `proposal` | each time a proposal number is assigned | Yes, with sponsor / amount / referrer / line items |
+| `invoice` | chapter clicks **Mark invoice sent** in the Documents tab | Yes |
+| `payment` | chapter clicks **Log payment received ✓ (win)** in the Documents tab | Yes — a 🎉 WIN notice |
 
-Every event is also appended as a row on the **Events** tab of the Sheet.
+Every event is appended as a row on the **Events** tab of the Sheet. The
+`proposal`, `invoice`, and `payment` events also roll up into a **Summary** tab —
+one row per chapter with proposals (hits), invoices sent, wins (paid), $ won, and
+a win rate — so you can see hits vs. wins at a glance.
+
+### Already deployed? Redeploy to pick up the new events
+
+If you deployed an earlier version of `Code.gs`, paste the current file over it in
+Apps Script, then **Deploy → Manage deployments → edit (pencil) → Version: New
+version → Deploy**. The `/exec` URL stays the same, so nothing changes in the
+Studio — it just starts recording invoices, wins, and the Summary tab.
 
 ## Notes
 

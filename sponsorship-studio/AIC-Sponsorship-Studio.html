@@ -1354,6 +1354,24 @@ function amtDisp(){
   catch(e){return agr.amount;}
 }
 function plusDaysFrom(iso,d){const x=new Date((iso||today())+'T12:00:00');x.setDate(x.getDate()+d);return x.toISOString().slice(0,10);}
+function money_(n){try{return new Intl.NumberFormat(LOCALES[cfg.chapter.lang]||'en-US',{style:'currency',currency:cfg.chapter.currency,maximumFractionDigits:0}).format(Number(n)||0);}catch(e){return '$'+(Number(n)||0);}}
+function toast(msg){let t=document.getElementById('aic-toast');if(!t){t=document.createElement('div');t.id='aic-toast';t.className='no-print';t.style.cssText='position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#187A4B;color:#fff;padding:11px 20px;border-radius:999px;font-size:13.5px;font-weight:700;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.25);opacity:0;transition:opacity .2s';document.body.appendChild(t);}t.textContent=msg;requestAnimationFrame(()=>t.style.opacity='1');clearTimeout(t._h);t._h=setTimeout(()=>{t.style.opacity='0';},2800);}
+/* Master-log actions — record activity to the AIC master sheet (hits vs wins). */
+function logInvoiceSent(){
+  const sponsor=(agr.sponsor||prop.sponsor||'').trim();
+  if(!sponsor){alert('Add the sponsor / company name first (in the Documents form or the Proposal).');return;}
+  const num=Number(agr.amount)||0;
+  report('invoice',{sponsor:sponsor, amount:num?money_(num):'', amountNum:num, proposalNo:prop.number||''});
+  toast('Invoice logged to the master sheet');
+}
+function logPaymentReceived(){
+  const sponsor=(agr.sponsor||prop.sponsor||'').trim();
+  if(!sponsor){alert('Add the sponsor / company name first.');return;}
+  const num=Number(agr.amount)||0;
+  if(!confirm('Log a WIN — payment received from '+sponsor+(num?(' for '+money_(num)):'')+'?\nThis notifies HQ and counts as a win.'))return;
+  report('payment',{sponsor:sponsor, amount:num?money_(num):'', amountNum:num, date:agr.date||today(), proposalNo:prop.number||''});
+  toast('Win recorded — payment logged 🎉');
+}
 function renderDocs(){
   ensureProp();
   const el=document.getElementById('sec-docs');
@@ -1394,6 +1412,14 @@ function renderDocs(){
       <button class="btn btn-pri" onclick="docState='agreement';renderDocs()">${t('agr_title')}</button>
       <button class="btn btn-pri" onclick="docState='sow';renderDocs()">Scope of work</button>
       <button class="btn btn-pri" onclick="docState='letter';renderDocs()">${t('letter_title')}</button>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="eyebrow">Master log — for HQ (hits vs wins)</div>
+    <p style="color:var(--mut);font-size:12px;margin:6px 0 12px">Records activity to the AIC master sheet so the team can track proposals sent vs sponsors won. Uses the sponsor name and amount from the form above.${REPORT_ENDPOINT?'':' <strong>(Reporting is off in this copy.)</strong>'}</p>
+    <div class="toolrow" style="margin-bottom:0;flex-wrap:wrap">
+      <button class="btn btn-sec" onclick="logInvoiceSent()">Mark invoice sent</button>
+      <button class="btn btn-sec" onclick="logPaymentReceived()">Log payment received ✓ (win)</button>
     </div>
   </div>`;
 }
