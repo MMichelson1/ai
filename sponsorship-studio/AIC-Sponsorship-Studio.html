@@ -1372,6 +1372,116 @@ function logPaymentReceived(){
   report('payment',{sponsor:sponsor, amount:num?money_(num):'', amountNum:num, date:agr.date||today(), proposalNo:prop.number||''});
   toast('Win recorded — payment logged 🎉');
 }
+
+/* ═══════════════ CLIENTS (lightweight CRM) ═══════════════
+   Saved locally on this device (per browser). Each client keeps its contact,
+   type, fulfillment status, and a re-openable snapshot of its documents
+   (proposal + agreement/invoice/letter). Export CSV/JSON for the future
+   platform. This is additive — nothing else depends on it. */
+const CLIENTS_KEY='aic-clients-v1';
+function loadClients(){try{const r=localStorage.getItem(CLIENTS_KEY);if(r){const o=JSON.parse(r);if(o&&Array.isArray(o.list))return o;}}catch(e){}return {version:1,list:[]};}
+let clients=loadClients();
+let curClient=null;
+function saveClients(){try{localStorage.setItem(CLIENTS_KEY,JSON.stringify(clients));}catch(e){}}
+function currentClient(){return clients.list.find(c=>c.id===curClient)||null;}
+function clientLabel(cl){const nm=[cl.contact.first,cl.contact.last].filter(Boolean).join(' ');return [cl.contact.company,nm].filter(Boolean).join(' — ')||'(unnamed client)';}
+function newClientRecord(){return {
+  id:'c'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),
+  chapter:cfg.chapter.name||'', created:today(), updated:today(), type:'sponsor',
+  contact:{first:'',last:'',company:'',title:'',email:'',phone:'',phone2:'',website:''},
+  fulfillment:{logo:'',logoVer:'',bannerStatus:'',notes:''},
+  snapshot:null };}
+function newClient(){const cl=newClientRecord();clients.list.push(cl);curClient=cl.id;saveClients();renderDocs();}
+function openClient(id){
+  if(!id){curClient=null;renderDocs();return;}
+  const cl=clients.list.find(c=>c.id===id); if(!cl)return;
+  curClient=id;
+  if(cl.snapshot){
+    if(cl.snapshot.prop)prop=JSON.parse(JSON.stringify(cl.snapshot.prop));
+    if(cl.snapshot.agr)agr=JSON.parse(JSON.stringify(cl.snapshot.agr));
+  }
+  ensureProp();
+  if(!cl.snapshot){ // first open: seed the documents from the contact card
+    if(cl.contact.company){prop.sponsor=cl.contact.company;agr.sponsor=cl.contact.company;}
+    if(cl.contact.email)prop.email=cl.contact.email;
+    const nm=[cl.contact.first,cl.contact.last].filter(Boolean).join(' ');
+    if(nm)prop.contact=nm;
+  }
+  docState='menu';renderDocs();
+}
+function updClient(path,val){const cl=currentClient();if(!cl)return;const seg=path.split('.');let o=cl;for(let i=0;i<seg.length-1;i++)o=o[seg[i]];o[seg[seg.length-1]]=val;cl.updated=today();saveClients();}
+function setClientType(tp){const cl=currentClient();if(!cl)return;cl.type=tp;cl.updated=today();saveClients();renderDocs();}
+function deleteClient(id){const cl=clients.list.find(c=>c.id===id);if(!cl)return;if(!confirm('Delete '+clientLabel(cl)+'?\nThis removes their contact and saved documents from this device.'))return;clients.list=clients.list.filter(c=>c.id!==id);if(curClient===id)curClient=null;saveClients();toast('Client deleted');renderDocs();}
+function saveClientWork(){
+  let cl=currentClient();
+  if(!cl){cl=newClientRecord();clients.list.push(cl);curClient=cl.id;}
+  if(!cl.contact.company){cl.contact.company=(agr.sponsor||prop.sponsor||'').trim();}
+  cl.snapshot={prop:JSON.parse(JSON.stringify(prop)), agr:JSON.parse(JSON.stringify(agr))};
+  cl.chapter=cfg.chapter.name||cl.chapter||'';
+  cl.updated=today();
+  saveClients();toast('Saved to '+clientLabel(cl));renderDocs();
+}
+function downloadText(name,text,mime){try{const b=new Blob([text],{type:mime||'text/plain'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1500);}catch(e){alert('Download failed: '+e);}}
+function exportClientsJSON(){if(!clients.list.length){alert('No clients saved yet.');return;}downloadText('aic-clients-'+today()+'.json',JSON.stringify(clients,null,2),'application/json');}
+function csvCell(v){return '"'+String(v==null?'':v).replace(/"/g,'""')+'"';}
+function exportClientsCSV(){
+  if(!clients.list.length){alert('No clients saved yet.');return;}
+  const cols=['Chapter','Type','Company','First','Last','Title','Email','Phone','Phone alt','Website','Logo link','Logo version','Banner status','Fulfillment notes','Proposal #','Amount','Updated'];
+  const rows=[cols.map(csvCell).join(',')];
+  clients.list.forEach(cl=>{const c=cl.contact,f=cl.fulfillment,s=cl.snapshot||{};const p=s.prop||{},a=s.agr||{};
+    rows.push([cl.chapter,cl.type,c.company,c.first,c.last,c.title,c.email,c.phone,c.phone2,c.website,f.logo,f.logoVer,f.bannerStatus,f.notes,p.number||'',a.amount||'',cl.updated].map(csvCell).join(','));});
+  downloadText('aic-clients-'+today()+'.csv',rows.join('\r\n'),'text/csv');
+}
+function renderClientsPanel(){
+  const list=clients.list.slice().sort((a,b)=>String(b.updated||'').localeCompare(String(a.updated||'')));
+  const cl=currentClient();
+  const opts=list.map(c=>`<option value="${c.id}" ${c.id===curClient?'selected':''}>${esc(clientLabel(c))}${c.type==='partner'?' · Partner':''}</option>`).join('');
+  let body='';
+  if(cl){
+    const ct=cl.contact,f=cl.fulfillment,snap=cl.snapshot;
+    const statuses=['','Not started','Designing','Approved','Ordered','Shipped','Installed'];
+    body=`<div class="ibox brand" style="margin:12px 0 4px">Editing <strong>${esc(clientLabel(cl))}</strong> · ${snap?('saved documents'+(snap.prop&&snap.prop.number?' ('+esc(snap.prop.number)+')':'')):'no saved documents yet'}</div>
+    <div class="fg"><label>Type</label><div class="seg" style="max-width:260px">
+      <button class="${cl.type==='sponsor'?'active':''}" onclick="setClientType('sponsor')">Sponsor</button>
+      <button class="${cl.type==='partner'?'active':''}" onclick="setClientType('partner')">Partner</button></div></div>
+    <div class="eyebrow" style="margin-top:14px">Contact</div>
+    <div class="grid3">
+      <div class="fg"><label>Company</label><input value="${esc(ct.company)}" onchange="updClient('contact.company',this.value)"></div>
+      <div class="fg"><label>First name</label><input value="${esc(ct.first)}" onchange="updClient('contact.first',this.value)"></div>
+      <div class="fg"><label>Last name</label><input value="${esc(ct.last)}" onchange="updClient('contact.last',this.value)"></div>
+      <div class="fg"><label>Title</label><input value="${esc(ct.title)}" onchange="updClient('contact.title',this.value)"></div>
+      <div class="fg"><label>Email</label><input value="${esc(ct.email)}" onchange="updClient('contact.email',this.value)"></div>
+      <div class="fg"><label>Phone</label><input value="${esc(ct.phone)}" onchange="updClient('contact.phone',this.value)"></div>
+      <div class="fg"><label>Phone (alt)</label><input value="${esc(ct.phone2)}" onchange="updClient('contact.phone2',this.value)"></div>
+      <div class="fg"><label>Website</label><input value="${esc(ct.website)}" onchange="updClient('contact.website',this.value)"></div>
+    </div>
+    <div class="eyebrow" style="margin-top:14px">Fulfillment</div>
+    <div class="grid3">
+      <div class="fg"><label>Logo link</label><input value="${esc(f.logo)}" placeholder="Drive / URL" onchange="updClient('fulfillment.logo',this.value)"></div>
+      <div class="fg"><label>Logo version</label><input value="${esc(f.logoVer)}" placeholder="e.g. v2 white" onchange="updClient('fulfillment.logoVer',this.value)"></div>
+      <div class="fg"><label>Banner status</label><select onchange="updClient('fulfillment.bannerStatus',this.value)">
+        ${statuses.map(s=>`<option ${f.bannerStatus===s?'selected':''}>${s}</option>`).join('')}</select></div>
+      <div class="fg full"><label>Fulfillment notes</label><input value="${esc(f.notes)}" onchange="updClient('fulfillment.notes',this.value)"></div>
+    </div>
+    <div class="toolrow" style="margin-top:14px;flex-wrap:wrap">
+      <button class="btn btn-pri" onclick="saveClientWork()">💾 Save current documents to this client</button>
+      <button class="btn btn-sec" onclick="openClient(curClient)">↻ Reload saved documents</button>
+      <span class="spacer"></span>
+      <button class="btn btn-ghost" onclick="deleteClient(curClient)">Delete</button>
+    </div>`;
+  }
+  return `<div class="panel">
+    <div class="toolrow" style="margin-bottom:8px"><div class="eyebrow" style="margin:0">Clients (CRM)</div><span class="spacer"></span><span class="badge num">${list.length} saved</span></div>
+    <p style="color:var(--mut);font-size:12px;margin:0 0 10px">Saved on this device. Pick a client to reload their contact and documents, or add a new one. Export any time for the team platform.</p>
+    <div class="toolrow" style="flex-wrap:wrap">
+      <select id="clientSel" style="min-width:220px" onchange="openClient(this.value)"><option value="">— Select a client —</option>${opts}</select>
+      <button class="btn btn-sec" onclick="newClient()">＋ New client</button>
+      <span class="spacer"></span>
+      <button class="btn btn-ghost" onclick="exportClientsCSV()">Export CSV</button>
+      <button class="btn btn-ghost" onclick="exportClientsJSON()">Export JSON</button>
+    </div>${body}
+  </div>`;
+}
 function renderDocs(){
   ensureProp();
   const el=document.getElementById('sec-docs');
@@ -1380,7 +1490,7 @@ function renderDocs(){
   if(docState==='sow'){el.innerHTML=sowDoc();return;}
   if(docState==='letter'){el.innerHTML=letterDoc();return;}
   const einMissing=!cfg.org.ein;
-  el.innerHTML=`<div class="panel">
+  el.innerHTML=renderClientsPanel()+`<div class="panel">
     <div class="toolrow" style="margin-bottom:12px">
       <h2 style="margin:0">${t('nav_docs')}</h2><span class="spacer"></span>
       ${prop.number?`<span class="badge brand num" style="font-size:13px">${esc(prop.number)}</span>`
