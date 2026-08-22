@@ -44,6 +44,12 @@ function doGet(e) {
     finally { try { lock.releaseLock(); } catch (ignore) {} }
     return _jsonp(p.callback, res);
   }
+  if (p.action === 'salesSummary') {           // Sponsor Sales Dashboard (HQ only)
+    var out;
+    try { out = _salesSummary(p.pass || ''); }
+    catch (err2) { out = { ok: false, error: String(err2) }; }
+    return _jsonp(p.callback, out);
+  }
   return _json({ ok: true, service: 'AIC Sponsorship Studio reporting' });
 }
 
@@ -186,6 +192,29 @@ function _listClients(chapter, pass) {
     }
   }
   return { ok: true, clients: clients, server: new Date().toISOString() };
+}
+
+// Sponsor Sales Dashboard data (HQ only): per-chapter hits/wins from the Summary
+// tab, each tagged with its region so the dashboard can roll up by region.
+function _salesSummary(pass) {
+  if (!pass || pass !== HQ_PASS) return { ok: false, error: 'HQ passcode required' };
+  var sh = _summarySheet();
+  var vals = sh.getDataRange().getValues();
+  var rows = [];
+  for (var r = 1; r < vals.length; r++) {
+    var v = vals[r];
+    if (!v[0]) continue;
+    rows.push({
+      chapter: String(v[0] || ''),
+      region: String(v[1] || ''),
+      proposals: Number(v[2]) || 0,
+      invoices: Number(v[3]) || 0,
+      wins: Number(v[4]) || 0,
+      won: Number(v[5]) || 0,
+      lastActivity: String(v[7] || '')
+    });
+  }
+  return { ok: true, rows: rows, server: new Date().toISOString() };
 }
 
 /* ---------- Events tab (append-only log of everything) ---------- */

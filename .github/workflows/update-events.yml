@@ -59,6 +59,9 @@ jobs:
           # Illustrated user guide -> /sponsorship-studio/guide/
           mkdir -p _site/sponsorship-studio/guide
           cp sponsorship-studio/guide/index.html _site/sponsorship-studio/guide/index.html
+          # Sponsor Sales Dashboard (HQ-only, reads the reporting sheet) -> /sponsorship-studio/dashboard/
+          mkdir -p _site/sponsorship-studio/dashboard
+          cp sponsorship-studio/dashboard/index.html _site/sponsorship-studio/dashboard/index.html
           # AI Fundamentals Workshop Builder -> /workshop-builder/
           mkdir -p _site/workshop-builder
           cp workshop-builder/index.html _site/workshop-builder/index.html

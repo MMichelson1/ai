@@ -1,0 +1,470 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sponsor Sales Dashboard</title>
+<style>
+:root{
+  --bg:#F7F5F1; --panel:#FFFFFF; --ink:#22283A; --mut:#6E7484; --line:#E5E1D8;
+  --brand:#E05A14; --brand-ink:#B4470D; --brand-soft:#FBEADF;
+  --indigo:#232B8C; --indigo-soft:#E8EAF7;
+  --ok:#187A4B; --ok-soft:#E3F3EA; --warn:#8A6D00;
+  --track:#EEEBE4;
+  --c-hits:#4B57C6; --c-wins:#E05A14;
+  --shadow:0 1px 2px rgba(20,22,29,.05),0 8px 24px rgba(20,22,29,.06);
+}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){
+  --bg:#14161D; --panel:#1D2029; --ink:#ECEDF2; --mut:#9AA0AD; --line:#2E323E;
+  --brand:#F0742F; --brand-ink:#F58B52; --brand-soft:#392315;
+  --indigo:#98A2E8; --indigo-soft:#23273E;
+  --ok:#4CBB84; --ok-soft:#16301F; --warn:#D9B83B;
+  --track:#262A34;
+  --c-hits:#6E79D4; --c-wins:#D9631F;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.35);
+}}
+:root[data-theme="dark"]{
+  --bg:#14161D; --panel:#1D2029; --ink:#ECEDF2; --mut:#9AA0AD; --line:#2E323E;
+  --brand:#F0742F; --brand-ink:#F58B52; --brand-soft:#392315;
+  --indigo:#98A2E8; --indigo-soft:#23273E;
+  --ok:#4CBB84; --ok-soft:#16301F; --warn:#D9B83B;
+  --track:#262A34;
+  --c-hits:#6E79D4; --c-wins:#D9631F;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+.num{font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1}
+a{color:var(--brand-ink)}
+.wrap{max-width:1120px;margin:0 auto;padding:20px 18px 64px}
+/* Topbar */
+.top{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:8px}
+.brandmark{width:30px;height:30px;border-radius:50%;
+  background:conic-gradient(from 210deg,var(--indigo),var(--brand) 70%);flex:none}
+.title{font-size:20px;font-weight:800;letter-spacing:-.01em;margin:0}
+.sub{font-size:11px;color:var(--mut);letter-spacing:.06em;text-transform:uppercase;font-weight:700}
+.spacer{flex:1}
+.ctl{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+select,input,button{font:inherit;color:var(--ink)}
+select,input{background:var(--panel);border:1.5px solid var(--line);border-radius:9px;padding:8px 10px}
+select:focus,input:focus,button:focus-visible{outline:2px solid var(--brand);outline-offset:1px}
+.btn{border:1.5px solid var(--line);background:var(--panel);border-radius:9px;padding:8px 14px;
+  font-weight:700;cursor:pointer}
+.btn:hover{border-color:var(--brand);color:var(--brand-ink)}
+.btn-pri{background:var(--brand);color:#fff;border-color:var(--brand)}
+.btn-pri:hover{background:var(--brand-ink);color:#fff}
+.meta{font-size:12px;color:var(--mut)}
+/* Panels */
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px 20px;
+  margin-top:16px;box-shadow:var(--shadow)}
+.panel h2{font-size:14px;margin:0 0 2px;font-weight:800;letter-spacing:.01em}
+.panel .cap{font-size:12px;color:var(--mut);margin:0 0 14px}
+.eyebrow{font-size:10.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--brand)}
+/* KPI tiles */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:16px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px 18px;box-shadow:var(--shadow)}
+.kpi .l{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--mut)}
+.kpi .v{font-size:30px;font-weight:800;letter-spacing:-.02em;margin-top:6px;line-height:1}
+.kpi .d{font-size:12px;color:var(--mut);margin-top:6px}
+.kpi.win .v{color:var(--ok)}
+.kpi.money .v{color:var(--brand)}
+/* Legend */
+.legend{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin:0 0 12px;font-size:12.5px;color:var(--mut)}
+.legend b{color:var(--ink);font-weight:700}
+.sw{display:inline-block;width:11px;height:11px;border-radius:3px;vertical-align:-1px;margin-right:6px}
+/* Bar charts */
+.chart{display:flex;flex-direction:column;gap:14px}
+.grp{display:grid;grid-template-columns:130px 1fr;gap:12px;align-items:center}
+.grp .glab{font-size:12.5px;font-weight:700;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bars{display:flex;flex-direction:column;gap:6px;min-width:0}
+.bar{display:flex;align-items:center;gap:8px}
+.track{position:relative;flex:1;min-width:0;height:16px;background:var(--track);border-radius:8px;overflow:hidden}
+.fill{height:100%;border-radius:8px;min-width:3px;transition:width .5s cubic-bezier(.2,.7,.2,1)}
+.bval{font-size:12px;font-weight:700;min-width:64px;text-align:right}
+.bhint{font-size:10.5px;font-weight:700;color:var(--mut);width:34px;flex:none;text-transform:uppercase;letter-spacing:.04em}
+/* Region cards */
+.regions{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.rcard{border:1px solid var(--line);border-radius:14px;padding:14px 16px;background:var(--bg)}
+.rcard .rn{font-weight:800;font-size:15px}
+.rcard .rr{display:flex;justify-content:space-between;font-size:12.5px;margin-top:8px;color:var(--mut)}
+.rcard .rr b{color:var(--ink);font-weight:700}
+.rcard .winrate{margin-top:10px;height:8px;border-radius:6px;background:var(--track);overflow:hidden}
+.rcard .winrate i{display:block;height:100%;background:var(--ok);border-radius:6px}
+/* Table */
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{padding:8px 10px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--mut);font-weight:800;cursor:pointer;user-select:none}
+td.n,th.n{text-align:right}
+.tblwrap{overflow-x:auto}
+tr.tot td{font-weight:800;border-top:2px solid var(--line);border-bottom:none}
+/* Funnel */
+.funnel{display:flex;flex-direction:column;gap:10px}
+.fstage{display:grid;grid-template-columns:120px 1fr auto;gap:12px;align-items:center}
+.fstage .fl{font-size:12.5px;font-weight:700}
+.fstage .ftrack{height:22px;background:var(--track);border-radius:8px;overflow:hidden}
+.fstage .ffill{height:100%;border-radius:8px;background:var(--c-hits)}
+.fstage .fv{font-size:13px;font-weight:800;min-width:120px;text-align:right}
+.conv{font-size:11px;color:var(--mut);text-align:center;margin:-4px 0}
+/* Pipeline */
+.pipe{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}
+.pcard{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--bg)}
+.pcard .pc{font-weight:700}
+.pcard .pm{font-size:12px;color:var(--mut);margin-top:2px}
+.tag{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;
+  padding:2px 8px;border-radius:99px;border:1px solid var(--line)}
+.tag.sponsor{background:var(--brand-soft);color:var(--brand-ink);border-color:transparent}
+.tag.partner{background:var(--indigo-soft);color:var(--indigo);border-color:transparent}
+/* Gate */
+.gate{max-width:400px;margin:12vh auto 0;text-align:center}
+.gate .brandmark{width:44px;height:44px;margin:0 auto 16px}
+.gate h1{font-size:22px;margin:0 0 6px}
+.gate p{color:var(--mut);margin:0 0 20px}
+.gate form{display:flex;gap:8px}
+.gate input{flex:1}
+.err{color:#c0392b;font-size:13px;margin-top:12px;min-height:18px}
+:root[data-theme="dark"] .err,:root:not([data-theme="light"]) .err{color:#ff8a80}
+.rememberrow{margin-top:14px;font-size:12.5px;color:var(--mut);display:flex;gap:6px;align-items:center;justify-content:center}
+.toggle{margin-left:auto;display:flex;gap:6px}
+.tbtn{border:1.5px solid var(--line);background:var(--panel);border-radius:8px;padding:6px 9px;cursor:pointer;font-size:12px;color:var(--mut)}
+.tbtn.on{border-color:var(--brand);color:var(--brand-ink)}
+.empty{color:var(--mut);font-size:13px;padding:10px 0}
+.tip{position:fixed;pointer-events:none;z-index:50;background:var(--ink);color:var(--bg);
+  padding:6px 9px;border-radius:8px;font-size:12px;font-weight:600;box-shadow:var(--shadow);opacity:0;transition:opacity .12s}
+.hidden{display:none!important}
+.foot{margin-top:26px;font-size:11.5px;color:var(--mut);text-align:center}
+</style>
+</head>
+<body>
+
+<!-- Passcode gate -->
+<div id="gate" class="wrap">
+  <div class="gate">
+    <div class="brandmark"></div>
+    <h1>Sponsor Sales Dashboard</h1>
+    <p>The AI Collective — enter the HQ passcode to view sponsorship results across chapters and regions.</p>
+    <form id="gateForm">
+      <input id="gatePass" type="password" placeholder="HQ passcode" autocomplete="off" autofocus>
+      <button class="btn btn-pri" type="submit">View</button>
+    </form>
+    <label class="rememberrow"><input type="checkbox" id="remember" style="flex:none;width:auto"> Remember on this device</label>
+    <div class="err" id="gateErr"></div>
+  </div>
+</div>
+
+<!-- App -->
+<div id="app" class="wrap hidden">
+  <div class="top">
+    <div class="brandmark"></div>
+    <div>
+      <h1 class="title">Sponsor Sales Dashboard</h1>
+      <div class="sub">The AI Collective · Sponsorship results</div>
+    </div>
+    <div class="spacer"></div>
+    <div class="ctl">
+      <select id="regionSel" aria-label="Region"></select>
+      <button class="btn" id="refreshBtn">↻ Refresh</button>
+      <div class="toggle">
+        <button class="tbtn" data-theme-set="light" title="Light">☀</button>
+        <button class="tbtn" data-theme-set="dark" title="Dark">☾</button>
+      </div>
+    </div>
+  </div>
+  <div class="meta" id="updated"></div>
+
+  <div class="kpis" id="kpis"></div>
+
+  <div class="panel">
+    <h2>Hits vs. wins by chapter</h2>
+    <p class="cap">Proposals sent (hits) against sponsorships won, per chapter. <button class="btn" id="hvwTable" style="padding:3px 9px;font-size:12px">Table view</button></p>
+    <div class="legend">
+      <span><span class="sw" style="background:var(--c-hits)"></span><b>Proposals</b> (hits)</span>
+      <span><span class="sw" style="background:var(--c-wins)"></span><b>Wins</b> (paid)</span>
+    </div>
+    <div id="hvwChart" class="chart"></div>
+    <div id="hvwTableWrap" class="tblwrap hidden"></div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr;gap:0">
+    <div class="panel">
+      <h2>Sponsorship revenue by region</h2>
+      <p class="cap">Total dollars won (payment received), rolled up by region.</p>
+      <div id="regionRevChart" class="chart"></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Conversion funnel</h2>
+    <p class="cap">How the current selection moves from proposal to invoice to won.</p>
+    <div id="funnel" class="funnel"></div>
+  </div>
+
+  <div class="panel">
+    <h2>Region rollup</h2>
+    <p class="cap">Each region's chapters, hits, wins and revenue at a glance.</p>
+    <div id="regions" class="regions"></div>
+  </div>
+
+  <div class="panel">
+    <h2>Chapters</h2>
+    <p class="cap">Every chapter in the current selection. Click a column to sort.</p>
+    <div class="tblwrap"><table id="chapTable"></table></div>
+  </div>
+
+  <div class="panel">
+    <h2>Client pipeline</h2>
+    <p class="cap">Saved clients (from chapters that have synced), newest activity first.</p>
+    <div id="pipe" class="pipe"></div>
+  </div>
+
+  <div class="foot">Read-only · data from the AIC Sponsorship Studio reporting sheet · <span id="footcount"></span></div>
+</div>
+
+<div class="tip" id="tip"></div>
+
+<script>
+"use strict";
+const ENDPOINT='https://script.google.com/macros/s/AKfycbwd_40XRkADXwwGWuX5QfiGjbS2ob5bWVs8-xvyGfAmILnnDD728o-IY1WeVsctUrIuKg/exec';
+const CUR=new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0});
+const PASS_KEY='aic-sales-hqpass';
+const ALL='__all__';
+let ROWS=[], CLIENTS=[], REGION=ALL, PASS='';
+
+/* ---- theme toggle ---- */
+function setTheme(t){ if(t) document.documentElement.setAttribute('data-theme',t); else document.documentElement.removeAttribute('data-theme');
+  try{localStorage.setItem('aic-sales-theme',t||'');}catch(e){}
+  document.querySelectorAll('[data-theme-set]').forEach(b=>b.classList.toggle('on',b.dataset.themeSet===t)); }
+try{const th=localStorage.getItem('aic-sales-theme'); if(th)setTheme(th);}catch(e){}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-theme-set]'); if(b)setTheme(b.dataset.themeSet);});
+
+/* ---- JSONP (Apps Script can't be read cross-origin via fetch) ---- */
+function jsonp(url){
+  return new Promise((resolve,reject)=>{
+    const name='__aic_cb_'+Math.random().toString(36).slice(2);
+    const s=document.createElement('script'); let done=false;
+    function cleanup(){try{delete window[name];}catch(e){window[name]=undefined;} if(s.parentNode)s.remove();}
+    window[name]=d=>{done=true;resolve(d);cleanup();};
+    s.onerror=()=>{if(!done){done=true;cleanup();reject(new Error('network error'));}};
+    s.src=url+(url.indexOf('?')>=0?'&':'?')+'callback='+name;
+    document.body.appendChild(s);
+    setTimeout(()=>{if(!done){done=true;cleanup();reject(new Error('timed out'));}},15000);
+  });
+}
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+/* ---- data load ---- */
+async function loadData(pass){
+  const sum=await jsonp(ENDPOINT+'?action=salesSummary&pass='+encodeURIComponent(pass));
+  if(!sum||!sum.ok) throw new Error((sum&&sum.error)||'Could not read data');
+  ROWS=sum.rows||[];
+  // clients are best-effort; a failure here shouldn't blank the dashboard
+  try{ const cl=await jsonp(ENDPOINT+'?action=listClients&chapter=*&pass='+encodeURIComponent(pass));
+       CLIENTS=(cl&&cl.ok&&cl.clients)?cl.clients:[]; }catch(e){ CLIENTS=[]; }
+  return sum.server;
+}
+
+/* ---- helpers ---- */
+function regionsList(){ const s=new Set(); ROWS.forEach(r=>s.add(r.region||'(no region)')); return Array.from(s).sort(); }
+function filtered(){ return REGION===ALL?ROWS:ROWS.filter(r=>(r.region||'(no region)')===REGION); }
+function totals(rows){ return rows.reduce((a,r)=>({proposals:a.proposals+r.proposals,invoices:a.invoices+r.invoices,
+  wins:a.wins+r.wins,won:a.won+r.won}),{proposals:0,invoices:0,wins:0,won:0}); }
+const rate=(w,p)=>p?Math.round(w/p*100):0;
+
+/* ---- tooltip ---- */
+const tip=document.getElementById('tip');
+function bindTip(el,html){ el.addEventListener('mousemove',e=>{tip.innerHTML=html;tip.style.opacity='1';
+  const x=Math.min(e.clientX+12,innerWidth-tip.offsetWidth-8); tip.style.left=x+'px'; tip.style.top=(e.clientY+14)+'px';});
+  el.addEventListener('mouseleave',()=>{tip.style.opacity='0';}); }
+
+/* ---- render ---- */
+function render(server){
+  document.getElementById('updated').textContent='Updated '+(server?new Date(server).toLocaleString():new Date().toLocaleString())
+    +' · '+ROWS.length+' chapter'+(ROWS.length===1?'':'s')+' reporting';
+  document.getElementById('footcount').textContent=ROWS.length+' chapters · '+CLIENTS.length+' saved clients';
+  renderRegionSel();
+  const rows=filtered(), t=totals(rows);
+  renderKpis(rows,t);
+  renderHitsVsWins(rows);
+  renderRegionRev();
+  renderFunnel(t);
+  renderRegionCards();
+  renderTable(rows,t);
+  renderPipe();
+}
+
+function renderRegionSel(){
+  const sel=document.getElementById('regionSel');
+  const regions=regionsList();
+  sel.innerHTML='<option value="'+ALL+'">All regions</option>'+regions.map(r=>`<option value="${esc(r)}">${esc(r)}</option>`).join('');
+  sel.value=REGION;
+}
+
+function renderKpis(rows,t){
+  const activeChapters=rows.filter(r=>r.proposals||r.wins).length;
+  const k=[
+    {l:'Chapters active',v:activeChapters,d:rows.length+' reporting'},
+    {l:'Proposals (hits)',v:t.proposals,d:'sent to prospects'},
+    {l:'Wins (paid)',v:t.wins,d:'sponsorships closed',cls:'win'},
+    {l:'Win rate',v:rate(t.wins,t.proposals)+'%',d:t.wins+' of '+t.proposals},
+    {l:'Revenue won',v:CUR.format(t.won),d:'payments received',cls:'money'}
+  ];
+  document.getElementById('kpis').innerHTML=k.map(x=>`<div class="kpi ${x.cls||''}">
+    <div class="l">${x.l}</div><div class="v num">${esc(x.v)}</div><div class="d">${esc(x.d)}</div></div>`).join('');
+}
+
+function renderHitsVsWins(rows){
+  const wrap=document.getElementById('hvwChart');
+  const data=rows.slice().filter(r=>r.proposals||r.wins).sort((a,b)=>b.proposals-a.proposals||b.wins-a.wins);
+  const max=Math.max(1,...data.map(r=>r.proposals));
+  if(!data.length){wrap.innerHTML='<div class="empty">No proposals or wins yet in this selection.</div>';}
+  else wrap.innerHTML=data.map(r=>{
+    const pw=Math.round(r.proposals/max*100), ww=Math.round(r.wins/max*100);
+    return `<div class="grp">
+      <div class="glab" title="${esc(r.chapter)}">${esc(r.chapter)}</div>
+      <div class="bars">
+        <div class="bar" data-tip="${esc(r.chapter)} — ${r.proposals} proposals">
+          <span class="bhint">Hits</span><div class="track"><div class="fill" style="width:${pw}%;background:var(--c-hits)"></div></div><div class="bval num">${r.proposals}</div></div>
+        <div class="bar" data-tip="${esc(r.chapter)} — ${r.wins} wins · ${CUR.format(r.won)}">
+          <span class="bhint">Wins</span><div class="track"><div class="fill" style="width:${ww}%;background:var(--c-wins)"></div></div><div class="bval num">${r.wins}</div></div>
+      </div></div>`;
+  }).join('');
+  wrap.querySelectorAll('.bar').forEach(b=>bindTip(b,b.dataset.tip));
+  // table view
+  const tw=document.getElementById('hvwTableWrap');
+  tw.innerHTML='<table><thead><tr><th>Chapter</th><th>Region</th><th class="n">Proposals</th><th class="n">Wins</th><th class="n">Win rate</th><th class="n">Revenue</th></tr></thead><tbody>'+
+    data.map(r=>`<tr><td>${esc(r.chapter)}</td><td>${esc(r.region||'—')}</td><td class="n num">${r.proposals}</td><td class="n num">${r.wins}</td><td class="n num">${rate(r.wins,r.proposals)}%</td><td class="n num">${CUR.format(r.won)}</td></tr>`).join('')+'</tbody></table>';
+}
+
+function renderRegionRev(){
+  const wrap=document.getElementById('regionRevChart');
+  const map={};
+  ROWS.forEach(r=>{const k=r.region||'(no region)'; map[k]=(map[k]||0)+r.won;});
+  const data=Object.keys(map).map(k=>({region:k,won:map[k]})).sort((a,b)=>b.won-a.won);
+  const max=Math.max(1,...data.map(d=>d.won));
+  if(!data.length||!data.some(d=>d.won)){wrap.innerHTML='<div class="empty">No revenue recorded yet.</div>';return;}
+  wrap.innerHTML=data.map(d=>{
+    const w=Math.round(d.won/max*100);
+    return `<div class="grp"><div class="glab" title="${esc(d.region)}">${esc(d.region)}</div>
+      <div class="bars"><div class="bar" data-tip="${esc(d.region)} — ${CUR.format(d.won)}">
+        <div class="track"><div class="fill" style="width:${w}%;background:var(--c-wins)"></div></div>
+        <div class="bval num" style="min-width:88px">${CUR.format(d.won)}</div></div></div></div>`;
+  }).join('');
+  wrap.querySelectorAll('.bar').forEach(b=>bindTip(b,b.dataset.tip));
+}
+
+function renderFunnel(t){
+  const el=document.getElementById('funnel');
+  const stages=[['Proposals',t.proposals],['Invoices sent',t.invoices],['Wins (paid)',t.wins]];
+  const max=Math.max(1,t.proposals);
+  let html='';
+  stages.forEach((s,i)=>{
+    const w=Math.round(s[1]/max*100);
+    html+=`<div class="fstage"><div class="fl">${s[0]}</div>
+      <div class="ftrack"><div class="ffill" style="width:${w}%"></div></div>
+      <div class="fv num">${s[1]}</div></div>`;
+    if(i<stages.length-1){ const conv=stages[i][1]?Math.round(stages[i+1][1]/stages[i][1]*100):0;
+      html+=`<div class="conv">↓ ${conv}% to ${stages[i+1][0].toLowerCase()}</div>`; }
+  });
+  el.innerHTML=html;
+}
+
+function renderRegionCards(){
+  const el=document.getElementById('regions');
+  const map={};
+  ROWS.forEach(r=>{const k=r.region||'(no region)'; const m=map[k]||(map[k]={chapters:0,proposals:0,wins:0,won:0});
+    m.chapters++; m.proposals+=r.proposals; m.wins+=r.wins; m.won+=r.won;});
+  const data=Object.keys(map).map(k=>Object.assign({region:k},map[k])).sort((a,b)=>b.won-a.won);
+  if(!data.length){el.innerHTML='<div class="empty">No regions reporting yet.</div>';return;}
+  el.innerHTML=data.map(d=>`<div class="rcard">
+    <div class="rn">${esc(d.region)}</div>
+    <div class="rr"><span>Chapters</span><b class="num">${d.chapters}</b></div>
+    <div class="rr"><span>Proposals</span><b class="num">${d.proposals}</b></div>
+    <div class="rr"><span>Wins</span><b class="num">${d.wins}</b></div>
+    <div class="rr"><span>Revenue</span><b class="num">${CUR.format(d.won)}</b></div>
+    <div class="rr"><span>Win rate</span><b class="num">${rate(d.wins,d.proposals)}%</b></div>
+    <div class="winrate"><i style="width:${rate(d.wins,d.proposals)}%"></i></div>
+  </div>`).join('');
+}
+
+let sortKey='won', sortDir=-1;
+function renderTable(rows,t){
+  const cols=[['chapter','Chapter',0],['region','Region',0],['proposals','Proposals',1],
+    ['invoices','Invoices',1],['wins','Wins',1],['winrate','Win rate',1],['won','Revenue',1]];
+  const data=rows.slice().sort((a,b)=>{
+    let av,bv; if(sortKey==='winrate'){av=rate(a.wins,a.proposals);bv=rate(b.wins,b.proposals);}
+    else{av=a[sortKey];bv=b[sortKey];}
+    if(typeof av==='string')return av.localeCompare(bv)*sortDir;
+    return (av-bv)*sortDir;
+  });
+  const head='<thead><tr>'+cols.map(c=>`<th class="${c[2]?'n':''}" data-k="${c[0]}">${c[1]}${sortKey===c[0]?(sortDir<0?' ▾':' ▴'):''}</th>`).join('')+'</tr></thead>';
+  const body='<tbody>'+data.map(r=>`<tr><td>${esc(r.chapter)}</td><td>${esc(r.region||'—')}</td>
+    <td class="n num">${r.proposals}</td><td class="n num">${r.invoices}</td><td class="n num">${r.wins}</td>
+    <td class="n num">${rate(r.wins,r.proposals)}%</td><td class="n num">${CUR.format(r.won)}</td></tr>`).join('')+
+    `<tr class="tot"><td>Total</td><td></td><td class="n num">${t.proposals}</td><td class="n num">${t.invoices}</td>
+     <td class="n num">${t.wins}</td><td class="n num">${rate(t.wins,t.proposals)}%</td><td class="n num">${CUR.format(t.won)}</td></tr>`+'</tbody>';
+  const tbl=document.getElementById('chapTable');
+  tbl.innerHTML=head+body;
+  tbl.querySelectorAll('th').forEach(th=>th.addEventListener('click',()=>{
+    const k=th.dataset.k; if(sortKey===k)sortDir*=-1; else{sortKey=k;sortDir=(k==='chapter'||k==='region')?1:-1;}
+    renderTable(filtered(),totals(filtered()));
+  }));
+}
+
+function renderPipe(){
+  const el=document.getElementById('pipe');
+  let list=CLIENTS.slice();
+  if(REGION!==ALL) list=list.filter(c=>(c.region||'')===REGION);
+  list.sort((a,b)=>String(b.updated||'').localeCompare(String(a.updated||'')));
+  list=list.slice(0,24);
+  if(!list.length){el.innerHTML='<div class="empty">No synced clients'+(REGION!==ALL?' in this region':'')+' yet. Clients appear here once a chapter uses “Sync now.”</div>';return;}
+  el.innerHTML=list.map(c=>{
+    const ct=c.contact||{}, nm=[ct.first,ct.last].filter(Boolean).join(' ');
+    const co=ct.company||nm||'(unnamed)';
+    const type=(c.type==='partner')?'partner':'sponsor';
+    return `<div class="pcard"><span class="tag ${type}">${type}</span>
+      <div class="pc" style="margin-top:8px">${esc(co)}</div>
+      <div class="pm">${esc([c.chapter,nm].filter(Boolean).join(' · '))||'—'}</div>
+      <div class="pm">${c.updated?('Updated '+new Date(c.updated).toLocaleDateString()):''}</div></div>`;
+  }).join('');
+}
+
+/* ---- events ---- */
+document.getElementById('regionSel').addEventListener('change',e=>{REGION=e.target.value;render(lastServer);});
+document.getElementById('refreshBtn').addEventListener('click',async()=>{
+  const b=document.getElementById('refreshBtn'); b.disabled=true; b.textContent='…';
+  try{lastServer=await loadData(PASS);render(lastServer);}catch(e){alert('Refresh failed: '+(e.message||e));}
+  b.disabled=false; b.textContent='↻ Refresh';
+});
+document.getElementById('hvwTable').addEventListener('click',()=>{
+  document.getElementById('hvwChart').classList.toggle('hidden');
+  document.getElementById('hvwTableWrap').classList.toggle('hidden');
+});
+
+/* ---- gate ---- */
+let lastServer='';
+async function enter(pass,remember){
+  const err=document.getElementById('gateErr'); err.textContent='';
+  try{
+    lastServer=await loadData(pass);
+    PASS=pass;
+    if(remember){try{localStorage.setItem(PASS_KEY,pass);}catch(e){}}
+    document.getElementById('gate').classList.add('hidden');
+    document.getElementById('app').classList.remove('hidden');
+    render(lastServer);
+  }catch(e){
+    err.textContent=(String(e.message||e).indexOf('passcode')>=0)?'That passcode was not accepted.':('Could not load: '+(e.message||e));
+    try{localStorage.removeItem(PASS_KEY);}catch(_){}
+  }
+}
+document.getElementById('gateForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  enter(document.getElementById('gatePass').value.trim(), document.getElementById('remember').checked);
+});
+// auto-enter if remembered
+(function(){ let saved=''; try{saved=localStorage.getItem(PASS_KEY)||'';}catch(e){}
+  if(saved){document.getElementById('remember').checked=true; enter(saved,true);} })();
+</script>
+</body>
+</html>
