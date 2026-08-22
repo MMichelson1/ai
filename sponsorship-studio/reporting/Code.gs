@@ -28,7 +28,22 @@
 
 var NOTIFY = ['mark@aicollective.com', 'erich@aicollective.com'];
 
-function doGet() {
+// HQ passcode — unlocks READING every chapter's clients (for you / Erich / an HQ
+// dashboard). CHANGE THIS to a strong phrase before deploying, and keep it private.
+// Chapter leads never need it; they use their own chapter passcode.
+var HQ_PASS = 'CHANGE-ME-HQ-PASSCODE';
+
+function doGet(e) {
+  var p = (e && e.parameter) || {};
+  if (p.action === 'listClients') {
+    var res;
+    var lock = LockService.getScriptLock();
+    try { lock.waitLock(15000); } catch (ignore) {}
+    try { res = _listClients(p.chapter || '', p.pass || ''); }
+    catch (err) { res = { ok: false, error: String(err) }; }
+    finally { try { lock.releaseLock(); } catch (ignore) {} }
+    return _jsonp(p.callback, res);
+  }
   return _json({ ok: true, service: 'AIC Sponsorship Studio reporting' });
 }
 
@@ -42,6 +57,10 @@ function doPost(e) {
   }
   try {
     var data = JSON.parse((e && e.postData && e.postData.contents) || '{}');
+    if (data.action === 'saveClients') {          // CRM sync (push), not an event
+      out = _saveClients(data);
+      return _json(out);
+    }
     data._received = new Date().toISOString();
     _logRow(data);
     _updateSummary(data);
@@ -57,6 +76,116 @@ function doPost(e) {
 function _json(o) {
   return ContentService.createTextOutput(JSON.stringify(o))
     .setMimeType(ContentService.MimeType.JSON);
+}
+
+// JSONP: reads from a browser on another origin can't use plain fetch against an
+// Apps Script web app, so the Studio requests clients via a <script> tag and we
+// reply with `callback({...})`.
+function _jsonp(cb, obj) {
+  cb = String(cb || 'callback').replace(/[^A-Za-z0-9_$]/g, '') || 'callback';
+  return ContentService.createTextOutput(cb + '(' + JSON.stringify(obj) + ');')
+    .setMimeType(ContentService.MimeType.JAVASCRIPT);
+}
+
+/* ---------- Clients (CRM sync) ----------
+   Two tabs:
+     Clients     — one row per client: Chapter | Client ID | Updated | JSON
+     ChapterKeys — one row per chapter: Chapter | Passcode | Region | Created
+   A chapter's passcode gates that chapter's clients. HQ_PASS reads any chapter
+   (or chapter '*' for everything). This is lightweight gating, not encryption —
+   passcodes and client data live in the Sheet in plain text. */
+
+function _clientsSheet() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sh = ss.getSheetByName('Clients');
+  if (!sh) {
+    sh = ss.insertSheet('Clients');
+    sh.appendRow(['Chapter', 'Client ID', 'Updated', 'JSON']);
+    sh.setFrozenRows(1);
+  }
+  return sh;
+}
+
+function _chapterKeysSheet() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sh = ss.getSheetByName('ChapterKeys');
+  if (!sh) {
+    sh = ss.insertSheet('ChapterKeys');
+    sh.appendRow(['Chapter', 'Passcode', 'Region', 'Created (UTC)']);
+    sh.setFrozenRows(1);
+  }
+  return sh;
+}
+
+// Returns {ok, hq} or {ok:false, error}. allowCreate registers a new chapter's
+// passcode the first time it syncs.
+function _verifyPass(chapter, pass, allowCreate, region) {
+  if (pass && pass === HQ_PASS) return { ok: true, hq: true };
+  if (!chapter) return { ok: false, error: 'missing chapter' };
+  if (!pass) return { ok: false, error: 'missing passcode' };
+  var sh = _chapterKeysSheet();
+  var vals = sh.getDataRange().getValues();
+  for (var i = 1; i < vals.length; i++) {
+    if (String(vals[i][0]) === String(chapter)) {
+      return String(vals[i][1]) === String(pass)
+        ? { ok: true, hq: false }
+        : { ok: false, error: 'wrong passcode for ' + chapter };
+    }
+  }
+  if (allowCreate) {
+    sh.appendRow([chapter, pass, region || '', new Date().toISOString()]);
+    return { ok: true, hq: false, created: true };
+  }
+  return { ok: false, error: 'unknown chapter (nothing synced yet)' };
+}
+
+function _saveClients(data) {
+  var chapter = data.chapter || '';
+  var list = data.clients || [];
+  var region = '';
+  for (var k = 0; k < list.length; k++) { if (list[k].chapter) region = list[k].region || region; }
+  var v = _verifyPass(chapter, data.pass || '', true, region);
+  if (!v.ok) return v;
+  if (v.hq) return { ok: false, error: 'HQ passcode is read-only; save with the chapter passcode' };
+  var sh = _clientsSheet();
+  var vals = sh.getDataRange().getValues();
+  var index = {}; // "chapter|id" -> { row: 1-based, updated: stored timestamp }
+  for (var r = 1; r < vals.length; r++) {
+    index[String(vals[r][0]) + '\u001f' + String(vals[r][1])] = { row: r + 1, updated: String(vals[r][2] || '') };
+  }
+  var saved = 0, skipped = 0;
+  for (var j = 0; j < list.length; j++) {
+    var cl = list[j];
+    if (!cl || !cl.id) continue;
+    var ch = cl.chapter || chapter;
+    var key = ch + '\u001f' + cl.id;
+    var inc = String(cl.updated || '');
+    var row = [ch, cl.id, inc, JSON.stringify(cl)];
+    var ex = index[key];
+    if (ex) {
+      // Newest edit wins: a stale push must not clobber a newer server record.
+      if (inc >= ex.updated) { sh.getRange(ex.row, 1, 1, 4).setValues([row]); saved++; }
+      else skipped++;
+    } else {
+      sh.appendRow(row); saved++;
+    }
+  }
+  return { ok: true, saved: saved, skipped: skipped };
+}
+
+function _listClients(chapter, pass) {
+  var v = _verifyPass(chapter === '*' ? '' : chapter, pass, false);
+  if (chapter === '*') { if (!v.hq) return { ok: false, error: 'HQ passcode required for all-chapter read' }; }
+  else if (!v.ok) return v;
+  var sh = _clientsSheet();
+  var vals = sh.getDataRange().getValues();
+  var clients = [];
+  for (var r = 1; r < vals.length; r++) {
+    if (chapter === '*' || String(vals[r][0]) === String(chapter)) {
+      try { clients.push(JSON.parse(vals[r][3])); } catch (e) {}
+    }
+  }
+  return { ok: true, clients: clients, server: new Date().toISOString() };
 }
 
 /* ---------- Events tab (append-only log of everything) ---------- */
