@@ -829,6 +829,11 @@ com_member:'Member referred',com_sales:'Salesperson sourced',com_regsup:'Region 
 scenario:'Scenario',member_lbl:'Member',sales_lbl:'Salesperson',
 nav_docs:'Documents',inv_title:'Invoice',bill_to:'Bill to',remit_to:'Remit to',due:'Due date',inv_no:'Invoice no.',prop_no:'Proposal no.',payable_to:'Payable to',terms15:'Payment due within 15 days of invoice date.',
 letter_title:'Thank you',letter_body:'On behalf of {chapter} and The AI Collective community, thank you for your sponsorship. Your support of {amt}, received {date}, directly funds the events and programs that bring AI practitioners together in our community.',letter_close:'With gratitude,',your_contact:'Your contact',
+letters_label:'Letters',
+ltr_mid_title:'Mid-year impact',
+ltr_mid_body:'On behalf of {chapter} and The AI Collective, thank you again for your sponsorship. We wanted to share how your support of {amt} is already at work. Since your sponsorship began, our community has hosted events, workshops, and gatherings that bring AI practitioners together — connecting builders, sharing practical knowledge, and growing the local ecosystem. Your name and your support have been part of every one of those moments. We are grateful to have you with us, and we look forward to an even stronger second half of the year.',
+ltr_ren_title:'Renewal',
+ltr_ren_body:'On behalf of {chapter} and The AI Collective, thank you for a remarkable year of partnership. Your sponsorship of {amt} helped power the events and programs that make our community what it is. As we plan the year ahead — more events, more members, and more opportunities to put your brand in front of the AI practitioners who matter most — we would be honored to have you renew your sponsorship. We would love to find a time to walk you through the coming year’s plan and the tiers available to you.',
 about_t:'About us',region_t:'Our region',news_t:'Reach beyond the room',news_p:'Sponsors can also reach our members between events through our chapter newsletters — and nationally through The AI Collective Daily.',news_send:'Dedicated chapter newsletter send',news_feature:'Feature in chapter newsletter',per_send:'per send',
 room_t:'The room you are sponsoring',ref_by:'Referred by'},
 es:{nav_calc:'Calculadora',nav_prop:'Propuesta',nav_agr:'Acuerdo',nav_ann:'Anual',nav_evt:'Eventos',nav_com:'Estipendios',nav_bro:'Folleto',nav_set:'Ajustes',
@@ -1521,7 +1526,7 @@ function renderDocs(){
       <button class="btn btn-pri" onclick="docState='invoice';renderDocs()">${t('inv_title')}</button>
       <button class="btn btn-pri" onclick="docState='agreement';renderDocs()">${t('agr_title')}</button>
       <button class="btn btn-pri" onclick="docState='sow';renderDocs()">Scope of work</button>
-      <button class="btn btn-pri" onclick="docState='letter';renderDocs()">${t('letter_title')}</button>
+      <button class="btn btn-pri" onclick="docState='letter';renderDocs()">${t('letters_label')}</button>
     </div>
   </div>
   <div class="panel">
@@ -1600,20 +1605,28 @@ function sowDoc(){
     </div>
   </div>`;
 }
+let letterKind='thankyou';
 function letterDoc(){
   const c=cfg.chapter;
   const who=c.scope==='region'?(c.regionName||c.name):c.name;
-  const body=tf('letter_body',{chapter:'<strong>'+esc(who)+'</strong>',amt:'<strong>'+amtDisp()+'</strong>',date:fmtDate(agr.date)});
-  return docBack()+`<div class="sheet">
+  const amt='<strong>'+amtDisp()+'</strong>', chapS='<strong>'+esc(who)+'</strong>';
+  const kinds=[['thankyou',t('letter_title')],['midyear',t('ltr_mid_title')],['renewal',t('ltr_ren_title')]];
+  const chips=`<div class="chipbar no-print" style="margin-bottom:12px">${kinds.map(([k,lbl])=>
+    `<button class="chip ${letterKind===k?'on':''}" onclick="letterKind='${k}';renderDocs()">${esc(lbl)}</button>`).join('')}</div>`;
+  let title,body,showTax=false;
+  if(letterKind==='midyear'){title=t('ltr_mid_title');body=tf('ltr_mid_body',{chapter:chapS,amt:amt});}
+  else if(letterKind==='renewal'){title=t('ltr_ren_title');body=tf('ltr_ren_body',{chapter:chapS,amt:amt});}
+  else{title=t('letter_title');body=tf('letter_body',{chapter:chapS,amt:amt,date:fmtDate(agr.date)});showTax=true;}
+  return docBack()+chips+`<div class="sheet">
     ${sheetHead()}
     <hr class="sh-rule">
     <div class="sh-body">
-      <h1>${t('letter_title')}</h1>
+      <h1>${esc(title)}</h1>
       <p class="mut">${fmtDate(today())}</p>
       <p style="margin-top:14px">${esc(prop.contact)||esc(agr.sponsor)||esc(prop.sponsor)||''}</p>
       <p style="margin-top:14px">${body}</p>
-      <p style="margin-top:10px">${t('agr_recog')}</p>
-      <p style="margin-top:10px">${t('agr_tax')}</p>
+      ${showTax?`<p style="margin-top:10px">${t('agr_recog')}</p>
+      <p style="margin-top:10px">${t('agr_tax')}</p>`:''}
       <p style="margin-top:22px">${t('letter_close')}</p>
       <p style="margin-top:26px"><strong>${esc(prop.sales.name)||''}</strong><br>
       ${esc(who)} · ${esc(cfg.org.hq)}${prop.sales.email?`<br>${esc(prop.sales.email)}`:''}</p>
