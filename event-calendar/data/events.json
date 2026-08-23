@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-20T22:44:53.394Z",
+  "generatedAt": "2026-08-23T10:27:48.648Z",
   "sample": false,
   "markets": {
     "atlanta": {
@@ -21,7 +21,7 @@
       "aic": true,
       "status": "ok",
       "count": 4,
-      "lastChecked": "2026-08-20T22:44:53.394Z",
+      "lastChecked": "2026-08-23T10:27:48.649Z",
       "note": ""
     },
     {
@@ -32,7 +32,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-08-20T22:44:54.767Z",
+      "lastChecked": "2026-08-23T10:27:49.616Z",
       "note": "Get the section's public iCal feed URL from events.vtools.ieee.org (Events → Export/iCal for the Atlanta Section), paste it into 'url', then set enabled:true."
     },
     {
@@ -43,7 +43,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-08-20T22:44:54.767Z",
+      "lastChecked": "2026-08-23T10:27:49.616Z",
       "note": "Any Meetup group exposes an iCal feed at https://www.meetup.com/<group-slug>/events/ical/ — add one source entry per local AI group and set enabled:true."
     },
     {
@@ -54,7 +54,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-08-20T22:44:54.767Z",
+      "lastChecked": "2026-08-23T10:27:49.616Z",
       "note": "Most university event calendars (Localist, Google Calendar) publish an ICS feed — paste it here. AI keyword filtering is applied automatically."
     },
     {
@@ -65,7 +65,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-08-20T22:44:54.767Z",
+      "lastChecked": "2026-08-23T10:27:49.616Z",
       "note": "Eventbrite retired public event search; per-organizer listings work via their free API. Add EVENTBRITE_TOKEN as a repo secret and organizer IDs here — see README."
     },
     {
@@ -76,7 +76,7 @@
       "aic": false,
       "status": "manual",
       "count": 0,
-      "lastChecked": "2026-08-20T22:44:54.767Z",
+      "lastChecked": "2026-08-23T10:27:49.616Z",
       "note": "LinkedIn and Facebook publish no feeds. Chapter leads add validated in-person events to data/manual-events.json via pull request; each entry must link to a live listing on a trusted site."
     },
     {
@@ -86,69 +86,12 @@
       "type": "luma-calendar",
       "aic": true,
       "status": "ok",
-      "count": 24,
-      "lastChecked": "2026-08-20T22:44:54.767Z",
+      "count": 21,
+      "lastChecked": "2026-08-23T10:27:49.616Z",
       "note": ""
     }
   ],
   "events": [
-    {
-      "id": "evt-6q35JFzEVQJSII9@events.lu.ma",
-      "title": "Hack for Humanity: Canberra",
-      "start": "2026-08-22T00:00:00.000Z",
-      "end": "2026-08-22T05:00:00.000Z",
-      "allDay": false,
-      "tz": null,
-      "location": "Birch Building #35, 2.39, Level 2, Room/35 Science Rd, Acton ACT 2601, Australia",
-      "lat": -35.274252600000004,
-      "lon": 149.1190403,
-      "organizer": "The AI Collective",
-      "url": "https://lu.ma/genai-collective",
-      "sourceDomain": "lu.ma",
-      "aic": true,
-      "type": "meetup",
-      "price": "check",
-      "capacity": null,
-      "market": "global"
-    },
-    {
-      "id": "evt-TD8pBWUAKQtZb3M@events.lu.ma",
-      "title": "AI Collective Mixers 2.0 in Chennai (w/ The AI Collective)",
-      "start": "2026-08-22T12:30:00.000Z",
-      "end": "2026-08-22T15:00:00.000Z",
-      "allDay": false,
-      "tz": null,
-      "location": "Nungambakkam, Chennai, Tamil Nadu, India",
-      "lat": 13.0569467,
-      "lon": 80.242469,
-      "organizer": "The AI Collective",
-      "url": "https://lu.ma/genai-collective",
-      "sourceDomain": "lu.ma",
-      "aic": true,
-      "type": "social",
-      "price": "check",
-      "capacity": null,
-      "market": "global"
-    },
-    {
-      "id": "evt-FG8GZaqgfpDfmFv@events.lu.ma",
-      "title": "AI JamFest at Backboard.io | Saturday Build Session (w/ The AI Collective)",
-      "start": "2026-08-22T16:00:00.000Z",
-      "end": "2026-08-22T19:00:00.000Z",
-      "allDay": false,
-      "tz": null,
-      "location": "34 Capital Dr, Ottawa, ON K2G 0E9, Canada",
-      "lat": 45.322654899999996,
-      "lon": -75.7202823,
-      "organizer": "The AI Collective",
-      "url": "https://lu.ma/genai-collective",
-      "sourceDomain": "lu.ma",
-      "aic": true,
-      "type": "meetup",
-      "price": "check",
-      "capacity": null,
-      "market": "global"
-    },
     {
       "id": "evt-OWdQ2XytK0GSA8E@events.lu.ma",
       "title": "Cumming AI + Coffee (w/ The AI Collective)",
