@@ -922,6 +922,21 @@ const openSections=new Set();  // remembers which form sections are expanded acr
 function persistReminder(){ const s=loadStore(); s.remindWeeks=state.remindWeeks; saveStore(s); }
 function persistFacilitator(){ const s=loadStore(); s.facMemd=state.facMemd; s.credNotes=state.credNotes; saveStore(s); }
 function persistBrand(){ const s=loadStore(); s.deckLogo=state.deckLogo; saveStore(s); }
+// ----- saved workshops (name a whole setup and reload it later) -----
+const WORKSHOP_FIELDS=["audience","audience2","label","noun","customName","icp","date","venue","seats","lead","guests","include","deep","angle","maven","deckLogo"];
+function captureWorkshop(){ const o={}; WORKSHOP_FIELDS.forEach(k=>{ o[k]=(state[k]==null?null:JSON.parse(JSON.stringify(state[k]))); }); return o; }
+function applyWorkshop(cfg){ WORKSHOP_FIELDS.forEach(k=>{ if(k in cfg && cfg[k]!=null) state[k]=JSON.parse(JSON.stringify(cfg[k])); }); }
+function savedWorkshops(){ return (loadStore().savedWorkshops)||[]; }
+function saveWorkshopsList(list){ const s=loadStore(); s.savedWorkshops=list; saveStore(s); }
+function saveWorkshopAs(name){
+  name=(name||"").trim(); if(!name){ toast("Name the workshop first"); return false; }
+  const list=savedWorkshops(); const i=list.findIndex(w=>w.name.toLowerCase()===name.toLowerCase());
+  const entry={name, savedAt:Date.now(), config:captureWorkshop()};
+  if(i>=0) list[i]=entry; else list.push(entry);
+  saveWorkshopsList(list); return true;
+}
+function loadWorkshopByName(name){ const w=savedWorkshops().find(x=>x.name===name); if(!w) return; applyWorkshop(w.config); rerenderAll(); }
+function deleteWorkshop(name){ saveWorkshopsList(savedWorkshops().filter(x=>x.name!==name)); rerenderAll(); }
 function primaryName(){ return state.audience==="__custom__" ? (state.customName.trim()||"Custom Audience") : state.audience; }
 function persistIcp(){
   if(!state.audience || state.audience2) return;   // persist single-audience ICPs only
@@ -1789,6 +1804,37 @@ function flagize(s){ return s.replace(/VERIFY|FILL THESE[^.]*/g, m=>'<span class
 /* ============================================================ FORM UI ============================================================ */
 function buildForm(){
   const f=$("#form"); f.innerHTML="";
+
+  // ---- Saved workshops bar ----
+  {
+    const saved=savedWorkshops().slice().sort((a,b)=>a.name.localeCompare(b.name,undefined,{sensitivity:"base"}));
+    const bar=el("div"); bar.style.cssText="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:14px;box-shadow:var(--shadow)";
+    const lab=el("span","lab","Saved workshops"); lab.style.display="block"; bar.appendChild(lab);
+    const row=el("div"); row.style.cssText="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:2px";
+    const sel=el("select"); sel.style.cssText="flex:1 1 170px;min-width:140px";
+    sel.appendChild(opt("", saved.length?"Load a saved workshop…":"No saved workshops yet"));
+    saved.forEach(w=> sel.appendChild(opt(w.name,w.name)) );
+    sel.disabled=!saved.length;
+    sel.onchange=()=>{ if(sel.value){ loadWorkshopByName(sel.value); toast("Loaded: "+sel.value); } };
+    row.appendChild(sel);
+    const saveBtn=el("button","btn primary sm","Save current…"); saveBtn.style.flex="0 0 auto";
+    saveBtn.onclick=()=>{
+      const def = audLabel() ? ("AI Fundamentals for "+audLabel()) : "My workshop";
+      const name = prompt("Save this workshop as:", def);
+      if(name!==null && saveWorkshopAs(name)){ toast("Saved: "+name.trim()); rerenderAll(); }
+    };
+    row.appendChild(saveBtn);
+    if(saved.length){
+      const del=el("button","btn ghost sm","Delete…"); del.style.flex="0 0 auto";
+      del.onclick=()=>{ if(sel.value && confirm('Delete saved workshop "'+sel.value+'"?')){ deleteWorkshop(sel.value); toast("Deleted"); } else if(!sel.value){ toast("Pick a workshop to delete"); } };
+      row.appendChild(del);
+    }
+    bar.appendChild(row);
+    const hint=el("div","hint"); hint.style.marginTop="8px";
+    hint.textContent="Save the whole setup (audience, date, venue, tools, instructors, brand) under a name and reload it anytime. Saved in this browser.";
+    bar.appendChild(hint);
+    f.appendChild(bar);
+  }
 
   // SECTION 1 - Audience
   f.appendChild(section(1,"Audience", audLabel() || "Not selected", body=>{
