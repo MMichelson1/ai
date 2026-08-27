@@ -65,6 +65,11 @@ Nonprofit, Product Designers, Product Managers, Qualitative Research, Real Estat
 Retail Design, Sales, Small Business Owners, SMB — plus merge-two and fully custom
 audiences.
 
+**Save & reload workshops.** A **Saved workshops** bar at the top lets you save
+the whole setup (audience, date, venue, tools, instructors, brand) under a name
+and reload it anytime from the dropdown — handy for reusing last month's config
+or keeping a template per audience. Saved in the browser.
+
 ## Monthly workflow
 
 1. Open the hosted page (link below) and bookmark it.
