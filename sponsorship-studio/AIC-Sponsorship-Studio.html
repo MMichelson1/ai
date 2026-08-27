@@ -711,7 +711,7 @@ const DEFAULTS={
   chapter:{name:'', prefix:'', members:0, scope:'chapter', lang:'en', currency:'USD', fx:1,
     ctaUrl:'', email:'', statEvents:'', tierOver:{}, logo:'', photos:'', photos3:[], nextNum:1,
     spName:'', spEmail:'', spCal:'', chapterUrl:'', refByName:'', refByEmail:'',
-    regionName:'', regionMembers:0, regionChapters:''},
+    regionName:'', regionMembers:0, regionChapters:'', syncPass:'', lastSync:''},
   story:{history:'', thesis:''},
   sales:{name:'', email:'', phone:''},
   banking:{payableTo:'', remit:''},
@@ -829,6 +829,11 @@ com_member:'Member referred',com_sales:'Salesperson sourced',com_regsup:'Region 
 scenario:'Scenario',member_lbl:'Member',sales_lbl:'Salesperson',
 nav_docs:'Documents',inv_title:'Invoice',bill_to:'Bill to',remit_to:'Remit to',due:'Due date',inv_no:'Invoice no.',prop_no:'Proposal no.',payable_to:'Payable to',terms15:'Payment due within 15 days of invoice date.',
 letter_title:'Thank you',letter_body:'On behalf of {chapter} and The AI Collective community, thank you for your sponsorship. Your support of {amt}, received {date}, directly funds the events and programs that bring AI practitioners together in our community.',letter_close:'With gratitude,',your_contact:'Your contact',
+letters_label:'Letters',
+ltr_mid_title:'Mid-year impact',
+ltr_mid_body:'On behalf of {chapter} and The AI Collective, thank you again for your sponsorship. We wanted to share how your support of {amt} is already at work. Since your sponsorship began, our community has hosted events, workshops, and gatherings that bring AI practitioners together — connecting builders, sharing practical knowledge, and growing the local ecosystem. Your name and your support have been part of every one of those moments. We are grateful to have you with us, and we look forward to an even stronger second half of the year.',
+ltr_ren_title:'Renewal',
+ltr_ren_body:'On behalf of {chapter} and The AI Collective, thank you for a remarkable year of partnership. Your sponsorship of {amt} helped power the events and programs that make our community what it is. As we plan the year ahead — more events, more members, and more opportunities to put your brand in front of the AI practitioners who matter most — we would be honored to have you renew your sponsorship. We would love to find a time to walk you through the coming year’s plan and the tiers available to you.',
 about_t:'About us',region_t:'Our region',news_t:'Reach beyond the room',news_p:'Sponsors can also reach our members between events through our chapter newsletters — and nationally through The AI Collective Daily.',news_send:'Dedicated chapter newsletter send',news_feature:'Feature in chapter newsletter',per_send:'per send',
 room_t:'The room you are sponsoring',ref_by:'Referred by'},
 es:{nav_calc:'Calculadora',nav_prop:'Propuesta',nav_agr:'Acuerdo',nav_ann:'Anual',nav_evt:'Eventos',nav_com:'Estipendios',nav_bro:'Folleto',nav_set:'Ajustes',
@@ -1354,6 +1359,191 @@ function amtDisp(){
   catch(e){return agr.amount;}
 }
 function plusDaysFrom(iso,d){const x=new Date((iso||today())+'T12:00:00');x.setDate(x.getDate()+d);return x.toISOString().slice(0,10);}
+function money_(n){try{return new Intl.NumberFormat(LOCALES[cfg.chapter.lang]||'en-US',{style:'currency',currency:cfg.chapter.currency,maximumFractionDigits:0}).format(Number(n)||0);}catch(e){return '$'+(Number(n)||0);}}
+function toast(msg){let t=document.getElementById('aic-toast');if(!t){t=document.createElement('div');t.id='aic-toast';t.className='no-print';t.style.cssText='position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#187A4B;color:#fff;padding:11px 20px;border-radius:999px;font-size:13.5px;font-weight:700;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.25);opacity:0;transition:opacity .2s';document.body.appendChild(t);}t.textContent=msg;requestAnimationFrame(()=>t.style.opacity='1');clearTimeout(t._h);t._h=setTimeout(()=>{t.style.opacity='0';},2800);}
+/* Master-log actions — record activity to the AIC master sheet (hits vs wins). */
+function logInvoiceSent(){
+  const sponsor=(agr.sponsor||prop.sponsor||'').trim();
+  if(!sponsor){alert('Add the sponsor / company name first (in the Documents form or the Proposal).');return;}
+  const num=Number(agr.amount)||0;
+  report('invoice',{sponsor:sponsor, amount:num?money_(num):'', amountNum:num, proposalNo:prop.number||''});
+  toast('Invoice logged to the master sheet');
+}
+function logPaymentReceived(){
+  const sponsor=(agr.sponsor||prop.sponsor||'').trim();
+  if(!sponsor){alert('Add the sponsor / company name first.');return;}
+  const num=Number(agr.amount)||0;
+  if(!confirm('Log a WIN — payment received from '+sponsor+(num?(' for '+money_(num)):'')+'?\nThis notifies HQ and counts as a win.'))return;
+  report('payment',{sponsor:sponsor, amount:num?money_(num):'', amountNum:num, date:agr.date||today(), proposalNo:prop.number||''});
+  toast('Win recorded — payment logged 🎉');
+}
+
+/* ═══════════════ CLIENTS (lightweight CRM) ═══════════════
+   Saved locally on this device (per browser). Each client keeps its contact,
+   type, fulfillment status, and a re-openable snapshot of its documents
+   (proposal + agreement/invoice/letter). Export CSV/JSON for the future
+   platform. This is additive — nothing else depends on it. */
+const CLIENTS_KEY='aic-clients-v1';
+function loadClients(){try{const r=localStorage.getItem(CLIENTS_KEY);if(r){const o=JSON.parse(r);if(o&&Array.isArray(o.list))return o;}}catch(e){}return {version:1,list:[]};}
+let clients=loadClients();
+let curClient=null;
+function saveClients(){try{localStorage.setItem(CLIENTS_KEY,JSON.stringify(clients));}catch(e){}}
+function currentClient(){return clients.list.find(c=>c.id===curClient)||null;}
+function clientLabel(cl){const nm=[cl.contact.first,cl.contact.last].filter(Boolean).join(' ');return [cl.contact.company,nm].filter(Boolean).join(' — ')||'(unnamed client)';}
+function newClientRecord(){return {
+  id:'c'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),
+  chapter:cfg.chapter.name||'', created:today(), updated:stamp(), type:'sponsor',
+  contact:{first:'',last:'',company:'',title:'',email:'',phone:'',phone2:'',website:''},
+  fulfillment:{logo:'',logoVer:'',bannerStatus:'',notes:''},
+  snapshot:null };}
+function newClient(){const cl=newClientRecord();clients.list.push(cl);curClient=cl.id;saveClients();renderDocs();}
+function openClient(id){
+  if(!id){curClient=null;renderDocs();return;}
+  const cl=clients.list.find(c=>c.id===id); if(!cl)return;
+  curClient=id;
+  if(cl.snapshot){
+    if(cl.snapshot.prop)prop=JSON.parse(JSON.stringify(cl.snapshot.prop));
+    if(cl.snapshot.agr)agr=JSON.parse(JSON.stringify(cl.snapshot.agr));
+  }
+  ensureProp();
+  if(!cl.snapshot){ // first open: seed the documents from the contact card
+    if(cl.contact.company){prop.sponsor=cl.contact.company;agr.sponsor=cl.contact.company;}
+    if(cl.contact.email)prop.email=cl.contact.email;
+    const nm=[cl.contact.first,cl.contact.last].filter(Boolean).join(' ');
+    if(nm)prop.contact=nm;
+  }
+  docState='menu';renderDocs();
+}
+function updClient(path,val){const cl=currentClient();if(!cl)return;const seg=path.split('.');let o=cl;for(let i=0;i<seg.length-1;i++)o=o[seg[i]];o[seg[seg.length-1]]=val;cl.updated=stamp();saveClients();}
+function setClientType(tp){const cl=currentClient();if(!cl)return;cl.type=tp;cl.updated=stamp();saveClients();renderDocs();}
+function deleteClient(id){const cl=clients.list.find(c=>c.id===id);if(!cl)return;if(!confirm('Delete '+clientLabel(cl)+'?\nThis removes their contact and saved documents from this device.'))return;clients.list=clients.list.filter(c=>c.id!==id);if(curClient===id)curClient=null;saveClients();toast('Client deleted');renderDocs();}
+function saveClientWork(){
+  let cl=currentClient();
+  if(!cl){cl=newClientRecord();clients.list.push(cl);curClient=cl.id;}
+  if(!cl.contact.company){cl.contact.company=(agr.sponsor||prop.sponsor||'').trim();}
+  cl.snapshot={prop:JSON.parse(JSON.stringify(prop)), agr:JSON.parse(JSON.stringify(agr))};
+  cl.chapter=cfg.chapter.name||cl.chapter||'';
+  cl.updated=stamp();
+  saveClients();toast('Saved to '+clientLabel(cl));renderDocs();
+}
+function downloadText(name,text,mime){try{const b=new Blob([text],{type:mime||'text/plain'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1500);}catch(e){alert('Download failed: '+e);}}
+function exportClientsJSON(){if(!clients.list.length){alert('No clients saved yet.');return;}downloadText('aic-clients-'+today()+'.json',JSON.stringify(clients,null,2),'application/json');}
+function csvCell(v){return '"'+String(v==null?'':v).replace(/"/g,'""')+'"';}
+function exportClientsCSV(){
+  if(!clients.list.length){alert('No clients saved yet.');return;}
+  const cols=['Chapter','Type','Company','First','Last','Title','Email','Phone','Phone alt','Website','Logo link','Logo version','Banner status','Fulfillment notes','Proposal #','Amount','Updated'];
+  const rows=[cols.map(csvCell).join(',')];
+  clients.list.forEach(cl=>{const c=cl.contact,f=cl.fulfillment,s=cl.snapshot||{};const p=s.prop||{},a=s.agr||{};
+    rows.push([cl.chapter,cl.type,c.company,c.first,c.last,c.title,c.email,c.phone,c.phone2,c.website,f.logo,f.logoVer,f.bannerStatus,f.notes,p.number||'',a.amount||'',cl.updated].map(csvCell).join(','));});
+  downloadText('aic-clients-'+today()+'.csv',rows.join('\r\n'),'text/csv');
+}
+function stamp(){return new Date().toISOString();}
+/* ---- Shared sync (manual): push this chapter's clients to the master sheet,
+   then pull teammates'/HQ changes and merge (newest `updated` wins). Local stays
+   the source of truth; nothing syncs until the lead clicks "Sync now". ---- */
+function jsonp(url){
+  return new Promise((resolve,reject)=>{
+    const name='__aic_cb_'+Math.random().toString(36).slice(2);
+    const s=document.createElement('script'); let done=false;
+    function cleanup(){try{delete window[name];}catch(e){window[name]=undefined;} if(s.parentNode)s.remove();}
+    window[name]=(data)=>{done=true;resolve(data);cleanup();};
+    s.onerror=()=>{if(!done){done=true;cleanup();reject(new Error('network error'));}};
+    s.src=url+(url.indexOf('?')>=0?'&':'?')+'callback='+name;
+    document.body.appendChild(s);
+    setTimeout(()=>{if(!done){done=true;cleanup();reject(new Error('timed out'));}},15000);
+  });
+}
+function pushClients(chapter,pass,list){
+  return fetch(REPORT_ENDPOINT,{method:'POST',mode:'no-cors',keepalive:true,
+    headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body:JSON.stringify({action:'saveClients',chapter:chapter,pass:pass,clients:list})});
+}
+async function syncClients(){
+  if(!REPORT_ENDPOINT){alert('Sync is off in this copy of the Studio.');return;}
+  const chapter=(cfg.chapter.name||'').trim();
+  if(!chapter){alert('Set your chapter name in Settings (or the Calculator) before syncing.');return;}
+  const pass=(cfg.chapter.syncPass||'').trim();
+  if(!pass){alert('Enter your chapter passcode first.\nIf your chapter has never synced, the code you type becomes the passcode. Otherwise it must match the one your chapter already uses.');return;}
+  const btn=document.getElementById('syncBtn'); if(btn){btn.disabled=true;btn.textContent='Syncing…';}
+  toast('Syncing…');
+  try{
+    const mine=clients.list.filter(c=>(c.chapter||chapter)===chapter);
+    mine.forEach(c=>{if(!c.chapter)c.chapter=chapter; if(!c.region)c.region=cfg.chapter.regionName||'';});
+    await pushClients(chapter,pass,mine);
+    const url=REPORT_ENDPOINT+'?action=listClients&chapter='+encodeURIComponent(chapter)+'&pass='+encodeURIComponent(pass);
+    const res=await jsonp(url);
+    if(!res||!res.ok){toast('Sync failed: '+((res&&res.error)||'check your passcode'));return;}
+    let added=0,updated=0;
+    (res.clients||[]).forEach(rc=>{
+      if(!rc||!rc.id)return;
+      const i=clients.list.findIndex(c=>c.id===rc.id);
+      if(i===-1){clients.list.push(rc);added++;}
+      else if(String(rc.updated||'')>String(clients.list[i].updated||'')){clients.list[i]=rc;updated++;}
+    });
+    clients.list.sort((a,b)=>String(b.updated||'').localeCompare(String(a.updated||'')));
+    saveClients();
+    cfg.chapter.lastSync=stamp();saveCfg();
+    if(curClient&&!clients.list.some(c=>c.id===curClient))curClient=null;
+    renderDocs();
+    toast('Synced ✓ — '+added+' new, '+updated+' updated');
+  }catch(e){toast('Sync failed: '+(e.message||e));}
+  finally{const b=document.getElementById('syncBtn'); if(b){b.disabled=false;b.textContent='⟳ Sync now';}}
+}
+function renderClientsPanel(){
+  const list=clients.list.slice().sort((a,b)=>String(b.updated||'').localeCompare(String(a.updated||'')));
+  const cl=currentClient();
+  const opts=list.map(c=>`<option value="${c.id}" ${c.id===curClient?'selected':''}>${esc(clientLabel(c))}${c.type==='partner'?' · Partner':''}</option>`).join('');
+  let body='';
+  if(cl){
+    const ct=cl.contact,f=cl.fulfillment,snap=cl.snapshot;
+    const statuses=['','Not started','Designing','Approved','Ordered','Shipped','Installed'];
+    body=`<div class="ibox brand" style="margin:12px 0 4px">Editing <strong>${esc(clientLabel(cl))}</strong> · ${snap?('saved documents'+(snap.prop&&snap.prop.number?' ('+esc(snap.prop.number)+')':'')):'no saved documents yet'}</div>
+    <div class="fg"><label>Type</label><div class="seg" style="max-width:260px">
+      <button class="${cl.type==='sponsor'?'active':''}" onclick="setClientType('sponsor')">Sponsor</button>
+      <button class="${cl.type==='partner'?'active':''}" onclick="setClientType('partner')">Partner</button></div></div>
+    <div class="eyebrow" style="margin-top:14px">Contact</div>
+    <div class="grid3">
+      <div class="fg"><label>Company</label><input value="${esc(ct.company)}" onchange="updClient('contact.company',this.value)"></div>
+      <div class="fg"><label>First name</label><input value="${esc(ct.first)}" onchange="updClient('contact.first',this.value)"></div>
+      <div class="fg"><label>Last name</label><input value="${esc(ct.last)}" onchange="updClient('contact.last',this.value)"></div>
+      <div class="fg"><label>Title</label><input value="${esc(ct.title)}" onchange="updClient('contact.title',this.value)"></div>
+      <div class="fg"><label>Email</label><input value="${esc(ct.email)}" onchange="updClient('contact.email',this.value)"></div>
+      <div class="fg"><label>Phone</label><input value="${esc(ct.phone)}" onchange="updClient('contact.phone',this.value)"></div>
+      <div class="fg"><label>Phone (alt)</label><input value="${esc(ct.phone2)}" onchange="updClient('contact.phone2',this.value)"></div>
+      <div class="fg"><label>Website</label><input value="${esc(ct.website)}" onchange="updClient('contact.website',this.value)"></div>
+    </div>
+    <div class="eyebrow" style="margin-top:14px">Fulfillment</div>
+    <div class="grid3">
+      <div class="fg"><label>Logo link</label><input value="${esc(f.logo)}" placeholder="Drive / URL" onchange="updClient('fulfillment.logo',this.value)"></div>
+      <div class="fg"><label>Logo version</label><input value="${esc(f.logoVer)}" placeholder="e.g. v2 white" onchange="updClient('fulfillment.logoVer',this.value)"></div>
+      <div class="fg"><label>Banner status</label><select onchange="updClient('fulfillment.bannerStatus',this.value)">
+        ${statuses.map(s=>`<option ${f.bannerStatus===s?'selected':''}>${s}</option>`).join('')}</select></div>
+      <div class="fg full"><label>Fulfillment notes</label><input value="${esc(f.notes)}" onchange="updClient('fulfillment.notes',this.value)"></div>
+    </div>
+    <div class="toolrow" style="margin-top:14px;flex-wrap:wrap">
+      <button class="btn btn-pri" onclick="saveClientWork()">💾 Save current documents to this client</button>
+      <button class="btn btn-sec" onclick="openClient(curClient)">↻ Reload saved documents</button>
+      <span class="spacer"></span>
+      <button class="btn btn-ghost" onclick="deleteClient(curClient)">Delete</button>
+    </div>`;
+  }
+  return `<div class="panel">
+    <div class="toolrow" style="margin-bottom:8px"><div class="eyebrow" style="margin:0">Clients (CRM)</div><span class="spacer"></span><span class="badge num">${list.length} saved</span></div>
+    <p style="color:var(--mut);font-size:12px;margin:0 0 10px">Saved on this device. Pick a client to reload their contact and documents, or add a new one. Export any time for the team platform.</p>
+    <div class="toolrow" style="flex-wrap:wrap">
+      <select id="clientSel" style="min-width:220px" onchange="openClient(this.value)"><option value="">— Select a client —</option>${opts}</select>
+      <button class="btn btn-sec" onclick="newClient()">＋ New client</button>
+      <span class="spacer"></span>
+      <button class="btn btn-ghost" onclick="exportClientsCSV()">Export CSV</button>
+      <button class="btn btn-ghost" onclick="exportClientsJSON()">Export JSON</button>
+    </div>
+    ${REPORT_ENDPOINT?`<div class="toolrow" style="flex-wrap:wrap;margin-top:10px;align-items:center;gap:8px">
+      <input id="syncPass" type="password" placeholder="Chapter passcode" value="${esc(cfg.chapter.syncPass||'')}" onchange="cfg.chapter.syncPass=this.value;saveCfg()" style="max-width:180px">
+      <button id="syncBtn" class="btn btn-sec" onclick="syncClients()">⟳ Sync now</button>
+      <span style="color:var(--mut);font-size:11.5px">${cfg.chapter.lastSync?('Last synced '+esc(new Date(cfg.chapter.lastSync).toLocaleString())):'Shares this chapter’s clients with the team (newest edit wins)'}</span>
+    </div>`:''}${body}
+  </div>`;
+}
 function renderDocs(){
   ensureProp();
   const el=document.getElementById('sec-docs');
@@ -1362,7 +1552,7 @@ function renderDocs(){
   if(docState==='sow'){el.innerHTML=sowDoc();return;}
   if(docState==='letter'){el.innerHTML=letterDoc();return;}
   const einMissing=!cfg.org.ein;
-  el.innerHTML=`<div class="panel">
+  el.innerHTML=renderClientsPanel()+`<div class="panel">
     <div class="toolrow" style="margin-bottom:12px">
       <h2 style="margin:0">${t('nav_docs')}</h2><span class="spacer"></span>
       ${prop.number?`<span class="badge brand num" style="font-size:13px">${esc(prop.number)}</span>`
@@ -1393,7 +1583,15 @@ function renderDocs(){
       <button class="btn btn-pri" onclick="docState='invoice';renderDocs()">${t('inv_title')}</button>
       <button class="btn btn-pri" onclick="docState='agreement';renderDocs()">${t('agr_title')}</button>
       <button class="btn btn-pri" onclick="docState='sow';renderDocs()">Scope of work</button>
-      <button class="btn btn-pri" onclick="docState='letter';renderDocs()">${t('letter_title')}</button>
+      <button class="btn btn-pri" onclick="docState='letter';renderDocs()">${t('letters_label')}</button>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="eyebrow">Master log — for HQ (hits vs wins)</div>
+    <p style="color:var(--mut);font-size:12px;margin:6px 0 12px">Records activity to the AIC master sheet so the team can track proposals sent vs sponsors won. Uses the sponsor name and amount from the form above.${REPORT_ENDPOINT?'':' <strong>(Reporting is off in this copy.)</strong>'}</p>
+    <div class="toolrow" style="margin-bottom:0;flex-wrap:wrap">
+      <button class="btn btn-sec" onclick="logInvoiceSent()">Mark invoice sent</button>
+      <button class="btn btn-sec" onclick="logPaymentReceived()">Log payment received ✓ (win)</button>
     </div>
   </div>`;
 }
@@ -1464,20 +1662,28 @@ function sowDoc(){
     </div>
   </div>`;
 }
+let letterKind='thankyou';
 function letterDoc(){
   const c=cfg.chapter;
   const who=c.scope==='region'?(c.regionName||c.name):c.name;
-  const body=tf('letter_body',{chapter:'<strong>'+esc(who)+'</strong>',amt:'<strong>'+amtDisp()+'</strong>',date:fmtDate(agr.date)});
-  return docBack()+`<div class="sheet">
+  const amt='<strong>'+amtDisp()+'</strong>', chapS='<strong>'+esc(who)+'</strong>';
+  const kinds=[['thankyou',t('letter_title')],['midyear',t('ltr_mid_title')],['renewal',t('ltr_ren_title')]];
+  const chips=`<div class="chipbar no-print" style="margin-bottom:12px">${kinds.map(([k,lbl])=>
+    `<button class="chip ${letterKind===k?'on':''}" onclick="letterKind='${k}';renderDocs()">${esc(lbl)}</button>`).join('')}</div>`;
+  let title,body,showTax=false;
+  if(letterKind==='midyear'){title=t('ltr_mid_title');body=tf('ltr_mid_body',{chapter:chapS,amt:amt});}
+  else if(letterKind==='renewal'){title=t('ltr_ren_title');body=tf('ltr_ren_body',{chapter:chapS,amt:amt});}
+  else{title=t('letter_title');body=tf('letter_body',{chapter:chapS,amt:amt,date:fmtDate(agr.date)});showTax=true;}
+  return docBack()+chips+`<div class="sheet">
     ${sheetHead()}
     <hr class="sh-rule">
     <div class="sh-body">
-      <h1>${t('letter_title')}</h1>
+      <h1>${esc(title)}</h1>
       <p class="mut">${fmtDate(today())}</p>
       <p style="margin-top:14px">${esc(prop.contact)||esc(agr.sponsor)||esc(prop.sponsor)||''}</p>
       <p style="margin-top:14px">${body}</p>
-      <p style="margin-top:10px">${t('agr_recog')}</p>
-      <p style="margin-top:10px">${t('agr_tax')}</p>
+      ${showTax?`<p style="margin-top:10px">${t('agr_recog')}</p>
+      <p style="margin-top:10px">${t('agr_tax')}</p>`:''}
       <p style="margin-top:22px">${t('letter_close')}</p>
       <p style="margin-top:26px"><strong>${esc(prop.sales.name)||''}</strong><br>
       ${esc(who)} · ${esc(cfg.org.hq)}${prop.sales.email?`<br>${esc(prop.sales.email)}`:''}</p>
