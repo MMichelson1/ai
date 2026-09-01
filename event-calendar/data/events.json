@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-30T14:44:25.471Z",
+  "generatedAt": "2026-09-01T22:27:27.794Z",
   "sample": false,
   "markets": {
     "atlanta": {
@@ -21,7 +21,7 @@
       "aic": true,
       "status": "ok",
       "count": 2,
-      "lastChecked": "2026-08-30T14:44:25.471Z",
+      "lastChecked": "2026-09-01T22:27:27.794Z",
       "note": ""
     },
     {
@@ -32,7 +32,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-08-30T14:44:26.504Z",
+      "lastChecked": "2026-09-01T22:27:28.630Z",
       "note": "Get the section's public iCal feed URL from events.vtools.ieee.org (Events → Export/iCal for the Atlanta Section), paste it into 'url', then set enabled:true."
     },
     {
@@ -43,7 +43,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-08-30T14:44:26.504Z",
+      "lastChecked": "2026-09-01T22:27:28.630Z",
       "note": "Any Meetup group exposes an iCal feed at https://www.meetup.com/<group-slug>/events/ical/ — add one source entry per local AI group and set enabled:true."
     },
     {
@@ -54,7 +54,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-08-30T14:44:26.504Z",
+      "lastChecked": "2026-09-01T22:27:28.630Z",
       "note": "Most university event calendars (Localist, Google Calendar) publish an ICS feed — paste it here. AI keyword filtering is applied automatically."
     },
     {
@@ -65,7 +65,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-08-30T14:44:26.504Z",
+      "lastChecked": "2026-09-01T22:27:28.630Z",
       "note": "Eventbrite retired public event search; per-organizer listings work via their free API. Add EVENTBRITE_TOKEN as a repo secret and organizer IDs here — see README."
     },
     {
@@ -76,7 +76,7 @@
       "aic": false,
       "status": "manual",
       "count": 0,
-      "lastChecked": "2026-08-30T14:44:26.504Z",
+      "lastChecked": "2026-09-01T22:27:28.630Z",
       "note": "LinkedIn and Facebook publish no feeds. Chapter leads add validated in-person events to data/manual-events.json via pull request; each entry must link to a live listing on a trusted site."
     },
     {
@@ -86,8 +86,8 @@
       "type": "luma-calendar",
       "aic": true,
       "status": "ok",
-      "count": 18,
-      "lastChecked": "2026-08-30T14:44:26.504Z",
+      "count": 21,
+      "lastChecked": "2026-09-01T22:27:28.630Z",
       "note": ""
     }
   ],
@@ -207,15 +207,15 @@
       "market": "global"
     },
     {
-      "id": "evt-XlL1yRpCtA1uGTs@events.lu.ma",
-      "title": "Hack for Humanity: São Paulo",
-      "start": "2026-09-12T12:00:00.000Z",
-      "end": "2026-09-12T20:00:00.000Z",
+      "id": "evt-cjADctfCTQnvXtA@events.lu.ma",
+      "title": "From AI User to AI Builder - Base44 x AI Collective (Portland)",
+      "start": "2026-09-11T00:00:00.000Z",
+      "end": "2026-09-11T03:30:00.000Z",
       "allDay": false,
       "tz": null,
-      "location": "Anhembi Morumbi University - Vila Olímpia Campus, R. Casa do Ator, 294 - Vila Olímpia, São Paulo - SP, 04546-001, Brazil",
-      "lat": -23.600238299999997,
-      "lon": -46.6766337,
+      "location": "Portland, OR, USA",
+      "lat": 45.515232,
+      "lon": -122.6783853,
       "organizer": "The AI Collective",
       "url": "https://lu.ma/genai-collective",
       "sourceDomain": "lu.ma",
@@ -226,15 +226,15 @@
       "market": "global"
     },
     {
-      "id": "evt-cjADctfCTQnvXtA@events.lu.ma",
-      "title": "From AI User to AI Builder - Base44 x AI Collective (Portland)",
-      "start": "2026-09-12T17:30:00.000Z",
-      "end": "2026-09-12T20:30:00.000Z",
+      "id": "evt-XlL1yRpCtA1uGTs@events.lu.ma",
+      "title": "Hack for Humanity: São Paulo",
+      "start": "2026-09-12T12:00:00.000Z",
+      "end": "2026-09-12T20:00:00.000Z",
       "allDay": false,
       "tz": null,
-      "location": "Portland, OR, USA",
-      "lat": 45.515232,
-      "lon": -122.6783853,
+      "location": "Anhembi Morumbi University - Vila Olímpia Campus, R. Casa do Ator, 294 - Vila Olímpia, São Paulo - SP, 04546-001, Brazil",
+      "lat": -23.600238299999997,
+      "lon": -46.6766337,
       "organizer": "The AI Collective",
       "url": "https://lu.ma/genai-collective",
       "sourceDomain": "lu.ma",
@@ -260,6 +260,25 @@
       "aic": true,
       "type": "meetup",
       "price": "check",
+      "capacity": null,
+      "market": "global"
+    },
+    {
+      "id": "evt-iS2EwKsfs5bSkCc@events.lu.ma",
+      "title": "Vibe. Learn. Connect. ✨ Vibe Coding Project Sharing Meetup (w/ The AI Collective) @ The Hudson Grille in Midtown",
+      "start": "2026-09-15T22:00:00.000Z",
+      "end": "2026-09-16T00:30:00.000Z",
+      "allDay": false,
+      "tz": null,
+      "location": "Hudson Grille Midtown, 942 Peachtree St NE, Atlanta, GA 30309, USA",
+      "lat": 33.7804666,
+      "lon": -84.3843203,
+      "organizer": "The AI Collective",
+      "url": "https://lu.ma/genai-collective",
+      "sourceDomain": "lu.ma",
+      "aic": true,
+      "type": "vibe night",
+      "price": "paid",
       "capacity": null,
       "market": "global"
     },
@@ -292,6 +311,25 @@
       "location": "Toronto, ON, Canada",
       "lat": 43.6548253,
       "lon": -79.388447,
+      "organizer": "The AI Collective",
+      "url": "https://lu.ma/genai-collective",
+      "sourceDomain": "lu.ma",
+      "aic": true,
+      "type": "meetup",
+      "price": "check",
+      "capacity": null,
+      "market": "global"
+    },
+    {
+      "id": "evt-wdeUYfZ7RHP9COv@events.lu.ma",
+      "title": "Building with AI: Meet & Greet (w/ The AI Collective)",
+      "start": "2026-09-16T22:00:00.000Z",
+      "end": "2026-09-17T00:30:00.000Z",
+      "allDay": false,
+      "tz": null,
+      "location": "Serendipity Labs - Stamford, 700 Canal St First Floor, Stamford, CT 06902, USA",
+      "lat": 41.0446451,
+      "lon": -73.53203479999999,
       "organizer": "The AI Collective",
       "url": "https://lu.ma/genai-collective",
       "sourceDomain": "lu.ma",
@@ -340,6 +378,25 @@
       "market": "global"
     },
     {
+      "id": "evt-BKEXREjyTQIlhDl@events.lu.ma",
+      "title": "AI transformations: Do's & Don'ts",
+      "start": "2026-09-23T16:00:00.000Z",
+      "end": "2026-09-23T18:00:00.000Z",
+      "allDay": false,
+      "tz": null,
+      "location": "Bugatti Rimac d.o.o., Kerestinečka cesta 54, 10431, Kerestinec, Croatia",
+      "lat": 45.772949999999994,
+      "lon": 15.8119741,
+      "organizer": "The AI Collective",
+      "url": "https://lu.ma/genai-collective",
+      "sourceDomain": "lu.ma",
+      "aic": true,
+      "type": "meetup",
+      "price": "check",
+      "capacity": null,
+      "market": "global"
+    },
+    {
       "id": "evt-WplpweA7zSR4vNo@events.lu.ma",
       "title": "AI Collective: Interactive AI Workshop (w/ The AI Collective)",
       "start": "2026-09-24T22:00:00.000Z",
@@ -376,6 +433,25 @@
       "price": "check",
       "capacity": null,
       "market": "atlanta"
+    },
+    {
+      "id": "evt-oXJiBQlmC43Pu7r@events.lu.ma",
+      "title": "From Silicon Valley to Helsinki: What Finnish Founders Learned in the AI Capital",
+      "start": "2026-09-28T14:00:00.000Z",
+      "end": "2026-09-28T16:30:00.000Z",
+      "allDay": false,
+      "tz": null,
+      "location": "Maria 01, Lapinlahdenkatu 16, 00180 Helsinki, Finland",
+      "lat": 60.16675379999999,
+      "lon": 24.9219224,
+      "organizer": "The AI Collective",
+      "url": "https://lu.ma/genai-collective",
+      "sourceDomain": "lu.ma",
+      "aic": true,
+      "type": "meetup",
+      "price": "check",
+      "capacity": null,
+      "market": "global"
     },
     {
       "id": "evt-divq2gbcEgCnGpF@events.lu.ma",
