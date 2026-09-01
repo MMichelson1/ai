@@ -68,7 +68,9 @@ audiences.
 **Save & reload workshops.** A **Saved workshops** bar at the top lets you save
 the whole setup (audience, date, venue, tools, instructors, brand) under a name
 and reload it anytime from the dropdown — handy for reusing last month's config
-or keeping a template per audience. Saved in the browser.
+or keeping a template per audience. Saved in the browser. **Export backup**
+downloads all your saved workshops (and custom tools/categories/audiences) to a
+file; **Import backup** restores them on any device or after a storage wipe.
 
 ## Monthly workflow
 

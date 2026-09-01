@@ -937,6 +937,27 @@ function saveWorkshopAs(name){
 }
 function loadWorkshopByName(name){ const w=savedWorkshops().find(x=>x.name===name); if(!w) return; applyWorkshop(w.config); rerenderAll(); }
 function deleteWorkshop(name){ saveWorkshopsList(savedWorkshops().filter(x=>x.name!==name)); rerenderAll(); }
+// ----- backup: export/import the whole browser store (workshops, custom tools/cats/audiences, ICP edits) -----
+function exportBackup(){
+  const payload={ _type:"wsb-backup", _version:1, exportedAt:new Date().toISOString(), store:loadStore() };
+  saveFile("workshop-builder-backup-"+new Date().toISOString().slice(0,10)+".json", JSON.stringify(payload,null,2));
+}
+function importBackup(text){
+  let payload; try{ payload=JSON.parse(text); }catch(e){ toast("That is not a valid backup file"); return; }
+  const inc=payload && payload.store ? payload.store : payload;
+  if(!inc || typeof inc!=="object"){ toast("Backup file is empty or invalid"); return; }
+  const s=loadStore();
+  const mergeBy=(cur,imp,keyf)=>{ const map={}; (cur||[]).forEach(x=>map[keyf(x)]=x); (imp||[]).forEach(x=>{ if(x) map[keyf(x)]=x; }); return Object.values(map); };
+  const before=(s.savedWorkshops||[]).length;
+  s.savedWorkshops = mergeBy(s.savedWorkshops, inc.savedWorkshops, w=>(w.name||"").toLowerCase());
+  s.customTools    = mergeBy(s.customTools, inc.customTools, t=>(t.name||"").toLowerCase());
+  s.customCats     = mergeBy(s.customCats, inc.customCats, c=>c.key);
+  s.customAudiences= Array.from(new Set([...(s.customAudiences||[]), ...((inc.customAudiences)||[])]));
+  s.overrides      = Object.assign({}, s.overrides||{}, inc.overrides||{});
+  saveStore(s); registerCustomTools(); rerenderAll();
+  const added=(s.savedWorkshops||[]).length-before;
+  toast("Imported - "+(s.savedWorkshops||[]).length+" workshop(s) total"+(added>0?(", "+added+" new"):""));
+}
 function primaryName(){ return state.audience==="__custom__" ? (state.customName.trim()||"Custom Audience") : state.audience; }
 function persistIcp(){
   if(!state.audience || state.audience2) return;   // persist single-audience ICPs only
@@ -1830,8 +1851,20 @@ function buildForm(){
       row.appendChild(del);
     }
     bar.appendChild(row);
+
+    // backup row: export/import so workshops survive across devices and storage wipes
+    const brow=el("div"); brow.style.cssText="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px";
+    const exp=el("button","btn ghost sm","⬆ Export backup"); exp.style.flex="0 0 auto";
+    exp.onclick=()=>{ exportBackup(); toast("Backup downloaded"); };
+    const imp=el("button","btn ghost sm","⬇ Import backup"); imp.style.flex="0 0 auto";
+    const file=el("input"); file.type="file"; file.accept=".json,application/json"; file.style.display="none";
+    file.onchange=()=>{ const f0=file.files&&file.files[0]; if(!f0) return; const rd=new FileReader(); rd.onload=()=>importBackup(String(rd.result||"")); rd.onerror=()=>toast("Could not read that file"); rd.readAsText(f0); file.value=""; };
+    imp.onclick=()=>file.click();
+    brow.appendChild(exp); brow.appendChild(imp); brow.appendChild(file);
+    bar.appendChild(brow);
+
     const hint=el("div","hint"); hint.style.marginTop="8px";
-    hint.textContent="Save the whole setup (audience, date, venue, tools, instructors, brand) under a name and reload it anytime. Saved in this browser.";
+    hint.innerHTML="Save the whole setup (audience, date, venue, tools, instructors, brand) under a name and reload it anytime. <b>Export backup</b> saves all your workshops to a file; <b>Import backup</b> restores them on any device. Saved in this browser.";
     bar.appendChild(hint);
     f.appendChild(bar);
   }
