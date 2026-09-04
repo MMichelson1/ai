@@ -33,6 +33,16 @@ var NOTIFY = ['mark@aicollective.com', 'erich@aicollective.com'];
 // Chapter leads never need it; they use their own chapter passcode.
 var HQ_PASS = 'CHANGE-ME-HQ-PASSCODE';
 
+// Which set of books THIS deployment is. Deploy this file TWICE, each bound to
+// its OWN Google Sheet, so commercial and non-profit money is never commingled:
+//   Sheet 1 "AIC Sponsorship - Commercial"  -> STREAM = 'commercial'
+//   Sheet 2 "AIC Sponsorship - Non-profit"  -> STREAM = 'nonprofit'
+// An event tagged for the other stream is rejected rather than written here.
+var STREAM = 'commercial';
+
+// Commissions exist only on the commercial side.
+function _commissionable() { return STREAM === 'commercial'; }
+
 function doGet(e) {
   var p = (e && e.parameter) || {};
   if (p.action === 'listClients') {
@@ -50,7 +60,7 @@ function doGet(e) {
     catch (err2) { out = { ok: false, error: String(err2) }; }
     return _jsonp(p.callback, out);
   }
-  return _json({ ok: true, service: 'AIC Sponsorship Studio reporting' });
+  return _json({ ok: true, service: 'AIC Sponsorship Studio reporting', stream: STREAM });
 }
 
 function doPost(e) {
@@ -67,7 +77,13 @@ function doPost(e) {
       out = _saveClients(data);
       return _json(out);
     }
+    // Never write another stream's money into this book.
+    if (data.stream && data.stream !== STREAM) {
+      return _json({ ok: false, error: 'wrong book: this deployment is ' + STREAM +
+        ', event was tagged ' + data.stream });
+    }
     data._received = new Date().toISOString();
+    data.stream = STREAM;
     _logRow(data);
     _updateSummary(data);
     _maybeEmail(data);
@@ -214,7 +230,7 @@ function _salesSummary(pass) {
       lastActivity: String(v[7] || '')
     });
   }
-  return { ok: true, rows: rows, server: new Date().toISOString() };
+  return { ok: true, rows: rows, stream: STREAM, commissionable: _commissionable(), server: new Date().toISOString() };
 }
 
 /* ---------- Events tab (append-only log of everything) ---------- */
@@ -329,6 +345,7 @@ function _maybeEmail(d) {
     lines.push('A sponsorship was WON — payment received. 🎉');
   }
   lines.push('');
+  lines.push('Book: ' + (STREAM === 'nonprofit' ? 'NON-PROFIT (501c3) \u2014 no commission payable' : 'COMMERCIAL'));
   lines.push('Event: ' + ev);
   if (d.chapter) lines.push('Chapter: ' + d.chapter);
   if (d.region) lines.push('Region: ' + d.region);

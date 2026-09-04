@@ -45,6 +45,35 @@ Apps Script, then **Deploy → Manage deployments → edit (pencil) → Version:
 version → Deploy**. The `/exec` URL stays the same, so nothing changes in the
 Studio — it just starts recording invoices, wins, and the Summary tab.
 
+## Two separate books (commercial vs. non-profit)
+
+Commercial money and 501(c)(3) money are kept in **two different Google Sheets**,
+with two separate Apps Script deployments. They are never combined — separate
+files means separate books, separate sharing, and nothing to untangle if the
+fiscal sponsor or an auditor asks.
+
+| | Commercial | Non-profit |
+| --- | --- | --- |
+| Sheet | "AIC Sponsorship — Commercial" | "AIC Sponsorship — Non-profit" |
+| `STREAM` in `Code.gs` | `'commercial'` | `'nonprofit'` |
+| Studio constant | `REPORT_ENDPOINT` | `REPORT_ENDPOINT_NP` |
+| Holds | Sponsorships into the regional LLC | Grants and 501(c)(3)-required donors |
+| Commissions | Yes | **Never** |
+
+### Setting up the second (non-profit) book
+
+1. Create a **second** Google Sheet, e.g. "AIC Sponsorship — Non-profit".
+2. **Extensions → Apps Script**, paste the same `Code.gs`, and change one line
+   near the top to `var STREAM = 'nonprofit';` (also set `HQ_PASS`). Save.
+3. **Deploy → New deployment → Web app** (Execute as: Me · Who has access:
+   Anyone). Copy the `/exec` URL.
+4. Set that URL as `REPORT_ENDPOINT_NP` in the Studio.
+
+Each deployment **refuses events tagged for the other stream**, so a non-profit
+payment can never land in the commercial book even if something is misconfigured.
+In the Studio's Documents tab, every deal is booked with a **Commercial /
+Non-profit** switch before it's logged.
+
 ## Client sync (the shared CRM)
 
 The same web app also backs the **Clients (CRM)** panel in the Documents tab.
