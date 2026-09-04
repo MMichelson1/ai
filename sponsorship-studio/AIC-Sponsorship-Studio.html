@@ -719,9 +719,12 @@ const DEFAULTS={
   news:{sendCPM:125, sendMin:500, featCPM:75, featMin:300},
   /* Money model. Commissions are paid ONLY on commercial (LLC) sponsorship cash,
      out of the region's share. No HQ allocation except a partner referred to HQ. */
-  comm:{referral:5, closer:15, partnerRef:5, capUsd:0,
-    /* members-under -> region support %; chapter keeps the rest */
-    bands:[[50,10],[250,15],[500,20],[1000,25],[5000,30],[null,35]]},
+  comm:{referral:5, maxClose:15, partnerRef:5, capUsd:0,
+    /* [members-under, region support %, closing commission %].
+       Chapter keeps the rest. Commission scales with chapter size so it stays
+       commensurate with the sponsorship, never exceeds maxClose, and always
+       leaves the region whole on small/new chapters it is trying to grow. */
+    bands:[[50,10,8],[250,15,10],[500,20,11],[1000,25,12],[5000,30,13],[null,35,15]]},
   /* Two revenue pathways. Commercial (regional LLC) is preferred; the 501(c)(3)
      account via the fiscal sponsor is for grants and donors that require one. */
   streams:{pref:'llc',
@@ -776,6 +779,9 @@ function loadCfg(){
         events:c.events||JSON.parse(JSON.stringify(DEFAULTS.events))};
       // Migrate the old single chapter photo into the up-to-3 photo array.
       if(!Array.isArray(merged.comm.bands)||!merged.comm.bands.length)merged.comm.bands=JSON.parse(JSON.stringify(DEFAULTS.comm.bands));
+      // Bands gained a per-size commission column; backfill older saves.
+      if(merged.comm.bands.some(b=>b.length<3))merged.comm.bands=JSON.parse(JSON.stringify(DEFAULTS.comm.bands));
+      if(merged.comm.maxClose===undefined)merged.comm.maxClose=DEFAULTS.comm.maxClose;
       // One-time: event pricing now scales with market size like the annual tiers.
       if(!c.evtScaled){merged.events.forEach(e=>{e.fixed=false;});merged.evtScaled=1;}else{merged.evtScaled=1;}
       if(!Array.isArray(merged.chapter.photos3))merged.chapter.photos3=[];
@@ -1102,14 +1108,28 @@ function regionShare(){
   return Number((bands[bands.length-1]||[null,35])[1])||35;
 }
 function chapterShare(){return 100-regionShare();}
+/* Closing commission % for this chapter's size, capped at the max. */
+function closeRate(){
+  const m=activeMembers();
+  const bands=(cfg.comm&&cfg.comm.bands)||[];
+  const cap=Number(cfg.comm.maxClose)||15;
+  const pick=()=>{
+    if(!m)return Number((bands[bands.length-1]||[])[2]);
+    for(const b of bands){const c=b[0];if(c===null||c===''||m<Number(c))return Number(b[2]);}
+    return Number((bands[bands.length-1]||[])[2]);
+  };
+  const r=pick();
+  return Math.min(isNaN(r)?cap:r,cap);
+}
+function refRate(){return Math.min(Number(cfg.comm.referral)||0,closeRate());}
 /* Split a commercial sponsorship amount into chapter / region / commission. */
 function splitOf(amount,kind){
   const amt=Number(amount)||0;
   const rs=regionShare(), region=Math.round(amt*rs/100), chapter=amt-region;
   const cm=cfg.comm;
   let pct=0;
-  if(kind==='referral')pct=Number(cm.referral)||0;
-  else if(kind==='closer')pct=Number(cm.closer)||0;
+  if(kind==='referral')pct=refRate();
+  else if(kind==='closer')pct=closeRate();
   let commission=Math.round(amt*pct/100);
   if(cm.capUsd>0)commission=Math.min(commission,Number(cm.capUsd));
   return {amount:amt,regionPct:rs,region,chapter,commissionPct:pct,commission,
@@ -1826,13 +1846,18 @@ function renderComm(){
   const cm=cfg.comm, rs=regionShare(), cs=chapterShare(), m=activeMembers();
   const money=n=>{try{return new Intl.NumberFormat('en-US',{style:'currency',currency:cfg.chapter.currency||'USD',maximumFractionDigits:0}).format(Number(n)||0);}catch(e){return '$'+Math.round(Number(n)||0);}}
   const sample=10000, sp=splitOf(sample,'closer'), spr=splitOf(sample,'referral');
-  const bandRows=(cm.bands||[]).map(([cap,p],i)=>{
+  const bandRows=(cm.bands||[]).map((b,i)=>{
+    const cap=b[0], p=Number(b[1])||0, cpct=Math.min(Number(b[2])||0,Number(cm.maxClose)||15);
     const prev=i?Number((cm.bands[i-1]||[])[0])||0:0;
     const label=cap===null||cap===''?`${prev.toLocaleString('en-US')}+ members`:`${prev.toLocaleString('en-US')}–${(Number(cap)-1).toLocaleString('en-US')} members`;
     const here=(m?(cap===null||cap===''||m<Number(cap)):false)&&(i===0||m>=prev);
+    const net=p-cpct;
     return `<tr${here?' style="background:var(--brand-soft)"':''}><td>${label}${here?' <strong>← this chapter</strong>':''}</td>
-      <td class="r num">${100-Number(p)}%</td><td class="r num">${Number(p)}%</td></tr>`;
+      <td class="r num" style="color:var(--ok)">${100-p}%</td><td class="r num">${p}%</td>
+      <td class="r num"><strong>${cpct}%</strong></td>
+      <td class="r num" style="color:${net<0?'#c0392b':'var(--mut)'}">${net}%</td></tr>`;
   }).join('');
+  const negBand=(cm.bands||[]).some(b=>(Number(b[1])||0)-Math.min(Number(b[2])||0,Number(cm.maxClose)||15)<0);
   document.getElementById('sec-comm').innerHTML=`<div class="panel">
     <h2>${t('nav_com')}</h2>
     <p style="color:var(--mut);font-size:12px;margin:-2px 0 12px">How sponsorship money is split and who gets paid. Internal only — never shown on a sponsor-facing document.</p>
@@ -1848,17 +1873,22 @@ function renderComm(){
 
     <div class="eyebrow" style="margin-top:18px">Region support scales with market size</div>
     <div class="tblwrap"><table class="tbl">
-      <thead><tr><th>Chapter size</th><th class="r">Chapter keeps</th><th class="r">Region support</th></tr></thead>
+      <thead><tr><th>Chapter size</th><th class="r">Chapter keeps</th><th class="r">Region support</th>
+        <th class="r">Closing commission</th><th class="r">Region nets</th></tr></thead>
       <tbody>${bandRows}</tbody></table></div>
+    <p style="color:var(--mut);font-size:11.5px;margin:8px 0 0">Commission scales with chapter size so it stays commensurate with the sponsorship — capped at <strong>${cm.maxClose}%</strong> at the largest chapters. Small and new chapters keep the most (${100-Number((cm.bands[0]||[])[1]||0)}%) and the region still nets a margin, so growing a young chapter never costs the region money. Referral is a flat ${cm.referral}% at every size.</p>
+    ${negBand?`<div class="ibox warn" style="margin-top:8px">⚠ One or more bands pay more commission than the region collects — the region would lose money on those deals. Lower the commission or raise region support in Settings.</div>`:''}
 
     <div class="eyebrow" style="margin-top:18px">Commissions</div>
     <div class="tblwrap"><table class="tbl">
       <thead><tr><th>Role</th><th class="r">Rate</th><th class="r">On ${money(sample)}</th><th>Paid for</th></tr></thead>
       <tbody>
-        <tr><td><strong>Referral</strong> — lead that closes</td><td class="r num" style="color:var(--ok);font-weight:700">${cm.referral}%</td>
-          <td class="r num">${money(spr.commission)}</td><td>Handing over a warm lead that someone else closes.</td></tr>
-        <tr><td><strong>Full close</strong> — contact to signature</td><td class="r num" style="color:var(--ok);font-weight:700">${cm.closer}%</td>
-          <td class="r num">${money(sp.commission)}</td><td>Owning the deal end to end: first contact, needs, proposal, close.</td></tr>
+        <tr><td><strong>Referral</strong> — lead that closes</td><td class="r num" style="color:var(--ok);font-weight:700">${refRate()}%</td>
+          <td class="r num">${money(spr.commission)}</td><td>Handing over a warm lead that someone else closes. Flat at every chapter size.</td></tr>
+        <tr><td><strong>Full close</strong> — contact to signature</td><td class="r num" style="color:var(--ok);font-weight:700">${closeRate()}%</td>
+          <td class="r num">${money(sp.commission)}</td><td>Owning the deal end to end. Scales with chapter size, up to ${cm.maxClose}%.</td></tr>
+        <tr><td>Referred <em>and</em> closed by two people</td><td class="r num">${closeRate()}%</td>
+          <td class="r num">${money(sp.commission)}</td><td>Split: ${refRate()}% to the referrer, ${Math.max(closeRate()-refRate(),0)}% to the closer. Total never exceeds ${cm.maxClose}%.</td></tr>
         <tr><td><strong>Partner referred to HQ</strong></td><td class="r num" style="color:var(--ok);font-weight:700">${cm.partnerRef}%</td>
           <td class="r num">${money(sample*(Number(cm.partnerRef)||0)/100)}</td><td>One-time, on first-year value, when a major brand/enterprise partnership is referred to HQ.</td></tr>
       </tbody></table></div>
@@ -1869,7 +1899,7 @@ function renderComm(){
       <tr><td>Sponsorship cash received</td><td class="r num"><strong>${money(sp.amount)}</strong></td></tr>
       <tr><td>Chapter (${cs}%)</td><td class="r num" style="color:var(--ok)">${money(sp.chapter)}</td></tr>
       <tr><td>Region (${rs}%)</td><td class="r num">${money(sp.region)}</td></tr>
-      <tr><td style="padding-left:22px">— commission to closer (${cm.closer}%), paid by region</td><td class="r num">−${money(sp.commission)}</td></tr>
+      <tr><td style="padding-left:22px">— commission to closer (${closeRate()}%), paid by region</td><td class="r num">−${money(sp.commission)}</td></tr>
       <tr class="tot"><td style="padding-left:22px">— region keeps after commission</td><td class="r num">${money(sp.regionNet)}</td></tr>
     </tbody></table></div>
 
@@ -2234,21 +2264,23 @@ function renderSettings(){
     <div style="color:var(--mut);font-size:11px;margin-bottom:8px">Commissions are paid on <strong>cash received</strong> into the commercial account only — never on fiscal-sponsor revenue, renewals, out-of-pocket event costs, or in-kind. Paid by the region out of the region's share.</div>
     <div class="grid4">
       <div class="fg"><label>Referral — lead that closes (%)</label><input type="number" min="0" max="100" value="${cm.referral}" onchange="cfg.comm.referral=Number(this.value)||0;saveCfg();renderComm()"></div>
-      <div class="fg"><label>Full close — contact to signature (%)</label><input type="number" min="0" max="100" value="${cm.closer}" onchange="cfg.comm.closer=Number(this.value)||0;saveCfg();renderComm()"></div>
+      <div class="fg"><label>Max closing commission (%)</label><input type="number" min="0" max="100" value="${cm.maxClose}" onchange="cfg.comm.maxClose=Number(this.value)||0;saveCfg();renderComm()"></div>
       <div class="fg"><label>Partner referred to HQ (% first-year)</label><input type="number" min="0" max="100" value="${cm.partnerRef}" onchange="cfg.comm.partnerRef=Number(this.value)||0;saveCfg();renderComm()"></div>
       <div class="fg"><label>Per-commission cap (USD) — 0 = no cap</label><input type="number" min="0" value="${cm.capUsd||0}" onchange="cfg.comm.capUsd=Number(this.value)||0;saveCfg();renderComm()"></div>
     </div>
     <div class="eyebrow" style="margin-top:14px">Region support by chapter size</div>
     <div style="color:var(--mut);font-size:11px;margin-bottom:8px">Smaller chapters pay less to the region. "Under" is the member ceiling for the band; the last row (blank) is everyone above.</div>
     <div class="tblwrap"><table class="tbl">
-      <thead><tr><th>Members under</th><th class="r">Region support %</th><th class="r">Chapter keeps</th><th></th></tr></thead>
+      <thead><tr><th>Members under</th><th class="r">Region support %</th><th class="r">Closing commission %</th><th class="r">Chapter keeps</th><th class="r">Region nets</th><th></th></tr></thead>
       <tbody>${(cm.bands||[]).map((b,i)=>`<tr>
         <td><input type="number" min="0" value="${b[0]===null?'':b[0]}" placeholder="(and above)" onchange="cfg.comm.bands[${i}][0]=this.value===''?null:(Number(this.value)||0);saveCfg();renderSettings();renderComm()"></td>
         <td><input type="number" min="0" max="100" value="${b[1]}" onchange="cfg.comm.bands[${i}][1]=Number(this.value)||0;saveCfg();renderSettings();renderComm()"></td>
+        <td><input type="number" min="0" max="100" value="${b[2]}" onchange="cfg.comm.bands[${i}][2]=Number(this.value)||0;saveCfg();renderSettings();renderComm()"></td>
         <td class="r num">${100-Number(b[1])}%</td>
+        <td class="r num" style="color:${(Number(b[1])-Number(b[2]))<0?'#c0392b':'var(--mut)'}">${Number(b[1])-Number(b[2])}%</td>
         <td class="r"><button class="btn btn-ghost" onclick="cfg.comm.bands.splice(${i},1);saveCfg();renderSettings();renderComm()">Remove</button></td></tr>`).join('')}
       </tbody></table></div>
-    <button class="btn btn-sec" style="margin-top:8px" onclick="cfg.comm.bands.push([null,35]);saveCfg();renderSettings();renderComm()">＋ Add band</button>
+    <button class="btn btn-sec" style="margin-top:8px" onclick="cfg.comm.bands.push([null,35,15]);saveCfg();renderSettings();renderComm()">＋ Add band</button>
   </div></details>
   <details><summary>Income streams — accounts</summary><div class="inner">
     <div style="color:var(--mut);font-size:11px;margin-bottom:8px">The two revenue pathways. The commercial company is preferred because the region controls how funds are used; the 501(c)(3) is for grants and donors that require one (US only).</div>
