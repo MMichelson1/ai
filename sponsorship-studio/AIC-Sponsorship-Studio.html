@@ -696,7 +696,13 @@ const CFG_KEY='aic-studio-v6';
    here to make the default live for every chapter. */
 /* Reporting endpoint — the Google Apps Script /exec URL. Empty = reporting OFF.
    See sponsorship-studio/reporting/README.md for setup. */
+/* Commercial (regional LLC) reporting book. */
 const REPORT_ENDPOINT='https://script.google.com/macros/s/AKfycbwsI5Os5mtzoTbzLKdwtI-XLkYcJtE99CmkozfmVct5GIfa5uDHlkIh9JrGIRci5ylp/exec';
+/* Non-profit (501c3 / fiscal sponsor) reporting book — a SEPARATE Google Sheet and
+   a SEPARATE Apps Script deployment, so the two sets of books are never commingled.
+   Paste that deployment's /exec URL here to switch the non-profit stream on. */
+const REPORT_ENDPOINT_NP='';
+function endpointFor(stream){return stream==='nonprofit'?REPORT_ENDPOINT_NP:REPORT_ENDPOINT;}
 const DEFAULT_CONTACT={name:'Erich Starrett', title:'Director, Sponsor Partnerships', email:'erich@aicollective.com', cal:'https://calendly.com/erichstarrett'};
 /* Default community-photo image shown on the brochure when a chapter has NOT
    uploaded any of its own event photos. Paste the AIC group photo as a data: URI
@@ -719,12 +725,7 @@ const DEFAULTS={
   news:{sendCPM:125, sendMin:500, featCPM:75, featMin:300},
   /* Money model. Commissions are paid ONLY on commercial (LLC) sponsorship cash,
      out of the region's share. No HQ allocation except a partner referred to HQ. */
-  comm:{referral:5, maxClose:15, partnerRef:5, capUsd:0,
-    /* [members-under, region support %, closing commission %].
-       Chapter keeps the rest. Commission scales with chapter size so it stays
-       commensurate with the sponsorship, never exceeds maxClose, and always
-       leaves the region whole on small/new chapters it is trying to grow. */
-    bands:[[50,10,8],[250,15,10],[500,20,11],[1000,25,12],[5000,30,13],[null,35,15]]},
+  comm:{referral:5, maxClose:15, partnerRef:5, capUsd:0},
   /* Two revenue pathways. Commercial (regional LLC) is preferred; the 501(c)(3)
      account via the fiscal sponsor is for grants and donors that require one. */
   streams:{pref:'llc',
@@ -739,7 +740,24 @@ const DEFAULTS={
   awards:[
     {name:'Hackathon awards / prize pool', price:2500, detail:'Prize money for hackathon winners. Passed through at cost \u2014 offered to existing event or annual sponsors.'}
   ],
-  multsC:[[250,.25],[500,.4],[1000,.7],[5000,1],[10000,1.5],[25000,2],[null,3]],
+  /* ONE table drives everything that scales with chapter size:
+     [members under, price multiplier, region support %, closing commission %].
+     Fine steps at the bottom protect chapters that are just starting. */
+  multsC:[
+    [100,   .15, 10,  8],
+    [250,   .25, 12,  9],
+    [500,   .40, 15, 10],
+    [750,   .55, 18, 11],
+    [1000,  .70, 20, 11],
+    [1500,  .85, 22, 12],
+    [2000, 1.00, 24, 12],
+    [2500, 1.15, 26, 13],
+    [5000, 1.35, 28, 13],
+    [7500, 1.60, 30, 14],
+    [10000,1.85, 32, 14],
+    [15000,2.20, 34, 15],
+    [null, 2.75, 35, 15]
+  ],
   multsR:[[1000,1],[5000,1.25],[10000,1.75],[25000,2.5],[null,3.5]],
   annual:[
     {cls:'pl',name:'Platinum',price:10000,qty:1,disc:20,floor:2500,benefits:['Logo — chapter landing page','Banner signage + callout','Logo on Luma invitations','Link on Luma invitations','Logo on event slides','Registration list','2 dedicated chapter newsletter sends/yr','20% off event sponsorships']},
@@ -778,9 +796,10 @@ function loadCfg(){
         annual:c.annual||JSON.parse(JSON.stringify(DEFAULTS.annual)),
         events:c.events||JSON.parse(JSON.stringify(DEFAULTS.events))};
       // Migrate the old single chapter photo into the up-to-3 photo array.
-      if(!Array.isArray(merged.comm.bands)||!merged.comm.bands.length)merged.comm.bands=JSON.parse(JSON.stringify(DEFAULTS.comm.bands));
-      // Bands gained a per-size commission column; backfill older saves.
-      if(merged.comm.bands.some(b=>b.length<3))merged.comm.bands=JSON.parse(JSON.stringify(DEFAULTS.comm.bands));
+      // Size bands are now ONE table: [under, mult, region%, close%].
+      if(!Array.isArray(merged.multsC)||merged.multsC.some(b=>b.length<4))
+        merged.multsC=JSON.parse(JSON.stringify(DEFAULTS.multsC));
+      if(merged.comm)delete merged.comm.bands;
       if(merged.comm.maxClose===undefined)merged.comm.maxClose=DEFAULTS.comm.maxClose;
       // One-time: event pricing now scales with market size like the annual tiers.
       if(!c.evtScaled){merged.events.forEach(e=>{e.fixed=false;});merged.evtScaled=1;}else{merged.evtScaled=1;}
@@ -794,15 +813,17 @@ function loadCfg(){
 function saveCfg(){try{localStorage.setItem(CFG_KEY,JSON.stringify(cfg))}catch(e){}reportSetupOnce();}
 
 /* ═══════════════ REPORTING (optional; no-op until REPORT_ENDPOINT is set) ═══════════════ */
-function report(event,extra){
-  if(!REPORT_ENDPOINT)return;
+function report(event,extra,stream){
+  const st=stream||'commercial';
+  const url=endpointFor(st);
+  if(!url)return;
   try{
     const c=cfg.chapter;
     const payload=Object.assign({
-      event:event, chapter:c.name||'', region:c.regionName||'', lang:c.lang||'en',
+      event:event, stream:st, chapter:c.name||'', region:c.regionName||'', lang:c.lang||'en',
       referredByName:c.refByName||'', referredByEmail:c.refByEmail||''
     }, extra||{});
-    fetch(REPORT_ENDPOINT,{method:'POST',mode:'no-cors',keepalive:true,
+    fetch(url,{method:'POST',mode:'no-cors',keepalive:true,
       headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});
   }catch(e){}
 }
@@ -1094,31 +1115,24 @@ function activeMembers(){
 function mult(){
   const m=activeMembers();
   if(!m)return 1;
-  const table=cfg.chapter.scope==='chapter'?cfg.multsC:cfg.multsR;
-  for(const [cap,x] of table){if(cap===null||cap===''||m<Number(cap))return Number(x);}
+  if(cfg.chapter.scope==='chapter')return Number(bandFor()[1])||1;
+  for(const [cap,x] of (cfg.multsR||[])){if(cap===null||cap===''||m<Number(cap))return Number(x);}
   return 1;
 }
 /* Region support % scales with market size; the chapter keeps the rest.
    Commissions are paid by the region out of the region's share. */
-function regionShare(){
-  const m=activeMembers();
-  const bands=(cfg.comm&&cfg.comm.bands)||[];
-  if(!m)return Number((bands[bands.length-1]||[null,35])[1])||35;
-  for(const [cap,p] of bands){if(cap===null||cap===''||m<Number(cap))return Number(p)||0;}
-  return Number((bands[bands.length-1]||[null,35])[1])||35;
+function bandFor(){
+  const t=cfg.multsC||[], m=activeMembers();
+  if(!t.length)return [null,1,35,15];
+  if(!m)return t[t.length-1];
+  for(const b of t){const c=b[0];if(c===null||c===''||m<Number(c))return b;}
+  return t[t.length-1];
 }
+function regionShare(){return Number(bandFor()[2])||0;}
 function chapterShare(){return 100-regionShare();}
 /* Closing commission % for this chapter's size, capped at the max. */
 function closeRate(){
-  const m=activeMembers();
-  const bands=(cfg.comm&&cfg.comm.bands)||[];
-  const cap=Number(cfg.comm.maxClose)||15;
-  const pick=()=>{
-    if(!m)return Number((bands[bands.length-1]||[])[2]);
-    for(const b of bands){const c=b[0];if(c===null||c===''||m<Number(c))return Number(b[2]);}
-    return Number((bands[bands.length-1]||[])[2]);
-  };
-  const r=pick();
+  const cap=Number(cfg.comm.maxClose)||15, r=Number(bandFor()[3]);
   return Math.min(isNaN(r)?cap:r,cap);
 }
 function refRate(){return Math.min(Number(cfg.comm.referral)||0,closeRate());}
@@ -1264,7 +1278,7 @@ function assignNumber(){
       items:(prop.items||[]).map(it=>'• '+(it.label||'item')+' ×'+(it.qty||1)).join('\n'),
       referredByName:(prop.referredBy&&prop.referredBy.name)||cfg.chapter.refByName||'',
       referredByEmail:(prop.referredBy&&prop.referredBy.email)||cfg.chapter.refByEmail||''
-    });
+    },dealStream());
   }catch(e){}
 }
 function addNewsSend(){prop.items.push({label:t('news_send'),listUsd:newsSendPrice(),qty:1,disc:0,over:null,note:''});go('proposal');}
@@ -1421,7 +1435,8 @@ function sheetHead(){
 }
 
 /* ═══════════════ DOCUMENTS ═══════════════ */
-let agr={sponsor:'',address:'',amount:'',date:today(),descr:'',previewing:false};
+let agr={sponsor:'',address:'',amount:'',date:today(),descr:'',previewing:false,stream:''};
+function dealStream(){return agr.stream||((cfg.streams&&cfg.streams.pref)==='fsa'?'nonprofit':'commercial');}
 let docState='menu';
 const SOW_ITEMS=['Signed proposal / agreement on file','Invoice sent via fiscal sponsor','Payment received','Sponsor logo received (PNG or SVG)','Logo + link on Luma listing','Logo on event slides','Banner printed & placed','Verbal callout scripted for host','Targeted invitations sent','Venue confirmed','F&B ordered','Sponsor table / demo space arranged','Registration list export scheduled','Post-event report & photos sent','Thank-you letter sent'];
 function amtDisp(){
@@ -1436,16 +1451,21 @@ function logInvoiceSent(){
   const sponsor=(agr.sponsor||prop.sponsor||'').trim();
   if(!sponsor){alert('Add the sponsor / company name first (in the Documents form or the Proposal).');return;}
   const num=Number(agr.amount)||0;
-  report('invoice',{sponsor:sponsor, amount:num?money_(num):'', amountNum:num, proposalNo:prop.number||''});
-  toast('Invoice logged to the master sheet');
+  const st=dealStream();
+  if(!endpointFor(st)){alert(st==='nonprofit'?'The non-profit book is not connected yet. Deploy the second Apps Script and set REPORT_ENDPOINT_NP.':'Reporting is off in this copy.');return;}
+  report('invoice',{sponsor:sponsor, amount:num?money_(num):'', amountNum:num, proposalNo:prop.number||''},st);
+  toast('Invoice logged to the '+(st==='nonprofit'?'non-profit':'commercial')+' book');
 }
 function logPaymentReceived(){
   const sponsor=(agr.sponsor||prop.sponsor||'').trim();
   if(!sponsor){alert('Add the sponsor / company name first.');return;}
   const num=Number(agr.amount)||0;
-  if(!confirm('Log a WIN — payment received from '+sponsor+(num?(' for '+money_(num)):'')+'?\nThis notifies HQ and counts as a win.'))return;
-  report('payment',{sponsor:sponsor, amount:num?money_(num):'', amountNum:num, date:agr.date||today(), proposalNo:prop.number||''});
-  toast('Win recorded — payment logged 🎉');
+  const st=dealStream();
+  if(!endpointFor(st)){alert(st==='nonprofit'?'The non-profit book is not connected yet. Deploy the second Apps Script and set REPORT_ENDPOINT_NP.':'Reporting is off in this copy.');return;}
+  const bookLbl=st==='nonprofit'?'NON-PROFIT (501c3)':'COMMERCIAL';
+  if(!confirm('Log a WIN — payment received from '+sponsor+(num?(' for '+money_(num)):'')+'?\n\nBook: '+bookLbl+(st==='nonprofit'?'\nNo commission is payable on this stream.':'')))return;
+  report('payment',{sponsor:sponsor, amount:num?money_(num):'', amountNum:num, date:agr.date||today(), proposalNo:prop.number||''},st);
+  toast('Win recorded in the '+(st==='nonprofit'?'non-profit':'commercial')+' book 🎉');
 }
 
 /* ═══════════════ CLIENTS (lightweight CRM) ═══════════════
@@ -1657,8 +1677,16 @@ function renderDocs(){
     </div>
   </div>
   <div class="panel">
-    <div class="eyebrow">Master log — for HQ (hits vs wins)</div>
-    <p style="color:var(--mut);font-size:12px;margin:6px 0 12px">Records activity to the AIC master sheet so the team can track proposals sent vs sponsors won. Uses the sponsor name and amount from the form above.${REPORT_ENDPOINT?'':' <strong>(Reporting is off in this copy.)</strong>'}</p>
+    <div class="eyebrow">Master log — hits vs wins</div>
+    <div class="fg" style="max-width:340px"><label>Book this deal to</label>
+      <div class="seg">
+        <button class="${dealStream()==='commercial'?'active':''}" onclick="agr.stream='commercial';renderDocs()">Commercial</button>
+        <button class="${dealStream()==='nonprofit'?'active':''}" onclick="agr.stream='nonprofit';renderDocs()">Non-profit (501c3)</button>
+      </div></div>
+    <div class="ibox ${dealStream()==='nonprofit'?'warn':'brand'}" style="margin-top:10px">${dealStream()==='nonprofit'
+      ?`Goes to the <strong>separate 501(c)(3) book</strong> — grants and donors that require a 501(c)(3). <strong>No commission is payable.</strong>${REPORT_ENDPOINT_NP?'':' <strong>(That book is not connected yet.)</strong>'}`
+      :`Goes to the <strong>commercial book</strong> (${esc((cfg.streams&&cfg.streams.llc.name)||'Regional LLC')}). Commission-eligible at ${closeRate()}% on a full close.`}</div>
+    <p style="color:var(--mut);font-size:12px;margin:6px 0 12px">Records activity so the team can track proposals sent vs sponsors won. Uses the sponsor name and amount from the form above. The two books are kept in <strong>separate Google Sheets</strong> and are never combined.${REPORT_ENDPOINT?'':' <strong>(Reporting is off in this copy.)</strong>'}</p>
     <div class="toolrow" style="margin-bottom:0;flex-wrap:wrap">
       <button class="btn btn-sec" onclick="logInvoiceSent()">Mark invoice sent</button>
       <button class="btn btn-sec" onclick="logPaymentReceived()">Log payment received ✓ (win)</button>
@@ -1846,18 +1874,20 @@ function renderComm(){
   const cm=cfg.comm, rs=regionShare(), cs=chapterShare(), m=activeMembers();
   const money=n=>{try{return new Intl.NumberFormat('en-US',{style:'currency',currency:cfg.chapter.currency||'USD',maximumFractionDigits:0}).format(Number(n)||0);}catch(e){return '$'+Math.round(Number(n)||0);}}
   const sample=10000, sp=splitOf(sample,'closer'), spr=splitOf(sample,'referral');
-  const bandRows=(cm.bands||[]).map((b,i)=>{
-    const cap=b[0], p=Number(b[1])||0, cpct=Math.min(Number(b[2])||0,Number(cm.maxClose)||15);
-    const prev=i?Number((cm.bands[i-1]||[])[0])||0:0;
+  const BANDS=cfg.multsC||[];
+  const bandRows=BANDS.map((b,i)=>{
+    const cap=b[0], mlt=Number(b[1])||1, p=Number(b[2])||0, cpct=Math.min(Number(b[3])||0,Number(cm.maxClose)||15);
+    const prev=i?Number((BANDS[i-1]||[])[0])||0:0;
     const label=cap===null||cap===''?`${prev.toLocaleString('en-US')}+ members`:`${prev.toLocaleString('en-US')}–${(Number(cap)-1).toLocaleString('en-US')} members`;
     const here=(m?(cap===null||cap===''||m<Number(cap)):false)&&(i===0||m>=prev);
     const net=p-cpct;
     return `<tr${here?' style="background:var(--brand-soft)"':''}><td>${label}${here?' <strong>← this chapter</strong>':''}</td>
+      <td class="r num">${mlt}×</td>
       <td class="r num" style="color:var(--ok)">${100-p}%</td><td class="r num">${p}%</td>
       <td class="r num"><strong>${cpct}%</strong></td>
       <td class="r num" style="color:${net<0?'#c0392b':'var(--mut)'}">${net}%</td></tr>`;
   }).join('');
-  const negBand=(cm.bands||[]).some(b=>(Number(b[1])||0)-Math.min(Number(b[2])||0,Number(cm.maxClose)||15)<0);
+  const negBand=BANDS.some(b=>(Number(b[2])||0)-Math.min(Number(b[3])||0,Number(cm.maxClose)||15)<0);
   document.getElementById('sec-comm').innerHTML=`<div class="panel">
     <h2>${t('nav_com')}</h2>
     <p style="color:var(--mut);font-size:12px;margin:-2px 0 12px">How sponsorship money is split and who gets paid. Internal only — never shown on a sponsor-facing document.</p>
@@ -1873,10 +1903,10 @@ function renderComm(){
 
     <div class="eyebrow" style="margin-top:18px">Region support scales with market size</div>
     <div class="tblwrap"><table class="tbl">
-      <thead><tr><th>Chapter size</th><th class="r">Chapter keeps</th><th class="r">Region support</th>
+      <thead><tr><th>Chapter size</th><th class="r">Price</th><th class="r">Chapter keeps</th><th class="r">Region support</th>
         <th class="r">Closing commission</th><th class="r">Region nets</th></tr></thead>
       <tbody>${bandRows}</tbody></table></div>
-    <p style="color:var(--mut);font-size:11.5px;margin:8px 0 0">Commission scales with chapter size so it stays commensurate with the sponsorship — capped at <strong>${cm.maxClose}%</strong> at the largest chapters. Small and new chapters keep the most (${100-Number((cm.bands[0]||[])[1]||0)}%) and the region still nets a margin, so growing a young chapter never costs the region money. Referral is a flat ${cm.referral}% at every size.</p>
+    <p style="color:var(--mut);font-size:11.5px;margin:8px 0 0">Commission scales with chapter size so it stays commensurate with the sponsorship — capped at <strong>${cm.maxClose}%</strong> at the largest chapters. Small and new chapters keep the most (${100-Number((BANDS[0]||[])[2]||0)}%) and the region still nets a margin, so growing a young chapter never costs the region money. Referral is a flat ${cm.referral}% at every size.</p>
     ${negBand?`<div class="ibox warn" style="margin-top:8px">⚠ One or more bands pay more commission than the region collects — the region would lose money on those deals. Lower the commission or raise region support in Settings.</div>`:''}
 
     <div class="eyebrow" style="margin-top:18px">Commissions</div>
@@ -2268,19 +2298,20 @@ function renderSettings(){
       <div class="fg"><label>Partner referred to HQ (% first-year)</label><input type="number" min="0" max="100" value="${cm.partnerRef}" onchange="cfg.comm.partnerRef=Number(this.value)||0;saveCfg();renderComm()"></div>
       <div class="fg"><label>Per-commission cap (USD) — 0 = no cap</label><input type="number" min="0" value="${cm.capUsd||0}" onchange="cfg.comm.capUsd=Number(this.value)||0;saveCfg();renderComm()"></div>
     </div>
-    <div class="eyebrow" style="margin-top:14px">Region support by chapter size</div>
-    <div style="color:var(--mut);font-size:11px;margin-bottom:8px">Smaller chapters pay less to the region. "Under" is the member ceiling for the band; the last row (blank) is everyone above.</div>
+    <div class="eyebrow" style="margin-top:14px">Chapter size bands</div>
+    <div style="color:var(--mut);font-size:11px;margin-bottom:8px">One table drives everything that scales with chapter size: what a sponsorship costs, what the region takes, and what a close pays. "Under" is the member ceiling for the band; the last row (blank) is everyone above. Region nets turns red if a band would pay out more commission than the region collects.</div>
     <div class="tblwrap"><table class="tbl">
-      <thead><tr><th>Members under</th><th class="r">Region support %</th><th class="r">Closing commission %</th><th class="r">Chapter keeps</th><th class="r">Region nets</th><th></th></tr></thead>
-      <tbody>${(cm.bands||[]).map((b,i)=>`<tr>
-        <td><input type="number" min="0" value="${b[0]===null?'':b[0]}" placeholder="(and above)" onchange="cfg.comm.bands[${i}][0]=this.value===''?null:(Number(this.value)||0);saveCfg();renderSettings();renderComm()"></td>
-        <td><input type="number" min="0" max="100" value="${b[1]}" onchange="cfg.comm.bands[${i}][1]=Number(this.value)||0;saveCfg();renderSettings();renderComm()"></td>
-        <td><input type="number" min="0" max="100" value="${b[2]}" onchange="cfg.comm.bands[${i}][2]=Number(this.value)||0;saveCfg();renderSettings();renderComm()"></td>
-        <td class="r num">${100-Number(b[1])}%</td>
-        <td class="r num" style="color:${(Number(b[1])-Number(b[2]))<0?'#c0392b':'var(--mut)'}">${Number(b[1])-Number(b[2])}%</td>
-        <td class="r"><button class="btn btn-ghost" onclick="cfg.comm.bands.splice(${i},1);saveCfg();renderSettings();renderComm()">Remove</button></td></tr>`).join('')}
+      <thead><tr><th>Members under</th><th class="r">Price ×</th><th class="r">Region %</th><th class="r">Close comm %</th><th class="r">Chapter keeps</th><th class="r">Region nets</th><th></th></tr></thead>
+      <tbody>${(cfg.multsC||[]).map((b,i)=>`<tr>
+        <td><input type="number" min="0" value="${b[0]===null?'':b[0]}" placeholder="(and above)" onchange="cfg.multsC[${i}][0]=this.value===''?null:(Number(this.value)||0);saveCfg();renderSettings();renderComm()"></td>
+        <td><input type="number" min="0" step="0.05" value="${b[1]}" onchange="cfg.multsC[${i}][1]=Number(this.value)||0;saveCfg();renderSettings();renderComm()"></td>
+        <td><input type="number" min="0" max="100" value="${b[2]}" onchange="cfg.multsC[${i}][2]=Number(this.value)||0;saveCfg();renderSettings();renderComm()"></td>
+        <td><input type="number" min="0" max="100" value="${b[3]}" onchange="cfg.multsC[${i}][3]=Number(this.value)||0;saveCfg();renderSettings();renderComm()"></td>
+        <td class="r num">${100-Number(b[2])}%</td>
+        <td class="r num" style="color:${(Number(b[2])-Number(b[3]))<0?'#c0392b':'var(--mut)'}">${Number(b[2])-Number(b[3])}%</td>
+        <td class="r"><button class="btn btn-ghost" onclick="cfg.multsC.splice(${i},1);saveCfg();renderSettings();renderComm()">Remove</button></td></tr>`).join('')}
       </tbody></table></div>
-    <button class="btn btn-sec" style="margin-top:8px" onclick="cfg.comm.bands.push([null,35,15]);saveCfg();renderSettings();renderComm()">＋ Add band</button>
+    <button class="btn btn-sec" style="margin-top:8px" onclick="cfg.multsC.push([null,2.75,35,15]);saveCfg();renderSettings();renderComm()">＋ Add band</button>
   </div></details>
   <details><summary>Income streams — accounts</summary><div class="inner">
     <div style="color:var(--mut);font-size:11px;margin-bottom:8px">The two revenue pathways. The commercial company is preferred because the region controls how funds are used; the 501(c)(3) is for grants and donors that require one (US only).</div>
