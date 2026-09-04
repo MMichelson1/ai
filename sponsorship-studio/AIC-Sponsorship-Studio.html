@@ -259,6 +259,7 @@ details .inner{padding:0 16px 16px}
   <div id="sec-annual" class="sec"></div>
   <div id="sec-events" class="sec"></div>
   <div id="sec-comm" class="sec"></div>
+  <div id="sec-streams" class="sec"></div>
   <div id="sec-brochure" class="sec"></div>
   <div id="sec-settings" class="sec"></div>
 </main>
@@ -716,7 +717,25 @@ const DEFAULTS={
   sales:{name:'', email:'', phone:''},
   banking:{payableTo:'', remit:''},
   news:{sendCPM:125, sendMin:500, featCPM:75, featMin:300},
-  comm:{member:5, salesRef:15, salesSrc:20, region:20, capUsd:0},
+  /* Money model. Commissions are paid ONLY on commercial (LLC) sponsorship cash,
+     out of the region's share. No HQ allocation except a partner referred to HQ. */
+  comm:{referral:5, closer:15, partnerRef:5, capUsd:0,
+    /* members-under -> region support %; chapter keeps the rest */
+    bands:[[50,10],[250,15],[500,20],[1000,25],[5000,30],[null,35]]},
+  /* Two revenue pathways. Commercial (regional LLC) is preferred; the 501(c)(3)
+     account via the fiscal sponsor is for grants and donors that require one. */
+  streams:{pref:'llc',
+    llc:{name:'Regional LLC', bank:'Mercury', ein:''},
+    fsa:{name:'Fiscal Sponsor Allies (501c3)', ein:'', usOnly:true}},
+  /* In-kind sponsorships: recognized like cash sponsors, but no cash and no commission. */
+  inkind:[
+    {name:'Venue partner (in-kind)', est:1500, detail:'Sponsor provides the space \u2014 room, AV and staff. Recognized like a cash sponsor; no cash changes hands.'},
+    {name:'Food & beverage partner (in-kind)', est:750, detail:'Sponsor covers catering or drinks. Recognized like a cash sponsor; no cash changes hands.'}
+  ],
+  /* Pass-through at cost: no margin, never commissionable. */
+  awards:[
+    {name:'Hackathon awards / prize pool', price:2500, detail:'Prize money for hackathon winners. Passed through at cost \u2014 offered to existing event or annual sponsors.'}
+  ],
   multsC:[[250,.25],[500,.4],[1000,.7],[5000,1],[10000,1.5],[25000,2],[null,3]],
   multsR:[[1000,1],[5000,1.25],[10000,1.75],[25000,2.5],[null,3.5]],
   annual:[
@@ -726,18 +745,18 @@ const DEFAULTS={
     {cls:'br',name:'Bronze',price:1500,qty:6,disc:0,floor:500,benefits:['Banner signage + callout','Link on Luma invitations']}
   ],
   events:[
-    {name:'Workshop @ Sponsor Venue',price:3000,qty:4,att:50,fixed:true,detail:'Sponsor provides venue · F&B not included · 5:30–8:30pm'},
-    {name:'Workshop @ AIC Venue',price:3750,qty:10,att:50,fixed:true,detail:'Venue + F&B included · 5:30–8:30pm'},
-    {name:'Online Workshop',price:1500,qty:6,att:40,fixed:true,detail:'Sponsor platform · targeted invitations · 1 hour'},
-    {name:'Demo Night',price:3000,qty:6,att:50,fixed:true,detail:'Up to 3 sponsors per night · venue + F&B included'},
-    {name:'Panel / Discussion',price:3750,qty:4,att:50,fixed:true,detail:'Venue + F&B included · 5:30–8:30pm'},
-    {name:'Private Dinner',price:1500,qty:4,att:20,fixed:true,detail:'Selected invitations · reservations handled'},
-    {name:'Private Social',price:1500,qty:4,att:50,fixed:true,detail:'Selected invitations · venue + F&B not included'},
-    {name:'Open Social — Appetizers',price:375,qty:10,att:50,fixed:true,detail:'Sponsor provides appetizers · open to all members'},
-    {name:'Pitch Night',price:6000,qty:2,att:100,fixed:true,detail:'3 sponsors per night · venue + F&B included'},
-    {name:'Vibe Night',price:750,qty:12,att:50,fixed:true,detail:'Up to 2 sponsors per night · attendee-paid F&B'},
-    {name:'Hackathon',price:3750,qty:6,att:50,fixed:true,detail:'Up to 4 sponsors · Saturday 10am–3pm · venue + F&B included'},
-    {name:'Vendor Tour Stop',price:2000,qty:6,att:60,fixed:true,detail:'Turnkey city stop for vendor roadshows: venue, AV, promotion, curated audience, registration list'}
+    {name:'Workshop @ Sponsor Venue',price:3000,qty:4,att:50,fixed:false,detail:'Sponsor provides venue · F&B not included · 5:30–8:30pm'},
+    {name:'Workshop @ AIC Venue',price:3750,qty:10,att:50,fixed:false,detail:'Venue + F&B included · 5:30–8:30pm'},
+    {name:'Online Workshop',price:1500,qty:6,att:40,fixed:false,detail:'Sponsor platform · targeted invitations · 1 hour'},
+    {name:'Demo Night',price:3000,qty:6,att:50,fixed:false,detail:'Up to 3 sponsors per night · venue + F&B included'},
+    {name:'Panel / Discussion',price:3750,qty:4,att:50,fixed:false,detail:'Venue + F&B included · 5:30–8:30pm'},
+    {name:'Private Dinner',price:1500,qty:4,att:20,fixed:false,detail:'Selected invitations · reservations handled'},
+    {name:'Private Social',price:1500,qty:4,att:50,fixed:false,detail:'Selected invitations · venue + F&B not included'},
+    {name:'Open Social — Appetizers',price:375,qty:10,att:50,fixed:false,detail:'Sponsor provides appetizers · open to all members'},
+    {name:'Pitch Night',price:6000,qty:2,att:100,fixed:false,detail:'3 sponsors per night · venue + F&B included'},
+    {name:'Vibe Night',price:750,qty:12,att:50,fixed:false,detail:'Up to 2 sponsors per night · attendee-paid F&B'},
+    {name:'Hackathon',price:3750,qty:6,att:50,fixed:false,detail:'Up to 4 sponsors · Saturday 10am–3pm · venue + F&B included'},
+    {name:'Vendor Tour Stop',price:2000,qty:6,att:60,fixed:false,detail:'Turnkey city stop for vendor roadshows: venue, AV, promotion, curated audience, registration list'}
   ]
 };
 let cfg=loadCfg();
@@ -748,9 +767,17 @@ function loadCfg(){
         story:{...DEFAULTS.story,...c.story},sales:{...DEFAULTS.sales,...c.sales},
         banking:{...DEFAULTS.banking,...c.banking},news:{...DEFAULTS.news,...c.news},
         comm:{...DEFAULTS.comm,...c.comm},multsC:c.multsC||DEFAULTS.multsC,multsR:c.multsR||DEFAULTS.multsR,
+        streams:{...DEFAULTS.streams,...c.streams,
+          llc:{...DEFAULTS.streams.llc,...((c.streams||{}).llc)},
+          fsa:{...DEFAULTS.streams.fsa,...((c.streams||{}).fsa)}},
+        inkind:c.inkind||JSON.parse(JSON.stringify(DEFAULTS.inkind)),
+        awards:c.awards||JSON.parse(JSON.stringify(DEFAULTS.awards)),
         annual:c.annual||JSON.parse(JSON.stringify(DEFAULTS.annual)),
         events:c.events||JSON.parse(JSON.stringify(DEFAULTS.events))};
       // Migrate the old single chapter photo into the up-to-3 photo array.
+      if(!Array.isArray(merged.comm.bands)||!merged.comm.bands.length)merged.comm.bands=JSON.parse(JSON.stringify(DEFAULTS.comm.bands));
+      // One-time: event pricing now scales with market size like the annual tiers.
+      if(!c.evtScaled){merged.events.forEach(e=>{e.fixed=false;});merged.evtScaled=1;}else{merged.evtScaled=1;}
       if(!Array.isArray(merged.chapter.photos3))merged.chapter.photos3=[];
       if(merged.chapter.photos && !merged.chapter.photos3.length){merged.chapter.photos3=[merged.chapter.photos];}
       merged.chapter.photos='';
@@ -790,7 +817,7 @@ const LANG_NAMES={en:'English',es:'Español',fr:'Français',de:'Deutsch',pt:'Por
 /* Right-to-left languages — the document direction flips for these. */
 const RTL=['ar'];
 const T={
-en:{nav_calc:'Calculator',nav_prop:'Proposal',nav_agr:'Agreement',nav_ann:'Annual',nav_evt:'Events',nav_com:'Stipends',nav_bro:'Brochure',nav_set:'Settings',
+en:{nav_calc:'Calculator',nav_prop:'Proposal',nav_agr:'Agreement',nav_ann:'Annual',nav_evt:'Events',nav_com:'Show Me the Money',nav_str:'Income Streams',nav_bro:'Brochure',nav_set:'Settings',
 chapter:'Chapter',region:'Region',members:'members',annual:'Annual',event:'Event',potential:'potential',base:'base',
 mult_note:'Member multiplier: {m}× ({n} members) — prices adjusted accordingly.',
 spots:'spots',evt_disc:'event discount',per_year:'per year',attendees:'attendees',print:'Print / save PDF',dl_pdf:'Download PDF (8.5×11)',dl_wait:'Generating PDF…',cta_call:'Book a sponsorship call',cta_email:'Email us about sponsorship',cta_learn:'Learn about our chapter',cta_need:'⚠ Add your sponsor contact (email or calendar link) in Settings',
@@ -836,7 +863,7 @@ ltr_ren_title:'Renewal',
 ltr_ren_body:'On behalf of {chapter} and The AI Collective, thank you for a remarkable year of partnership. Your sponsorship of {amt} helped power the events and programs that make our community what it is. As we plan the year ahead — more events, more members, and more opportunities to put your brand in front of the AI practitioners who matter most — we would be honored to have you renew your sponsorship. We would love to find a time to walk you through the coming year’s plan and the tiers available to you.',
 about_t:'About us',region_t:'Our region',news_t:'Reach beyond the room',news_p:'Sponsors can also reach our members between events through our chapter newsletters — and nationally through The AI Collective Daily.',news_send:'Dedicated chapter newsletter send',news_feature:'Feature in chapter newsletter',per_send:'per send',
 room_t:'The community you are sponsoring',ref_by:'Referred by'},
-es:{nav_calc:'Calculadora',nav_prop:'Propuesta',nav_agr:'Acuerdo',nav_ann:'Anual',nav_evt:'Eventos',nav_com:'Estipendios',nav_bro:'Folleto',nav_set:'Ajustes',
+es:{nav_calc:'Calculadora',nav_prop:'Propuesta',nav_agr:'Acuerdo',nav_ann:'Anual',nav_evt:'Eventos',nav_com:'Muéstrame el dinero',nav_str:'Fuentes de ingresos',nav_bro:'Folleto',nav_set:'Ajustes',
 chapter:'Capítulo',region:'Región',members:'miembros',annual:'Anual',event:'Evento',potential:'potencial',base:'base',
 mult_note:'Multiplicador por miembros: {m}× ({n} miembros) — precios ajustados.',
 spots:'espacios',evt_disc:'descuento en eventos',per_year:'por año',attendees:'asistentes',print:'Imprimir / guardar PDF',dl_pdf:'Descargar PDF (8.5×11)',dl_wait:'Generando PDF…',cta_call:'Agenda una llamada de patrocinio',cta_email:'Escríbenos sobre patrocinio',cta_learn:'Conoce nuestro capítulo',cta_need:'⚠ Añade tu contacto de patrocinio (correo o enlace de calendario) en Ajustes',
@@ -877,7 +904,7 @@ nav_docs:'Documentos',inv_title:'Factura',bill_to:'Facturar a',remit_to:'Remitir
 letter_title:'Gracias',letter_body:'En nombre de {chapter} y la comunidad de The AI Collective, gracias por su patrocinio. Su aporte de {amt}, recibido el {date}, financia directamente los eventos y programas que reúnen a los profesionales de IA de nuestra comunidad.',letter_close:'Con gratitud,',your_contact:'Su contacto',
 about_t:'Sobre nosotros',region_t:'Nuestra región',news_t:'Llegue más allá del evento',news_p:'Los patrocinadores también pueden llegar a nuestros miembros entre eventos mediante los boletines del capítulo — y a nivel nacional con The AI Collective Daily.',news_send:'Envío dedicado del boletín del capítulo',news_feature:'Destacado en el boletín del capítulo',per_send:'por envío',
 room_t:'La comunidad que usted patrocina',ref_by:'Referido por'},
-fr:{nav_calc:'Calculateur',nav_prop:'Proposition',nav_agr:'Accord',nav_ann:'Annuel',nav_evt:'Événements',nav_com:'Indemnités',nav_bro:'Brochure',nav_set:'Réglages',
+fr:{nav_calc:'Calculateur',nav_prop:'Proposition',nav_agr:'Accord',nav_ann:'Annuel',nav_evt:'Événements',nav_com:'Montre-moi l’argent',nav_str:'Sources de revenus',nav_bro:'Brochure',nav_set:'Réglages',
 chapter:'Chapitre',region:'Région',members:'membres',annual:'Annuel',event:'Événement',potential:'potentiel',base:'base',
 mult_note:'Multiplicateur membres : {m}× ({n} membres) — prix ajustés.',
 spots:'places',evt_disc:'remise événements',per_year:'par an',attendees:'participants',print:'Imprimer / PDF',dl_pdf:'Télécharger le PDF (8,5×11)',dl_wait:'Génération du PDF…',cta_call:'Planifier un appel sponsoring',cta_email:'Écrivez-nous au sujet du sponsoring',cta_learn:'Découvrir notre chapitre',cta_need:'⚠ Ajoutez votre contact sponsoring (e-mail ou lien d’agenda) dans Réglages',
@@ -918,7 +945,7 @@ nav_docs:'Documents',inv_title:'Facture',bill_to:'Facturer à',remit_to:'Règlem
 letter_title:'Merci',letter_body:'Au nom de {chapter} et de la communauté The AI Collective, merci pour votre parrainage. Votre soutien de {amt}, reçu le {date}, finance directement les événements et programmes qui rassemblent les praticiens de l’IA de notre communauté.',letter_close:'Avec gratitude,',your_contact:'Votre contact',
 about_t:'À propos',region_t:'Notre région',news_t:'Au-delà de la salle',news_p:'Les sponsors peuvent aussi toucher nos membres entre les événements via les newsletters du chapitre — et à l’échelle nationale avec The AI Collective Daily.',news_send:'Envoi dédié de la newsletter du chapitre',news_feature:'Encart dans la newsletter du chapitre',per_send:'par envoi',
 room_t:'La communauté que vous parrainez',ref_by:'Recommandé par'},
-de:{nav_calc:'Rechner',nav_prop:'Angebot',nav_agr:'Vereinbarung',nav_ann:'Jährlich',nav_evt:'Events',nav_com:'Vergütungen',nav_bro:'Broschüre',nav_set:'Einstellungen',
+de:{nav_calc:'Rechner',nav_prop:'Angebot',nav_agr:'Vereinbarung',nav_ann:'Jährlich',nav_evt:'Events',nav_com:'Zeig mir das Geld',nav_str:'Einnahmequellen',nav_bro:'Broschüre',nav_set:'Einstellungen',
 chapter:'Chapter',region:'Region',members:'Mitglieder',annual:'Jährlich',event:'Event',potential:'Potenzial',base:'Basis',
 mult_note:'Mitglieder-Multiplikator: {m}× ({n} Mitglieder) — Preise entsprechend angepasst.',
 spots:'Plätze',evt_disc:'Event-Rabatt',per_year:'pro Jahr',attendees:'Teilnehmende',print:'Drucken / PDF',dl_pdf:'PDF herunterladen (8,5×11)',dl_wait:'PDF wird erstellt…',cta_call:'Sponsoring-Gespräch buchen',cta_email:'Schreiben Sie uns zum Sponsoring',cta_learn:'Über unser Chapter',cta_need:'⚠ Fügen Sie Ihren Sponsoring-Kontakt (E-Mail oder Kalenderlink) in den Einstellungen hinzu',
@@ -959,7 +986,7 @@ nav_docs:'Dokumente',inv_title:'Rechnung',bill_to:'Rechnung an',remit_to:'Zahlun
 letter_title:'Vielen Dank',letter_body:'Im Namen von {chapter} und der The-AI-Collective-Community danken wir Ihnen für Ihr Sponsoring. Ihr Beitrag von {amt}, eingegangen am {date}, finanziert direkt die Events und Programme, die die KI-Fachleute unserer Community zusammenbringen.',letter_close:'Mit herzlichem Dank,',your_contact:'Ihr Kontakt',
 about_t:'Über uns',region_t:'Unsere Region',news_t:'Reichweite über den Raum hinaus',news_p:'Sponsoren erreichen unsere Mitglieder auch zwischen den Events über Chapter-Newsletter — und landesweit über The AI Collective Daily.',news_send:'Dedizierter Chapter-Newsletter-Versand',news_feature:'Feature im Chapter-Newsletter',per_send:'pro Versand',
 room_t:'Die Community, die Sie sponsern',ref_by:'Empfohlen von'},
-pt:{nav_calc:'Calculadora',nav_prop:'Proposta',nav_agr:'Acordo',nav_ann:'Anual',nav_evt:'Eventos',nav_com:'Estipêndios',nav_bro:'Folheto',nav_set:'Ajustes',
+pt:{nav_calc:'Calculadora',nav_prop:'Proposta',nav_agr:'Acordo',nav_ann:'Anual',nav_evt:'Eventos',nav_com:'Mostre-me o dinheiro',nav_str:'Fontes de receita',nav_bro:'Folheto',nav_set:'Ajustes',
 chapter:'Capítulo',region:'Região',members:'membros',annual:'Anual',event:'Evento',potential:'potencial',base:'base',
 mult_note:'Multiplicador de membros: {m}× ({n} membros) — preços ajustados.',
 spots:'vagas',evt_disc:'desconto em eventos',per_year:'por ano',attendees:'participantes',print:'Imprimir / salvar PDF',dl_pdf:'Baixar PDF (8,5×11)',dl_wait:'Gerando PDF…',cta_call:'Agende uma chamada de patrocínio',cta_email:'Fale conosco sobre patrocínio',cta_learn:'Conheça nosso capítulo',cta_need:'⚠ Adicione seu contato de patrocínio (e-mail ou link de calendário) em Ajustes',
@@ -1000,7 +1027,7 @@ nav_docs:'Documentos',inv_title:'Fatura',bill_to:'Faturar para',remit_to:'Pagame
 letter_title:'Obrigado',letter_body:'Em nome de {chapter} e da comunidade The AI Collective, obrigado pelo seu patrocínio. Seu apoio de {amt}, recebido em {date}, financia diretamente os eventos e programas que reúnem os profissionais de IA da nossa comunidade.',letter_close:'Com gratidão,',your_contact:'Seu contato',
 about_t:'Sobre nós',region_t:'Nossa região',news_t:'Alcance além do evento',news_p:'Patrocinadores também podem alcançar nossos membros entre eventos pelos boletins do capítulo — e nacionalmente pelo The AI Collective Daily.',news_send:'Envio dedicado do boletim do capítulo',news_feature:'Destaque no boletim do capítulo',per_send:'por envio',
 room_t:'A comunidade que você patrocina',ref_by:'Indicado por'},
-ja:{nav_calc:'計算ツール',nav_prop:'提案書',nav_agr:'契約書',nav_ann:'年間',nav_evt:'イベント',nav_com:'謝礼',nav_bro:'パンフレット',nav_set:'設定',
+ja:{nav_calc:'計算ツール',nav_prop:'提案書',nav_agr:'契約書',nav_ann:'年間',nav_evt:'イベント',nav_com:'ショー・ミー・ザ・マネー',nav_str:'収入源',nav_bro:'パンフレット',nav_set:'設定',
 chapter:'チャプター',region:'リージョン',members:'名のメンバー',annual:'年間',event:'イベント',potential:'見込み',base:'基準',
 mult_note:'メンバー係数：{m}×（{n}名）— 価格は調整済みです。',
 spots:'枠',evt_disc:'イベント割引',per_year:'年間',attendees:'参加者',print:'印刷 / PDF保存',dl_pdf:'PDFをダウンロード (8.5×11)',dl_wait:'PDFを生成中…',cta_call:'スポンサーシップ相談を予約',cta_email:'スポンサーシップについて連絡',cta_learn:'支部について知る',cta_need:'⚠ 設定でスポンサー窓口（メールまたはカレンダーリンク）を追加してください',
@@ -1041,9 +1068,9 @@ nav_docs:'書類',inv_title:'請求書',bill_to:'請求先',remit_to:'支払先'
 letter_title:'御礼',letter_body:'{chapter}およびThe AI Collectiveコミュニティを代表し、ご支援に心より感謝申し上げます。{date}に受領した{amt}のご支援は、当地のAI実務者をつなぐイベントとプログラムの運営に直接活用されます。',letter_close:'感謝を込めて',your_contact:'担当者',
 about_t:'私たちについて',region_t:'リージョンのチャプター',news_t:'イベントの先へ',news_p:'スポンサーはチャプターのニュースレター、また全国規模ではThe AI Collective Dailyを通じて、イベント以外でも会員にリーチできます。',news_send:'チャプターニュースレター単独配信',news_feature:'チャプターニュースレター内掲載',per_send:'1配信あたり',
 room_t:'スポンサーとして関わるコミュニティ',ref_by:'紹介者'},
-it:{nav_calc:"Calcolatore",nav_prop:"Proposta",nav_agr:"Accordo",nav_ann:"Annuale",nav_evt:"Eventi",nav_com:"Indennità",nav_bro:"Brochure",nav_set:"Impostazioni",chapter:"Capitolo",region:"Regione",members:"membri",annual:"Annuale",event:"Evento",potential:"potenziale",base:"base",mult_note:"Moltiplicatore membri: {m}× ({n} membri) — prezzi adeguati di conseguenza.",spots:"posti",evt_disc:"sconto eventi",per_year:"all'anno",attendees:"partecipanti",print:"Stampa / salva PDF",dl_pdf:"Scarica PDF (8,5×11)",dl_wait:"Generazione PDF…",cta_call:"Prenota una call sulla sponsorizzazione",cta_email:"Scrivici sulla sponsorizzazione",cta_learn:"Scopri il nostro capitolo",cta_need:"⚠ Aggiungi il tuo contatto per le sponsorizzazioni (email o link al calendario) nelle Impostazioni",add_prop:"Aggiungi alla proposta",qty:"Qtà",price:"Prezzo",item:"Voce",subtotal:"Subtotale",discount:"Sconto",total:"Totale",prop_title:"Proposta di sponsorizzazione",prepared_for:"Preparata per",sponsor_co:"Azienda sponsor",contact:"Nome contatto",email:"Email",date:"Data",valid:"Valida fino al",list_price:"Prezzo di listino",line_disc:"Sconto %",override:"Prezzo personalizzato",note:"Nota riga",custom:"Personalizzato",order_disc:"Sconto aggiuntivo sull'ordine %",prop_notes:"Note sulla proposta",savings:"Risparmio totale rispetto al listino",preview:"Anteprima documento",back_edit:"Torna alla modifica",add_custom:"Aggiungi riga personalizzata",remove:"Rimuovi",no_items:"Nessuna voce ancora. Aggiungi livelli annuali o pacchetti evento qui sotto.",prop_terms:"I prezzi sono validi fino alla data indicata sopra. I pagamenti delle sponsorizzazioni sono ricevuti e registrati dal nostro sponsor fiscale. I benefici di riconoscimento iniziano al ricevimento del pagamento.",contact_us:"Domande? Contatta",agr_title:"Accordo e conferma di sponsorizzazione",sponsor_legal:"Denominazione legale dello sponsor",address:"Indirizzo",amt_recv:"Importo ricevuto",date_recv:"Data di ricezione",descr:"Descrizione della sponsorizzazione",agr_body:"Con la presente si conferma che {fiscal} (EIN {ein}), sponsor fiscale di {hq}, ha ricevuto un pagamento di sponsorizzazione di {amt} da {sponsor} il {date} a sostegno di {chapter}.",agr_recog:"In cambio di questo pagamento, lo sponsor riceve unicamente il riconoscimento del nome e del logo — ad esempio, una menzione sugli inviti agli eventi, su striscioni, sulle slide degli eventi o nella directory dei membri. Non viene fornita alcuna pubblicità, promozione o altro beneficio sostanziale in cambio.",agr_tax:"Non sono stati forniti beni o servizi in cambio di questo pagamento oltre al riconoscimento descritto sopra. Si prega di consultare il proprio consulente fiscale in merito al trattamento di questo pagamento.",sig_sponsor:"Per lo sponsor",sig_org:"Per l'organizzazione",name_title:"Nome e qualifica",date_lbl:"Data",missing_ein:"L'EIN dello sponsor fiscale non è impostato. Aggiungilo nelle Impostazioni prima di inviare questo documento.",bro_tag:"Opportunità di sponsorizzazione",bro_h:"Sponsorizza la comunità AI che sta costruendo il futuro.",bro_p:"Colleghiamo professionisti, founder e dirigenti nella comunità professionale AI in più rapida crescita. Quando sponsorizzi, sei nella stanza dove accade tutto.",bro_members:"Membri",bro_events:"Eventi organizzati",bro_formats:"Formati di evento",why_t:"Perché sponsorizzare",why:[["Credibilità per associazione","Il tuo brand si affianca alle persone che stanno guidando l'adozione dell'AI. Un posizionamento difficile da ottenere altrove."],["Visibilità reale","Il tuo nome su inviti, slide degli eventi, striscioni e menzioni verbali — prima, durante e dopo gli eventi."],["Connessione diretta","I formati workshop e demo mettono il tuo team nella stanza con professionisti qualificati, in modo pratico."],["Elenco partecipanti","Alcuni pacchetti includono l'elenco delle registrazioni — nomi, ruoli e aziende di tutti i partecipanti."],["Portata mirata","Invitiamo il segmento dei nostri membri più rilevante per la tua offerta."],["Presenza ricorrente","I partner annuali sono presenti a ogni evento tutto l'anno — una costanza che rafforza il ricordo."]],recog_t:"Riconoscimento, non pubblicità",recog_p:"The AI Collective è una comunità senza scopo di lucro. Gli sponsor vengono riconosciuti — non fanno pubblicità. Riconoscimento significa:",recog_l:["Una menzione sugli inviti agli eventi","Una menzione durante l'evento stesso","Il tuo logo sugli striscioni (a volte condivisi con altri sponsor)","Il tuo logo sulle slide degli eventi","Una menzione nella directory dei membri o agli eventi online"],ann_t:"Livelli partner annuali",evt_t:"Sponsorizzazioni di eventi",benefits:"Benefici",cta_t:"Pronto a incontrare la comunità?",cta_p:"Raccontaci i tuoi obiettivi e ti abbineremo al pacchetto giusto.",cta_b:"Sponsorizza {chapter}",com_member:"Segnalato da un membro",com_sales:"Portato da un commerciale",com_regsup:"Supporto regionale",scenario:"Scenario",member_lbl:"Membro",sales_lbl:"Commerciale",nav_docs:"Documenti",inv_title:"Fattura",bill_to:"Fatturare a",remit_to:"Pagamento a",due:"Scadenza",inv_no:"Fattura n.",prop_no:"Proposta n.",payable_to:"Intestato a",terms15:"Pagamento dovuto entro 15 giorni dalla data della fattura.",letter_title:"Grazie",letter_body:"A nome di {chapter} e della comunità The AI Collective, grazie per la tua sponsorizzazione. Il tuo supporto di {amt}, ricevuto il {date}, finanzia direttamente gli eventi e i programmi che riuniscono i professionisti dell'AI nella nostra comunità.",letter_close:"Con gratitudine,",your_contact:"Il tuo contatto",about_t:"Chi siamo",region_t:"La nostra regione",news_t:"Vai oltre la stanza",news_p:"Gli sponsor possono raggiungere i nostri membri anche tra un evento e l'altro tramite le newsletter del capitolo — e a livello nazionale tramite The AI Collective Daily.",news_send:"Invio dedicato della newsletter del capitolo",news_feature:"Menzione nella newsletter del capitolo",per_send:"per invio",room_t:"La comunità che stai sponsorizzando",ref_by:"Segnalato da"},
-ar:{nav_calc:"حاسبة",nav_prop:"عرض",nav_agr:"اتفاقية",nav_ann:"سنوي",nav_evt:"الفعاليات",nav_com:"مكافآت",nav_bro:"كتيّب",nav_set:"الإعدادات",chapter:"الفرع",region:"المنطقة",members:"أعضاء",annual:"سنوي",event:"فعالية",potential:"محتمل",base:"أساسي",mult_note:"مضاعف الأعضاء: {m}× ({n} عضو) — تُعدّل الأسعار وفقاً لذلك.",spots:"أماكن",evt_disc:"خصم الفعاليات",per_year:"سنوياً",attendees:"الحضور",print:"طباعة / حفظ PDF",dl_pdf:"تنزيل PDF (8.5×11)",dl_wait:"جارٍ إنشاء PDF…",cta_call:"احجز مكالمة حول الرعاية",cta_email:"راسلنا حول الرعاية",cta_learn:"تعرّف على فرعنا",cta_need:"⚠ أضف جهة اتصال الرعاية (بريد إلكتروني أو رابط تقويم) في الإعدادات",add_prop:"أضف إلى العرض",qty:"الكمية",price:"السعر",item:"البند",subtotal:"المجموع الفرعي",discount:"الخصم",total:"الإجمالي",prop_title:"عرض رعاية",prepared_for:"أُعدّ لـ",sponsor_co:"شركة الراعي",contact:"اسم جهة الاتصال",email:"البريد الإلكتروني",date:"التاريخ",valid:"صالح حتى",list_price:"سعر القائمة",line_disc:"الخصم %",override:"تعديل السعر",note:"ملاحظة البند",custom:"مخصص",order_disc:"خصم إضافي على الطلب %",prop_notes:"ملاحظات العرض",savings:"إجمالي التوفير مقابل سعر القائمة",preview:"معاينة المستند",back_edit:"العودة إلى التحرير",add_custom:"إضافة بند مخصص",remove:"إزالة",no_items:"لا توجد بنود بعد. أضف الفئات السنوية أو باقات الفعاليات أدناه.",prop_terms:"الأسعار صالحة حتى التاريخ المذكور أعلاه. تُستلَم مدفوعات الرعاية وتُوثَّق من قبل الراعي المالي لدينا. تبدأ مزايا التقدير عند استلام الدفعة.",contact_us:"أسئلة؟ تواصل مع",agr_title:"اتفاقية رعاية وإقرار",sponsor_legal:"الاسم القانوني للراعي",address:"العنوان",amt_recv:"المبلغ المستلم",date_recv:"تاريخ الاستلام",descr:"وصف الرعاية",agr_body:"يؤكد هذا أن {fiscal} (EIN {ein})، الراعي المالي لـ {hq}، استلم دفعة رعاية بقيمة {amt} من {sponsor} بتاريخ {date} دعماً لـ {chapter}.",agr_recog:"مقابل هذه الدفعة، يحصل الراعي على تقدير الاسم والشعار فقط — على سبيل المثال، ذِكر على دعوات الفعاليات أو اللافتات أو شرائح العرض أو دليل الأعضاء. لا يُقدَّم أي إعلان أو تأييد أو أي منفعة جوهرية أخرى مقابل ذلك.",agr_tax:"لم تُقدَّم أي سلع أو خدمات مقابل هذه الدفعة بخلاف التقدير الموضّح أعلاه. يُرجى استشارة مستشارك الضريبي بشأن معالجة هذه الدفعة.",sig_sponsor:"عن الراعي",sig_org:"عن المنظمة",name_title:"الاسم والمسمى الوظيفي",date_lbl:"التاريخ",missing_ein:"رقم EIN للراعي المالي غير مُعيَّن. أضفه في الإعدادات قبل إرسال هذا المستند.",bro_tag:"فرص الرعاية",bro_h:"ارعَ مجتمع الذكاء الاصطناعي الذي يبني المستقبل.",bro_p:"نربط الممارسين والمؤسسين والتنفيذيين عبر أسرع المجتمعات المهنية نمواً في مجال الذكاء الاصطناعي. عندما ترعى، تكون في الغرفة حيث يحدث كل شيء.",bro_members:"الأعضاء",bro_events:"الفعاليات المنظَّمة",bro_formats:"أنماط الفعاليات",why_t:"لماذا ترعى",why:[["المصداقية بالارتباط","تقف علامتك التجارية جنباً إلى جنب مع من يشكّلون تبنّي الذكاء الاصطناعي. تموضع يصعب شراؤه في أي مكان آخر."],["ظهور حقيقي","اسمك على الدعوات وشرائح الفعاليات واللافتات والإشارات الشفهية — قبل الفعاليات وأثناءها وبعدها."],["تواصل مباشر","تضع أنماط ورش العمل والعروض التوضيحية فريقك في الغرفة مع ممارسين مؤهلين، بشكل عملي."],["قائمة الحضور","تتضمن باقات مختارة قائمة التسجيل — أسماء ومناصب وشركات جميع الحاضرين."],["وصول مستهدَف","ندعو الشريحة الأكثر صلة بعرضك من أعضائنا."],["حضور متكرر","يظهر الشركاء السنويون في كل فعالية طوال العام — ثبات يعزّز التذكّر."]],recog_t:"تقدير، وليس إعلاناً",recog_p:"The AI Collective مجتمع غير ربحي. يُكرَّم الرعاة — ولا يُعلِنون. التقدير يعني:",recog_l:["ذِكر على دعوات الفعاليات","ذِكر في الفعالية نفسها","شعارك على اللافتات (يُشارَك أحياناً مع رعاة آخرين)","شعارك على شرائح الفعاليات","ذِكر في دليل الأعضاء أو في الفعاليات عبر الإنترنت"],ann_t:"فئات الشركاء السنويين",evt_t:"رعايات الفعاليات",benefits:"المزايا",cta_t:"هل أنت مستعد للقاء المجتمع؟",cta_p:"أخبرنا بأهدافك وسنطابقك مع الباقة المناسبة.",cta_b:"ارعَ {chapter}",com_member:"بإحالة من عضو",com_sales:"عبر مندوب مبيعات",com_regsup:"دعم المنطقة",scenario:"سيناريو",member_lbl:"عضو",sales_lbl:"مندوب مبيعات",nav_docs:"المستندات",inv_title:"فاتورة",bill_to:"الفوترة إلى",remit_to:"الدفع إلى",due:"تاريخ الاستحقاق",inv_no:"رقم الفاتورة",prop_no:"رقم العرض",payable_to:"يُدفع لأمر",terms15:"الدفع مستحق خلال 15 يوماً من تاريخ الفاتورة.",letter_title:"شكراً لك",letter_body:"نيابةً عن {chapter} ومجتمع The AI Collective، شكراً لرعايتك. دعمك بقيمة {amt}، المستلَم في {date}، يموّل مباشرةً الفعاليات والبرامج التي تجمع ممارسي الذكاء الاصطناعي في مجتمعنا.",letter_close:"مع خالص الامتنان،",your_contact:"جهة الاتصال الخاصة بك",about_t:"من نحن",region_t:"منطقتنا",news_t:"تجاوز حدود الغرفة",news_p:"يمكن للرعاة أيضاً الوصول إلى أعضائنا بين الفعاليات عبر نشرات الفرع الإخبارية — وعلى المستوى الوطني عبر The AI Collective Daily.",news_send:"إرسال مخصص لنشرة الفرع الإخبارية",news_feature:"ذِكر في نشرة الفرع الإخبارية",per_send:"لكل إرسال",room_t:"المجتمع الذي ترعاه",ref_by:"بترشيح من"},
-sv:{nav_calc:"Kalkylator",nav_prop:"Förslag",nav_agr:"Avtal",nav_ann:"Årlig",nav_evt:"Evenemang",nav_com:"Arvoden",nav_bro:"Broschyr",nav_set:"Inställningar",chapter:"Avdelning",region:"Region",members:"medlemmar",annual:"Årlig",event:"Evenemang",potential:"potential",base:"bas",mult_note:"Medlemsmultiplikator: {m}× ({n} medlemmar) — priserna justeras därefter.",spots:"platser",evt_disc:"evenemangsrabatt",per_year:"per år",attendees:"deltagare",print:"Skriv ut / spara PDF",dl_pdf:"Ladda ner PDF (8,5×11)",dl_wait:"Genererar PDF…",cta_call:"Boka ett sponsringssamtal",cta_email:"Mejla oss om sponsring",cta_learn:"Lär känna vår avdelning",cta_need:"⚠ Lägg till din sponsringskontakt (e-post eller kalenderlänk) i Inställningar",add_prop:"Lägg till i förslag",qty:"Antal",price:"Pris",item:"Post",subtotal:"Delsumma",discount:"Rabatt",total:"Totalt",prop_title:"Sponsringsförslag",prepared_for:"Framtaget för",sponsor_co:"Sponsorföretag",contact:"Kontaktperson",email:"E-post",date:"Datum",valid:"Giltigt till",list_price:"Listpris",line_disc:"Rabatt %",override:"Justera pris",note:"Radanteckning",custom:"Anpassad",order_disc:"Ytterligare orderrabatt %",prop_notes:"Anteckningar till förslaget",savings:"Total besparing mot listpris",preview:"Förhandsgranska dokument",back_edit:"Tillbaka till redigering",add_custom:"Lägg till anpassad rad",remove:"Ta bort",no_items:"Inga poster ännu. Lägg till årliga nivåer eller evenemangspaket nedan.",prop_terms:"Priserna gäller till och med datumet ovan. Sponsringsbetalningar tas emot och kvitteras av vår fiskala sponsor. Erkännandeförmåner börjar när betalningen har mottagits.",contact_us:"Frågor? Kontakta",agr_title:"Sponsringsavtal och bekräftelse",sponsor_legal:"Sponsorns juridiska namn",address:"Adress",amt_recv:"Mottaget belopp",date_recv:"Mottagningsdatum",descr:"Beskrivning av sponsringen",agr_body:"Detta bekräftar att {fiscal} (EIN {ein}), fiskal sponsor för {hq}, mottog en sponsringsbetalning på {amt} från {sponsor} den {date} till stöd för {chapter}.",agr_recog:"Som ersättning för denna betalning får sponsorn endast erkännande av namn och logotyp — till exempel ett omnämnande på evenemangsinbjudningar, banderoller, evenemangsbilder eller i medlemskatalogen. Ingen reklam, rekommendation eller annan väsentlig motprestation tillhandahålls.",agr_tax:"Inga varor eller tjänster tillhandahölls i utbyte mot denna betalning utöver det erkännande som beskrivs ovan. Rådgör med din skatterådgivare om hur denna betalning ska hanteras.",sig_sponsor:"För sponsorn",sig_org:"För organisationen",name_title:"Namn och titel",date_lbl:"Datum",missing_ein:"Den fiskala sponsorns EIN är inte angivet. Lägg till det i Inställningar innan du skickar detta dokument.",bro_tag:"Sponsringsmöjligheter",bro_h:"Sponsra AI-communityn som bygger framtiden.",bro_p:"Vi kopplar samman praktiker, grundare och chefer i AI:s snabbast växande professionella community. När du sponsrar är du i rummet där det händer.",bro_members:"Medlemmar",bro_events:"Genomförda evenemang",bro_formats:"Evenemangsformat",why_t:"Varför sponsra",why:[["Trovärdighet genom association","Ditt varumärke står sida vid sida med dem som formar AI-antagandet. En positionering som är svår att köpa någon annanstans."],["Verklig synlighet","Ditt namn på inbjudningar, evenemangsbilder, banderoller och muntliga omnämnanden — före, under och efter evenemangen."],["Direkt kontakt","Workshop- och demoformat sätter ditt team i rummet med kvalificerade praktiker, på ett praktiskt sätt."],["Deltagarlista","Utvalda paket inkluderar anmälningslistan — namn, titlar och företag för alla som deltog."],["Riktad räckvidd","Vi bjuder in det segment av våra medlemmar som är mest relevant för ditt erbjudande."],["Återkommande närvaro","Årliga partner syns på varje evenemang hela året — en kontinuitet som bygger igenkänning."]],recog_t:"Erkännande, inte reklam",recog_p:"The AI Collective är en ideell community. Sponsorer erkänns — de gör inte reklam. Erkännande innebär:",recog_l:["Ett omnämnande på evenemangsinbjudningar","Ett omnämnande vid själva evenemanget","Din logotyp på banderoller (ibland delade med andra sponsorer)","Din logotyp på evenemangsbilder","Ett omnämnande i medlemskatalogen eller vid onlineevenemang"],ann_t:"Årliga partnernivåer",evt_t:"Evenemangssponsring",benefits:"Förmåner",cta_t:"Redo att möta communityn?",cta_p:"Berätta om dina mål så matchar vi dig med rätt paket.",cta_b:"Sponsra {chapter}",com_member:"Hänvisad av medlem",com_sales:"Anskaffad av säljare",com_regsup:"Regionstöd",scenario:"Scenario",member_lbl:"Medlem",sales_lbl:"Säljare",nav_docs:"Dokument",inv_title:"Faktura",bill_to:"Fakturera till",remit_to:"Betalning till",due:"Förfallodatum",inv_no:"Fakturanr",prop_no:"Förslagsnr",payable_to:"Betalas till",terms15:"Betalning ska ske inom 15 dagar från fakturadatum.",letter_title:"Tack",letter_body:"På uppdrag av {chapter} och The AI Collective-communityn, tack för din sponsring. Ditt stöd på {amt}, mottaget {date}, finansierar direkt de evenemang och program som för samman AI-praktiker i vår community.",letter_close:"Med tacksamhet,",your_contact:"Din kontakt",about_t:"Om oss",region_t:"Vår region",news_t:"Nå bortom rummet",news_p:"Sponsorer kan också nå våra medlemmar mellan evenemangen via våra avdelningsnyhetsbrev — och nationellt via The AI Collective Daily.",news_send:"Dedikerat utskick av avdelningens nyhetsbrev",news_feature:"Omnämnande i avdelningens nyhetsbrev",per_send:"per utskick",room_t:"Communityn du sponsrar",ref_by:"Hänvisad av"}
+it:{nav_calc:"Calcolatore",nav_prop:"Proposta",nav_agr:"Accordo",nav_ann:"Annuale",nav_evt:"Eventi",nav_com:"Mostrami i soldi",nav_str:"Fonti di ricavo",nav_bro:"Brochure",nav_set:"Impostazioni",chapter:"Capitolo",region:"Regione",members:"membri",annual:"Annuale",event:"Evento",potential:"potenziale",base:"base",mult_note:"Moltiplicatore membri: {m}× ({n} membri) — prezzi adeguati di conseguenza.",spots:"posti",evt_disc:"sconto eventi",per_year:"all'anno",attendees:"partecipanti",print:"Stampa / salva PDF",dl_pdf:"Scarica PDF (8,5×11)",dl_wait:"Generazione PDF…",cta_call:"Prenota una call sulla sponsorizzazione",cta_email:"Scrivici sulla sponsorizzazione",cta_learn:"Scopri il nostro capitolo",cta_need:"⚠ Aggiungi il tuo contatto per le sponsorizzazioni (email o link al calendario) nelle Impostazioni",add_prop:"Aggiungi alla proposta",qty:"Qtà",price:"Prezzo",item:"Voce",subtotal:"Subtotale",discount:"Sconto",total:"Totale",prop_title:"Proposta di sponsorizzazione",prepared_for:"Preparata per",sponsor_co:"Azienda sponsor",contact:"Nome contatto",email:"Email",date:"Data",valid:"Valida fino al",list_price:"Prezzo di listino",line_disc:"Sconto %",override:"Prezzo personalizzato",note:"Nota riga",custom:"Personalizzato",order_disc:"Sconto aggiuntivo sull'ordine %",prop_notes:"Note sulla proposta",savings:"Risparmio totale rispetto al listino",preview:"Anteprima documento",back_edit:"Torna alla modifica",add_custom:"Aggiungi riga personalizzata",remove:"Rimuovi",no_items:"Nessuna voce ancora. Aggiungi livelli annuali o pacchetti evento qui sotto.",prop_terms:"I prezzi sono validi fino alla data indicata sopra. I pagamenti delle sponsorizzazioni sono ricevuti e registrati dal nostro sponsor fiscale. I benefici di riconoscimento iniziano al ricevimento del pagamento.",contact_us:"Domande? Contatta",agr_title:"Accordo e conferma di sponsorizzazione",sponsor_legal:"Denominazione legale dello sponsor",address:"Indirizzo",amt_recv:"Importo ricevuto",date_recv:"Data di ricezione",descr:"Descrizione della sponsorizzazione",agr_body:"Con la presente si conferma che {fiscal} (EIN {ein}), sponsor fiscale di {hq}, ha ricevuto un pagamento di sponsorizzazione di {amt} da {sponsor} il {date} a sostegno di {chapter}.",agr_recog:"In cambio di questo pagamento, lo sponsor riceve unicamente il riconoscimento del nome e del logo — ad esempio, una menzione sugli inviti agli eventi, su striscioni, sulle slide degli eventi o nella directory dei membri. Non viene fornita alcuna pubblicità, promozione o altro beneficio sostanziale in cambio.",agr_tax:"Non sono stati forniti beni o servizi in cambio di questo pagamento oltre al riconoscimento descritto sopra. Si prega di consultare il proprio consulente fiscale in merito al trattamento di questo pagamento.",sig_sponsor:"Per lo sponsor",sig_org:"Per l'organizzazione",name_title:"Nome e qualifica",date_lbl:"Data",missing_ein:"L'EIN dello sponsor fiscale non è impostato. Aggiungilo nelle Impostazioni prima di inviare questo documento.",bro_tag:"Opportunità di sponsorizzazione",bro_h:"Sponsorizza la comunità AI che sta costruendo il futuro.",bro_p:"Colleghiamo professionisti, founder e dirigenti nella comunità professionale AI in più rapida crescita. Quando sponsorizzi, sei nella stanza dove accade tutto.",bro_members:"Membri",bro_events:"Eventi organizzati",bro_formats:"Formati di evento",why_t:"Perché sponsorizzare",why:[["Credibilità per associazione","Il tuo brand si affianca alle persone che stanno guidando l'adozione dell'AI. Un posizionamento difficile da ottenere altrove."],["Visibilità reale","Il tuo nome su inviti, slide degli eventi, striscioni e menzioni verbali — prima, durante e dopo gli eventi."],["Connessione diretta","I formati workshop e demo mettono il tuo team nella stanza con professionisti qualificati, in modo pratico."],["Elenco partecipanti","Alcuni pacchetti includono l'elenco delle registrazioni — nomi, ruoli e aziende di tutti i partecipanti."],["Portata mirata","Invitiamo il segmento dei nostri membri più rilevante per la tua offerta."],["Presenza ricorrente","I partner annuali sono presenti a ogni evento tutto l'anno — una costanza che rafforza il ricordo."]],recog_t:"Riconoscimento, non pubblicità",recog_p:"The AI Collective è una comunità senza scopo di lucro. Gli sponsor vengono riconosciuti — non fanno pubblicità. Riconoscimento significa:",recog_l:["Una menzione sugli inviti agli eventi","Una menzione durante l'evento stesso","Il tuo logo sugli striscioni (a volte condivisi con altri sponsor)","Il tuo logo sulle slide degli eventi","Una menzione nella directory dei membri o agli eventi online"],ann_t:"Livelli partner annuali",evt_t:"Sponsorizzazioni di eventi",benefits:"Benefici",cta_t:"Pronto a incontrare la comunità?",cta_p:"Raccontaci i tuoi obiettivi e ti abbineremo al pacchetto giusto.",cta_b:"Sponsorizza {chapter}",com_member:"Segnalato da un membro",com_sales:"Portato da un commerciale",com_regsup:"Supporto regionale",scenario:"Scenario",member_lbl:"Membro",sales_lbl:"Commerciale",nav_docs:"Documenti",inv_title:"Fattura",bill_to:"Fatturare a",remit_to:"Pagamento a",due:"Scadenza",inv_no:"Fattura n.",prop_no:"Proposta n.",payable_to:"Intestato a",terms15:"Pagamento dovuto entro 15 giorni dalla data della fattura.",letter_title:"Grazie",letter_body:"A nome di {chapter} e della comunità The AI Collective, grazie per la tua sponsorizzazione. Il tuo supporto di {amt}, ricevuto il {date}, finanzia direttamente gli eventi e i programmi che riuniscono i professionisti dell'AI nella nostra comunità.",letter_close:"Con gratitudine,",your_contact:"Il tuo contatto",about_t:"Chi siamo",region_t:"La nostra regione",news_t:"Vai oltre la stanza",news_p:"Gli sponsor possono raggiungere i nostri membri anche tra un evento e l'altro tramite le newsletter del capitolo — e a livello nazionale tramite The AI Collective Daily.",news_send:"Invio dedicato della newsletter del capitolo",news_feature:"Menzione nella newsletter del capitolo",per_send:"per invio",room_t:"La comunità che stai sponsorizzando",ref_by:"Segnalato da"},
+ar:{nav_calc:"حاسبة",nav_prop:"عرض",nav_agr:"اتفاقية",nav_ann:"سنوي",nav_evt:"الفعاليات",nav_com:"أرني المال",nav_str:"مصادر الدخل",nav_bro:"كتيّب",nav_set:"الإعدادات",chapter:"الفرع",region:"المنطقة",members:"أعضاء",annual:"سنوي",event:"فعالية",potential:"محتمل",base:"أساسي",mult_note:"مضاعف الأعضاء: {m}× ({n} عضو) — تُعدّل الأسعار وفقاً لذلك.",spots:"أماكن",evt_disc:"خصم الفعاليات",per_year:"سنوياً",attendees:"الحضور",print:"طباعة / حفظ PDF",dl_pdf:"تنزيل PDF (8.5×11)",dl_wait:"جارٍ إنشاء PDF…",cta_call:"احجز مكالمة حول الرعاية",cta_email:"راسلنا حول الرعاية",cta_learn:"تعرّف على فرعنا",cta_need:"⚠ أضف جهة اتصال الرعاية (بريد إلكتروني أو رابط تقويم) في الإعدادات",add_prop:"أضف إلى العرض",qty:"الكمية",price:"السعر",item:"البند",subtotal:"المجموع الفرعي",discount:"الخصم",total:"الإجمالي",prop_title:"عرض رعاية",prepared_for:"أُعدّ لـ",sponsor_co:"شركة الراعي",contact:"اسم جهة الاتصال",email:"البريد الإلكتروني",date:"التاريخ",valid:"صالح حتى",list_price:"سعر القائمة",line_disc:"الخصم %",override:"تعديل السعر",note:"ملاحظة البند",custom:"مخصص",order_disc:"خصم إضافي على الطلب %",prop_notes:"ملاحظات العرض",savings:"إجمالي التوفير مقابل سعر القائمة",preview:"معاينة المستند",back_edit:"العودة إلى التحرير",add_custom:"إضافة بند مخصص",remove:"إزالة",no_items:"لا توجد بنود بعد. أضف الفئات السنوية أو باقات الفعاليات أدناه.",prop_terms:"الأسعار صالحة حتى التاريخ المذكور أعلاه. تُستلَم مدفوعات الرعاية وتُوثَّق من قبل الراعي المالي لدينا. تبدأ مزايا التقدير عند استلام الدفعة.",contact_us:"أسئلة؟ تواصل مع",agr_title:"اتفاقية رعاية وإقرار",sponsor_legal:"الاسم القانوني للراعي",address:"العنوان",amt_recv:"المبلغ المستلم",date_recv:"تاريخ الاستلام",descr:"وصف الرعاية",agr_body:"يؤكد هذا أن {fiscal} (EIN {ein})، الراعي المالي لـ {hq}، استلم دفعة رعاية بقيمة {amt} من {sponsor} بتاريخ {date} دعماً لـ {chapter}.",agr_recog:"مقابل هذه الدفعة، يحصل الراعي على تقدير الاسم والشعار فقط — على سبيل المثال، ذِكر على دعوات الفعاليات أو اللافتات أو شرائح العرض أو دليل الأعضاء. لا يُقدَّم أي إعلان أو تأييد أو أي منفعة جوهرية أخرى مقابل ذلك.",agr_tax:"لم تُقدَّم أي سلع أو خدمات مقابل هذه الدفعة بخلاف التقدير الموضّح أعلاه. يُرجى استشارة مستشارك الضريبي بشأن معالجة هذه الدفعة.",sig_sponsor:"عن الراعي",sig_org:"عن المنظمة",name_title:"الاسم والمسمى الوظيفي",date_lbl:"التاريخ",missing_ein:"رقم EIN للراعي المالي غير مُعيَّن. أضفه في الإعدادات قبل إرسال هذا المستند.",bro_tag:"فرص الرعاية",bro_h:"ارعَ مجتمع الذكاء الاصطناعي الذي يبني المستقبل.",bro_p:"نربط الممارسين والمؤسسين والتنفيذيين عبر أسرع المجتمعات المهنية نمواً في مجال الذكاء الاصطناعي. عندما ترعى، تكون في الغرفة حيث يحدث كل شيء.",bro_members:"الأعضاء",bro_events:"الفعاليات المنظَّمة",bro_formats:"أنماط الفعاليات",why_t:"لماذا ترعى",why:[["المصداقية بالارتباط","تقف علامتك التجارية جنباً إلى جنب مع من يشكّلون تبنّي الذكاء الاصطناعي. تموضع يصعب شراؤه في أي مكان آخر."],["ظهور حقيقي","اسمك على الدعوات وشرائح الفعاليات واللافتات والإشارات الشفهية — قبل الفعاليات وأثناءها وبعدها."],["تواصل مباشر","تضع أنماط ورش العمل والعروض التوضيحية فريقك في الغرفة مع ممارسين مؤهلين، بشكل عملي."],["قائمة الحضور","تتضمن باقات مختارة قائمة التسجيل — أسماء ومناصب وشركات جميع الحاضرين."],["وصول مستهدَف","ندعو الشريحة الأكثر صلة بعرضك من أعضائنا."],["حضور متكرر","يظهر الشركاء السنويون في كل فعالية طوال العام — ثبات يعزّز التذكّر."]],recog_t:"تقدير، وليس إعلاناً",recog_p:"The AI Collective مجتمع غير ربحي. يُكرَّم الرعاة — ولا يُعلِنون. التقدير يعني:",recog_l:["ذِكر على دعوات الفعاليات","ذِكر في الفعالية نفسها","شعارك على اللافتات (يُشارَك أحياناً مع رعاة آخرين)","شعارك على شرائح الفعاليات","ذِكر في دليل الأعضاء أو في الفعاليات عبر الإنترنت"],ann_t:"فئات الشركاء السنويين",evt_t:"رعايات الفعاليات",benefits:"المزايا",cta_t:"هل أنت مستعد للقاء المجتمع؟",cta_p:"أخبرنا بأهدافك وسنطابقك مع الباقة المناسبة.",cta_b:"ارعَ {chapter}",com_member:"بإحالة من عضو",com_sales:"عبر مندوب مبيعات",com_regsup:"دعم المنطقة",scenario:"سيناريو",member_lbl:"عضو",sales_lbl:"مندوب مبيعات",nav_docs:"المستندات",inv_title:"فاتورة",bill_to:"الفوترة إلى",remit_to:"الدفع إلى",due:"تاريخ الاستحقاق",inv_no:"رقم الفاتورة",prop_no:"رقم العرض",payable_to:"يُدفع لأمر",terms15:"الدفع مستحق خلال 15 يوماً من تاريخ الفاتورة.",letter_title:"شكراً لك",letter_body:"نيابةً عن {chapter} ومجتمع The AI Collective، شكراً لرعايتك. دعمك بقيمة {amt}، المستلَم في {date}، يموّل مباشرةً الفعاليات والبرامج التي تجمع ممارسي الذكاء الاصطناعي في مجتمعنا.",letter_close:"مع خالص الامتنان،",your_contact:"جهة الاتصال الخاصة بك",about_t:"من نحن",region_t:"منطقتنا",news_t:"تجاوز حدود الغرفة",news_p:"يمكن للرعاة أيضاً الوصول إلى أعضائنا بين الفعاليات عبر نشرات الفرع الإخبارية — وعلى المستوى الوطني عبر The AI Collective Daily.",news_send:"إرسال مخصص لنشرة الفرع الإخبارية",news_feature:"ذِكر في نشرة الفرع الإخبارية",per_send:"لكل إرسال",room_t:"المجتمع الذي ترعاه",ref_by:"بترشيح من"},
+sv:{nav_calc:"Kalkylator",nav_prop:"Förslag",nav_agr:"Avtal",nav_ann:"Årlig",nav_evt:"Evenemang",nav_com:"Visa mig pengarna",nav_str:"Intäktsströmmar",nav_bro:"Broschyr",nav_set:"Inställningar",chapter:"Avdelning",region:"Region",members:"medlemmar",annual:"Årlig",event:"Evenemang",potential:"potential",base:"bas",mult_note:"Medlemsmultiplikator: {m}× ({n} medlemmar) — priserna justeras därefter.",spots:"platser",evt_disc:"evenemangsrabatt",per_year:"per år",attendees:"deltagare",print:"Skriv ut / spara PDF",dl_pdf:"Ladda ner PDF (8,5×11)",dl_wait:"Genererar PDF…",cta_call:"Boka ett sponsringssamtal",cta_email:"Mejla oss om sponsring",cta_learn:"Lär känna vår avdelning",cta_need:"⚠ Lägg till din sponsringskontakt (e-post eller kalenderlänk) i Inställningar",add_prop:"Lägg till i förslag",qty:"Antal",price:"Pris",item:"Post",subtotal:"Delsumma",discount:"Rabatt",total:"Totalt",prop_title:"Sponsringsförslag",prepared_for:"Framtaget för",sponsor_co:"Sponsorföretag",contact:"Kontaktperson",email:"E-post",date:"Datum",valid:"Giltigt till",list_price:"Listpris",line_disc:"Rabatt %",override:"Justera pris",note:"Radanteckning",custom:"Anpassad",order_disc:"Ytterligare orderrabatt %",prop_notes:"Anteckningar till förslaget",savings:"Total besparing mot listpris",preview:"Förhandsgranska dokument",back_edit:"Tillbaka till redigering",add_custom:"Lägg till anpassad rad",remove:"Ta bort",no_items:"Inga poster ännu. Lägg till årliga nivåer eller evenemangspaket nedan.",prop_terms:"Priserna gäller till och med datumet ovan. Sponsringsbetalningar tas emot och kvitteras av vår fiskala sponsor. Erkännandeförmåner börjar när betalningen har mottagits.",contact_us:"Frågor? Kontakta",agr_title:"Sponsringsavtal och bekräftelse",sponsor_legal:"Sponsorns juridiska namn",address:"Adress",amt_recv:"Mottaget belopp",date_recv:"Mottagningsdatum",descr:"Beskrivning av sponsringen",agr_body:"Detta bekräftar att {fiscal} (EIN {ein}), fiskal sponsor för {hq}, mottog en sponsringsbetalning på {amt} från {sponsor} den {date} till stöd för {chapter}.",agr_recog:"Som ersättning för denna betalning får sponsorn endast erkännande av namn och logotyp — till exempel ett omnämnande på evenemangsinbjudningar, banderoller, evenemangsbilder eller i medlemskatalogen. Ingen reklam, rekommendation eller annan väsentlig motprestation tillhandahålls.",agr_tax:"Inga varor eller tjänster tillhandahölls i utbyte mot denna betalning utöver det erkännande som beskrivs ovan. Rådgör med din skatterådgivare om hur denna betalning ska hanteras.",sig_sponsor:"För sponsorn",sig_org:"För organisationen",name_title:"Namn och titel",date_lbl:"Datum",missing_ein:"Den fiskala sponsorns EIN är inte angivet. Lägg till det i Inställningar innan du skickar detta dokument.",bro_tag:"Sponsringsmöjligheter",bro_h:"Sponsra AI-communityn som bygger framtiden.",bro_p:"Vi kopplar samman praktiker, grundare och chefer i AI:s snabbast växande professionella community. När du sponsrar är du i rummet där det händer.",bro_members:"Medlemmar",bro_events:"Genomförda evenemang",bro_formats:"Evenemangsformat",why_t:"Varför sponsra",why:[["Trovärdighet genom association","Ditt varumärke står sida vid sida med dem som formar AI-antagandet. En positionering som är svår att köpa någon annanstans."],["Verklig synlighet","Ditt namn på inbjudningar, evenemangsbilder, banderoller och muntliga omnämnanden — före, under och efter evenemangen."],["Direkt kontakt","Workshop- och demoformat sätter ditt team i rummet med kvalificerade praktiker, på ett praktiskt sätt."],["Deltagarlista","Utvalda paket inkluderar anmälningslistan — namn, titlar och företag för alla som deltog."],["Riktad räckvidd","Vi bjuder in det segment av våra medlemmar som är mest relevant för ditt erbjudande."],["Återkommande närvaro","Årliga partner syns på varje evenemang hela året — en kontinuitet som bygger igenkänning."]],recog_t:"Erkännande, inte reklam",recog_p:"The AI Collective är en ideell community. Sponsorer erkänns — de gör inte reklam. Erkännande innebär:",recog_l:["Ett omnämnande på evenemangsinbjudningar","Ett omnämnande vid själva evenemanget","Din logotyp på banderoller (ibland delade med andra sponsorer)","Din logotyp på evenemangsbilder","Ett omnämnande i medlemskatalogen eller vid onlineevenemang"],ann_t:"Årliga partnernivåer",evt_t:"Evenemangssponsring",benefits:"Förmåner",cta_t:"Redo att möta communityn?",cta_p:"Berätta om dina mål så matchar vi dig med rätt paket.",cta_b:"Sponsra {chapter}",com_member:"Hänvisad av medlem",com_sales:"Anskaffad av säljare",com_regsup:"Regionstöd",scenario:"Scenario",member_lbl:"Medlem",sales_lbl:"Säljare",nav_docs:"Dokument",inv_title:"Faktura",bill_to:"Fakturera till",remit_to:"Betalning till",due:"Förfallodatum",inv_no:"Fakturanr",prop_no:"Förslagsnr",payable_to:"Betalas till",terms15:"Betalning ska ske inom 15 dagar från fakturadatum.",letter_title:"Tack",letter_body:"På uppdrag av {chapter} och The AI Collective-communityn, tack för din sponsring. Ditt stöd på {amt}, mottaget {date}, finansierar direkt de evenemang och program som för samman AI-praktiker i vår community.",letter_close:"Med tacksamhet,",your_contact:"Din kontakt",about_t:"Om oss",region_t:"Vår region",news_t:"Nå bortom rummet",news_p:"Sponsorer kan också nå våra medlemmar mellan evenemangen via våra avdelningsnyhetsbrev — och nationellt via The AI Collective Daily.",news_send:"Dedikerat utskick av avdelningens nyhetsbrev",news_feature:"Omnämnande i avdelningens nyhetsbrev",per_send:"per utskick",room_t:"Communityn du sponsrar",ref_by:"Hänvisad av"}
 };
 function t(k){const d=T[cfg.chapter.lang]||T.en;let v=d[k];if(v===undefined)v=T.en[k];return v;}
 function tf(k,vars){let s=t(k);for(const key in vars)s=s.replace('{'+key+'}',vars[key]);return s;}
@@ -1064,6 +1091,29 @@ function mult(){
   const table=cfg.chapter.scope==='chapter'?cfg.multsC:cfg.multsR;
   for(const [cap,x] of table){if(cap===null||cap===''||m<Number(cap))return Number(x);}
   return 1;
+}
+/* Region support % scales with market size; the chapter keeps the rest.
+   Commissions are paid by the region out of the region's share. */
+function regionShare(){
+  const m=activeMembers();
+  const bands=(cfg.comm&&cfg.comm.bands)||[];
+  if(!m)return Number((bands[bands.length-1]||[null,35])[1])||35;
+  for(const [cap,p] of bands){if(cap===null||cap===''||m<Number(cap))return Number(p)||0;}
+  return Number((bands[bands.length-1]||[null,35])[1])||35;
+}
+function chapterShare(){return 100-regionShare();}
+/* Split a commercial sponsorship amount into chapter / region / commission. */
+function splitOf(amount,kind){
+  const amt=Number(amount)||0;
+  const rs=regionShare(), region=Math.round(amt*rs/100), chapter=amt-region;
+  const cm=cfg.comm;
+  let pct=0;
+  if(kind==='referral')pct=Number(cm.referral)||0;
+  else if(kind==='closer')pct=Number(cm.closer)||0;
+  let commission=Math.round(amt*pct/100);
+  if(cm.capUsd>0)commission=Math.min(commission,Number(cm.capUsd));
+  return {amount:amt,regionPct:rs,region,chapter,commissionPct:pct,commission,
+    regionNet:region-commission};
 }
 function tierPrice(i){
   const o=(cfg.chapter.tierOver||{})[i];
@@ -1087,7 +1137,7 @@ function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&l
 
 /* ═══════════════ TABS / NAV ═══════════════ */
 const TABS=[['calc','nav_calc'],['proposal','nav_prop'],['docs','nav_docs'],['annual','nav_ann'],
-  ['events','nav_evt'],['comm','nav_com'],['brochure','nav_bro'],['settings','nav_set']];
+  ['events','nav_evt'],['comm','nav_com'],['streams','nav_str'],['brochure','nav_bro'],['settings','nav_set']];
 let activeTab='calc';
 function renderTabs(){
   document.getElementById('tabs').innerHTML=TABS.map(([id,k])=>
@@ -1104,7 +1154,7 @@ function go(id){
 function exitClient(){go('calc');}
 function renderActive(){
   ({calc:renderCalc,proposal:renderProposal,docs:renderDocs,annual:renderAnnual,
-    events:renderEvents,comm:renderComm,brochure:renderBrochure,settings:renderSettings})[activeTab]();
+    events:renderEvents,comm:renderComm,streams:renderStreams,brochure:renderBrochure,settings:renderSettings})[activeTab]();
 }
 function applyDir(){
   const rtl=RTL.includes(cfg.chapter.lang);
@@ -1745,22 +1795,153 @@ function renderEvents(){
         <td class="r num">${e.qty}</td><td class="r num">~${e.att}</td>
         <td class="r"><button class="btn btn-ghost" onclick="addEvt(${i})">＋</button></td></tr>`).join('')}
       </tbody></table></div>
+    <p style="color:var(--mut);font-size:11.5px;margin-top:10px">Event pricing scales with market size, the same way annual tiers do — a 40-member chapter and a 14,000-member chapter do not charge the same for a workshop.</p>
+  </div>
+  <div class="panel">
+    <div class="eyebrow">In-kind sponsorships</div>
+    <p style="color:var(--mut);font-size:12px;margin:0 0 12px">A sponsor can cover the venue or the food &amp; beverage instead of paying cash. They are recognized like any other sponsor. <strong>No cash changes hands, so no commission is paid</strong> and nothing is booked to either account.</p>
+    <div class="tblwrap"><table class="tbl">
+      <thead><tr><th>${t('item')}</th><th class="r">Recognition value</th><th>Detail</th></tr></thead>
+      <tbody>${(cfg.inkind||[]).map(k=>`<tr>
+        <td><strong>${esc(k.name)}</strong></td>
+        <td class="r num">${fmt(k.est)}</td>
+        <td style="color:var(--mut);font-size:11.5px">${esc(k.detail)}</td></tr>`).join('')}
+      </tbody></table></div>
+    <div class="ibox warn" style="margin-bottom:0">Recognition value is for thanking the sponsor and sizing the package — it is not revenue and never earns commission.</div>
+  </div>
+  <div class="panel">
+    <div class="eyebrow">Awards &amp; pass-through (at cost)</div>
+    <p style="color:var(--mut);font-size:12px;margin:0 0 12px">Prize money for hackathons and similar awards. Billed through <strong>at cost with no margin</strong>, and offered to sponsors who already hold an event or annual sponsorship.</p>
+    <div class="tblwrap"><table class="tbl">
+      <thead><tr><th>${t('item')}</th><th class="r">Typical amount</th><th>Detail</th></tr></thead>
+      <tbody>${(cfg.awards||[]).map(k=>`<tr>
+        <td><strong>${esc(k.name)}</strong></td>
+        <td class="r num">${fmt(k.price)}</td>
+        <td style="color:var(--mut);font-size:11.5px">${esc(k.detail)}</td></tr>`).join('')}
+      </tbody></table></div>
+    <div class="ibox warn" style="margin-bottom:0">Out-of-pocket costs — venue, food &amp; beverage, prize money — are reimbursed at cost and are <strong>never commissionable</strong>.</div>
   </div>`;
 }
 function renderComm(){
-  const cm=cfg.comm;
+  const cm=cfg.comm, rs=regionShare(), cs=chapterShare(), m=activeMembers();
+  const money=n=>{try{return new Intl.NumberFormat('en-US',{style:'currency',currency:cfg.chapter.currency||'USD',maximumFractionDigits:0}).format(Number(n)||0);}catch(e){return '$'+Math.round(Number(n)||0);}}
+  const sample=10000, sp=splitOf(sample,'closer'), spr=splitOf(sample,'referral');
+  const bandRows=(cm.bands||[]).map(([cap,p],i)=>{
+    const prev=i?Number((cm.bands[i-1]||[])[0])||0:0;
+    const label=cap===null||cap===''?`${prev.toLocaleString('en-US')}+ members`:`${prev.toLocaleString('en-US')}–${(Number(cap)-1).toLocaleString('en-US')} members`;
+    const here=(m?(cap===null||cap===''||m<Number(cap)):false)&&(i===0||m>=prev);
+    return `<tr${here?' style="background:var(--brand-soft)"':''}><td>${label}${here?' <strong>← this chapter</strong>':''}</td>
+      <td class="r num">${100-Number(p)}%</td><td class="r num">${Number(p)}%</td></tr>`;
+  }).join('');
   document.getElementById('sec-comm').innerHTML=`<div class="panel">
     <h2>${t('nav_com')}</h2>
-    <p style="color:var(--mut);font-size:12px;margin:-2px 0 12px">Internal referral &amp; support stipends — paid only after approval by <strong>${esc(cfg.org.fiscal||'the fiscal sponsor')}</strong>. Never shown on any sponsor-facing document. Insiders (directors, officers, or anyone with control) are not eligible for percentage-based stipends.${cm.capUsd>0?` Each stipend is capped at $${(cm.capUsd).toLocaleString('en-US')} USD.`:''}</p>
+    <p style="color:var(--mut);font-size:12px;margin:-2px 0 12px">How sponsorship money is split and who gets paid. Internal only — never shown on a sponsor-facing document.</p>
+    <div class="ibox brand"><strong>Commercial sponsorships only.</strong> Commissions are paid on cash received into the <strong>${esc((cfg.streams&&cfg.streams.llc.name)||'Regional LLC')}</strong> account. Nothing on the 501(c)(3) side is commissionable — see the Income Streams tab.</div>
+
+    <div class="eyebrow" style="margin-top:18px">The split</div>
+    <div class="statrow">
+      <div class="stat"><div class="v num" style="color:var(--ok)">${cs}%</div><div class="l">Chapter keeps</div></div>
+      <div class="stat"><div class="v num">${rs}%</div><div class="l">Region support</div></div>
+      <div class="stat"><div class="v num" style="color:var(--mut)">0%</div><div class="l">HQ</div></div>
+    </div>
+    <p style="color:var(--mut);font-size:12px;margin:8px 0 0">The region's share funds region staff, new-chapter growth, infrastructure and contractors — and <strong>all commissions are paid from the regional account</strong>, out of that ${rs}%. <strong>No funds are allocated to HQ</strong>, except a partnership referred to HQ (below).</p>
+
+    <div class="eyebrow" style="margin-top:18px">Region support scales with market size</div>
     <div class="tblwrap"><table class="tbl">
-      <thead><tr><th>${t('scenario')}</th><th class="r">${t('member_lbl')}</th><th class="r">${t('sales_lbl')}</th><th class="r">${t('com_regsup')}</th></tr></thead>
+      <thead><tr><th>Chapter size</th><th class="r">Chapter keeps</th><th class="r">Region support</th></tr></thead>
+      <tbody>${bandRows}</tbody></table></div>
+
+    <div class="eyebrow" style="margin-top:18px">Commissions</div>
+    <div class="tblwrap"><table class="tbl">
+      <thead><tr><th>Role</th><th class="r">Rate</th><th class="r">On ${money(sample)}</th><th>Paid for</th></tr></thead>
       <tbody>
-        <tr><td>${t('chapter')} — ${t('com_member')}</td><td class="r num" style="color:var(--ok);font-weight:700">${cm.member}%</td><td class="r num" style="color:var(--ok);font-weight:700">${cm.salesRef}%</td><td class="r mut">—</td></tr>
-        <tr><td>${t('chapter')} — ${t('com_sales')}</td><td class="r mut">—</td><td class="r num" style="color:var(--ok);font-weight:700">${cm.salesSrc}%</td><td class="r mut">—</td></tr>
-        <tr><td>${t('region')} — ${t('com_member')}</td><td class="r num" style="color:var(--ok);font-weight:700">${cm.member}%</td><td class="r num" style="color:var(--ok);font-weight:700">${cm.salesRef}%</td><td class="r num" style="color:var(--ok);font-weight:700">${cm.region}%</td></tr>
-        <tr><td>${t('region')} — ${t('com_sales')}</td><td class="r mut">—</td><td class="r num" style="color:var(--ok);font-weight:700">${cm.salesSrc}%</td><td class="r num" style="color:var(--ok);font-weight:700">${cm.region}%</td></tr>
+        <tr><td><strong>Referral</strong> — lead that closes</td><td class="r num" style="color:var(--ok);font-weight:700">${cm.referral}%</td>
+          <td class="r num">${money(spr.commission)}</td><td>Handing over a warm lead that someone else closes.</td></tr>
+        <tr><td><strong>Full close</strong> — contact to signature</td><td class="r num" style="color:var(--ok);font-weight:700">${cm.closer}%</td>
+          <td class="r num">${money(sp.commission)}</td><td>Owning the deal end to end: first contact, needs, proposal, close.</td></tr>
+        <tr><td><strong>Partner referred to HQ</strong></td><td class="r num" style="color:var(--ok);font-weight:700">${cm.partnerRef}%</td>
+          <td class="r num">${money(sample*(Number(cm.partnerRef)||0)/100)}</td><td>One-time, on first-year value, when a major brand/enterprise partnership is referred to HQ.</td></tr>
       </tbody></table></div>
-    <div class="ibox ok">Total stipend load stays flat at ${cm.member+cm.salesRef}% on referred deals and ${cm.salesSrc}% on sourced deals${cm.capUsd>0?`, capped at $${(cm.capUsd).toLocaleString('en-US')} USD per stipend`:''}. These are paid as <strong>stipends</strong> on cash received (not on signed invoices), and only after approval by <strong>${esc(cfg.org.fiscal||'the fiscal sponsor')}</strong>. Edit rates in Settings.</div>
+    ${cm.capUsd>0?`<div class="ibox warn">Each commission is capped at ${money(cm.capUsd)}.</div>`:''}
+
+    <div class="eyebrow" style="margin-top:18px">Worked example — ${money(sample)} commercial sponsorship, fully closed</div>
+    <div class="tblwrap"><table class="tbl"><tbody>
+      <tr><td>Sponsorship cash received</td><td class="r num"><strong>${money(sp.amount)}</strong></td></tr>
+      <tr><td>Chapter (${cs}%)</td><td class="r num" style="color:var(--ok)">${money(sp.chapter)}</td></tr>
+      <tr><td>Region (${rs}%)</td><td class="r num">${money(sp.region)}</td></tr>
+      <tr><td style="padding-left:22px">— commission to closer (${cm.closer}%), paid by region</td><td class="r num">−${money(sp.commission)}</td></tr>
+      <tr class="tot"><td style="padding-left:22px">— region keeps after commission</td><td class="r num">${money(sp.regionNet)}</td></tr>
+    </tbody></table></div>
+
+    <div class="eyebrow" style="margin-top:18px">No commission is paid on</div>
+    <div class="ibox warn" style="margin-top:0">
+      <strong>Renewals.</strong> Commissions are first-year only.<br>
+      <strong>Out-of-pocket event costs</strong> — venue, food &amp; beverage, prize money. These are reimbursed at cost, never commissioned.<br>
+      <strong>In-kind sponsorships</strong> (venue, F&amp;B). No cash changes hands.<br>
+      <strong>501(c)(3) / fiscal-sponsor revenue</strong> — grants and donations through ${esc((cfg.streams&&cfg.streams.fsa.name)||'the fiscal sponsor')}.
+    </div>
+    <p style="color:var(--mut);font-size:11.5px;margin-top:12px">Commissions are paid on <strong>cash received</strong>, not on signed invoices. Rates and the size bands are editable in Settings.</p>
+  </div>`;
+}
+
+/* ═══════════════ INCOME STREAMS ═══════════════ */
+function renderStreams(){
+  const st=cfg.streams, pref=st.pref||'llc';
+  const card=(key,o,opts)=>`<div class="tcard" style="border-color:${pref===key?'var(--brand)':'var(--line)'}">
+    <div class="thdr"><div>
+      <div class="tnm">${esc(o.name)}${pref===key?' <span class="badge brand" style="font-size:10px;vertical-align:2px">PREFERRED</span>':''}</div>
+      <div class="tmt">${opts.sub}</div></div></div>
+    <div class="tbdy">
+      <p style="font-size:12.5px;margin:0 0 10px">${opts.use}</p>
+      <div class="pills">${opts.pills.map(p=>`<span class="pill">${p}</span>`).join('')}</div>
+      <div class="tblwrap" style="margin-top:12px"><table class="tbl"><tbody>
+        ${opts.rows.map(([k,v])=>`<tr><td style="width:45%">${k}</td><td><strong>${v}</strong></td></tr>`).join('')}
+      </tbody></table></div>
+    </div></div>`;
+
+  document.getElementById('sec-streams').innerHTML=`<div class="panel">
+    <h2>${t('nav_str')}</h2>
+    <p style="color:var(--mut);font-size:12px;margin:-2px 0 12px">Two separate pathways for sponsorship and grant money. Every deal is booked to <strong>one</strong> of them — they keep separate accounts and separate rules.</p>
+    <div class="grid2">
+      ${card('llc',st.llc,{
+        sub:'Commercial · regional company',
+        use:'The default path for sponsorships. The region controls how the funds are used, which is why this is preferred.',
+        pills:['Sponsorships','Commissions payable','Region controls funds','Banked at '+esc(st.llc.bank||'Mercury')],
+        rows:[['Best for','Companies sponsoring events and annual tiers'],
+              ['Commissions','<span style="color:var(--ok)">Yes — 5% referral / 15% close</span>'],
+              ['Split','Chapter '+chapterShare()+'% / Region '+regionShare()+'%'],
+              ['Availability','All regions']]})}
+      ${card('fsa',st.fsa,{
+        sub:'501(c)(3) · national fiscal sponsor',
+        use:'For grants and for donors who require a 501(c)(3) — colleges, universities, banks and chambers of commerce.',
+        pills:['Grants','501(c)(3) donors','No commissions','USA only'],
+        rows:[['Best for','Grants; universities, banks, chambers of commerce'],
+              ['Commissions','<span style="color:var(--warn)">No — never commissionable</span>'],
+              ['Spending','Only on expenses that directly support the cause'],
+              ['Availability','<strong>United States only</strong>']]})}
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="eyebrow">Rules that keep the two apart</div>
+    <div class="ibox warn"><strong>The 501(c)(3) account cannot pay the ${esc(st.llc.name||'Regional LLC')} account.</strong> Fiscal-sponsor funds pay expenses that directly serve the mission — advancing AI education in each community, one chapter at a time — and are never transferred to the commercial company.</div>
+    <div class="ibox brand"><strong>Commissions are commercial-only.</strong> No referral or closing commission is paid on anything received through ${esc(st.fsa.name||'the fiscal sponsor')}.</div>
+    <div class="ibox"><strong>The 501(c)(3) path is United States only.</strong> Regions outside the US need a local NGO or local banking; the commercial company path is the one that travels.</div>
+  </div>
+
+  <div class="panel">
+    <div class="eyebrow">Which account does this money go to?</div>
+    <div class="tblwrap"><table class="tbl">
+      <thead><tr><th>If the money is…</th><th>Book it to</th><th>Commission?</th></tr></thead>
+      <tbody>
+        <tr><td>A company sponsoring an event or annual tier</td><td><strong>${esc(st.llc.name)}</strong></td><td style="color:var(--ok)">Yes</td></tr>
+        <tr><td>A grant</td><td><strong>${esc(st.fsa.name)}</strong></td><td style="color:var(--warn)">No</td></tr>
+        <tr><td>A university, bank or chamber of commerce that requires a 501(c)(3)</td><td><strong>${esc(st.fsa.name)}</strong></td><td style="color:var(--warn)">No</td></tr>
+        <tr><td>A donor asking for a tax-deductible receipt</td><td><strong>${esc(st.fsa.name)}</strong></td><td style="color:var(--warn)">No</td></tr>
+        <tr><td>Venue or F&amp;B provided in kind</td><td>Neither — no cash</td><td style="color:var(--warn)">No</td></tr>
+        <tr><td>Hackathon prize money</td><td>Pass-through at cost</td><td style="color:var(--warn)">No</td></tr>
+      </tbody></table></div>
+    <p style="color:var(--mut);font-size:11.5px;margin-top:10px">Account names, banking and the preferred path are editable in Settings.</p>
   </div>`;
 }
 
@@ -2049,15 +2230,61 @@ function renderSettings(){
     </div>
     <p style="color:var(--mut);font-size:11.5px;margin-top:10px">Current pricing at this ${cfg.chapter.scope}'s member count: dedicated send <strong class="num">${fmt(newsSendPrice())}</strong> · feature <strong class="num">${fmt(newsFeatPrice())}</strong>. The AI Collective Daily (national, 290K readers) is HQ inventory — see the separate media kit.</p>
   </div></details>
-  <details><summary>Stipend rates</summary><div class="inner">
-    <div style="color:var(--mut);font-size:11px;margin-bottom:8px">Paid as stipends on cash received, only after approval by ${esc(cfg.org.fiscal||'the fiscal sponsor')}. Insiders (directors, officers, or anyone with control) are not eligible for percentage-based stipends; percentage amounts should be capped at a reasonable level.</div>
+  <details><summary>Money — commissions &amp; splits</summary><div class="inner">
+    <div style="color:var(--mut);font-size:11px;margin-bottom:8px">Commissions are paid on <strong>cash received</strong> into the commercial account only — never on fiscal-sponsor revenue, renewals, out-of-pocket event costs, or in-kind. Paid by the region out of the region's share.</div>
     <div class="grid4">
-      <div class="fg"><label>Member (referral)</label><input type="number" min="0" max="100" value="${cm.member}" onchange="cfg.comm.member=Number(this.value)||0;saveCfg()"></div>
-      <div class="fg"><label>Salesperson (on referral)</label><input type="number" min="0" max="100" value="${cm.salesRef}" onchange="cfg.comm.salesRef=Number(this.value)||0;saveCfg()"></div>
-      <div class="fg"><label>Salesperson (self-sourced)</label><input type="number" min="0" max="100" value="${cm.salesSrc}" onchange="cfg.comm.salesSrc=Number(this.value)||0;saveCfg()"></div>
-      <div class="fg"><label>Region support (regional deals)</label><input type="number" min="0" max="100" value="${cm.region}" onchange="cfg.comm.region=Number(this.value)||0;saveCfg()"></div>
-      <div class="fg"><label>Per-stipend cap (USD) — 0 = no cap</label><input type="number" min="0" value="${cm.capUsd||0}" onchange="cfg.comm.capUsd=Number(this.value)||0;saveCfg();renderComm()"></div>
+      <div class="fg"><label>Referral — lead that closes (%)</label><input type="number" min="0" max="100" value="${cm.referral}" onchange="cfg.comm.referral=Number(this.value)||0;saveCfg();renderComm()"></div>
+      <div class="fg"><label>Full close — contact to signature (%)</label><input type="number" min="0" max="100" value="${cm.closer}" onchange="cfg.comm.closer=Number(this.value)||0;saveCfg();renderComm()"></div>
+      <div class="fg"><label>Partner referred to HQ (% first-year)</label><input type="number" min="0" max="100" value="${cm.partnerRef}" onchange="cfg.comm.partnerRef=Number(this.value)||0;saveCfg();renderComm()"></div>
+      <div class="fg"><label>Per-commission cap (USD) — 0 = no cap</label><input type="number" min="0" value="${cm.capUsd||0}" onchange="cfg.comm.capUsd=Number(this.value)||0;saveCfg();renderComm()"></div>
     </div>
+    <div class="eyebrow" style="margin-top:14px">Region support by chapter size</div>
+    <div style="color:var(--mut);font-size:11px;margin-bottom:8px">Smaller chapters pay less to the region. "Under" is the member ceiling for the band; the last row (blank) is everyone above.</div>
+    <div class="tblwrap"><table class="tbl">
+      <thead><tr><th>Members under</th><th class="r">Region support %</th><th class="r">Chapter keeps</th><th></th></tr></thead>
+      <tbody>${(cm.bands||[]).map((b,i)=>`<tr>
+        <td><input type="number" min="0" value="${b[0]===null?'':b[0]}" placeholder="(and above)" onchange="cfg.comm.bands[${i}][0]=this.value===''?null:(Number(this.value)||0);saveCfg();renderSettings();renderComm()"></td>
+        <td><input type="number" min="0" max="100" value="${b[1]}" onchange="cfg.comm.bands[${i}][1]=Number(this.value)||0;saveCfg();renderSettings();renderComm()"></td>
+        <td class="r num">${100-Number(b[1])}%</td>
+        <td class="r"><button class="btn btn-ghost" onclick="cfg.comm.bands.splice(${i},1);saveCfg();renderSettings();renderComm()">Remove</button></td></tr>`).join('')}
+      </tbody></table></div>
+    <button class="btn btn-sec" style="margin-top:8px" onclick="cfg.comm.bands.push([null,35]);saveCfg();renderSettings();renderComm()">＋ Add band</button>
+  </div></details>
+  <details><summary>Income streams — accounts</summary><div class="inner">
+    <div style="color:var(--mut);font-size:11px;margin-bottom:8px">The two revenue pathways. The commercial company is preferred because the region controls how funds are used; the 501(c)(3) is for grants and donors that require one (US only).</div>
+    <div class="grid3">
+      <div class="fg"><label>Commercial account name</label><input value="${esc(cfg.streams.llc.name)}" onchange="cfg.streams.llc.name=this.value;saveCfg();renderStreams()"></div>
+      <div class="fg"><label>Commercial bank</label><input value="${esc(cfg.streams.llc.bank)}" onchange="cfg.streams.llc.bank=this.value;saveCfg();renderStreams()"></div>
+      <div class="fg"><label>Commercial EIN (optional)</label><input value="${esc(cfg.streams.llc.ein)}" onchange="cfg.streams.llc.ein=this.value;saveCfg()"></div>
+      <div class="fg"><label>501(c)(3) / fiscal sponsor name</label><input value="${esc(cfg.streams.fsa.name)}" onchange="cfg.streams.fsa.name=this.value;saveCfg();renderStreams()"></div>
+      <div class="fg"><label>501(c)(3) EIN</label><input value="${esc(cfg.streams.fsa.ein)}" onchange="cfg.streams.fsa.ein=this.value;saveCfg()"></div>
+      <div class="fg"><label>Preferred path</label>
+        <div class="seg"><button class="${cfg.streams.pref==='llc'?'active':''}" onclick="cfg.streams.pref='llc';saveCfg();renderSettings();renderStreams()">Commercial</button>
+        <button class="${cfg.streams.pref==='fsa'?'active':''}" onclick="cfg.streams.pref='fsa';saveCfg();renderSettings();renderStreams()">501(c)(3)</button></div></div>
+    </div>
+  </div></details>
+  <details><summary>In-kind &amp; pass-through</summary><div class="inner">
+    <div style="color:var(--mut);font-size:11px;margin-bottom:8px">In-kind sponsors are recognized like cash sponsors but bring no cash and earn no commission. Pass-through items (prize money) are billed at cost with no margin.</div>
+    <div class="eyebrow">In-kind categories</div>
+    <div class="tblwrap"><table class="tbl">
+      <thead><tr><th>Name</th><th class="r">Recognition value</th><th>Detail</th><th></th></tr></thead>
+      <tbody>${(cfg.inkind||[]).map((k,i)=>`<tr>
+        <td><input value="${esc(k.name)}" onchange="cfg.inkind[${i}].name=this.value;saveCfg();renderEvents()"></td>
+        <td><input type="number" min="0" value="${k.est}" onchange="cfg.inkind[${i}].est=Number(this.value)||0;saveCfg();renderEvents()"></td>
+        <td><input value="${esc(k.detail)}" onchange="cfg.inkind[${i}].detail=this.value;saveCfg();renderEvents()"></td>
+        <td class="r"><button class="btn btn-ghost" onclick="cfg.inkind.splice(${i},1);saveCfg();renderSettings();renderEvents()">Remove</button></td></tr>`).join('')}
+      </tbody></table></div>
+    <button class="btn btn-sec" style="margin-top:8px" onclick="cfg.inkind.push({name:'New in-kind sponsor',est:0,detail:''});saveCfg();renderSettings();renderEvents()">＋ Add in-kind category</button>
+    <div class="eyebrow" style="margin-top:16px">Pass-through (at cost)</div>
+    <div class="tblwrap"><table class="tbl">
+      <thead><tr><th>Name</th><th class="r">Typical amount</th><th>Detail</th><th></th></tr></thead>
+      <tbody>${(cfg.awards||[]).map((k,i)=>`<tr>
+        <td><input value="${esc(k.name)}" onchange="cfg.awards[${i}].name=this.value;saveCfg();renderEvents()"></td>
+        <td><input type="number" min="0" value="${k.price}" onchange="cfg.awards[${i}].price=Number(this.value)||0;saveCfg();renderEvents()"></td>
+        <td><input value="${esc(k.detail)}" onchange="cfg.awards[${i}].detail=this.value;saveCfg();renderEvents()"></td>
+        <td class="r"><button class="btn btn-ghost" onclick="cfg.awards.splice(${i},1);saveCfg();renderSettings();renderEvents()">Remove</button></td></tr>`).join('')}
+      </tbody></table></div>
+    <button class="btn btn-sec" style="margin-top:8px" onclick="cfg.awards.push({name:'New pass-through item',price:0,detail:''});saveCfg();renderSettings();renderEvents()">＋ Add pass-through item</button>
   </div></details>
   <div class="toolrow" style="margin-top:16px">
     <button class="btn btn-sec" onclick="exportCfg()">Export configuration</button>
@@ -2123,6 +2350,8 @@ function importCfg(inp){
   const r=new FileReader();
   r.onload=()=>{try{const c=JSON.parse(r.result);
     cfg={org:{...DEFAULTS.org,...c.org},chapter:{...DEFAULTS.chapter,...c.chapter},comm:{...DEFAULTS.comm,...c.comm},
+      streams:{...DEFAULTS.streams,...c.streams},
+      inkind:c.inkind||DEFAULTS.inkind,awards:c.awards||DEFAULTS.awards,
       multsC:c.multsC||DEFAULTS.multsC,multsR:c.multsR||DEFAULTS.multsR,
       annual:c.annual||DEFAULTS.annual,events:c.events||DEFAULTS.events};
     saveCfg();rerenderAll();syncLangSel();}catch(e){alert('Invalid configuration file.');}};
