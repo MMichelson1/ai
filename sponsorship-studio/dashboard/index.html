@@ -129,6 +129,13 @@ tr.tot td{font-weight:800;border-top:2px solid var(--line);border-bottom:none}
 .rememberrow{margin-top:14px;font-size:12.5px;color:var(--mut);display:flex;gap:6px;align-items:center;justify-content:center}
 .toggle{margin-left:auto;display:flex;gap:6px}
 .tbtn{border:1.5px solid var(--line);background:var(--panel);border-radius:8px;padding:6px 9px;cursor:pointer;font-size:12px;color:var(--mut)}
+.seg{display:flex;border:1.5px solid var(--line);border-radius:9px;overflow:hidden}
+.seg button{border:none;background:transparent;color:var(--mut);font-weight:700;font-size:12.5px;padding:8px 14px;cursor:pointer}
+.seg button.active{background:var(--brand);color:#fff}
+.seg button:not(.active):hover{background:var(--brand-soft);color:var(--brand-ink)}
+.bookbar{margin-top:10px;font-size:12.5px;border-radius:10px;padding:10px 14px}
+.bookbar.commercial{background:var(--brand-soft);color:var(--brand-ink)}
+.bookbar.nonprofit{background:var(--ok-soft);color:var(--ok)}
 .tbtn.on{border-color:var(--brand);color:var(--brand-ink)}
 .empty{color:var(--mut);font-size:13px;padding:10px 0}
 .tip{position:fixed;pointer-events:none;z-index:50;background:var(--ink);color:var(--bg);
@@ -164,6 +171,10 @@ tr.tot td{font-weight:800;border-top:2px solid var(--line);border-bottom:none}
     </div>
     <div class="spacer"></div>
     <div class="ctl">
+      <div class="seg" id="streamSeg" role="group" aria-label="Book">
+        <button data-stream="commercial">Commercial</button>
+        <button data-stream="nonprofit">Non-profit</button>
+      </div>
       <select id="regionSel" aria-label="Region"></select>
       <button class="btn" id="refreshBtn">↻ Refresh</button>
       <div class="toggle">
@@ -173,6 +184,7 @@ tr.tot td{font-weight:800;border-top:2px solid var(--line);border-bottom:none}
     </div>
   </div>
   <div class="meta" id="updated"></div>
+  <div id="bookbar" class="bookbar commercial"></div>
 
   <div class="kpis" id="kpis"></div>
 
@@ -226,7 +238,13 @@ tr.tot td{font-weight:800;border-top:2px solid var(--line);border-bottom:none}
 
 <script>
 "use strict";
-const ENDPOINT='https://script.google.com/macros/s/AKfycbwsI5Os5mtzoTbzLKdwtI-XLkYcJtE99CmkozfmVct5GIfa5uDHlkIh9JrGIRci5ylp/exec';
+/* Two SEPARATE books — never summed together. */
+const ENDPOINTS={
+  commercial:'https://script.google.com/macros/s/AKfycbwsI5Os5mtzoTbzLKdwtI-XLkYcJtE99CmkozfmVct5GIfa5uDHlkIh9JrGIRci5ylp/exec',
+  nonprofit :'https://script.google.com/macros/s/AKfycbyc5XFlEFS8qhHkMY5eaNSD41Qx_JPwbsTvyqZeUhNUasFgsnIKGcsEz91pe0G1tC5F/exec'
+};
+const STREAM_LABEL={commercial:'Commercial',nonprofit:'Non-profit (501c3)'};
+let STREAM='commercial';
 const CUR=new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0});
 const PASS_KEY='aic-sales-hqpass';
 const ALL='__all__';
@@ -256,11 +274,13 @@ const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;'
 
 /* ---- data load ---- */
 async function loadData(pass){
-  const sum=await jsonp(ENDPOINT+'?action=salesSummary&pass='+encodeURIComponent(pass));
+  const url=ENDPOINTS[STREAM];
+  if(!url) throw new Error('The '+STREAM_LABEL[STREAM]+' book is not connected yet.');
+  const sum=await jsonp(url+'?action=salesSummary&pass='+encodeURIComponent(pass));
   if(!sum||!sum.ok) throw new Error((sum&&sum.error)||'Could not read data');
   ROWS=sum.rows||[];
   // clients are best-effort; a failure here shouldn't blank the dashboard
-  try{ const cl=await jsonp(ENDPOINT+'?action=listClients&chapter=*&pass='+encodeURIComponent(pass));
+  try{ const cl=await jsonp(url+'?action=listClients&chapter=*&pass='+encodeURIComponent(pass));
        CLIENTS=(cl&&cl.ok&&cl.clients)?cl.clients:[]; }catch(e){ CLIENTS=[]; }
   return sum.server;
 }
@@ -269,7 +289,10 @@ async function loadData(pass){
 function regionsList(){ const s=new Set(); ROWS.forEach(r=>s.add(r.region||'(no region)')); return Array.from(s).sort(); }
 function filtered(){ return REGION===ALL?ROWS:ROWS.filter(r=>(r.region||'(no region)')===REGION); }
 function totals(rows){ return rows.reduce((a,r)=>({proposals:a.proposals+r.proposals,invoices:a.invoices+r.invoices,
-  wins:a.wins+r.wins,won:a.won+r.won}),{proposals:0,invoices:0,wins:0,won:0}); }
+  wins:a.wins+r.wins,won:a.won+r.won,
+  renewalWins:a.renewalWins+(r.renewalWins||0),renewalWon:a.renewalWon+(r.renewalWon||0),
+  newWon:a.newWon+(r.newWon||0)}),
+  {proposals:0,invoices:0,wins:0,won:0,renewalWins:0,renewalWon:0,newWon:0}); }
 const rate=(w,p)=>p?Math.round(w/p*100):0;
 
 /* ---- tooltip ---- */
@@ -282,6 +305,12 @@ function bindTip(el,html){ el.addEventListener('mousemove',e=>{tip.innerHTML=htm
 function render(server){
   document.getElementById('updated').textContent='Updated '+(server?new Date(server).toLocaleString():new Date().toLocaleString())
     +' · '+ROWS.length+' chapter'+(ROWS.length===1?'':'s')+' reporting';
+  document.querySelectorAll('#streamSeg button').forEach(b=>b.classList.toggle('active',b.dataset.stream===STREAM));
+  const bb=document.getElementById('bookbar');
+  bb.className='bookbar '+STREAM;
+  bb.innerHTML=STREAM==='commercial'
+    ? '<strong>Commercial book</strong> — sponsorships into the regional LLC. Commission-eligible. These figures are <strong>not</strong> combined with the non-profit book.'
+    : '<strong>Non-profit book (501c3)</strong> — grants and donors that require a 501(c)(3). <strong>No commission is payable on anything here.</strong> These figures are <strong>not</strong> combined with the commercial book.';
   document.getElementById('footcount').textContent=ROWS.length+' chapters · '+CLIENTS.length+' saved clients';
   renderRegionSel();
   const rows=filtered(), t=totals(rows);
@@ -308,7 +337,9 @@ function renderKpis(rows,t){
     {l:'Proposals (hits)',v:t.proposals,d:'sent to prospects'},
     {l:'Wins (paid)',v:t.wins,d:'sponsorships closed',cls:'win'},
     {l:'Win rate',v:rate(t.wins,t.proposals)+'%',d:t.wins+' of '+t.proposals},
-    {l:'Revenue won',v:CUR.format(t.won),d:'payments received',cls:'money'}
+    {l:'Revenue won',v:CUR.format(t.won),d:'payments received',cls:'money'},
+    {l:'New business',v:CUR.format(t.newWon),d:STREAM==='commercial'?'commissionable':'first-time gifts'},
+    {l:'Renewals',v:CUR.format(t.renewalWon),d:t.renewalWins+' renewed · no commission'}
   ];
   document.getElementById('kpis').innerHTML=k.map(x=>`<div class="kpi ${x.cls||''}">
     <div class="l">${x.l}</div><div class="v num">${esc(x.v)}</div><div class="d">${esc(x.d)}</div></div>`).join('');
@@ -432,6 +463,13 @@ function renderPipe(){
 
 /* ---- events ---- */
 document.getElementById('regionSel').addEventListener('change',e=>{REGION=e.target.value;render(lastServer);});
+document.getElementById('streamSeg').addEventListener('click',async e=>{
+  const b=e.target.closest('button[data-stream]'); if(!b||b.dataset.stream===STREAM)return;
+  const prev=STREAM; STREAM=b.dataset.stream; REGION=ALL;
+  document.getElementById('bookbar').textContent='Loading the '+STREAM_LABEL[STREAM]+' book…';
+  try{ lastServer=await loadData(PASS); render(lastServer); }
+  catch(err){ STREAM=prev; alert('Could not load the '+STREAM_LABEL[b.dataset.stream]+' book: '+(err.message||err)); render(lastServer); }
+});
 document.getElementById('refreshBtn').addEventListener('click',async()=>{
   const b=document.getElementById('refreshBtn'); b.disabled=true; b.textContent='…';
   try{lastServer=await loadData(PASS);render(lastServer);}catch(e){alert('Refresh failed: '+(e.message||e));}

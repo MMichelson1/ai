@@ -701,7 +701,7 @@ const REPORT_ENDPOINT='https://script.google.com/macros/s/AKfycbwsI5Os5mtzoTbzLK
 /* Non-profit (501c3 / fiscal sponsor) reporting book — a SEPARATE Google Sheet and
    a SEPARATE Apps Script deployment, so the two sets of books are never commingled.
    Paste that deployment's /exec URL here to switch the non-profit stream on. */
-const REPORT_ENDPOINT_NP='';
+const REPORT_ENDPOINT_NP='https://script.google.com/macros/s/AKfycbyc5XFlEFS8qhHkMY5eaNSD41Qx_JPwbsTvyqZeUhNUasFgsnIKGcsEz91pe0G1tC5F/exec';
 function endpointFor(stream){return stream==='nonprofit'?REPORT_ENDPOINT_NP:REPORT_ENDPOINT;}
 const DEFAULT_CONTACT={name:'Erich Starrett', title:'Director, Sponsor Partnerships', email:'erich@aicollective.com', cal:'https://calendly.com/erichstarrett'};
 /* Default community-photo image shown on the brochure when a chapter has NOT
