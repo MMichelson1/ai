@@ -227,7 +227,10 @@ function _salesSummary(pass) {
       invoices: Number(v[3]) || 0,
       wins: Number(v[4]) || 0,
       won: Number(v[5]) || 0,
-      lastActivity: String(v[7] || '')
+      lastActivity: String(v[7] || ''),
+      renewalWins: Number(v[8]) || 0,
+      renewalWon: Number(v[9]) || 0,
+      newWon: Number(v[10]) || 0
     });
   }
   return { ok: true, rows: rows, stream: STREAM, commissionable: _commissionable(), server: new Date().toISOString() };
@@ -235,14 +238,23 @@ function _salesSummary(pass) {
 
 /* ---------- Events tab (append-only log of everything) ---------- */
 
+var EVENT_HEADER = ['Received (UTC)', 'Event', 'Chapter', 'Region', 'Referred by',
+  'Sponsor', 'Amount', 'Proposal #', 'Renewal', 'Renewal date', 'Language', 'Details (JSON)'];
+
 function _sheet() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sh = ss.getSheetByName('Events');
   if (!sh) {
     sh = ss.insertSheet('Events');
-    sh.appendRow(['Received (UTC)', 'Event', 'Chapter', 'Region', 'Referred by',
-      'Sponsor', 'Amount', 'Proposal #', 'Language', 'Details (JSON)']);
+    sh.appendRow(EVENT_HEADER);
     sh.setFrozenRows(1);
+    return sh;
+  }
+  // Sheets created before renewal tracking have a shorter header — widen it once
+  // so new rows line up under the right columns.
+  var hdr = sh.getRange(1, 1, 1, EVENT_HEADER.length).getValues()[0];
+  if (String(hdr[8]) !== 'Renewal') {
+    sh.getRange(1, 1, 1, EVENT_HEADER.length).setValues([EVENT_HEADER]);
   }
   return sh;
 }
@@ -261,10 +273,13 @@ function _amountNum(d) {
   return isNaN(n) ? 0 : n;
 }
 
+function _isRenewal(d) { return d.renewal === true || d.renewal === 'true'; }
+
 function _logRow(d) {
   _sheet().appendRow([
     d._received || '', d.event || '', d.chapter || '', d.region || '',
     _refName(d), d.sponsor || '', d.amount || '', d.proposalNo || '',
+    _isRenewal(d) ? 'RENEWAL' : '', d.renewalDate || '',
     d.lang || '', JSON.stringify(d)
   ]);
 }
@@ -277,7 +292,8 @@ function _summarySheet() {
   if (!sh) {
     sh = ss.insertSheet('Summary');
     sh.appendRow(['Chapter', 'Region', 'Proposals (hits)', 'Invoices sent',
-      'Wins (paid)', '$ Won', 'Win rate', 'Last activity (UTC)']);
+      'Wins (paid)', '$ Won', 'Win rate', 'Last activity (UTC)',
+      'Renewal wins', '$ Renewal', '$ New business']);
     sh.setFrozenRows(1);
   }
   return sh;
@@ -296,7 +312,7 @@ function _updateSummary(d) {
   }
   var row;
   if (rowIdx === -1) {
-    row = [chapter, d.region || '', 0, 0, 0, 0, '', ''];
+    row = [chapter, d.region || '', 0, 0, 0, 0, '', '', 0, 0, 0];
   } else {
     row = values[rowIdx].slice();
     if (!row[1] && d.region) row[1] = d.region;
@@ -305,15 +321,24 @@ function _updateSummary(d) {
   var invs = Number(row[3]) || 0;
   var wins = Number(row[4]) || 0;
   var won = Number(row[5]) || 0;
+  var renWins = Number(row[8]) || 0, renWon = Number(row[9]) || 0, newWon = Number(row[10]) || 0;
   if (ev === 'proposal') props++;
   if (ev === 'invoice') invs++;
-  if (ev === 'payment') { wins++; won += _amountNum(d); }
+  if (ev === 'payment') {
+    var amt = _amountNum(d);
+    wins++; won += amt;
+    // Renewals are never commissionable, so keep them separate from new business.
+    if (_isRenewal(d)) { renWins++; renWon += amt; } else { newWon += amt; }
+  }
   row[2] = props;
   row[3] = invs;
   row[4] = wins;
   row[5] = won;
   row[6] = props ? Math.round((wins / props) * 100) + '%' : '';
   row[7] = d._received || new Date().toISOString();
+  row[8] = renWins;
+  row[9] = renWon;
+  row[10] = newWon;
   if (rowIdx === -1) {
     sh.appendRow(row);
   } else {
@@ -351,6 +376,10 @@ function _maybeEmail(d) {
   if (d.region) lines.push('Region: ' + d.region);
   if (d.sponsor) lines.push('Sponsor: ' + d.sponsor);
   if (d.amount) lines.push('Amount: ' + d.amount);
+  if (_isRenewal(d)) {
+    lines.push('RENEWAL' + (d.renewalDate ? ' (' + d.renewalDate + ')' : '') +
+      ' — no commission payable (first-year only).');
+  }
   if (d.date) lines.push('Date: ' + d.date);
   if (d.proposalNo) lines.push('Proposal #: ' + d.proposalNo);
   if (_refName(d)) {
