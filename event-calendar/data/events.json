@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-08T17:49:23.603Z",
+  "generatedAt": "2026-09-08T19:19:57.117Z",
   "sample": false,
   "markets": {
     "atlanta": {
@@ -21,7 +21,7 @@
       "aic": true,
       "status": "ok",
       "count": 4,
-      "lastChecked": "2026-09-08T17:49:23.603Z",
+      "lastChecked": "2026-09-08T19:19:57.117Z",
       "note": ""
     },
     {
@@ -32,7 +32,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-09-08T17:49:24.893Z",
+      "lastChecked": "2026-09-08T19:19:57.958Z",
       "note": "Get the section's public iCal feed URL from events.vtools.ieee.org (Events → Export/iCal for the Atlanta Section), paste it into 'url', then set enabled:true."
     },
     {
@@ -43,7 +43,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-09-08T17:49:24.893Z",
+      "lastChecked": "2026-09-08T19:19:57.958Z",
       "note": "Any Meetup group exposes an iCal feed at https://www.meetup.com/<group-slug>/events/ical/ — add one source entry per local AI group and set enabled:true."
     },
     {
@@ -54,7 +54,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-09-08T17:49:24.893Z",
+      "lastChecked": "2026-09-08T19:19:57.958Z",
       "note": "Most university event calendars (Localist, Google Calendar) publish an ICS feed — paste it here. AI keyword filtering is applied automatically."
     },
     {
@@ -65,7 +65,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-09-08T17:49:24.893Z",
+      "lastChecked": "2026-09-08T19:19:57.958Z",
       "note": "Eventbrite retired public event search; per-organizer listings work via their free API. Add EVENTBRITE_TOKEN as a repo secret and organizer IDs here — see README."
     },
     {
@@ -76,7 +76,7 @@
       "aic": false,
       "status": "manual",
       "count": 0,
-      "lastChecked": "2026-09-08T17:49:24.893Z",
+      "lastChecked": "2026-09-08T19:19:57.958Z",
       "note": "LinkedIn and Facebook publish no feeds. Chapter leads add validated in-person events to data/manual-events.json via pull request; each entry must link to a live listing on a trusted site."
     },
     {
@@ -86,8 +86,8 @@
       "type": "luma-calendar",
       "aic": true,
       "status": "ok",
-      "count": 20,
-      "lastChecked": "2026-09-08T17:49:24.893Z",
+      "count": 21,
+      "lastChecked": "2026-09-08T19:19:57.958Z",
       "note": ""
     }
   ],
@@ -395,6 +395,25 @@
       "price": "check",
       "capacity": null,
       "market": "atlanta"
+    },
+    {
+      "id": "evt-qlN0NTlztNGW30U@events.lu.ma",
+      "title": "Hack for Humanity: Ottawa",
+      "start": "2026-09-26T15:00:00.000Z",
+      "end": "2026-09-26T21:00:00.000Z",
+      "allDay": false,
+      "tz": null,
+      "location": "Sprott School of Business, Nicol Building, 1125 Colonel By Drive, 7007 Nicol Building, Nicol Building, 1125 Colonel By Dr, Ottawa, ON K1S 5B6, Canada",
+      "lat": 45.384203,
+      "lon": -75.6967641,
+      "organizer": "The AI Collective",
+      "url": "https://lu.ma/genai-collective",
+      "sourceDomain": "lu.ma",
+      "aic": true,
+      "type": "meetup",
+      "price": "check",
+      "capacity": null,
+      "market": "global"
     },
     {
       "id": "evt-oXJiBQlmC43Pu7r@events.lu.ma",
