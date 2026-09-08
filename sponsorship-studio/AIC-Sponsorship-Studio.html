@@ -697,11 +697,11 @@ const CFG_KEY='aic-studio-v6';
 /* Reporting endpoint — the Google Apps Script /exec URL. Empty = reporting OFF.
    See sponsorship-studio/reporting/README.md for setup. */
 /* Commercial (regional LLC) reporting book. */
-const REPORT_ENDPOINT='https://script.google.com/macros/s/AKfycbwsI5Os5mtzoTbzLKdwtI-XLkYcJtE99CmkozfmVct5GIfa5uDHlkIh9JrGIRci5ylp/exec';
+const REPORT_ENDPOINT='https://script.google.com/macros/s/AKfycbx7NGc0b19dvh26zkMrnbvQbqlDJScR-qsam2C5qWzkEd16jO5dNk6ZSjwTvIxRuxgu/exec';
 /* Non-profit (501c3 / fiscal sponsor) reporting book — a SEPARATE Google Sheet and
    a SEPARATE Apps Script deployment, so the two sets of books are never commingled.
    Paste that deployment's /exec URL here to switch the non-profit stream on. */
-const REPORT_ENDPOINT_NP='';
+const REPORT_ENDPOINT_NP='https://script.google.com/macros/s/AKfycbx-qrHp448jOtGPYQVN8UuQK0TVkwwE7aiENZ7__c2nXt-Kb7l7V8GeRqzETgC48JrkRw/exec';
 function endpointFor(stream){return stream==='nonprofit'?REPORT_ENDPOINT_NP:REPORT_ENDPOINT;}
 const DEFAULT_CONTACT={name:'Erich Starrett', title:'Director, Sponsor Partnerships', email:'erich@aicollective.com', cal:'https://calendly.com/erichstarrett'};
 /* Default community-photo image shown on the brochure when a chapter has NOT
@@ -1137,17 +1137,18 @@ function closeRate(){
 }
 function refRate(){return Math.min(Number(cfg.comm.referral)||0,closeRate());}
 /* Split a commercial sponsorship amount into chapter / region / commission. */
-function splitOf(amount,kind){
+function splitOf(amount,kind,renewal){
   const amt=Number(amount)||0;
   const rs=regionShare(), region=Math.round(amt*rs/100), chapter=amt-region;
   const cm=cfg.comm;
   let pct=0;
-  if(kind==='referral')pct=refRate();
+  if(renewal)pct=0;                       // renewals are never commissionable
+  else if(kind==='referral')pct=refRate();
   else if(kind==='closer')pct=closeRate();
   let commission=Math.round(amt*pct/100);
   if(cm.capUsd>0)commission=Math.min(commission,Number(cm.capUsd));
   return {amount:amt,regionPct:rs,region,chapter,commissionPct:pct,commission,
-    regionNet:region-commission};
+    regionNet:region-commission,renewal:!!renewal};
 }
 function tierPrice(i){
   const o=(cfg.chapter.tierOver||{})[i];
@@ -1276,6 +1277,7 @@ function assignNumber(){
     report('proposal',{
       sponsor:prop.sponsor||'', amount:fmt(tot.net), proposalNo:prop.number,
       items:(prop.items||[]).map(it=>'• '+(it.label||'item')+' ×'+(it.qty||1)).join('\n'),
+      renewal:isRenewal(), renewalDate:isRenewal()?(agr.renewalDate||''):'',
       referredByName:(prop.referredBy&&prop.referredBy.name)||cfg.chapter.refByName||'',
       referredByEmail:(prop.referredBy&&prop.referredBy.email)||cfg.chapter.refByEmail||''
     },dealStream());
@@ -1435,7 +1437,9 @@ function sheetHead(){
 }
 
 /* ═══════════════ DOCUMENTS ═══════════════ */
-let agr={sponsor:'',address:'',amount:'',date:today(),descr:'',previewing:false,stream:''};
+let agr={sponsor:'',address:'',amount:'',date:today(),descr:'',previewing:false,stream:'',
+  renewal:false,renewalDate:''};
+function isRenewal(){return !!agr.renewal;}
 function dealStream(){return agr.stream||((cfg.streams&&cfg.streams.pref)==='fsa'?'nonprofit':'commercial');}
 let docState='menu';
 const SOW_ITEMS=['Signed proposal / agreement on file','Invoice sent via fiscal sponsor','Payment received','Sponsor logo received (PNG or SVG)','Logo + link on Luma listing','Logo on event slides','Banner printed & placed','Verbal callout scripted for host','Targeted invitations sent','Venue confirmed','F&B ordered','Sponsor table / demo space arranged','Registration list export scheduled','Post-event report & photos sent','Thank-you letter sent'];
@@ -1453,7 +1457,8 @@ function logInvoiceSent(){
   const num=Number(agr.amount)||0;
   const st=dealStream();
   if(!endpointFor(st)){alert(st==='nonprofit'?'The non-profit book is not connected yet. Deploy the second Apps Script and set REPORT_ENDPOINT_NP.':'Reporting is off in this copy.');return;}
-  report('invoice',{sponsor:sponsor, amount:num?money_(num):'', amountNum:num, proposalNo:prop.number||''},st);
+  report('invoice',{sponsor:sponsor, amount:num?money_(num):'', amountNum:num, proposalNo:prop.number||'',
+    renewal:isRenewal(), renewalDate:isRenewal()?(agr.renewalDate||''):''},st);
   toast('Invoice logged to the '+(st==='nonprofit'?'non-profit':'commercial')+' book');
 }
 function logPaymentReceived(){
@@ -1463,8 +1468,10 @@ function logPaymentReceived(){
   const st=dealStream();
   if(!endpointFor(st)){alert(st==='nonprofit'?'The non-profit book is not connected yet. Deploy the second Apps Script and set REPORT_ENDPOINT_NP.':'Reporting is off in this copy.');return;}
   const bookLbl=st==='nonprofit'?'NON-PROFIT (501c3)':'COMMERCIAL';
-  if(!confirm('Log a WIN — payment received from '+sponsor+(num?(' for '+money_(num)):'')+'?\n\nBook: '+bookLbl+(st==='nonprofit'?'\nNo commission is payable on this stream.':'')))return;
-  report('payment',{sponsor:sponsor, amount:num?money_(num):'', amountNum:num, date:agr.date||today(), proposalNo:prop.number||''},st);
+  const renewLbl=isRenewal()?('\nRenewal'+(agr.renewalDate?' ('+agr.renewalDate+')':'')+' — no commission payable.'):'';
+  if(!confirm('Log a WIN — payment received from '+sponsor+(num?(' for '+money_(num)):'')+'?\n\nBook: '+bookLbl+(st==='nonprofit'?'\nNo commission is payable on this stream.':'')+renewLbl))return;
+  report('payment',{sponsor:sponsor, amount:num?money_(num):'', amountNum:num, date:agr.date||today(), proposalNo:prop.number||'',
+    renewal:isRenewal(), renewalDate:isRenewal()?(agr.renewalDate||''):''},st);
   toast('Win recorded in the '+(st==='nonprofit'?'non-profit':'commercial')+' book 🎉');
 }
 
@@ -1683,9 +1690,19 @@ function renderDocs(){
         <button class="${dealStream()==='commercial'?'active':''}" onclick="agr.stream='commercial';renderDocs()">Commercial</button>
         <button class="${dealStream()==='nonprofit'?'active':''}" onclick="agr.stream='nonprofit';renderDocs()">Non-profit (501c3)</button>
       </div></div>
+    <div class="grid2" style="margin-top:10px">
+      <div class="fg"><label>Renewal</label>
+        <label style="display:flex;align-items:center;gap:8px;font-size:13px;text-transform:none;letter-spacing:0;color:var(--ink);font-weight:600">
+          <input type="checkbox" style="width:auto" ${agr.renewal?'checked':''} onchange="agr.renewal=this.checked;if(agr.renewal&&!agr.renewalDate)agr.renewalDate=today();renderDocs()">
+          This is a renewal of an existing sponsorship
+        </label></div>
+      <div class="fg"><label>Renewal date</label>
+        <input type="date" value="${agr.renewalDate||''}" ${agr.renewal?'':'disabled'} onchange="agr.renewalDate=this.value"></div>
+    </div>
+    ${agr.renewal?`<div class="ibox warn" style="margin-top:0">🔁 <strong>Renewal${agr.renewalDate?' — '+esc(fmtDate(agr.renewalDate)):''}.</strong> Commissions are first-year only, so <strong>no commission is payable</strong> on this deal. It still counts as a win and is logged to the master sheet.</div>`:''}
     <div class="ibox ${dealStream()==='nonprofit'?'warn':'brand'}" style="margin-top:10px">${dealStream()==='nonprofit'
       ?`Goes to the <strong>separate 501(c)(3) book</strong> — grants and donors that require a 501(c)(3). <strong>No commission is payable.</strong>${REPORT_ENDPOINT_NP?'':' <strong>(That book is not connected yet.)</strong>'}`
-      :`Goes to the <strong>commercial book</strong> (${esc((cfg.streams&&cfg.streams.llc.name)||'Regional LLC')}). Commission-eligible at ${closeRate()}% on a full close.`}</div>
+      :`Goes to the <strong>commercial book</strong> (${esc((cfg.streams&&cfg.streams.llc.name)||'Regional LLC')}). ${agr.renewal?'<strong>Renewal — no commission payable.</strong>':`Commission-eligible at ${closeRate()}% on a full close.`}`}</div>
     <p style="color:var(--mut);font-size:12px;margin:6px 0 12px">Records activity so the team can track proposals sent vs sponsors won. Uses the sponsor name and amount from the form above. The two books are kept in <strong>separate Google Sheets</strong> and are never combined.${REPORT_ENDPOINT?'':' <strong>(Reporting is off in this copy.)</strong>'}</p>
     <div class="toolrow" style="margin-bottom:0;flex-wrap:wrap">
       <button class="btn btn-sec" onclick="logInvoiceSent()">Mark invoice sent</button>
