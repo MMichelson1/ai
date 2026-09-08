@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-06T13:28:41.783Z",
+  "generatedAt": "2026-09-08T17:41:26.096Z",
   "sample": false,
   "markets": {
     "atlanta": {
@@ -21,7 +21,7 @@
       "aic": true,
       "status": "ok",
       "count": 4,
-      "lastChecked": "2026-09-06T13:28:41.784Z",
+      "lastChecked": "2026-09-08T17:41:26.097Z",
       "note": ""
     },
     {
@@ -32,7 +32,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-09-06T13:28:42.901Z",
+      "lastChecked": "2026-09-08T17:41:27.039Z",
       "note": "Get the section's public iCal feed URL from events.vtools.ieee.org (Events → Export/iCal for the Atlanta Section), paste it into 'url', then set enabled:true."
     },
     {
@@ -43,7 +43,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-09-06T13:28:42.901Z",
+      "lastChecked": "2026-09-08T17:41:27.039Z",
       "note": "Any Meetup group exposes an iCal feed at https://www.meetup.com/<group-slug>/events/ical/ — add one source entry per local AI group and set enabled:true."
     },
     {
@@ -54,7 +54,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-09-06T13:28:42.901Z",
+      "lastChecked": "2026-09-08T17:41:27.039Z",
       "note": "Most university event calendars (Localist, Google Calendar) publish an ICS feed — paste it here. AI keyword filtering is applied automatically."
     },
     {
@@ -65,7 +65,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-09-06T13:28:42.901Z",
+      "lastChecked": "2026-09-08T17:41:27.039Z",
       "note": "Eventbrite retired public event search; per-organizer listings work via their free API. Add EVENTBRITE_TOKEN as a repo secret and organizer IDs here — see README."
     },
     {
@@ -76,7 +76,7 @@
       "aic": false,
       "status": "manual",
       "count": 0,
-      "lastChecked": "2026-09-06T13:28:42.901Z",
+      "lastChecked": "2026-09-08T17:41:27.039Z",
       "note": "LinkedIn and Facebook publish no feeds. Chapter leads add validated in-person events to data/manual-events.json via pull request; each entry must link to a live listing on a trusted site."
     },
     {
@@ -86,31 +86,12 @@
       "type": "luma-calendar",
       "aic": true,
       "status": "ok",
-      "count": 21,
-      "lastChecked": "2026-09-06T13:28:42.901Z",
+      "count": 20,
+      "lastChecked": "2026-09-08T17:41:27.039Z",
       "note": ""
     }
   ],
   "events": [
-    {
-      "id": "evt-NrB5lX7YAz6gupM@events.lu.ma",
-      "title": "Office Hours (w/ The AI Collective)",
-      "start": "2026-09-08T21:00:00.000Z",
-      "end": "2026-09-08T22:00:00.000Z",
-      "allDay": false,
-      "tz": null,
-      "location": "TolHouse, 1447 N Summit St, Toledo, OH 43604, USA",
-      "lat": 41.6610659,
-      "lon": -83.5183677,
-      "organizer": "The AI Collective",
-      "url": "https://lu.ma/genai-collective",
-      "sourceDomain": "lu.ma",
-      "aic": true,
-      "type": "meetup",
-      "price": "check",
-      "capacity": null,
-      "market": "global"
-    },
     {
       "id": "evt-NW8RBaCAwwQj42h@events.lu.ma",
       "title": "AI Fundamentals for Community Building (w/ The AI Collective)",
@@ -284,7 +265,7 @@
     },
     {
       "id": "evt-wdeUYfZ7RHP9COv@events.lu.ma",
-      "title": "Building with AI: Meet & Greet (w/ The AI Collective)",
+      "title": "Building with AI: Vibe2Pitch Meet & Greet (w/ The AI Collective)",
       "start": "2026-09-16T22:00:00.000Z",
       "end": "2026-09-17T00:30:00.000Z",
       "allDay": false,
@@ -296,7 +277,7 @@
       "url": "https://lu.ma/genai-collective",
       "sourceDomain": "lu.ma",
       "aic": true,
-      "type": "meetup",
+      "type": "pitch",
       "price": "check",
       "capacity": null,
       "market": "global"
@@ -305,7 +286,7 @@
       "id": "evt-v4yoPdS8INYPcPH@events.lu.ma",
       "title": "Volunteer Meet Up: Meet AI. Meet Industry. Meet Your Future. (The AI Collective Sweden Chapter)",
       "start": "2026-09-17T14:00:00.000Z",
-      "end": "2026-09-17T16:30:00.000Z",
+      "end": "2026-09-17T15:30:00.000Z",
       "allDay": false,
       "tz": null,
       "location": "Stockholm, Sweden",
