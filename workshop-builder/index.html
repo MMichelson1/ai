@@ -1461,8 +1461,7 @@ function genWorkbookDoc(){
 
   // resources + QR
   body+=br+h1("Resources &amp; next steps")
-     +p("Slides, this workbook, and tonight's prompts are yours to keep. Scan the code to open the live AI toolkit and build your own stack.")
-     +'<div style="text-align:center;margin:14px 0"><img src="'+WORKBOOK_QR+'" style="width:150px;height:150px"><div style="color:'+B+';font-size:9pt">mmichelson1.github.io/ai/workshop-builder</div></div>'
+     +p("Slides, this workbook, and tonight's prompts are yours to keep. Put your me.md and your best prompts into one note this week - that's your own AI toolkit.")
      +'<ul><li><b>The AI Collective - Atlanta:</b> aicollective.com/chapters/atlanta</li>'
      +'<li><b>Mark Michelson / Threads Marketing:</b> threadsmr.com</li>'
      +'<li><b>Next session:</b> watch the chapter page to register early - bring someone who needs this.</li></ul>';
@@ -1932,7 +1931,7 @@ function renderOutput(){
     big.onclick=()=>downloadWorkbook();
     panel.appendChild(big);
     const note=el("div","hint"); note.style.marginTop="10px";
-    note.innerHTML="A multi-page Word handout: how to prompt (CRAFT), a fill-in <b>me.md</b> template, sample prompts drawn from this audience's use cases, hands-on exercises (including a &ldquo;design your gathering&rdquo; community exercise), a 7-day plan, a tool cheat sheet, and a QR to the toolkit. Opens in Word or Google Docs; print it or hand it out.";
+    note.innerHTML="A multi-page Word handout: how to prompt (CRAFT), a fill-in <b>me.md</b> template, sample prompts drawn from this audience's use cases, hands-on exercises (including a &ldquo;design your gathering&rdquo; community exercise), a 7-day plan, and a tool cheat sheet. No link to this builder is included, so it's safe to hand out. Opens in Word or Google Docs; print it or hand it out.";
     panel.appendChild(note);
     out.appendChild(panel);
   }
