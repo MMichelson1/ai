@@ -1408,8 +1408,40 @@ function genWorkbookDoc(){
      +'<li><b>Run a real task</b> - pick something on your plate this week; paste your me.md, use a prompt above, iterate twice.</li>'
      +'<li><b>Compare two tools</b> - run the same research question in Perplexity and your LLM; notice the difference.</li>'
      +'<li><b>Save what worked</b> - keep the prompts that landed. That note becomes your prompt library.</li>'
-     +'</ul>'
-     +h1("Your 7-day action plan")
+     +'</ul>';
+
+  // Community "Design your gathering" exercise
+  const gq=[
+    "What do you like and value in the people you want around you?",
+    "What do you dislike - the vibes you want to keep out?",
+    "What topics are you most interested in right now?",
+    "How would people want to meet - online, in person, casual coffee?",
+    "How many people feels right?",
+    "What would make attendees want to return - and tell others?"
+  ];
+  body+=br+h1("Bonus exercise: Design a gathering people come back to")
+     +p("Especially for community builders and anyone who hosts events - but useful to everyone. Answer these six honest questions, then hand them to your favorite AI and it becomes your co-designer. The better your answers, the better its ideas.")
+     +h2("Answer the six questions");
+  gq.forEach((q,i)=>{ body+='<div class="mlab">'+(i+1)+'. '+wbEsc(q)+'</div><div class="wline">&nbsp;</div><div class="wline">&nbsp;</div>'; });
+  body+=h2("Then run this prompt")
+     +pbox("Copy, paste your answers, and go",
+        "[Paste your me.md]\n\n"
+       +"I'm designing a gathering for a community I care about. Here are my honest answers:\n\n"
+       +"- Who I want in the room: [answer 1]\n"
+       +"- What I want to keep out: [answer 2]\n"
+       +"- Topics we care about now: [answer 3]\n"
+       +"- How we'd want to meet: [answer 4]\n"
+       +"- Size that feels right: [answer 5]\n"
+       +"- What makes people return & tell others: [answer 6]\n\n"
+       +"Act as my community-design partner. Based on MY answers - not generic best practices:\n"
+       +"1. Propose a format and theme these specific people would love.\n"
+       +"2. Design the flow (arrival -> middle -> close) with one moment built to spark connection.\n"
+       +"3. Give me 3 ways to make it so good people invite a friend next time.\n"
+       +"4. Draft the invitation in a voice that matches my community.\n"
+       +"5. Ask me any one question that would make your plan sharper.")
+     +p("<b>Now argue with it:</b> “make it feel less like an event and more like us,” “that won't work because ___ - try again,” “give me one small, weird detail people will remember.” That back-and-forth is where the magic is.");
+
+  body+=h1("Your 7-day action plan")
      +'<ul>'
      +'<li>Day 1 - Finish and save your me.md.</li><li>Day 2 - Set up one LLM and run one real task through it.</li>'
      +'<li>Day 3 - Add a notetaker to your next meeting.</li><li>Day 4 - Redo a task you dread, this time with AI.</li>'
@@ -1900,7 +1932,7 @@ function renderOutput(){
     big.onclick=()=>downloadWorkbook();
     panel.appendChild(big);
     const note=el("div","hint"); note.style.marginTop="10px";
-    note.innerHTML="A multi-page Word handout: how to prompt (CRAFT), a fill-in <b>me.md</b> template, sample prompts drawn from this audience's use cases, exercises, a 7-day plan, a tool cheat sheet, and a QR to the toolkit. Opens in Word or Google Docs; print it or hand it out.";
+    note.innerHTML="A multi-page Word handout: how to prompt (CRAFT), a fill-in <b>me.md</b> template, sample prompts drawn from this audience's use cases, hands-on exercises (including a &ldquo;design your gathering&rdquo; community exercise), a 7-day plan, a tool cheat sheet, and a QR to the toolkit. Opens in Word or Google Docs; print it or hand it out.";
     panel.appendChild(note);
     out.appendChild(panel);
   }
