@@ -208,7 +208,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}
 .recog{background:#FBEADF;border-radius:12px;padding:16px 18px}
 .recog p{color:#8A4213}
 .recog ul{margin:8px 0 0 18px;color:#8A4213;font-size:12.5px;line-height:1.8}
-.bro-cta{background:#E05A14;border-radius:14px;padding:24px;text-align:center;margin-top:28px}
+.bro-cta{background:#E05A14;border-radius:14px;padding:17px 24px;text-align:center;margin-top:10px}
 .bro-cta h3{color:#fff;margin:0 0 6px;font-size:16px;letter-spacing:.02em}
 .bro-cta p{color:rgba(255,255,255,.88);margin-bottom:14px}
 .bro-cta a{display:inline-block;background:#fff;color:#B4470D;border-radius:99px;padding:10px 26px;
@@ -726,7 +726,6 @@ const DEFAULTS={
   story:{history:'', thesis:''},
   sales:{name:'', email:'', phone:''},
   banking:{payableTo:'', remit:''},
-  news:{sendCPM:125, sendMin:500, featCPM:75, featMin:300},
   /* Money model. Commissions are paid ONLY on commercial (LLC) sponsorship cash,
      out of the region's share. No HQ allocation except a partner referred to HQ. */
   comm:{referral:5, maxClose:15, partnerRef:5, capUsd:0},
@@ -781,7 +780,8 @@ const DEFAULTS={
     {name:'Pitch Night',price:6000,qty:2,att:100,fixed:false,detail:'3 sponsors per night · venue + F&B included'},
     {name:'Vibe Night',price:750,qty:12,att:50,fixed:false,detail:'Up to 2 sponsors per night · attendee-paid F&B'},
     {name:'Hackathon',price:3750,qty:6,att:50,fixed:false,detail:'Up to 4 sponsors · Saturday 10am–3pm · venue + F&B included'},
-    {name:'Vendor Tour Stop',price:2000,qty:6,att:60,fixed:false,detail:'Turnkey city stop for vendor roadshows: venue, AV, promotion, curated audience, registration list'}
+    {name:'Vendor Tour Stop',price:2000,qty:6,att:60,fixed:false,detail:'Turnkey city stop for vendor roadshows: venue, AV, promotion, curated audience, registration list'},
+    {name:'Newsletter Ad',price:500,qty:12,att:0,fixed:true,detail:'Your ad in the chapter newsletter \u2014 $500 per send'}
   ]
 };
 let cfg=loadCfg();
@@ -790,7 +790,7 @@ function loadCfg(){
     if(raw){const c=JSON.parse(raw);
       const merged={org:{...DEFAULTS.org,...c.org},chapter:{...DEFAULTS.chapter,...c.chapter},
         story:{...DEFAULTS.story,...c.story},sales:{...DEFAULTS.sales,...c.sales},
-        banking:{...DEFAULTS.banking,...c.banking},news:{...DEFAULTS.news,...c.news},
+        banking:{...DEFAULTS.banking,...c.banking},
         comm:{...DEFAULTS.comm,...c.comm},multsC:c.multsC||DEFAULTS.multsC,multsR:c.multsR||DEFAULTS.multsR,
         streams:{...DEFAULTS.streams,...c.streams,
           llc:{...DEFAULTS.streams.llc,...((c.streams||{}).llc)},
@@ -1164,8 +1164,6 @@ function eventPrice(i){
   const e=cfg.events[i];
   return e.fixed?Math.round(e.price):Math.round(e.price*mult());
 }
-function newsSendPrice(){const m=activeMembers();return Math.max(Math.round(m*cfg.news.sendCPM/1000),cfg.news.sendMin);}
-function newsFeatPrice(){const m=activeMembers();return Math.max(Math.round(m*cfg.news.featCPM/1000),cfg.news.featMin);}
 function tierIsOver(i){const o=(cfg.chapter.tierOver||{})[i];return o!==undefined&&o!==null&&o!=='';}
 function setTierOver(i,v){
   if(!cfg.chapter.tierOver)cfg.chapter.tierOver={};
@@ -1287,8 +1285,6 @@ function assignNumber(){
     },dealStream());
   }catch(e){}
 }
-function addNewsSend(){prop.items.push({label:t('news_send'),listUsd:newsSendPrice(),qty:1,disc:0,over:null,note:''});go('proposal');}
-function addNewsFeat(){prop.items.push({label:t('news_feature'),listUsd:newsFeatPrice(),qty:1,disc:0,over:null,note:''});go('proposal');}
 function today(){return new Date().toISOString().slice(0,10);}
 function plusDays(d){const x=new Date();x.setDate(x.getDate()+d);return x.toISOString().slice(0,10);}
 function addTier(i){const tr=cfg.annual[i];
@@ -1336,8 +1332,6 @@ function renderProposal(){
   </div>
   <div class="panel">
     <div class="toolrow"><span class="eyebrow" style="margin:0">${t('item')}s</span><span class="spacer"></span>
-      <button class="btn btn-sec" onclick="addNewsSend()">＋ ${t('news_send')} · <span class="num">${fmt(newsSendPrice())}</span></button>
-      <button class="btn btn-sec" onclick="addNewsFeat()">＋ ${t('news_feature')} · <span class="num">${fmt(newsFeatPrice())}</span></button>
       <button class="btn btn-sec" onclick="addCustom()">＋ ${t('add_custom')}</button></div>
     ${prop.items.length===0?`<p style="color:var(--mut)">${t('no_items')}</p>`:prop.items.map((it,i)=>{
       const overridden=it.over!==null&&it.over!=='';
@@ -1861,7 +1855,7 @@ function renderEvents(){
       <tbody>${cfg.events.map((e,i)=>`<tr>
         <td><strong>${esc(e.name)}</strong><div style="color:var(--mut);font-size:11px">${esc(e.detail)}</div></td>
         <td class="r num"><strong>${fmt(eventPrice(i))}</strong></td>
-        <td class="r num">${e.qty}</td><td class="r num">~${e.att}</td>
+        <td class="r num">${e.qty}</td><td class="r num">${e.att?('~'+e.att):'—'}</td>
         <td class="r"><button class="btn btn-ghost" onclick="addEvt(${i})">＋</button></td></tr>`).join('')}
       </tbody></table></div>
     <p style="color:var(--mut);font-size:11.5px;margin-top:10px">Event pricing scales with market size, the same way annual tiers do — a 40-member chapter and a 14,000-member chapter do not charge the same for a workshop.</p>
@@ -2101,13 +2095,7 @@ function renderBrochure(){
       <div class="tblwrap"><table class="tbl">
         <thead><tr><th>${t('event')}</th><th class="r">${t('price')}</th><th class="r">${t('spots')} ${t('per_year')}</th><th class="r">${t('attendees')}</th></tr></thead>
         <tbody>${cfg.events.map((e,i)=>`<tr><td><strong>${esc(e.name)}</strong><div class="mut" style="font-size:11px">${esc(e.detail)}</div></td>
-          <td class="r num"><strong>${fmt(eventPrice(i))}</strong></td><td class="r num">${e.qty}</td><td class="r num">~${e.att}</td></tr>`).join('')}</tbody></table></div>
-      <h3>${t('news_t')}</h3>
-      <p>${t('news_p')}</p>
-      <div class="tblwrap" style="margin-top:8px"><table class="tbl"><tbody>
-        <tr><td><strong>${t('news_send')}</strong></td><td class="r num"><strong>${fmt(newsSendPrice())}</strong> <span class="mut">${t('per_send')}</span></td></tr>
-        <tr><td><strong>${t('news_feature')}</strong></td><td class="r num"><strong>${fmt(newsFeatPrice())}</strong> <span class="mut">${t('per_send')}</span></td></tr>
-      </tbody></table></div>
+          <td class="r num"><strong>${fmt(eventPrice(i))}</strong></td><td class="r num">${e.qty}</td><td class="r num">${e.att?('~'+e.att):'—'}</td></tr>`).join('')}</tbody></table></div>
       <div class="bro-cta">
         <h3 style="color:#fff;margin-top:0">${t('cta_t')}</h3>
         <p>${t('cta_p')}</p>
@@ -2183,6 +2171,20 @@ async function downloadBrochurePDF(btn){
     for(let i=0;i<bounds.length-1;i++){
       const segStart=bounds[i], segEnd=bounds[i+1];
       if(segEnd-segStart<2)continue;
+      // A section that only just overruns its page (a longer chapter name, an
+      // extra event row) would otherwise spill a sliver onto a page of its own.
+      // Shrink it a touch instead, keeping aspect ratio, so it stays one page.
+      const segH=segEnd-segStart;
+      if(segH>pxPerPage && segH<=pxPerPage*1.08){
+        slice.width=canvas.width; slice.height=segH;
+        sctx.fillStyle='#ffffff'; sctx.fillRect(0,0,slice.width,slice.height);
+        sctx.drawImage(canvas,0,segStart,canvas.width,segH,0,0,canvas.width,segH);
+        const fit=pxPerPage/segH, w=imgW*fit;
+        if(!firstPage)pdf.addPage();
+        firstPage=false;
+        pdf.addImage(slice.toDataURL('image/jpeg',0.85),'JPEG',(pageW-w)/2,0,w,pageH,undefined,'FAST');
+        continue;
+      }
       for(let y=segStart;y<segEnd;y+=pxPerPage){
         const h=Math.min(pxPerPage,segEnd-y);
         slice.width=canvas.width; slice.height=h;
@@ -2328,16 +2330,7 @@ function renderSettings(){
     </div>
     <p style="color:var(--mut);font-size:11.5px;margin-top:10px">Brackets are checked top to bottom: the first row whose "members under" exceeds the member count applies. Leave the last row's threshold blank for ∞. Tier minimum floors (Annual tiers table) protect prices in the smallest brackets.</p>
   </div></details>
-  <details><summary>Newsletter rates</summary><div class="inner">
-    <div class="grid4">
-      <div class="fg"><label>Dedicated send CPM ($/1,000)</label><input type="number" min="0" value="${cfg.news.sendCPM}" onchange="cfg.news.sendCPM=Number(this.value)||0;saveCfg()"></div>
-      <div class="fg"><label>Dedicated send minimum ($)</label><input type="number" min="0" value="${cfg.news.sendMin}" onchange="cfg.news.sendMin=Number(this.value)||0;saveCfg()"></div>
-      <div class="fg"><label>Feature CPM ($/1,000)</label><input type="number" min="0" value="${cfg.news.featCPM}" onchange="cfg.news.featCPM=Number(this.value)||0;saveCfg()"></div>
-      <div class="fg"><label>Feature minimum ($)</label><input type="number" min="0" value="${cfg.news.featMin}" onchange="cfg.news.featMin=Number(this.value)||0;saveCfg()"></div>
-    </div>
-    <p style="color:var(--mut);font-size:11.5px;margin-top:10px">Current pricing at this ${cfg.chapter.scope}'s member count: dedicated send <strong class="num">${fmt(newsSendPrice())}</strong> · feature <strong class="num">${fmt(newsFeatPrice())}</strong>. The AI Collective Daily (national, 290K readers) is HQ inventory — see the separate media kit.</p>
-  </div></details>
-  <details><summary>Money — commissions &amp; splits</summary><div class="inner">
+    <details><summary>Money — commissions &amp; splits</summary><div class="inner">
     <div style="color:var(--mut);font-size:11px;margin-bottom:8px">Commissions are paid on <strong>cash received</strong> into the commercial account only — never on fiscal-sponsor revenue, renewals, out-of-pocket event costs, or in-kind. Paid by the region out of the region's share.</div>
     <div class="grid4">
       <div class="fg"><label>Referral — lead that closes (%)</label><input type="number" min="0" max="100" value="${cm.referral}" onchange="cfg.comm.referral=Number(this.value)||0;saveCfg();renderComm()"></div>
