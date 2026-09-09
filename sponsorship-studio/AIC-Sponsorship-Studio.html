@@ -165,6 +165,10 @@ table{width:100%;border-collapse:collapse;font-size:12px}
 .sh-rule{height:3px;background:linear-gradient(90deg,#E05A14,#232B8C);border:none;margin:18px 36px 0;border-radius:2px}
 .sheet h1{font-size:24px;font-weight:800;letter-spacing:-.02em;margin:18px 0 6px;text-wrap:balance;color:#22283A}
 .sheet h3{font-size:13px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:#E05A14;margin:26px 0 10px}
+/* First heading in the body sits tight to the rule above it. */
+.sh-body>h3:first-child{margin-top:0}
+/* Marked headings start a new page (browser print AND the PDF download). */
+.sheet h3.page-break{break-before:page;page-break-before:always}
 .sheet p{color:#454B5E;line-height:1.65;font-size:13px}
 .sheet .tbl th{color:#6E7484;border-bottom-color:#E5E1D8}
 .sheet .tbl td{border-bottom-color:#EEEBE4;color:#22283A}
@@ -2075,7 +2079,7 @@ function renderBrochure(){
       ${cfg.story.history?`<p style="white-space:pre-line">${esc(cfg.story.history)}</p>`:''}
       ${cfg.story.thesis?`<p style="white-space:pre-line;margin-top:8px"><em>${esc(cfg.story.thesis)}</em></p>`:''}`:''}
       ${(c.regionName&&(c.regionChapters||c.regionMembers))?`
-      <h3>${t('region_t')}</h3>
+      <h3 class="page-break">${t('region_t')}</h3>
       <p><strong>${esc(c.regionName)}</strong>${c.regionMembers?` — ${(c.regionMembers||0).toLocaleString()} ${t('members')}`:''}${c.regionChapters?`: ${esc(c.regionChapters)}`:''}</p>`:''}
       <h3>${t('why_t')}</h3>
       <div class="why">${(d.why||T.en.why).map(([h,p])=>`<div class="wc"><h4>${h}</h4><p>${p}</p></div>`).join('')}</div>
@@ -2089,11 +2093,11 @@ function renderBrochure(){
       <h3>${t('recog_t')}</h3>
       <div class="recog"><p>${t('recog_p')}</p>
         <ul>${(d.recog_l||T.en.recog_l).map(x=>`<li>${x}</li>`).join('')}</ul></div>
-      <h3>${t('ann_t')}</h3>
+      <h3 class="page-break">${t('ann_t')}</h3>
       <div class="tblwrap"><table class="tbl">
         <thead><tr><th></th>${cfg.annual.map((tr,i)=>`<th class="r">${esc(tr.name)}<br><span class="num" style="font-size:13px;color:#22283A">${fmt(tierPrice(i))}</span></th>`).join('')}</tr></thead>
         <tbody>${broBenefitRows(m)}</tbody></table></div>
-      <h3>${t('evt_t')}</h3>
+      <h3 class="page-break">${t('evt_t')}</h3>
       <div class="tblwrap"><table class="tbl">
         <thead><tr><th>${t('event')}</th><th class="r">${t('price')}</th><th class="r">${t('spots')} ${t('per_year')}</th><th class="r">${t('attendees')}</th></tr></thead>
         <tbody>${cfg.events.map((e,i)=>`<tr><td><strong>${esc(e.name)}</strong><div class="mut" style="font-size:11px">${esc(e.detail)}</div></td>
@@ -2141,6 +2145,9 @@ async function downloadBrochurePDF(btn){
   if(btn){btn.disabled=true;btn.textContent=t('dl_wait');}
   try{
     const scale=Math.min(2,(window.devicePixelRatio||1)*1.5);
+    // Where the PDF must start a new page, measured on the cloned (print) layout
+    // so removed screen-only controls can't shift the offsets.
+    let breakAt=[];
     const canvas=await window.html2canvas(sheet,{
       scale:scale,
       backgroundColor:'#ffffff',
@@ -2150,6 +2157,13 @@ async function downloadBrochurePDF(btn){
       onclone:(doc)=>{
         // Drop screen-only controls (e.g. the in-sheet Download button) from the PDF.
         doc.querySelectorAll('#sec-brochure .no-print').forEach(el=>el.remove());
+        const cs=doc.querySelector('#sec-brochure .sheet');
+        if(cs){
+          const top=cs.getBoundingClientRect().top;
+          breakAt=Array.from(cs.querySelectorAll('.page-break'))
+            .map(el=>el.getBoundingClientRect().top-top)
+            .filter(v=>v>0);
+        }
       }
     });
     const {jsPDF}=window.jspdf;
@@ -2157,16 +2171,32 @@ async function downloadBrochurePDF(btn){
     const pageW=pdf.internal.pageSize.getWidth();   // 612pt  (8.5in)
     const pageH=pdf.internal.pageSize.getHeight();  // 792pt  (11in)
     const imgW=pageW;
-    const imgH=canvas.height*(imgW/canvas.width);
-    const imgData=canvas.toDataURL('image/jpeg',0.85);
-    let heightLeft=imgH, position=0;
-    pdf.addImage(imgData,'JPEG',0,position,imgW,imgH,undefined,'FAST');
-    heightLeft-=pageH;
-    while(heightLeft>0){
-      position-=pageH;
-      pdf.addPage();
-      pdf.addImage(imgData,'JPEG',0,position,imgW,imgH,undefined,'FAST');
-      heightLeft-=pageH;
+    // Cut the rendered sheet at each marked heading, then fill each section a
+    // page at a time. (Slicing at fixed heights would ignore the page breaks.)
+    const pxPerPage=Math.max(1,Math.floor(pageH*canvas.width/pageW));
+    const cuts=[0].concat(breakAt.map(v=>Math.round(v*scale))
+      .filter(v=>v>0&&v<canvas.height)).concat([canvas.height]);
+    const bounds=Array.from(new Set(cuts)).sort((a,b)=>a-b);
+    const slice=document.createElement('canvas');
+    const sctx=slice.getContext('2d');
+    let firstPage=true;
+    for(let i=0;i<bounds.length-1;i++){
+      const segStart=bounds[i], segEnd=bounds[i+1];
+      if(segEnd-segStart<2)continue;
+      for(let y=segStart;y<segEnd;y+=pxPerPage){
+        const h=Math.min(pxPerPage,segEnd-y);
+        slice.width=canvas.width; slice.height=h;
+        sctx.fillStyle='#ffffff'; sctx.fillRect(0,0,slice.width,slice.height);
+        sctx.drawImage(canvas,0,y,canvas.width,h,0,0,canvas.width,h);
+        if(!firstPage)pdf.addPage();
+        firstPage=false;
+        pdf.addImage(slice.toDataURL('image/jpeg',0.85),'JPEG',0,0,
+          imgW,h*(imgW/canvas.width),undefined,'FAST');
+      }
+    }
+    if(firstPage){ // nothing measured — fall back to a single full-height image
+      pdf.addImage(canvas.toDataURL('image/jpeg',0.85),'JPEG',0,0,
+        imgW,canvas.height*(imgW/canvas.width),undefined,'FAST');
     }
     const base=(cfg.chapter.name||'aic').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'')||'aic';
     pdf.save(base+'-sponsorship-brochure.pdf');
