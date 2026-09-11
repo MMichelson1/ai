@@ -43,6 +43,19 @@ var STREAM = 'commercial';
 // Commissions exist only on the commercial side.
 function _commissionable() { return STREAM === 'commercial'; }
 
+// Masked notify list for the health check, so you can confirm from the /exec URL
+// which addresses THIS DEPLOYED VERSION will email — without publishing them.
+// "mark@aicollective.com" -> "ma**@aicollective.com"
+function _maskedNotify() {
+  return NOTIFY.map(function (a) {
+    var at = String(a).indexOf('@');
+    if (at < 1) return '***';
+    var user = String(a).slice(0, at), dom = String(a).slice(at);
+    return (user.length <= 2 ? user.charAt(0) : user.slice(0, 2)) +
+      new Array(Math.max(2, user.length - 2) + 1).join('*') + dom;
+  });
+}
+
 function doGet(e) {
   var p = (e && e.parameter) || {};
   if (p.action === 'listClients') {
@@ -60,7 +73,8 @@ function doGet(e) {
     catch (err2) { out = { ok: false, error: String(err2) }; }
     return _jsonp(p.callback, out);
   }
-  return _json({ ok: true, service: 'AIC Sponsorship Studio reporting', stream: STREAM });
+  return _json({ ok: true, service: 'AIC Sponsorship Studio reporting', stream: STREAM,
+    notifyCount: NOTIFY.length, notify: _maskedNotify() });
 }
 
 function doPost(e) {
