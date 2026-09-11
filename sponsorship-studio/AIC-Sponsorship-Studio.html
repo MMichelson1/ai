@@ -696,7 +696,7 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
 /* ═══════════════ CONFIG & DEFAULTS ═══════════════ */
 const CFG_KEY='aic-studio-v6';
 /* Fallback sponsor contact shown on every brochure until a chapter sets its own
-   in Settings → Sponsor contact. Fill in Erich's real email and/or calendar link
+   in Settings → Sponsor contact. Fill in the default contact's email and/or calendar link
    here to make the default live for every chapter. */
 /* Reporting endpoint — the Google Apps Script /exec URL. Empty = reporting OFF.
    See sponsorship-studio/reporting/README.md for setup. */
@@ -707,7 +707,10 @@ const REPORT_ENDPOINT='https://script.google.com/macros/s/AKfycbx7NGc0b19dvh26zk
    Paste that deployment's /exec URL here to switch the non-profit stream on. */
 const REPORT_ENDPOINT_NP='https://script.google.com/macros/s/AKfycbx-qrHp448jOtGPYQVN8UuQK0TVkwwE7aiENZ7__c2nXt-Kb7l7V8GeRqzETgC48JrkRw/exec';
 function endpointFor(stream){return stream==='nonprofit'?REPORT_ENDPOINT_NP:REPORT_ENDPOINT;}
-const DEFAULT_CONTACT={name:'Erich Starrett', title:'Director, Sponsor Partnerships', email:'erich@aicollective.com', cal:'https://calendly.com/erichstarrett'};
+/* Default sponsor contact shown on the brochure when a chapter has not set its own.
+   cal is the booking link; left empty until a scheduling link is supplied, in which
+   case the brochure shows the email button only. */
+const DEFAULT_CONTACT={name:'Mark Michelson', title:'Region Director, The AI Collective', email:'mark@aicollective.com', cal:''};
 /* Default community-photo image shown on the brochure when a chapter has NOT
    uploaded any of its own event photos. Paste the AIC group photo as a data: URI
    (data:image/...) here. Leave '' to show nothing when a chapter has no photos. */
@@ -2025,7 +2028,7 @@ function renderBrochure(){
   const c=cfg.chapter,m=mult();
   const d=T[c.lang]||T.en;
   const cta=c.ctaUrl||'';
-  // Effective sponsor contact: this chapter's own, else the org default (Erich).
+  // Effective sponsor contact: this chapter's own, else the org default.
   const usingDefault=!(c.spName||c.spEmail||c.spCal);
   const sc={
     name:(c.spName||DEFAULT_CONTACT.name||'').trim(),
@@ -2232,14 +2235,14 @@ function renderSettings(){
       <div class="fg full" style="border-top:1px dashed var(--line);padding-top:12px;margin-top:2px">
         <div style="font-weight:800;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink)">Sponsor contact — the brochure's “Book a sponsorship call” button</div>
         <div style="color:var(--mut);font-size:11px;margin-top:3px">Add an email, a calendar link (e.g. Calendly), or both. Leave blank to use the organization default${DEFAULT_CONTACT.name?` (a call with ${esc(DEFAULT_CONTACT.name)})`:''}.</div></div>
-      <div class="fg"><label>Sponsor contact name</label><input value="${esc(c.spName)}" placeholder="${esc(DEFAULT_CONTACT.name||'e.g. Erich')} (default)" onchange="cfg.chapter.spName=this.value;saveCfg()"></div>
+      <div class="fg"><label>Sponsor contact name</label><input value="${esc(c.spName)}" placeholder="${esc(DEFAULT_CONTACT.name||'e.g. Mark Michelson')} (default)" onchange="cfg.chapter.spName=this.value;saveCfg()"></div>
       <div class="fg"><label>Sponsor contact email</label><input value="${esc(c.spEmail)}" placeholder="you@aicollective.com" onchange="cfg.chapter.spEmail=this.value.trim();saveCfg();renderSettings()"></div>
       <div class="fg"><label>Sponsor call / calendar link (Calendly, etc.)</label><input value="${esc(c.spCal)}" placeholder="https://calendly.com/your-name" onchange="cfg.chapter.spCal=this.value.trim();saveCfg();renderSettings()"></div>
       <div class="fg full"><label>Chapter page link on aicollective.com (optional — shows as “Learn about our chapter”)</label><input value="${esc(c.chapterUrl)}" placeholder="https://aicollective.com/your-chapter" onchange="cfg.chapter.chapterUrl=this.value.trim();saveCfg()"></div>
       <div class="fg full" style="border-top:1px dashed var(--line);padding-top:12px;margin-top:2px">
         <div style="font-weight:800;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink)">Referred by — referral stipend (5%)</div>
         <div style="color:var(--mut);font-size:11px;margin-top:3px">Your name and email as the referrer. It appears on brochures you distribute and pre-fills the “Referred by” field on proposals, so qualified leads are credited to you. Paid as a stipend, subject to approval by ${esc(cfg.org.fiscal||'the fiscal sponsor')}. Optional.</div></div>
-      <div class="fg"><label>Referred by — name</label><input value="${esc(c.refByName)}" placeholder="e.g. Erich Starrett" onchange="cfg.chapter.refByName=this.value;saveCfg()"></div>
+      <div class="fg"><label>Referred by — name</label><input value="${esc(c.refByName)}" placeholder="e.g. your name" onchange="cfg.chapter.refByName=this.value;saveCfg()"></div>
       <div class="fg"><label>Referred by — email</label><input value="${esc(c.refByEmail)}" placeholder="you@aicollective.com" onchange="cfg.chapter.refByEmail=this.value.trim();saveCfg()"></div>
       <div class="fg"><label>Chapter contact email</label><input value="${esc(c.email)}" onchange="cfg.chapter.email=this.value;saveCfg()"></div>
       <div class="fg"><label>"Events hosted" stat</label><input value="${esc(c.statEvents)}" onchange="cfg.chapter.statEvents=this.value;saveCfg()"></div>

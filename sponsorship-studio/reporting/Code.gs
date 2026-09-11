@@ -28,7 +28,7 @@
 
 var NOTIFY = ['mark@aicollective.com'];
 
-// HQ passcode — unlocks READING every chapter's clients (for you / Erich / an HQ
+// HQ passcode — unlocks READING every chapter's clients (for HQ / the region / an
 // dashboard). CHANGE THIS to a strong phrase before deploying, and keep it private.
 // Chapter leads never need it; they use their own chapter passcode.
 var HQ_PASS = 'CHANGE-ME-HQ-PASSCODE';
