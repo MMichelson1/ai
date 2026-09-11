@@ -845,6 +845,7 @@ const state = {
   facMemd:FAC_MEMD_DEFAULT,   // the lead facilitator's me.md (editable, saved in browser)
   credNotes:true,             // weave "why I can lead this" into slide speaker notes
   deckLogo:"aic",             // logo on the deck: "aic" (in-person) | "stitchs" (Maven) | "none"
+  pocketLink:"",              // per-event Pocket summary notes link, used in the follow-up letter
   activeTab:"luma"
 };
 
@@ -1844,6 +1845,7 @@ const TABS = [
   {id:"brief", label:"Slide Brief", accent:"var(--p2)"},
   {id:"pptx", label:"PowerPoint", accent:"var(--p3)"},
   {id:"workbook", label:"Workbook", accent:"var(--p3)"},
+  {id:"followup", label:"Follow-up", accent:"var(--p1)"},
   {id:"cred", label:"Facilitator", accent:"var(--p2)"},
   {id:"maven", label:"Maven", accent:"var(--p2)"}
 ];
@@ -1937,6 +1939,28 @@ function renderOutput(){
     panel.appendChild(note);
     out.appendChild(panel);
   }
+  else if(tab==="followup"){
+    const head=el("div","out-head");
+    const box=el("div"); box.appendChild(el("h2",null,"Follow-up Letter"));
+    box.appendChild(el("div","sub","Copy and email everyone who registered - attach the deck and the exercises"));
+    head.appendChild(box);
+    const sp=el("div","sp");
+    const copyBtn=el("button","btn sm","Copy"); copyBtn.onclick=()=>copyText(genFollowup());
+    const dl=el("button","btn sm ghost","Download"); dl.onclick=()=>saveFile("followup_"+slug(audLabel())+".txt", genFollowup());
+    sp.appendChild(copyBtn); sp.appendChild(dl);
+    head.appendChild(sp); out.appendChild(head);
+
+    // Pocket summary link input - drops into the letter without rebuilding the field (keeps focus)
+    const letterBox=el("div","doc md");
+    const refreshLetter=()=>{ letterBox.innerHTML=""; letterBox.appendChild(paraBlock(genFollowup())); };
+    const pform=el("div","doc"); pform.style.maxWidth="760px"; pform.style.marginBottom="14px";
+    const pit=inp(state.pocketLink, v=>{ state.pocketLink=v; refreshLetter(); }, "https://... your Pocket summary link");
+    pform.appendChild(fld("Pocket summary link", pit, "Paste this session's Pocket summary/notes link. It drops into the letter below and is shared as the “Pocket summary notes.” Leave blank if you don't have one yet."));
+    out.appendChild(pform);
+
+    refreshLetter();
+    out.appendChild(letterBox);
+  }
   else if(tab==="maven"){
     out.appendChild(docHead("Maven Cohort Materials", "Page copy, 3-week outline, and Lightning Lesson", genMaven, "maven_"+slug(audLabel())+".txt"));
     const d=el("div","doc md"); d.appendChild(paraBlock(genMaven())); out.appendChild(d);
@@ -1945,6 +1969,30 @@ function renderOutput(){
     out.appendChild(docHead("Facilitator Credibility", "Why you are qualified to lead each topic, plus your me.md", ()=>genFacilitator(model), "facilitator_"+slug(audLabel())+".md"));
     const d=el("div","doc md"); d.appendChild(paraBlock(genFacilitator(model))); out.appendChild(d);
   }
+}
+
+// Post-event follow-up letter to email everyone who registered.
+// Deck and exercises go as attachments; the Pocket summary link (if entered) is shared inline.
+function genFollowup(){
+  const c=state, aud=audLabel()||"Professionals";
+  const lead=c.lead.name||"Mark Michelson";
+  const pk=(c.pocketLink||"").trim();
+  let out="";
+  out += "Subject: Thank you - AI Fundamentals for "+aud+" (deck + notes inside)\n\n";
+  out += clean("Thank you for registering for The AI Collective workshop on AI Fundamentals for "+aud+".")+"\n\n";
+  out += clean("Attached is the PowerPoint deck and the workshop exercises.")+"\n\n";
+  if(pk){
+    out += "And here's a link to the Pocket summary notes: "+pk+"\n\n";
+  } else {
+    out += "And here's a link to the Pocket summary notes: [paste your Pocket summary link in the field above]\n\n";
+  }
+  out += "If you are interested in buying a Pocket notetaker, you can use this link to save 45% off the purchase. https://heypocket.com/11721185\n\n";
+  out += clean("For those of you who attended, I would appreciate if you could share a short quote that I can include in upcoming promotions for this class on Maven.")+"\n\n";
+  out += clean("Please respond to this email with your quote about how you felt about the value of the workshop and me as a course instructor.")+"\n\n";
+  out += "AI Collective events are published every week. Keep up with events in your area by subscribing to our regional calendar: https://luma.com/aicatl\n\n";
+  out += clean("Looking forward to seeing you again at an upcoming event!")+"\n\n";
+  out += lead+"\n";
+  return out;
 }
 
 // Per-topic credibility + the facilitator me.md, as one copy/paste document.
@@ -2435,7 +2483,7 @@ $("#resetBtn").onclick=()=>{
   if(!confirm("Clear all fields and start over?")) return;
   state.audience=""; state.audience2=""; state.label=""; state.noun=""; state.customName=""; state.icp=null; state.date=""; state.venue=VENUE_DEFAULT; state.seats=SEATS_DEFAULT;
   state.guests=[]; state.include={}; state.deep=[]; state.angle="";
-  state.maven={on:false,title:"",start:"",price:"",url:""}; state.activeTab="luma";
+  state.maven={on:false,title:"",start:"",price:"",url:""}; state.pocketLink=""; state.activeTab="luma";
   rerenderAll();
 };
 $("#themeBtn").onclick=()=>{
