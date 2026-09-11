@@ -705,7 +705,7 @@ const REPORT_ENDPOINT='https://script.google.com/macros/s/AKfycbzXI-RActUcvY46pV
 /* Non-profit (501c3 / fiscal sponsor) reporting book — a SEPARATE Google Sheet and
    a SEPARATE Apps Script deployment, so the two sets of books are never commingled.
    Paste that deployment's /exec URL here to switch the non-profit stream on. */
-const REPORT_ENDPOINT_NP='https://script.google.com/macros/s/AKfycbyxkF-cAxm-2FimzDwiqgmkt9td4cUli4fXOEb84tQta_qaVn0FoeKqqiC81lH1JqAkKQ/exec';
+const REPORT_ENDPOINT_NP='https://script.google.com/macros/s/AKfycbwGV8R9exaJxBikjX0CJVPyW65TAV4yhacDyKtWwMYIP_dFvs364qiDBjxhl3jR66ySkA/exec';
 function endpointFor(stream){return stream==='nonprofit'?REPORT_ENDPOINT_NP:REPORT_ENDPOINT;}
 /* Default sponsor contact shown on the brochure when a chapter has not set its own.
    cal is the booking link; left empty until a scheduling link is supplied, in which
