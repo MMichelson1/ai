@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-09T18:42:01.898Z",
+  "generatedAt": "2026-09-11T01:05:25.315Z",
   "sample": false,
   "markets": {
     "atlanta": {
@@ -20,8 +20,8 @@
       "type": "luma-calendar",
       "aic": true,
       "status": "ok",
-      "count": 4,
-      "lastChecked": "2026-09-09T18:42:01.898Z",
+      "count": 3,
+      "lastChecked": "2026-09-11T01:05:25.315Z",
       "note": ""
     },
     {
@@ -32,7 +32,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-09-09T18:42:02.956Z",
+      "lastChecked": "2026-09-11T01:05:26.419Z",
       "note": "Get the section's public iCal feed URL from events.vtools.ieee.org (Events → Export/iCal for the Atlanta Section), paste it into 'url', then set enabled:true."
     },
     {
@@ -43,7 +43,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-09-09T18:42:02.956Z",
+      "lastChecked": "2026-09-11T01:05:26.419Z",
       "note": "Any Meetup group exposes an iCal feed at https://www.meetup.com/<group-slug>/events/ical/ — add one source entry per local AI group and set enabled:true."
     },
     {
@@ -54,7 +54,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-09-09T18:42:02.956Z",
+      "lastChecked": "2026-09-11T01:05:26.419Z",
       "note": "Most university event calendars (Localist, Google Calendar) publish an ICS feed — paste it here. AI keyword filtering is applied automatically."
     },
     {
@@ -65,7 +65,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-09-09T18:42:02.956Z",
+      "lastChecked": "2026-09-11T01:05:26.419Z",
       "note": "Eventbrite retired public event search; per-organizer listings work via their free API. Add EVENTBRITE_TOKEN as a repo secret and organizer IDs here — see README."
     },
     {
@@ -76,7 +76,7 @@
       "aic": false,
       "status": "manual",
       "count": 0,
-      "lastChecked": "2026-09-09T18:42:02.956Z",
+      "lastChecked": "2026-09-11T01:05:26.419Z",
       "note": "LinkedIn and Facebook publish no feeds. Chapter leads add validated in-person events to data/manual-events.json via pull request; each entry must link to a live listing on a trusted site."
     },
     {
@@ -86,50 +86,12 @@
       "type": "luma-calendar",
       "aic": true,
       "status": "ok",
-      "count": 21,
-      "lastChecked": "2026-09-09T18:42:02.956Z",
+      "count": 19,
+      "lastChecked": "2026-09-11T01:05:26.419Z",
       "note": ""
     }
   ],
   "events": [
-    {
-      "id": "evt-NW8RBaCAwwQj42h@events.lu.ma",
-      "title": "AI Fundamentals for Community Building (w/ The AI Collective)",
-      "start": "2026-09-09T21:30:00.000Z",
-      "end": "2026-09-10T00:00:00.000Z",
-      "allDay": false,
-      "tz": "America/New_York",
-      "location": "Improving, 11675 Rainwater Dr #100, Alpharetta, GA 30009, USA",
-      "lat": 34.065376199999996,
-      "lon": -84.290039,
-      "organizer": "The AI Collective — Atlanta",
-      "url": "https://lu.ma/aicatl",
-      "sourceDomain": "lu.ma",
-      "aic": true,
-      "type": "meetup",
-      "price": "check",
-      "capacity": null,
-      "market": "atlanta"
-    },
-    {
-      "id": "evt-r6bKQ944kmOopcY@events.lu.ma",
-      "title": "OWNERS WHO BUILD · SESSION 1: AI for Small Business Owners, Getting Your Customers to Come Back",
-      "start": "2026-09-10T21:30:00.000Z",
-      "end": "2026-09-11T00:00:00.000Z",
-      "allDay": false,
-      "tz": null,
-      "location": "Scadding Court Community Centre, 707 Dundas St W, Toronto, ON M5T 2W6, Canada",
-      "lat": 43.651581799999995,
-      "lon": -79.4050397,
-      "organizer": "The AI Collective",
-      "url": "https://lu.ma/genai-collective",
-      "sourceDomain": "lu.ma",
-      "aic": true,
-      "type": "meetup",
-      "price": "check",
-      "capacity": null,
-      "market": "global"
-    },
     {
       "id": "evt-XlL1yRpCtA1uGTs@events.lu.ma",
       "title": "Hack for Humanity: São Paulo",
@@ -232,9 +194,9 @@
       "end": "2026-09-16T01:00:00.000Z",
       "allDay": false,
       "tz": null,
-      "location": "Toronto, ON, Canada",
-      "lat": 43.6548253,
-      "lon": -79.388447,
+      "location": "The Village Hive Eglinton - Coworking & Meeting Space, 120 Eglinton Ave E #202, Toronto, ON M4P 1E2, Canada",
+      "lat": 43.7076991,
+      "lon": -79.394878,
       "organizer": "The AI Collective",
       "url": "https://lu.ma/genai-collective",
       "sourceDomain": "lu.ma",
