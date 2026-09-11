@@ -26,7 +26,7 @@
  * To change who gets notified, edit NOTIFY below and redeploy.
  */
 
-var NOTIFY = ['mark@aicollective.com', 'erich@aicollective.com'];
+var NOTIFY = ['mark@aicollective.com'];
 
 // HQ passcode — unlocks READING every chapter's clients (for you / Erich / an HQ
 // dashboard). CHANGE THIS to a strong phrase before deploying, and keep it private.

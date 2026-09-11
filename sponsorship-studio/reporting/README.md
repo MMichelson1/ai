@@ -21,7 +21,9 @@ and the Studio behaves exactly as before.
    (ends in `/exec`).
 4. Send that URL back to be set as the Studio's `REPORT_ENDPOINT` (one-line change,
    then the hosted Studio redeploys). Notifications go to `mark@aicollective.com`
-   and `erich@aicollective.com` — edit `NOTIFY` in `Code.gs` to change that.
+   only — edit `NOTIFY` in `Code.gs` to change who is emailed. Note that `NOTIFY`
+   lives in each deployed script, so changing it here does nothing until you paste
+   it into both Apps Script projects and redeploy them.
 
 ## What gets sent
 
