@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-11T01:41:16.089Z",
+  "generatedAt": "2026-09-13T14:10:58.631Z",
   "sample": false,
   "markets": {
     "atlanta": {
@@ -21,7 +21,7 @@
       "aic": true,
       "status": "ok",
       "count": 3,
-      "lastChecked": "2026-09-11T01:41:16.089Z",
+      "lastChecked": "2026-09-13T14:10:58.632Z",
       "note": ""
     },
     {
@@ -32,7 +32,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-09-11T01:41:17.022Z",
+      "lastChecked": "2026-09-13T14:10:59.734Z",
       "note": "Get the section's public iCal feed URL from events.vtools.ieee.org (Events → Export/iCal for the Atlanta Section), paste it into 'url', then set enabled:true."
     },
     {
@@ -43,7 +43,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-09-11T01:41:17.022Z",
+      "lastChecked": "2026-09-13T14:10:59.734Z",
       "note": "Any Meetup group exposes an iCal feed at https://www.meetup.com/<group-slug>/events/ical/ — add one source entry per local AI group and set enabled:true."
     },
     {
@@ -54,7 +54,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-09-11T01:41:17.022Z",
+      "lastChecked": "2026-09-13T14:10:59.734Z",
       "note": "Most university event calendars (Localist, Google Calendar) publish an ICS feed — paste it here. AI keyword filtering is applied automatically."
     },
     {
@@ -65,7 +65,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-09-11T01:41:17.022Z",
+      "lastChecked": "2026-09-13T14:10:59.734Z",
       "note": "Eventbrite retired public event search; per-organizer listings work via their free API. Add EVENTBRITE_TOKEN as a repo secret and organizer IDs here — see README."
     },
     {
@@ -76,7 +76,7 @@
       "aic": false,
       "status": "manual",
       "count": 0,
-      "lastChecked": "2026-09-11T01:41:17.022Z",
+      "lastChecked": "2026-09-13T14:10:59.734Z",
       "note": "LinkedIn and Facebook publish no feeds. Chapter leads add validated in-person events to data/manual-events.json via pull request; each entry must link to a live listing on a trusted site."
     },
     {
@@ -86,31 +86,12 @@
       "type": "luma-calendar",
       "aic": true,
       "status": "ok",
-      "count": 19,
-      "lastChecked": "2026-09-11T01:41:17.022Z",
+      "count": 18,
+      "lastChecked": "2026-09-13T14:10:59.734Z",
       "note": ""
     }
   ],
   "events": [
-    {
-      "id": "evt-XlL1yRpCtA1uGTs@events.lu.ma",
-      "title": "Hack for Humanity: São Paulo",
-      "start": "2026-09-12T12:00:00.000Z",
-      "end": "2026-09-12T20:00:00.000Z",
-      "allDay": false,
-      "tz": null,
-      "location": "Anhembi Morumbi University - Vila Olímpia Campus, R. Casa do Ator, 294 - Vila Olímpia, São Paulo - SP, 04546-001, Brazil",
-      "lat": -23.600238299999997,
-      "lon": -46.6766337,
-      "organizer": "The AI Collective",
-      "url": "https://lu.ma/genai-collective",
-      "sourceDomain": "lu.ma",
-      "aic": true,
-      "type": "meetup",
-      "price": "check",
-      "capacity": null,
-      "market": "global"
-    },
     {
       "id": "evt-DkZ1bwx8naGpI7f@events.lu.ma",
       "title": "The AI Collective | Building Together: From Idea to Scalable Business",
@@ -170,7 +151,7 @@
     },
     {
       "id": "evt-N0pJKGzCrH3eAOH@events.lu.ma",
-      "title": "The Human Side of AI",
+      "title": "The Human Side of AI (New date coming soon)",
       "start": "2026-09-15T22:00:00.000Z",
       "end": "2026-09-16T00:00:00.000Z",
       "allDay": false,
@@ -322,7 +303,7 @@
     },
     {
       "id": "evt-WplpweA7zSR4vNo@events.lu.ma",
-      "title": "AI Collective: Interactive AI Workshop (w/ The AI Collective)",
+      "title": "Codex Meetup & Talk – Charlotte",
       "start": "2026-09-24T22:00:00.000Z",
       "end": "2026-09-25T00:00:00.000Z",
       "allDay": false,
@@ -334,7 +315,7 @@
       "url": "https://lu.ma/genai-collective",
       "sourceDomain": "lu.ma",
       "aic": true,
-      "type": "workshop",
+      "type": "panel",
       "price": "check",
       "capacity": null,
       "market": "global"
