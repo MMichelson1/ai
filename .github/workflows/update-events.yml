@@ -1,5 +1,6 @@
 # Refreshes event data from calendar feeds and deploys the site (event calendar
-# + AIC Sponsorship Studio + AI Fundamentals Workshop Builder) to GitHub Pages.
+# + AIC Sponsorship Studio + AI Fundamentals Workshop Builder + personal site)
+# to GitHub Pages.
 # Runs entirely on GitHub's servers with plain HTTP — no AI tokens are used, ever.
 name: Update events & deploy site
 
@@ -12,6 +13,7 @@ on:
       - "event-calendar/**"
       - "sponsorship-studio/**"
       - "workshop-builder/**"
+      - "personal-site/**"
       - ".github/workflows/update-events.yml"
 
 permissions:
@@ -67,6 +69,9 @@ jobs:
           cp workshop-builder/index.html _site/workshop-builder/index.html
           cp workshop-builder/manifest.webmanifest _site/workshop-builder/manifest.webmanifest
           cp workshop-builder/icon-192.png workshop-builder/icon-512.png workshop-builder/apple-touch-icon.png _site/workshop-builder/
+          # Mark's personal site -> /mark/
+          mkdir -p _site/mark
+          cp personal-site/index.html _site/mark/index.html
           # (backups/, scripts/, and READMEs are intentionally NOT published.)
       - name: Upload site
         uses: actions/upload-pages-artifact@v3
