@@ -846,6 +846,7 @@ const state = {
   credNotes:true,             // weave "why I can lead this" into slide speaker notes
   deckLogo:"aic",             // logo on the deck: "aic" (in-person) | "stitchs" (Maven) | "none"
   pocketLink:"",              // per-event Pocket summary notes link, used in the follow-up letter
+  attachWorkbook:false,       // follow-up letter: mention the workbook as an attachment (most download it via QR during the session)
   activeTab:"luma"
 };
 
@@ -1956,6 +1957,15 @@ function renderOutput(){
     const pform=el("div","doc"); pform.style.maxWidth="760px"; pform.style.marginBottom="14px";
     const pit=inp(state.pocketLink, v=>{ state.pocketLink=v; refreshLetter(); }, "https://... your Pocket summary link");
     pform.appendChild(fld("Pocket summary link", pit, "Paste this session's Pocket summary/notes link. It drops into the letter below and is shared as the “Pocket summary notes.” Leave blank if you don't have one yet."));
+    // Optional workbook attachment - off by default, since most attendees download it via the QR during the session
+    const tg=el("div","toggle"); tg.setAttribute("data-on", state.attachWorkbook?"1":"0"); tg.tabIndex=0; tg.style.marginTop="12px";
+    tg.innerHTML='<span class="switch"></span><span>Attaching the workbook to this email</span>';
+    const flipWb=()=>{ state.attachWorkbook=!state.attachWorkbook; tg.setAttribute("data-on", state.attachWorkbook?"1":"0"); refreshLetter(); };
+    tg.onclick=flipWb; tg.onkeydown=e=>{ if(e.key===" "||e.key==="Enter"){e.preventDefault();flipWb();} };
+    pform.appendChild(tg);
+    const wbNote=el("div","hint"); wbNote.style.marginTop="8px";
+    wbNote.innerHTML="Turn on only if you're attaching the workbook. Most attendees download it during the session via the QR code, so it's off by default. The deck and exercises are always listed as attachments.";
+    pform.appendChild(wbNote);
     out.appendChild(pform);
 
     refreshLetter();
@@ -1980,7 +1990,11 @@ function genFollowup(){
   let out="";
   out += "Subject: Thank you - AI Fundamentals for "+aud+" (deck + notes inside)\n\n";
   out += clean("Thank you for registering for The AI Collective workshop on AI Fundamentals for "+aud+".")+"\n\n";
-  out += clean("Attached is the PowerPoint deck and the workshop exercises.")+"\n\n";
+  // Attachments: deck + exercises always; workbook only when the facilitator is attaching it.
+  const atts=["the PowerPoint deck","the workshop exercises"];
+  if(c.attachWorkbook) atts.push("the workbook");
+  const attList = atts.length>2 ? (atts.slice(0,-1).join(", ")+", and "+atts[atts.length-1]) : atts.join(" and ");
+  out += clean((atts.length>1?"Attached are ":"Attached is ")+attList+".")+"\n\n";
   if(pk){
     out += "And here's a link to the Pocket summary notes: "+pk+"\n\n";
   } else {
@@ -2483,7 +2497,7 @@ $("#resetBtn").onclick=()=>{
   if(!confirm("Clear all fields and start over?")) return;
   state.audience=""; state.audience2=""; state.label=""; state.noun=""; state.customName=""; state.icp=null; state.date=""; state.venue=VENUE_DEFAULT; state.seats=SEATS_DEFAULT;
   state.guests=[]; state.include={}; state.deep=[]; state.angle="";
-  state.maven={on:false,title:"",start:"",price:"",url:""}; state.pocketLink=""; state.activeTab="luma";
+  state.maven={on:false,title:"",start:"",price:"",url:""}; state.pocketLink=""; state.attachWorkbook=false; state.activeTab="luma";
   rerenderAll();
 };
 $("#themeBtn").onclick=()=>{
