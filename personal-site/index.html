@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mark Michelson</title>
+<meta name="description" content="Mark Michelson. Marketing researcher, strategist, and AI educator in Atlanta. Founder of Threads Marketing Research & Strategy and Stitchs AI Training. Region Director, The AI Collective.">
+<meta property="og:title" content="Mark Michelson">
+<meta property="og:description" content="Researcher, strategist, and AI educator. I translate what customers need into what companies build.">
+<meta property="og:type" content="profile">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231f3a34'/%3E%3Cpath d='M4 23 L11 13 L15 18 L20 9 L28 23' fill='none' stroke='%23e8b86a' stroke-width='2.5' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f7f3ec;
+    --surface: #fffdf9;
+    --ink: #1d2320;
+    --muted: #5b625e;
+    --line: #e2dbcf;
+    --accent: #1f5a4c;
+    --accent-soft: #e3ece8;
+    --warm: #b7792b;
+    --ridge-1: #c9d6cf;
+    --ridge-2: #9fb7ac;
+    --ridge-3: #1f5a4c;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #141816;
+      --surface: #1b201e;
+      --ink: #ece7de;
+      --muted: #a3aaa5;
+      --line: #2e3532;
+      --accent: #8fc7b5;
+      --accent-soft: #22302b;
+      --warm: #e8b86a;
+      --ridge-1: #1f2724;
+      --ridge-2: #2b3a34;
+      --ridge-3: #4f8a78;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #141816;
+    --surface: #1b201e;
+    --ink: #ece7de;
+    --muted: #a3aaa5;
+    --line: #2e3532;
+    --accent: #8fc7b5;
+    --accent-soft: #22302b;
+    --warm: #e8b86a;
+    --ridge-1: #1f2724;
+    --ridge-2: #2b3a34;
+    --ridge-3: #4f8a78;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 17px/1.65 Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent); text-underline-offset: 3px; }
+  a:hover { color: var(--warm); }
+
+  .wrap { max-width: 980px; margin: 0 auto; padding: 0 24px; }
+  @media (max-width: 600px) { .wrap { padding: 0 16px; } }
+
+  /* Nav */
+  nav {
+    position: sticky; top: 0; z-index: 10;
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+  }
+  nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 56px; gap: 16px; }
+  .brand { font-family: Fraunces, Georgia, serif; font-weight: 600; font-size: 19px; color: var(--ink); text-decoration: none; }
+  nav ul { list-style: none; display: flex; gap: 22px; margin: 0; padding: 0; font-size: 15px; }
+  nav ul a { color: var(--muted); text-decoration: none; }
+  nav ul a:hover { color: var(--ink); }
+  @media (max-width: 720px) { nav ul li:not(.keep) { display: none; } }
+
+  /* Hero */
+  header.hero { position: relative; overflow: hidden; padding: 88px 0 0; }
+  .eyebrow { font-size: 13px; letter-spacing: .12em; text-transform: uppercase; color: var(--warm); font-weight: 600; margin: 0 0 18px; }
+  h1 {
+    font-family: Fraunces, Georgia, serif; font-weight: 600;
+    font-size: clamp(40px, 7vw, 72px); line-height: 1.04; letter-spacing: -.02em;
+    margin: 0 0 22px;
+  }
+  .lede { font-size: clamp(19px, 2.4vw, 23px); line-height: 1.5; max-width: 640px; color: var(--ink); margin: 0 0 30px; }
+  .lede em { font-style: normal; color: var(--accent); }
+  .cta { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 56px; }
+  .btn {
+    display: inline-block; padding: 12px 20px; border-radius: 999px; font-weight: 500; font-size: 15px;
+    text-decoration: none; border: 1px solid var(--accent);
+  }
+  .btn.primary { background: var(--accent); color: var(--bg); }
+  .btn.primary:hover { background: var(--warm); border-color: var(--warm); color: var(--bg); }
+  .btn.ghost { color: var(--accent); }
+  .btn.ghost:hover { color: var(--warm); border-color: var(--warm); }
+  .ridge { display: block; width: 100%; height: auto; }
+
+  /* Stats */
+  .stats { background: var(--ridge-3); color: #f7f3ec; }
+  .stats .wrap { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; padding-top: 34px; padding-bottom: 38px; }
+  .stat b { display: block; font-family: Fraunces, Georgia, serif; font-size: 36px; font-weight: 600; line-height: 1.1; }
+  .stat span { font-size: 14px; opacity: .85; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .stats { color: #0f1412; } }
+  :root[data-theme="dark"] .stats { color: #0f1412; }
+  @media (max-width: 720px) { .stats .wrap { grid-template-columns: repeat(2, 1fr); } }
+
+  /* Sections */
+  section { padding: 84px 0; border-bottom: 1px solid var(--line); }
+  section:last-of-type { border-bottom: 0; }
+  h2 {
+    font-family: Fraunces, Georgia, serif; font-weight: 600;
+    font-size: clamp(28px, 4vw, 38px); line-height: 1.15; letter-spacing: -.01em; margin: 0 0 14px;
+  }
+  .kicker { font-size: 13px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); font-weight: 600; margin: 0 0 10px; }
+  .intro { max-width: 680px; color: var(--muted); margin: 0 0 40px; }
+  p { margin: 0 0 16px; }
+
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  @media (max-width: 860px) { .cards { grid-template-columns: 1fr; } }
+  .card {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 26px;
+    display: flex; flex-direction: column;
+  }
+  .card .role { font-size: 13px; color: var(--warm); font-weight: 600; letter-spacing: .04em; margin-bottom: 6px; }
+  .card h3 { font-family: Fraunces, Georgia, serif; font-size: 22px; font-weight: 600; line-height: 1.25; margin: 0 0 12px; }
+  .card p { font-size: 15.5px; color: var(--muted); }
+  .card .more { margin-top: auto; font-size: 15px; font-weight: 500; }
+
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start; }
+  @media (max-width: 860px) { .two { grid-template-columns: 1fr; gap: 32px; } }
+
+  /* Approach list */
+  .steps { list-style: none; padding: 0; margin: 0; counter-reset: s; }
+  .steps li { counter-increment: s; position: relative; padding: 0 0 18px 48px; }
+  .steps li::before {
+    content: counter(s); position: absolute; left: 0; top: 0;
+    width: 32px; height: 32px; border-radius: 50%; background: var(--accent-soft); color: var(--accent);
+    display: grid; place-items: center; font-weight: 600; font-size: 14px;
+  }
+  .steps b { display: block; }
+  .steps span { color: var(--muted); font-size: 15.5px; }
+
+  /* Timeline */
+  .timeline { list-style: none; margin: 0; padding: 0; border-left: 2px solid var(--line); }
+  .timeline li { position: relative; padding: 0 0 26px 26px; }
+  .timeline li::before {
+    content: ""; position: absolute; left: -7px; top: 8px; width: 12px; height: 12px; border-radius: 50%;
+    background: var(--bg); border: 2px solid var(--accent);
+  }
+  .timeline .yr { font-size: 13px; font-weight: 600; color: var(--warm); letter-spacing: .04em; }
+  .timeline b { display: block; font-size: 17px; }
+  .timeline span { color: var(--muted); font-size: 15.5px; }
+
+  /* Clients */
+  .clients { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0 40px; }
+  @media (max-width: 720px) { .clients { grid-template-columns: 1fr; } }
+  .clients div { padding: 16px 0; border-top: 1px solid var(--line); }
+  .clients dt { font-weight: 600; font-size: 15px; margin-bottom: 4px; }
+  .clients dd { margin: 0; color: var(--muted); font-size: 15.5px; }
+
+  /* Associations */
+  .assoc { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  @media (max-width: 720px) { .assoc { grid-template-columns: 1fr; } }
+  .assoc li { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px; }
+  .assoc b { display: block; }
+  .assoc span { color: var(--muted); font-size: 15px; }
+
+  /* Personal */
+  .personal { background: var(--accent-soft); }
+  .quote {
+    font-family: Fraunces, Georgia, serif; font-size: clamp(22px, 3vw, 28px); line-height: 1.4;
+    border-left: 3px solid var(--warm); padding-left: 22px; margin: 0 0 24px;
+  }
+
+  /* Contact */
+  .contact { text-align: center; }
+  .contact .intro { margin-left: auto; margin-right: auto; }
+  .contact .cta { justify-content: center; margin-bottom: 0; }
+
+  footer { padding: 28px 0 40px; font-size: 14px; color: var(--muted); }
+  footer .wrap { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+  .theme-toggle {
+    background: none; border: 1px solid var(--line); color: var(--muted); border-radius: 999px;
+    padding: 4px 12px; font: inherit; font-size: 13px; cursor: pointer;
+  }
+</style>
+</head>
+<body>
+
+<nav aria-label="Main">
+  <div class="wrap">
+    <a class="brand" href="#top">Mark Michelson</a>
+    <ul>
+      <li><a href="#now">Work</a></li>
+      <li><a href="#approach">Approach</a></li>
+      <li><a href="#background">Background</a></li>
+      <li><a href="#community">Community</a></li>
+      <li class="keep"><a href="#contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <p class="eyebrow">Atlanta, GA &middot; Roots in Eastern Tennessee</p>
+    <h1>I translate what customers need into what companies build.</h1>
+    <p class="lede">I'm a marketing researcher, strategist, and AI educator. For 42 years I've helped companies understand how customers think, what they need, and why they buy. <em>Now I teach professionals to use AI the same way: problem first, technology second.</em></p>
+    <div class="cta">
+      <a class="btn primary" href="mailto:mark@threadsmr.com">Email me</a>
+      <a class="btn ghost" href="https://www.linkedin.com/in/michelson" rel="noopener">LinkedIn</a>
+    </div>
+  </div>
+  <!-- A ridgeline that doubles as a sound wave. Mountains and music. -->
+  <svg class="ridge" viewBox="0 0 1440 180" preserveAspectRatio="none" aria-hidden="true">
+    <path fill="var(--ridge-1)" d="M0 120 L120 70 L220 105 L340 40 L470 95 L560 60 L700 110 L820 45 L950 100 L1060 55 L1200 95 L1320 50 L1440 85 L1440 180 L0 180 Z"/>
+    <path fill="var(--ridge-2)" d="M0 145 L90 110 L200 135 L310 85 L430 130 L540 100 L660 140 L780 90 L900 135 L1010 105 L1130 140 L1250 95 L1360 125 L1440 110 L1440 180 L0 180 Z"/>
+    <path fill="var(--ridge-3)" d="M0 180 L0 160 C80 150 140 140 220 152 C300 164 360 130 440 138 C520 146 580 168 680 158 C780 148 840 132 940 144 C1040 156 1100 170 1200 160 C1300 150 1370 142 1440 150 L1440 180 Z"/>
+  </svg>
+</header>
+
+<div class="stats" aria-label="At a glance">
+  <div class="wrap">
+    <div class="stat"><b>42</b><span>years as a founder and consultant</span></div>
+    <div class="stat"><b>22</b><span>countries worked in, 78 visited</span></div>
+    <div class="stat"><b>4,000+</b><span>AI Collective members in Atlanta's first year</span></div>
+    <div class="stat"><b>~100</b><span>in-person AI events hosted</span></div>
+  </div>
+</div>
+
+<main>
+
+<section id="now">
+  <div class="wrap">
+    <p class="kicker">What I do now</p>
+    <h2>Three hats, one thread.</h2>
+    <p class="intro">I'm not from tech, and that's my edge. Everything I do starts with the people on the other end: what they need, what gets in their way, and what they'll actually use.</p>
+    <div class="cards">
+      <article class="card">
+        <div class="role">Founder &amp; Principal &middot; 2009 to now</div>
+        <h3>Threads Marketing Research &amp; Strategy</h3>
+        <p>B2B and B2C research, qualitative and quantitative. I find the root problems customers need to solve and the best ways to help them buy. Fast, useful answers for marketing and insights leaders, without big-agency overhead.</p>
+        <a class="more" href="https://threadsmr.com" rel="noopener">threadsmr.com</a>
+      </article>
+      <article class="card">
+        <div class="role">Founder &amp; Lead Instructor &middot; 2024 to now</div>
+        <h3>Stitchs AI Training &amp; Solutions</h3>
+        <p>AI strategy, training, and insight. Formats run from free 90-minute workshops to multi-day cohorts. You learn to frame the problem before you touch the tool, then set up your workspace, projects, and chats so AI works the way you do.</p>
+        <a class="more" href="mailto:mark@threadsmr.com?subject=Stitchs%20AI%20training">Ask about training</a>
+      </article>
+      <article class="card">
+        <div class="role">Region Director, Southeast US &middot; Global Leadership Team</div>
+        <h3>The AI Collective</h3>
+        <p>I founded the Atlanta chapter in July 2025. It grew past 4,000 members in its first year through nearly 100 in-person events. I now help lead chapters across Georgia, Tennessee, and Alabama, and work on revenue and retention strategy globally.</p>
+        <a class="more" href="#community">More on community</a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="approach">
+  <div class="wrap two">
+    <div>
+      <p class="kicker">How I teach AI</p>
+      <h2>Lead with the problem. The tool comes last.</h2>
+      <p>Most AI training starts with features. Mine starts with the work you're trying to get done. When you give AI the full context around a problem, the answers get better and you spend less time fixing them.</p>
+      <p>I've been at this longer than the current wave. I worked with Microsoft in 2010 training models to analyze unstructured data. I built custom automation for research workflows from 1984 to 1994, before off-the-shelf tools existed. Then I took a full year off to study how AI is taught and how people actually learn it, before I started teaching.</p>
+      <p>I don't promise 10x. I focus on better work and time you get back.</p>
+    </div>
+    <ol class="steps" aria-label="The context I teach people to define">
+      <li><b>Goals</b><span>What does done look like, and for whom?</span></li>
+      <li><b>Blockers</b><span>What's in the way right now?</span></li>
+      <li><b>Audience</b><span>Who reads it, uses it, or approves it?</span></li>
+      <li><b>Intent</b><span>What should they think, feel, or do next?</span></li>
+      <li><b>Skills</b><span>What do you bring, and what do you need AI to cover?</span></li>
+      <li><b>Inputs and outputs</b><span>What goes in, and what has to come out?</span></li>
+      <li><b>Final deliverable</b><span>The format, length, and standard it has to meet.</span></li>
+    </ol>
+  </div>
+</section>
+
+<section id="background">
+  <div class="wrap two">
+    <div>
+      <p class="kicker">Background</p>
+      <h2>Four decades of listening to customers.</h2>
+      <p>I bought my first Macintosh in 1984, the year it launched, and started an ad agency on the back of it. Since then I've built and run companies across marketing research, customer experience, branding, store and facility design, and merchandising.</p>
+      <p>Clients are usually VP or C-suite marketing and insights leaders. They want strategic thinking, not just data.</p>
+      <p style="color:var(--muted);font-size:15.5px">Education: ABJ in Advertising, Grady College of Journalism, and B.S. in Marketing, Terry College of Business. Both at the University of Georgia.</p>
+    </div>
+    <ol class="timeline">
+      <li><div class="yr">2025 to now</div><b>The AI Collective</b><span>Founded Atlanta chapter. Region Director, Southeast US. Global Leadership Team.</span></li>
+      <li><div class="yr">2024 to now</div><b>Stitchs AI Training &amp; Solutions</b><span>Founder and lead instructor.</span></li>
+      <li><div class="yr">2016 to 2024</div><b>CX Talks / CX Forums</b><span>Founder and producer of speaker-driven CX conferences in Atlanta, Austin, Boston, Chicago, Dallas, and DC.</span></li>
+      <li><div class="yr">2009 to now</div><b>Threads Marketing Research &amp; Strategy</b><span>Founder and principal.</span></li>
+      <li><div class="yr">1984 to 2009</div><b>Michelson &amp; Associates</b><span>Global strategic research firm working in 22 countries for Fortune 100 clients.</span></li>
+      <li><div class="yr">1984</div><b>The Ad Shop</b><span>My first company. Sold in 1986.</span></li>
+    </ol>
+  </div>
+</section>
+
+<section id="clients">
+  <div class="wrap">
+    <p class="kicker">Selected clients</p>
+    <h2>Across industries, same question: what do customers actually need?</h2>
+    <p class="intro">A sample of the companies I've worked with, plus plenty of startups and small businesses.</p>
+    <dl class="clients">
+      <div><dt>Technology</dt><dd>Google, Microsoft, IBM, HP, Salesforce, Samsung, LG</dd></div>
+      <div><dt>Retail and CPG</dt><dd>Walmart, Kroger, Publix, Home Depot, Lowe's, Coca-Cola, PepsiCo, Heinz</dd></div>
+      <div><dt>Healthcare and pharma</dt><dd>Eli Lilly, GSK, American Cancer Society, Emory Healthcare, Northside Hospital, Piedmont</dd></div>
+      <div><dt>Industrial and agriculture</dt><dd>John Deere, AGCO, Case IH, Bridgestone/Firestone, Georgia-Pacific, Mitsubishi Electric Trane</dd></div>
+      <div><dt>Automotive</dt><dd>Ford, Toyota, GM, Nissan, Goodyear. Dealership facility design and in-store communications.</dd></div>
+      <div><dt>Multifamily housing</dt><dd>Trammell Crow, Post Properties, Gables, Insignia</dd></div>
+    </dl>
+  </div>
+</section>
+
+<section id="community">
+  <div class="wrap">
+    <p class="kicker">Community and industry</p>
+    <h2>I build communities that work.</h2>
+    <p class="intro">I've helped found and lead professional associations with global reach. I care about standards, ethics, and groups that treat people fairly. That instinct runs through everything I do.</p>
+    <ul class="assoc">
+      <li><b>Mystery Shopping Providers Association (MSPA)</b><span>Co-founder. First president and chair of the global board.</span></li>
+      <li><b>Mobile Marketing Research Association (MMRA)</b><span>Co-founder and executive director. Worked with ESOMAR and the Marketing Research Association on standards adopted across much of the world.</span></li>
+      <li><b>Customer Experience Professionals Association (CXPA)</b><span>Started and chaired the Atlanta chapter. Elected to the North America Regional Council.</span></li>
+      <li><b>International Designed Experiences Association (IDEA)</b><span>Co-founder of a free volunteer community for design professionals.</span></li>
+      <li><b>Qualitative Research Consultants Association (QRCA)</b><span>Board member and treasurer.</span></li>
+      <li><b>Social Media Research Association (SMRA)</b><span>Executive director.</span></li>
+    </ul>
+    <p style="margin-top:32px;max-width:680px">In 2020 I had six conferences lined up. When they had to be canceled, I refunded every ticket and every sponsor instead of forcing a weak online version. I ran a weekly Zoom fireside chat instead and brought the events back in person when it made sense.</p>
+  </div>
+</section>
+
+<section id="personal" class="personal">
+  <div class="wrap two">
+    <div>
+      <p class="kicker">Off the clock</p>
+      <h2>Mountains and music.</h2>
+      <p>I grew up in Chattanooga and spent my youth climbing, kayaking, caving, and camping in the mountains of Eastern Tennessee and North Georgia. That education never left me.</p>
+      <p>I've been a professional musician my whole life. These days music is also how I meet people. I often find fellow musicians in the other corners of my work, and we end up playing together.</p>
+    </div>
+    <div>
+      <p class="quote">Music isn't a hobby. It shapes how I think. The arc of an echo, the tension before a resolve.</p>
+      <p>My sister and I both have synesthesia. We hear colors and see sounds. It shows up in how I write, how I listen, and how I think through problems.</p>
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="contact">
+  <div class="wrap">
+    <p class="kicker">Get in touch</p>
+    <h2>Have a problem worth solving?</h2>
+    <p class="intro">Research, strategy, AI training for your team, or a chapter in your city. Send me a note.</p>
+    <div class="cta">
+      <a class="btn primary" href="mailto:mark@threadsmr.com">mark@threadsmr.com</a>
+      <a class="btn ghost" href="https://www.linkedin.com/in/michelson" rel="noopener">LinkedIn</a>
+      <a class="btn ghost" href="https://threadsmr.com" rel="noopener">threadsmr.com</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>&copy; <span id="yr">2026</span> Mark Michelson &middot; Atlanta, GA</span>
+    <button class="theme-toggle" id="theme" type="button" aria-label="Toggle light and dark theme">Light / Dark</button>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('yr').textContent = new Date().getFullYear();
+  (function () {
+    var root = document.documentElement, key = 'mm-theme';
+    try { var saved = localStorage.getItem(key); if (saved) root.setAttribute('data-theme', saved); } catch (e) {}
+    document.getElementById('theme').addEventListener('click', function () {
+      var current = root.getAttribute('data-theme') ||
+        (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      var next = current === 'dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      try { localStorage.setItem(key, next); } catch (e) {}
+    });
+  })();
+</script>
+</body>
+</html>
