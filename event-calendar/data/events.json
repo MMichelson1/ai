@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-20T14:01:35.136Z",
+  "generatedAt": "2026-09-23T06:08:33.946Z",
   "sample": false,
   "markets": {
     "atlanta": {
@@ -21,7 +21,7 @@
       "aic": true,
       "status": "ok",
       "count": 2,
-      "lastChecked": "2026-09-20T14:01:35.137Z",
+      "lastChecked": "2026-09-23T06:08:33.946Z",
       "note": ""
     },
     {
@@ -32,7 +32,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-09-20T14:01:35.912Z",
+      "lastChecked": "2026-09-23T06:08:35.189Z",
       "note": "Get the section's public iCal feed URL from events.vtools.ieee.org (Events → Export/iCal for the Atlanta Section), paste it into 'url', then set enabled:true."
     },
     {
@@ -43,7 +43,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-09-20T14:01:35.912Z",
+      "lastChecked": "2026-09-23T06:08:35.189Z",
       "note": "Any Meetup group exposes an iCal feed at https://www.meetup.com/<group-slug>/events/ical/ — add one source entry per local AI group and set enabled:true."
     },
     {
@@ -54,7 +54,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-09-20T14:01:35.912Z",
+      "lastChecked": "2026-09-23T06:08:35.189Z",
       "note": "Most university event calendars (Localist, Google Calendar) publish an ICS feed — paste it here. AI keyword filtering is applied automatically."
     },
     {
@@ -65,7 +65,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-09-20T14:01:35.912Z",
+      "lastChecked": "2026-09-23T06:08:35.189Z",
       "note": "Eventbrite retired public event search; per-organizer listings work via their free API. Add EVENTBRITE_TOKEN as a repo secret and organizer IDs here — see README."
     },
     {
@@ -76,7 +76,7 @@
       "aic": false,
       "status": "manual",
       "count": 0,
-      "lastChecked": "2026-09-20T14:01:35.912Z",
+      "lastChecked": "2026-09-23T06:08:35.189Z",
       "note": "LinkedIn and Facebook publish no feeds. Chapter leads add validated in-person events to data/manual-events.json via pull request; each entry must link to a live listing on a trusted site."
     },
     {
@@ -86,31 +86,12 @@
       "type": "luma-calendar",
       "aic": true,
       "status": "ok",
-      "count": 13,
-      "lastChecked": "2026-09-20T14:01:35.912Z",
+      "count": 12,
+      "lastChecked": "2026-09-23T06:08:35.189Z",
       "note": ""
     }
   ],
   "events": [
-    {
-      "id": "evt-wSvUwHX0yeC2q7s@events.lu.ma",
-      "title": "Office Hours (w/ The AI Collective)",
-      "start": "2026-09-22T21:00:00.000Z",
-      "end": "2026-09-22T22:00:00.000Z",
-      "allDay": false,
-      "tz": null,
-      "location": "TolHouse, 1447 N Summit St, Toledo, OH 43604, USA",
-      "lat": 41.6610659,
-      "lon": -83.5183677,
-      "organizer": "The AI Collective",
-      "url": "https://lu.ma/genai-collective",
-      "sourceDomain": "lu.ma",
-      "aic": true,
-      "type": "meetup",
-      "price": "check",
-      "capacity": null,
-      "market": "global"
-    },
     {
       "id": "evt-BKEXREjyTQIlhDl@events.lu.ma",
       "title": "AI transformations: Do's & Don'ts",
@@ -321,15 +302,15 @@
       "market": "global"
     },
     {
-      "id": "evt-szMUe9BCgktlAEh@events.lu.ma",
-      "title": "Charlotte Hack for Humanity",
-      "start": "2026-10-03T15:00:00.000Z",
-      "end": "2026-10-03T19:00:00.000Z",
+      "id": "evt-6a1fI1vklxQQXEu@events.lu.ma",
+      "title": "Hack for Humanity: Carmen-Campeche",
+      "start": "2026-10-15T16:00:00.000Z",
+      "end": "2026-10-15T22:30:00.000Z",
       "allDay": false,
       "tz": null,
-      "location": "1717 Cleveland Ave, Charlotte, NC 28203, USA",
-      "lat": 35.2111946,
-      "lon": -80.85583989999999,
+      "location": "Centro de Tecnologías de Información, Av. Aviacion s/n, Petrolera, 24179 Cdad. del Carmen, Camp., Mexico",
+      "lat": 18.6446985,
+      "lon": -91.8176407,
       "organizer": "The AI Collective",
       "url": "https://lu.ma/genai-collective",
       "sourceDomain": "lu.ma",
