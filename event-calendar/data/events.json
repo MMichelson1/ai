@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-23T06:08:33.946Z",
+  "generatedAt": "2026-09-23T18:51:43.208Z",
   "sample": false,
   "markets": {
     "atlanta": {
@@ -20,8 +20,8 @@
       "type": "luma-calendar",
       "aic": true,
       "status": "ok",
-      "count": 2,
-      "lastChecked": "2026-09-23T06:08:33.946Z",
+      "count": 1,
+      "lastChecked": "2026-09-23T18:51:43.208Z",
       "note": ""
     },
     {
@@ -32,7 +32,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-09-23T06:08:35.189Z",
+      "lastChecked": "2026-09-23T18:51:44.903Z",
       "note": "Get the section's public iCal feed URL from events.vtools.ieee.org (Events → Export/iCal for the Atlanta Section), paste it into 'url', then set enabled:true."
     },
     {
@@ -43,7 +43,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-09-23T06:08:35.189Z",
+      "lastChecked": "2026-09-23T18:51:44.903Z",
       "note": "Any Meetup group exposes an iCal feed at https://www.meetup.com/<group-slug>/events/ical/ — add one source entry per local AI group and set enabled:true."
     },
     {
@@ -54,7 +54,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-09-23T06:08:35.189Z",
+      "lastChecked": "2026-09-23T18:51:44.903Z",
       "note": "Most university event calendars (Localist, Google Calendar) publish an ICS feed — paste it here. AI keyword filtering is applied automatically."
     },
     {
@@ -65,7 +65,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-09-23T06:08:35.189Z",
+      "lastChecked": "2026-09-23T18:51:44.903Z",
       "note": "Eventbrite retired public event search; per-organizer listings work via their free API. Add EVENTBRITE_TOKEN as a repo secret and organizer IDs here — see README."
     },
     {
@@ -76,7 +76,7 @@
       "aic": false,
       "status": "manual",
       "count": 0,
-      "lastChecked": "2026-09-23T06:08:35.189Z",
+      "lastChecked": "2026-09-23T18:51:44.903Z",
       "note": "LinkedIn and Facebook publish no feeds. Chapter leads add validated in-person events to data/manual-events.json via pull request; each entry must link to a live listing on a trusted site."
     },
     {
@@ -87,30 +87,11 @@
       "aic": true,
       "status": "ok",
       "count": 12,
-      "lastChecked": "2026-09-23T06:08:35.189Z",
+      "lastChecked": "2026-09-23T18:51:44.903Z",
       "note": ""
     }
   ],
   "events": [
-    {
-      "id": "evt-BKEXREjyTQIlhDl@events.lu.ma",
-      "title": "AI transformations: Do's & Don'ts",
-      "start": "2026-09-23T16:00:00.000Z",
-      "end": "2026-09-23T18:00:00.000Z",
-      "allDay": false,
-      "tz": null,
-      "location": "Bugatti Rimac d.o.o., Kerestinečka cesta 54, 10431, Kerestinec, Croatia",
-      "lat": 45.772949999999994,
-      "lon": 15.8119741,
-      "organizer": "The AI Collective",
-      "url": "https://lu.ma/genai-collective",
-      "sourceDomain": "lu.ma",
-      "aic": true,
-      "type": "meetup",
-      "price": "check",
-      "capacity": null,
-      "market": "global"
-    },
     {
       "id": "evt-WplpweA7zSR4vNo@events.lu.ma",
       "title": "Codex Meetup & Talk – Charlotte",
@@ -245,23 +226,23 @@
       "market": "global"
     },
     {
-      "id": "evt-tVQ0kZHCF7AJIkz@events.lu.ma",
-      "title": "Embedded AI and Analytics Mixer",
-      "start": "2026-09-30T22:00:00.000Z",
-      "end": "2026-10-01T00:00:00.000Z",
+      "id": "evt-utIf00LJ2itWki6@events.lu.ma",
+      "title": "4th Annual Tech Mixer",
+      "start": "2026-09-30T01:30:00.000Z",
+      "end": "2026-09-30T04:30:00.000Z",
       "allDay": false,
-      "tz": "America/New_York",
-      "location": "Puttshack - Atlanta - Midtown, 1115 Howell Mill Rd NW, Atlanta, GA 30318, USA",
-      "lat": 33.7855266,
-      "lon": -84.41094389999999,
-      "organizer": "The AI Collective — Atlanta",
-      "url": "https://lu.ma/aicatl",
+      "tz": null,
+      "location": "California Hall, 205 California Ave, Davis, CA 95616, USA",
+      "lat": 38.541276599999996,
+      "lon": -121.7530242,
+      "organizer": "The AI Collective",
+      "url": "https://lu.ma/genai-collective",
       "sourceDomain": "lu.ma",
       "aic": true,
       "type": "social",
       "price": "check",
       "capacity": null,
-      "market": "atlanta"
+      "market": "global"
     },
     {
       "id": "evt-t6SBAudTqZKZHB7@events.lu.ma",
