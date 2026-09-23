@@ -46,7 +46,7 @@ libraries), so it doubles as a downloadable backup via Drive.
 2. A shared Drive folder holds a downloadable copy of the single HTML file as an
    **offline backup** (it runs fully offline too).
 3. **Sponsor contact:** the brochure's "Book a sponsorship call" button defaults
-   to the organization contact (Erich Starrett). In **Settings → Chapter
+   to the organization contact (Mark Michelson, Region Director). In **Settings → Chapter
    profile**, a chapter can override it with its own **Sponsor contact** — an
    email, a calendar link (e.g. Calendly), or both.
 

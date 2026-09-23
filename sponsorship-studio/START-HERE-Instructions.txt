@@ -30,13 +30,13 @@ SETUP IN 3 STEPS (about 5 minutes)
 
 2. SPONSOR CONTACT & REFERRAL CREDIT
    By default, the brochure's "Book a sponsorship call" button routes
-   prospects to Erich Starrett, Director of Sponsor Partnerships, who runs
+   prospects to Mark Michelson, Region Director, The AI Collective, who runs
    the conversation and closes the deal -- so you don't have to. Leave this
    default in place unless your chapter has its own trained closer (then set
    your own Sponsor contact in Settings: email, calendar link, or both).
    Whenever you send a brochure, add YOUR name and email in
    Settings -> "Referred by" so the leads you bring are credited to you under
-   the referral program. In short: let Erich close, and list yourself as the
+   the referral program. In short: let the region close, and list yourself as the
    referrer. (Referral credit is paid as a stipend, subject to fiscal-sponsor
    approval.)
 

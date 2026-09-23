@@ -25,7 +25,7 @@ We've built a tool to make winning and managing sponsorships dramatically easier
 3. **Calculator** — review your sponsorship rates and tiers.
 4. **Brochure** — your branded brochure is ready; click **Download PDF** to share it with prospects. You can also add up to **3 of your own event photos** in Settings.
 
-**Who handles the sponsor call — and getting credit.** By default, the brochure's "Book a sponsorship call" button routes prospects to **Erich Starrett, Director of Sponsor Partnerships**, who runs the conversation and closes the deal — so you don't have to. Leave that default in place unless your chapter has its own trained closer (then set your own Sponsor contact in Settings). Whenever you send a brochure, add **your name and email in the "Referred by" field** so the leads you bring are credited to you under the referral program.
+**Who handles the sponsor call — and getting credit.** By default, the brochure's "Book a sponsorship call" button routes prospects to **Mark Michelson, Region Director, The AI Collective**, who runs the conversation and closes the deal — so you don't have to. Leave that default in place unless your chapter has its own trained closer (then set your own Sponsor contact in Settings). Whenever you send a brochure, add **your name and email in the "Referred by" field** so the leads you bring are credited to you under the referral program.
 
 **Links:**
 - **Live tool (use this):** https://mmichelson1.github.io/ai/sponsorship-studio/ — always the latest version.
