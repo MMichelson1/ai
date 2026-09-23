@@ -19,26 +19,40 @@
  *      (it ends in "/exec").
  *   4. Send that /exec URL back so it can be set as the Studio's REPORT_ENDPOINT.
  *
- * REDEPLOYING after an edit (e.g. you pasted this newer version):
- *   Deploy -> Manage deployments -> (pencil/edit) -> Version: New version -> Deploy.
- *   The /exec URL stays the same, so nothing changes in the Studio.
+ * PER-BOOK SETTINGS live in Script Properties, NOT in this file, so pasting a
+ * newer Code.gs can never overwrite them. Set them once per project:
+ *   Project Settings (gear icon, left bar) -> Script Properties -> Add:
+ *     STREAM   commercial      (or  nonprofit  in the non-profit project)
+ *     HQ_PASS  your-private-phrase   (same phrase in both projects)
+ *     NOTIFY   mark@aicollective.com   (comma-separate several addresses)
+ * Changing a property takes effect immediately — no redeploy needed.
+ * If STREAM is missing or misspelled, this book refuses every write.
  *
- * To change who gets notified, edit NOTIFY below and redeploy.
+ * REDEPLOYING after pasting a newer version of this file:
+ *   Deploy -> Manage deployments -> (pencil/edit) -> Version: New version -> Deploy.
+ *   Always use the pencil: it keeps the same /exec URL. "New deployment"
+ *   creates a new URL and leaves the old one running old code.
  */
 
-var NOTIFY = ['mark@aicollective.com'];
+// Bump when this file changes, so the Dashboard's System check can confirm both
+// books are running the same code.
+var CODE_VERSION = '2026-09-23';
 
-// HQ passcode — unlocks READING every chapter's clients (for HQ / the region / an
-// dashboard). CHANGE THIS to a strong phrase before deploying, and keep it private.
-// Chapter leads never need it; they use their own chapter passcode.
-var HQ_PASS = 'CHANGE-ME-HQ-PASSCODE';
+var _PROPS = PropertiesService.getScriptProperties().getProperties();
 
-// Which set of books THIS deployment is. Deploy this file TWICE, each bound to
-// its OWN Google Sheet, so commercial and non-profit money is never commingled:
-//   Sheet 1 "AIC Sponsorship - Commercial"  -> STREAM = 'commercial'
-//   Sheet 2 "AIC Sponsorship - Non-profit"  -> STREAM = 'nonprofit'
-// An event tagged for the other stream is rejected rather than written here.
-var STREAM = 'commercial';
+// Which book this project is: 'commercial' or 'nonprofit'. Anything else (including
+// unset) leaves STREAM empty, and every write is refused — never guessed.
+var STREAM = String(_PROPS.STREAM || '').trim().toLowerCase();
+if (STREAM !== 'commercial' && STREAM !== 'nonprofit') STREAM = '';
+
+// HQ passcode — unlocks READING every chapter's clients and the Sales Dashboard.
+// Empty means HQ reads are disabled (there is no default to guess).
+var HQ_PASS = String(_PROPS.HQ_PASS || '').trim();
+
+// Who gets setup / proposal / invoice / WIN emails. Empty means nobody.
+var NOTIFY = String(_PROPS.NOTIFY || '').split(',')
+  .map(function (a) { return a.trim(); })
+  .filter(function (a) { return a.indexOf('@') > 0; });
 
 // Commissions exist only on the commercial side.
 function _commissionable() { return STREAM === 'commercial'; }
@@ -73,8 +87,11 @@ function doGet(e) {
     catch (err2) { out = { ok: false, error: String(err2) }; }
     return _jsonp(p.callback, out);
   }
-  return _json({ ok: true, service: 'AIC Sponsorship Studio reporting', stream: STREAM,
-    notifyCount: NOTIFY.length, notify: _maskedNotify() });
+  var health = { ok: true, service: 'AIC Sponsorship Studio reporting',
+    stream: STREAM || 'UNSET', version: CODE_VERSION,
+    notifyCount: NOTIFY.length, notify: _maskedNotify(),
+    hqPassSet: !!HQ_PASS, acceptingWrites: !!STREAM };
+  return p.callback ? _jsonp(p.callback, health) : _json(health);
 }
 
 function doPost(e) {
@@ -87,6 +104,10 @@ function doPost(e) {
   }
   try {
     var data = JSON.parse((e && e.postData && e.postData.contents) || '{}');
+    if (!STREAM) {                                  // not configured: write nothing
+      return _json({ ok: false, error: 'this book has no STREAM script property; ' +
+        'set STREAM to commercial or nonprofit in Project Settings' });
+    }
     if (data.action === 'saveClients') {          // CRM sync (push), not an event
       out = _saveClients(data);
       return _json(out);
@@ -156,7 +177,7 @@ function _chapterKeysSheet() {
 // Returns {ok, hq} or {ok:false, error}. allowCreate registers a new chapter's
 // passcode the first time it syncs.
 function _verifyPass(chapter, pass, allowCreate, region) {
-  if (pass && pass === HQ_PASS) return { ok: true, hq: true };
+  if (HQ_PASS && pass && pass === HQ_PASS) return { ok: true, hq: true };
   if (!chapter) return { ok: false, error: 'missing chapter' };
   if (!pass) return { ok: false, error: 'missing passcode' };
   var sh = _chapterKeysSheet();
@@ -227,7 +248,7 @@ function _listClients(chapter, pass) {
 // Sponsor Sales Dashboard data (HQ only): per-chapter hits/wins from the Summary
 // tab, each tagged with its region so the dashboard can roll up by region.
 function _salesSummary(pass) {
-  if (!pass || pass !== HQ_PASS) return { ok: false, error: 'HQ passcode required' };
+  if (!HQ_PASS || !pass || pass !== HQ_PASS) return { ok: false, error: 'HQ passcode required' };
   var sh = _summarySheet();
   var vals = sh.getDataRange().getValues();
   var rows = [];
@@ -403,5 +424,6 @@ function _maybeEmail(d) {
   if (d.items) lines.push('\nLine items:\n' + d.items);
   lines.push('\nSee the Summary tab for this chapter\'s hits vs. wins.');
   lines.push('\n— AIC Sponsorship Studio');
+  if (!NOTIFY.length) return;
   MailApp.sendEmail(NOTIFY.join(','), subject, lines.join('\n'));
 }

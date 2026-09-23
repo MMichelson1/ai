@@ -136,6 +136,15 @@ tr.tot td{font-weight:800;border-top:2px solid var(--line);border-bottom:none}
 .bookbar{margin-top:10px;font-size:12.5px;border-radius:10px;padding:10px 14px}
 .bookbar.commercial{background:var(--brand-soft);color:var(--brand-ink)}
 .bookbar.nonprofit{background:var(--ok-soft);color:var(--ok)}
+/* System check */
+.syscheck{margin-top:10px;border:1px solid var(--line);border-radius:10px;background:var(--panel);font-size:12.5px}
+.syscheck>summary{list-style:none;cursor:pointer;padding:9px 14px;display:flex;align-items:center;gap:8px;font-weight:700}
+.syscheck>summary::-webkit-details-marker{display:none}
+.syscheck .dot{width:9px;height:9px;border-radius:50%;flex:none;background:var(--mut)}
+.syscheck.good .dot{background:var(--ok)} .syscheck.bad .dot{background:#c0392b} .syscheck.warn .dot{background:var(--warn)}
+.syscheck .sc-body{padding:0 14px 12px}
+.syscheck td.ok{color:var(--ok);font-weight:700} .syscheck td.bad{color:#c0392b;font-weight:700} .syscheck td.warn{color:var(--warn);font-weight:700}
+.syscheck .fix{color:var(--mut);font-size:12px;margin:8px 0 0}
 .tbtn.on{border-color:var(--brand);color:var(--brand-ink)}
 .empty{color:var(--mut);font-size:13px;padding:10px 0}
 .tip{position:fixed;pointer-events:none;z-index:50;background:var(--ink);color:var(--bg);
@@ -185,6 +194,7 @@ tr.tot td{font-weight:800;border-top:2px solid var(--line);border-bottom:none}
   </div>
   <div class="meta" id="updated"></div>
   <div id="bookbar" class="bookbar commercial"></div>
+  <details id="syscheck" class="syscheck"><summary><span class="dot"></span><span id="scSummary">System check: not run yet</span></summary><div class="sc-body" id="scBody"></div></details>
 
   <div class="kpis" id="kpis"></div>
 
@@ -244,6 +254,56 @@ const ENDPOINTS={
   nonprofit :'https://script.google.com/macros/s/AKfycbwGV8R9exaJxBikjX0CJVPyW65TAV4yhacDyKtWwMYIP_dFvs364qiDBjxhl3jR66ySkA/exec'
 };
 const STREAM_LABEL={commercial:'Commercial',nonprofit:'Non-profit (501c3)'};
+/* The Code.gs version both books should be running. Bump with CODE_VERSION. */
+const EXPECTED_VERSION='2026-09-23';
+
+/* ---- System check: reads each book's own health report ---- */
+function healthOf(url){
+  return new Promise(resolve=>{
+    const name='__aic_hc_'+Math.random().toString(36).slice(2);
+    const s=document.createElement('script'); let done=false;
+    const finish=v=>{if(done)return;done=true;try{delete window[name];}catch(e){window[name]=undefined;} s.remove(); resolve(v);};
+    window[name]=d=>finish(d);
+    s.onerror=()=>finish({_unreachable:true});
+    s.src=url+'?callback='+name;
+    document.body.appendChild(s);
+    // Code older than the System check answers with plain JSON, which never calls back.
+    setTimeout(()=>finish({_noReport:true}),8000);
+  });
+}
+async function systemCheck(){
+  const sum=document.getElementById('scSummary'), body=document.getElementById('scBody'), box=document.getElementById('syscheck');
+  sum.textContent='System check: checking both books…'; box.className='syscheck';
+  const books=await Promise.all(Object.keys(ENDPOINTS).map(async k=>({key:k,h:await healthOf(ENDPOINTS[k])})));
+  const rows=[], problems=[], warnings=[];
+  const add=(book,check,level,value,fix)=>{rows.push({book,check,level,value});
+    if(level==='bad')problems.push(fix||check); if(level==='warn')warnings.push(fix||check);};
+  books.forEach(({key,h})=>{
+    const B=STREAM_LABEL[key];
+    if(h._unreachable){add(B,'Reachable','bad','no response',B+' book did not respond — check its /exec URL');return;}
+    if(h._noReport){add(B,'Health report','bad','none',B+' book is running code older than this check — paste the latest Code.gs and deploy a new version (pencil)');return;}
+    add(B,'Reachable','ok','yes');
+    add(B,'Book label (STREAM)', h.stream===key?'ok':'bad', h.stream,
+      h.stream==='UNSET' ? B+' book has no STREAM script property — set it to '+key+' in Project Settings'
+                         : B+' book says it is "'+h.stream+'" — set its STREAM script property to '+key);
+    add(B,'Accepting writes', h.acceptingWrites?'ok':'bad', h.acceptingWrites?'yes':'no');
+    add(B,'Emails go to', h.notifyCount>0?'ok':'warn', h.notifyCount?(h.notify||[]).join(', '):'nobody', B+' book has no NOTIFY script property — no win emails will be sent');
+    add(B,'HQ passcode set', h.hqPassSet?'ok':'bad', h.hqPassSet?'yes':'no', B+' book has no HQ_PASS script property');
+    add(B,'Code version', h.version===EXPECTED_VERSION?'ok':'warn', h.version||'unknown', B+' book runs Code.gs '+(h.version||'(unknown)')+', expected '+EXPECTED_VERSION+' — paste the latest and deploy a new version');
+  });
+  const v=books.map(b=>b.h&&b.h.version).filter(Boolean);
+  if(v.length===2&&v[0]!==v[1])warnings.push('The two books run different Code.gs versions ('+v.join(' vs ')+')');
+  box.className='syscheck '+(problems.length?'bad':warnings.length?'warn':'good');
+  sum.textContent=problems.length?`System check: ${problems.length} problem${problems.length>1?'s':''} — click for details`
+    :warnings.length?`System check: ${warnings.length} warning${warnings.length>1?'s':''} — click for details`
+    :`System check: both books healthy · Code.gs ${EXPECTED_VERSION}`;
+  body.innerHTML=`<table><thead><tr><th>Book</th><th>Check</th><th>Result</th></tr></thead><tbody>${
+    rows.map(r=>`<tr><td>${esc(r.book)}</td><td>${esc(r.check)}</td><td class="${r.level}">${r.level==='ok'?'✓ ':r.level==='bad'?'✗ ':'⚠ '}${esc(r.value)}</td></tr>`).join('')
+  }</tbody></table>${problems.concat(warnings).map(p=>`<p class="fix">→ ${esc(p)}</p>`).join('')}
+  <p class="fix"><button class="btn" id="scRerun" style="padding:4px 10px;font-size:12px">↻ Re-check</button> Run this after any change to Code.gs or its script properties.</p>`;
+  document.getElementById('scRerun').onclick=e=>{e.preventDefault();systemCheck();};
+  if(problems.length)box.open=true;
+}
 let STREAM='commercial';
 const CUR=new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0});
 const PASS_KEY='aic-sales-hqpass';
@@ -491,6 +551,7 @@ async function enter(pass,remember){
     document.getElementById('gate').classList.add('hidden');
     document.getElementById('app').classList.remove('hidden');
     render(lastServer);
+    systemCheck();
   }catch(e){
     err.textContent=(String(e.message||e).indexOf('passcode')>=0)?'That passcode was not accepted.':('Could not load: '+(e.message||e));
     try{localStorage.removeItem(PASS_KEY);}catch(_){}
