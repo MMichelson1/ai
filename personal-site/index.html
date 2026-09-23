@@ -103,6 +103,7 @@
   .btn.primary:hover { background: var(--warm); border-color: var(--warm); color: var(--bg); }
   .btn.ghost { color: var(--accent); }
   .btn.ghost:hover { color: var(--warm); border-color: var(--warm); }
+  button.btn { background: none; font: inherit; font-size: 15px; font-weight: 500; cursor: pointer; }
   .ridge { display: block; width: 100%; height: auto; }
 
   /* Stats */
@@ -217,6 +218,7 @@
     <p class="lede">I'm a marketing researcher, strategist, and AI educator. For 42 years I've helped companies understand how customers think, what they need, and why they buy. <em>Now I teach professionals to use AI the same way: problem first, technology second.</em></p>
     <div class="cta">
       <a class="btn primary" href="mailto:mark@threadsmr.com">Email me</a>
+      <button class="btn ghost copy-email" type="button" data-email="mark@threadsmr.com">Copy email</button>
       <a class="btn ghost" href="https://www.linkedin.com/in/michelson" rel="noopener">LinkedIn</a>
     </div>
   </div>
@@ -363,6 +365,7 @@
     <p class="intro">Research, strategy, AI training for your team, or a chapter in your city. Send me a note.</p>
     <div class="cta">
       <a class="btn primary" href="mailto:mark@threadsmr.com">mark@threadsmr.com</a>
+      <button class="btn ghost copy-email" type="button" data-email="mark@threadsmr.com">Copy email</button>
       <a class="btn ghost" href="https://www.linkedin.com/in/michelson" rel="noopener">LinkedIn</a>
       <a class="btn ghost" href="https://threadsmr.com" rel="noopener">threadsmr.com</a>
     </div>
@@ -380,6 +383,26 @@
 
 <script>
   document.getElementById('yr').textContent = new Date().getFullYear();
+  // Copy email: for visitors whose mail link opens the wrong app, or nothing.
+  document.querySelectorAll('.copy-email').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var email = b.getAttribute('data-email');
+      var done = function () {
+        b.textContent = 'Copied';
+        setTimeout(function () { b.textContent = 'Copy email'; }, 2000);
+      };
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(email).then(done, function () { fallback(email); done(); });
+      } else { fallback(email); done(); }
+    });
+  });
+  function fallback(text) {
+    var t = document.createElement('textarea');
+    t.value = text; t.setAttribute('readonly', ''); t.style.position = 'absolute'; t.style.left = '-9999px';
+    document.body.appendChild(t); t.select();
+    try { document.execCommand('copy'); } catch (e) {}
+    document.body.removeChild(t);
+  }
   (function () {
     var root = document.documentElement, key = 'mm-theme';
     try { var saved = localStorage.getItem(key); if (saved) root.setAttribute('data-theme', saved); } catch (e) {}
