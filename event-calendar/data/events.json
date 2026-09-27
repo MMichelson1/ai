@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-23T19:00:00.147Z",
+  "generatedAt": "2026-09-27T15:02:12.887Z",
   "sample": false,
   "markets": {
     "atlanta": {
@@ -21,7 +21,7 @@
       "aic": true,
       "status": "ok",
       "count": 1,
-      "lastChecked": "2026-09-23T19:00:00.148Z",
+      "lastChecked": "2026-09-27T15:02:12.887Z",
       "note": ""
     },
     {
@@ -32,7 +32,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-09-23T19:00:01.508Z",
+      "lastChecked": "2026-09-27T15:02:14.164Z",
       "note": "Get the section's public iCal feed URL from events.vtools.ieee.org (Events → Export/iCal for the Atlanta Section), paste it into 'url', then set enabled:true."
     },
     {
@@ -43,7 +43,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-09-23T19:00:01.508Z",
+      "lastChecked": "2026-09-27T15:02:14.164Z",
       "note": "Any Meetup group exposes an iCal feed at https://www.meetup.com/<group-slug>/events/ical/ — add one source entry per local AI group and set enabled:true."
     },
     {
@@ -54,7 +54,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-09-23T19:00:01.508Z",
+      "lastChecked": "2026-09-27T15:02:14.164Z",
       "note": "Most university event calendars (Localist, Google Calendar) publish an ICS feed — paste it here. AI keyword filtering is applied automatically."
     },
     {
@@ -65,7 +65,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-09-23T19:00:01.508Z",
+      "lastChecked": "2026-09-27T15:02:14.164Z",
       "note": "Eventbrite retired public event search; per-organizer listings work via their free API. Add EVENTBRITE_TOKEN as a repo secret and organizer IDs here — see README."
     },
     {
@@ -76,7 +76,7 @@
       "aic": false,
       "status": "manual",
       "count": 0,
-      "lastChecked": "2026-09-23T19:00:01.508Z",
+      "lastChecked": "2026-09-27T15:02:14.164Z",
       "note": "LinkedIn and Facebook publish no feeds. Chapter leads add validated in-person events to data/manual-events.json via pull request; each entry must link to a live listing on a trusted site."
     },
     {
@@ -86,69 +86,12 @@
       "type": "luma-calendar",
       "aic": true,
       "status": "ok",
-      "count": 12,
-      "lastChecked": "2026-09-23T19:00:01.508Z",
+      "count": 11,
+      "lastChecked": "2026-09-27T15:02:14.164Z",
       "note": ""
     }
   ],
   "events": [
-    {
-      "id": "evt-WplpweA7zSR4vNo@events.lu.ma",
-      "title": "Codex Meetup & Talk – Charlotte",
-      "start": "2026-09-24T22:00:00.000Z",
-      "end": "2026-09-25T00:00:00.000Z",
-      "allDay": false,
-      "tz": null,
-      "location": "CLA (CliftonLarsonAllen) Connection Center, 14815 Ballantyne Village Way Ste 400, Charlotte, NC 28277, USA",
-      "lat": 35.0534891,
-      "lon": -80.8516041,
-      "organizer": "The AI Collective",
-      "url": "https://lu.ma/genai-collective",
-      "sourceDomain": "lu.ma",
-      "aic": true,
-      "type": "panel",
-      "price": "check",
-      "capacity": null,
-      "market": "global"
-    },
-    {
-      "id": "evt-luXGhZvFqE1cZ2G@events.lu.ma",
-      "title": "Mega Meditation Summit 4",
-      "start": "2026-09-25T04:00:00.000Z",
-      "end": "2026-09-28T04:00:00.000Z",
-      "allDay": true,
-      "tz": "America/New_York",
-      "location": "Denmark High School, 645 Mullinax Rd, Alpharetta, GA 30004, USA",
-      "lat": 34.147218,
-      "lon": -84.2291455,
-      "organizer": "The AI Collective — Atlanta",
-      "url": "https://lu.ma/aicatl",
-      "sourceDomain": "lu.ma",
-      "aic": true,
-      "type": "panel",
-      "price": "check",
-      "capacity": null,
-      "market": "atlanta"
-    },
-    {
-      "id": "evt-qlN0NTlztNGW30U@events.lu.ma",
-      "title": "Hack for Humanity: Ottawa",
-      "start": "2026-09-26T15:00:00.000Z",
-      "end": "2026-09-26T21:00:00.000Z",
-      "allDay": false,
-      "tz": null,
-      "location": "Sprott School of Business, Nicol Building, 1125 Colonel By Drive, 7007 Nicol Building, Nicol Building, 1125 Colonel By Dr, Ottawa, ON K1S 5B6, Canada",
-      "lat": 45.384203,
-      "lon": -75.6967641,
-      "organizer": "The AI Collective",
-      "url": "https://lu.ma/genai-collective",
-      "sourceDomain": "lu.ma",
-      "aic": true,
-      "type": "meetup",
-      "price": "check",
-      "capacity": null,
-      "market": "global"
-    },
     {
       "id": "evt-oXJiBQlmC43Pu7r@events.lu.ma",
       "title": "From Silicon Valley to Helsinki: What Finnish Founders Learned in the AI Capital",
@@ -273,6 +216,44 @@
       "location": "Tampere University, Hervanta Campus, Korkeakoulunkatu 7, 33720 Tampere, Finland",
       "lat": 61.449828600000004,
       "lon": 23.8589986,
+      "organizer": "The AI Collective",
+      "url": "https://lu.ma/genai-collective",
+      "sourceDomain": "lu.ma",
+      "aic": true,
+      "type": "meetup",
+      "price": "check",
+      "capacity": null,
+      "market": "global"
+    },
+    {
+      "id": "evt-IBXmEk2aa9MyZ97@events.lu.ma",
+      "title": "AI ❤️ CX: Less hype. More signal.",
+      "start": "2026-10-06T21:00:00.000Z",
+      "end": "2026-10-06T23:00:00.000Z",
+      "allDay": false,
+      "tz": "America/New_York",
+      "location": "3550 Lenox Rd NE, Atlanta, GA 30326, USA",
+      "lat": 33.8509899,
+      "lon": -84.36614399999999,
+      "organizer": "The AI Collective — Atlanta",
+      "url": "https://lu.ma/aicatl",
+      "sourceDomain": "lu.ma",
+      "aic": true,
+      "type": "meetup",
+      "price": "check",
+      "capacity": null,
+      "market": "atlanta"
+    },
+    {
+      "id": "evt-BvrOdjRGSmQyQbh@events.lu.ma",
+      "title": "AI and the Future of Filmmaking (w/ The AI Collective)",
+      "start": "2026-10-08T16:00:00.000Z",
+      "end": "2026-10-08T18:30:00.000Z",
+      "allDay": false,
+      "tz": null,
+      "location": "V7 Startup Studio Opera, Opera Center, Strada Costache Negri 1-5, 050552 București, Romania",
+      "lat": 44.433622,
+      "lon": 26.078996099999998,
       "organizer": "The AI Collective",
       "url": "https://lu.ma/genai-collective",
       "sourceDomain": "lu.ma",
