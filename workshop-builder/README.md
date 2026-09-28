@@ -22,7 +22,25 @@ builder produces:
   slide**. Per the brand rule, the **Brand** section lets you pick the logo:
   **AIC** (in-person), **Stitchs** (Maven cohorts, transparent-background logo),
   or **None**. On dark slides the logo sits on a small white chip for legibility.
-- **Handouts** — audience-specific take-home material.
+- **Graphics** — a **Luma event cover (1200 × 1200)** and a **16:9 deck cover
+  (1920 × 1080)** in one consistent series design: logo upper left, the title
+  ("AI Fundamentals for X Professionals") large at the bottom left, and a signal-arc
+  motif upper right whose lit arcs mark the level (one orange arc for **AI
+  Fundamentals**, two blue arcs for **AI Fluency**). Download each as a PNG. The 16:9
+  cover also becomes the PowerPoint title slide (toggle). Fonts are embedded (Barlow,
+  SIL OFL 1.1) so the artwork looks the same on every device.
+- **Logos** — pick AIC Atlanta, Stitchs, or **upload your own** (Threads, Mark
+  Michelson, anything) in the **Brand** section or on the Graphics tab. Uploads are
+  saved in the browser and reused; the chosen logo goes on the deck and the graphics.
+- **Attendee Workbook (.doc)** — teaches the **four-part prompt** (context, sources,
+  what good looks like, when to stop — no "act as" role lines), a table of the
+  audience's real problems and what AI does about each, and five ready-to-run prompts
+  (one per tool) that solve problems specific to that profession.
+- **Follow-up letter** — the post-event email with the Pocket summary link and an
+  optional workbook attachment line.
+- **Use cases are written as real problems** — every audience's use cases read
+  "Problem → what AI does about it" and feed the deep-dive slides; edit them in the
+  ICP section in the same format.
 - **`me.md` context file** — a personal-context file to paste into Claude,
   ChatGPT, or Gemini so the tools answer as *this* professional.
 - **Facilitator credibility** — the **Facilitator** tab holds the lead's own
