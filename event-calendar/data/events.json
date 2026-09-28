@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-27T15:02:12.887Z",
+  "generatedAt": "2026-09-28T00:37:49.381Z",
   "sample": false,
   "markets": {
     "atlanta": {
@@ -20,8 +20,8 @@
       "type": "luma-calendar",
       "aic": true,
       "status": "ok",
-      "count": 1,
-      "lastChecked": "2026-09-27T15:02:12.887Z",
+      "count": 2,
+      "lastChecked": "2026-09-28T00:37:49.381Z",
       "note": ""
     },
     {
@@ -32,7 +32,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-09-27T15:02:14.164Z",
+      "lastChecked": "2026-09-28T00:37:50.552Z",
       "note": "Get the section's public iCal feed URL from events.vtools.ieee.org (Events → Export/iCal for the Atlanta Section), paste it into 'url', then set enabled:true."
     },
     {
@@ -43,7 +43,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-09-27T15:02:14.164Z",
+      "lastChecked": "2026-09-28T00:37:50.552Z",
       "note": "Any Meetup group exposes an iCal feed at https://www.meetup.com/<group-slug>/events/ical/ — add one source entry per local AI group and set enabled:true."
     },
     {
@@ -54,7 +54,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-09-27T15:02:14.164Z",
+      "lastChecked": "2026-09-28T00:37:50.552Z",
       "note": "Most university event calendars (Localist, Google Calendar) publish an ICS feed — paste it here. AI keyword filtering is applied automatically."
     },
     {
@@ -65,7 +65,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-09-27T15:02:14.164Z",
+      "lastChecked": "2026-09-28T00:37:50.552Z",
       "note": "Eventbrite retired public event search; per-organizer listings work via their free API. Add EVENTBRITE_TOKEN as a repo secret and organizer IDs here — see README."
     },
     {
@@ -76,7 +76,7 @@
       "aic": false,
       "status": "manual",
       "count": 0,
-      "lastChecked": "2026-09-27T15:02:14.164Z",
+      "lastChecked": "2026-09-28T00:37:50.552Z",
       "note": "LinkedIn and Facebook publish no feeds. Chapter leads add validated in-person events to data/manual-events.json via pull request; each entry must link to a live listing on a trusted site."
     },
     {
@@ -86,8 +86,8 @@
       "type": "luma-calendar",
       "aic": true,
       "status": "ok",
-      "count": 11,
-      "lastChecked": "2026-09-27T15:02:14.164Z",
+      "count": 12,
+      "lastChecked": "2026-09-28T00:37:50.552Z",
       "note": ""
     }
   ],
@@ -148,6 +148,25 @@
       "price": "check",
       "capacity": null,
       "market": "global"
+    },
+    {
+      "id": "evt-LwEm2S2h0uJAPJe@events.lu.ma",
+      "title": "September Cyber Meetup",
+      "start": "2026-09-29T22:00:00.000Z",
+      "end": "2026-09-30T01:00:00.000Z",
+      "allDay": false,
+      "tz": "America/New_York",
+      "location": "Lazy Dog Restaurant & Bar, 4532 Ashford Dunwoody Rd NE, Dunwoody, GA 30346, USA",
+      "lat": 33.926052999999996,
+      "lon": -84.3376352,
+      "organizer": "The AI Collective — Atlanta",
+      "url": "https://lu.ma/aicatl",
+      "sourceDomain": "lu.ma",
+      "aic": true,
+      "type": "meetup",
+      "price": "check",
+      "capacity": null,
+      "market": "atlanta"
     },
     {
       "id": "evt-IOoxsop24dmH6Wj@events.lu.ma",
@@ -278,6 +297,25 @@
       "sourceDomain": "lu.ma",
       "aic": true,
       "type": "meetup",
+      "price": "check",
+      "capacity": null,
+      "market": "global"
+    },
+    {
+      "id": "evt-Hl9eA91XCSQ9uQd@events.lu.ma",
+      "title": "SpaceXAI Grok Bot - Breakfast & Build Helsinki",
+      "start": "2026-10-27T07:00:00.000Z",
+      "end": "2026-10-27T09:00:00.000Z",
+      "allDay": false,
+      "tz": null,
+      "location": "Kamppi, Helsinki, Finland",
+      "lat": 60.16745770000001,
+      "lon": 24.931074799999998,
+      "organizer": "The AI Collective",
+      "url": "https://lu.ma/genai-collective",
+      "sourceDomain": "lu.ma",
+      "aic": true,
+      "type": "coffee",
       "price": "check",
       "capacity": null,
       "market": "global"
