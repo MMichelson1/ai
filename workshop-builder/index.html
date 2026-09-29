@@ -3789,6 +3789,31 @@ function renderOutput(){
     const pvSq=mk("Luma event cover · 1200 × 1200","square","⬇ Download Luma PNG");
     const pvWide=mk("Deck cover · 16:9 (1920 × 1080)","wide","⬇ Download 16:9 PNG");
     out.appendChild(grid);
+
+    // Choose a scene: one live thumbnail per scene, click to switch
+    const sceneCard=el("div","doc"); sceneCard.style.cssText="max-width:1100px;margin-bottom:16px";
+    const autoCfg=Object.assign({t:"desk"}, PROF_SCENE[state.audience==="__custom__"?"":primaryName()]||{});
+    const autoKey=autoCfg.t==="outdoor"?(autoCfg.b||"shop"):autoCfg.t;
+    const autoName=(SCENE_CHOICES.find(o=>o[0]===autoKey)||["","At the desk"])[1];
+    const sh=el("div"); sh.style.cssText="display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap";
+    sh.appendChild(el("span","lab","Choose a scene"));
+    const shint=el("span","hint"); shint.textContent="Suggested for this profession: "+autoName; sh.appendChild(shint);
+    sceneCard.appendChild(sh);
+    const tiles=el("div"); tiles.style.cssText="display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:10px;margin-top:10px";
+    const tileEls=[];
+    const markTiles=()=>tileEls.forEach(t=>{ const on=(g.scene||"auto")===t.key; t.el.style.borderColor=on?"var(--accent,#2A7A74)":"var(--border-strong)"; t.el.style.boxShadow=on?"0 0 0 3px color-mix(in srgb,var(--accent,#2A7A74) 30%,transparent)":"none"; t.el.setAttribute("aria-pressed",on?"true":"false"); });
+    const drawThumb=(cv,key)=>{ const save=g.scene; g.scene=(key==="auto")?"auto":key; const c=cv.getContext("2d"); c.fillStyle="#fff"; c.fillRect(0,0,cv.width,cv.height); try{ gfxScene(c,4,4,cv.width-8,cv.height-8); }catch(e){} g.scene=save; };
+    [["auto","Suggested"]].concat(SCENE_CHOICES.filter(o=>o[0]!=="auto")).forEach(o=>{
+      const t=el("button"); t.type="button"; t.title=o[1];
+      t.style.cssText="all:unset;cursor:pointer;display:flex;flex-direction:column;gap:6px;padding:6px;border:2px solid var(--border-strong);border-radius:10px;background:var(--field,#fff);text-align:center;font-size:12px;font-weight:600;color:var(--text,inherit)";
+      const cv=el("canvas"); cv.width=264; cv.height=192; cv.style.cssText="width:100%;height:auto;border-radius:6px;background:#fff;display:block";
+      t.appendChild(cv); t.appendChild(document.createTextNode(o[0]==="auto"?("Suggested: "+autoName.replace("Out front: ","")):o[1]));
+      t.onclick=()=>{ g.scene=o[0]; markTiles(); refresh(); };
+      tiles.appendChild(t); tileEls.push({key:o[0],el:t,cv});
+    });
+    sceneCard.appendChild(tiles); out.appendChild(sceneCard);
+    const drawTiles=()=>tileEls.forEach(t=>drawThumb(t.cv,t.key));
+    gfxFonts().then(()=>{ drawTiles(); markTiles(); });
     let tmr=null, seq=0;
     const refresh=()=>{ clearTimeout(tmr); tmr=setTimeout(async()=>{
       const my=++seq; const [a,b]=await Promise.all([renderGraphic("square"),renderGraphic("wide")]); if(my!==seq) return;
@@ -3813,11 +3838,6 @@ function renderOutput(){
     mkSw("auto","Auto ("+gfxLead().name+")",null); THREADS.forEach(t=>mkSw(t.key,t.name,t.c));
     pf.appendChild(sw);
     const ch=el("div","hint"); ch.style.marginTop="6px"; ch.textContent="Auto gives each profession its own color, so the series varies month to month. The scene mixes in the other yarn colors."; pf.appendChild(ch);
-    // scene theme
-    const scSel=el("select"); SCENE_CHOICES.forEach(o=>scSel.appendChild(opt(o[0],o[1]))); scSel.value=g.scene||"auto";
-    scSel.onchange=()=>{ g.scene=scSel.value; refresh(); };
-    const autoName=(function(){ const c=Object.assign({t:"desk"},PROF_SCENE[primaryName()]||{}); return c.t==="outdoor"?("Out front: "+(c.b||"shop")):({desk:"At the desk",stage:"On stage",team:"With the team",home:"At home"}[c.t]); })();
-    const scF=fld("Scene", scSel, "Auto for this profession: "+autoName+". Pick another to change the picture."); scF.style.marginTop="14px"; pf.appendChild(scF);
     // person color
     const pl=el("span","lab","Person color"); pl.style.cssText="display:block;margin-top:14px"; pf.appendChild(pl);
     const ps=el("div"); ps.style.cssText="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:6px";
