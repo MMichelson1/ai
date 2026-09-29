@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-28T00:37:49.381Z",
+  "generatedAt": "2026-09-29T02:32:44.212Z",
   "sample": false,
   "markets": {
     "atlanta": {
@@ -21,7 +21,7 @@
       "aic": true,
       "status": "ok",
       "count": 2,
-      "lastChecked": "2026-09-28T00:37:49.381Z",
+      "lastChecked": "2026-09-29T02:32:44.212Z",
       "note": ""
     },
     {
@@ -32,7 +32,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-09-28T00:37:50.552Z",
+      "lastChecked": "2026-09-29T02:32:45.937Z",
       "note": "Get the section's public iCal feed URL from events.vtools.ieee.org (Events → Export/iCal for the Atlanta Section), paste it into 'url', then set enabled:true."
     },
     {
@@ -43,7 +43,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-09-28T00:37:50.552Z",
+      "lastChecked": "2026-09-29T02:32:45.937Z",
       "note": "Any Meetup group exposes an iCal feed at https://www.meetup.com/<group-slug>/events/ical/ — add one source entry per local AI group and set enabled:true."
     },
     {
@@ -54,7 +54,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-09-28T00:37:50.552Z",
+      "lastChecked": "2026-09-29T02:32:45.937Z",
       "note": "Most university event calendars (Localist, Google Calendar) publish an ICS feed — paste it here. AI keyword filtering is applied automatically."
     },
     {
@@ -65,7 +65,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-09-28T00:37:50.552Z",
+      "lastChecked": "2026-09-29T02:32:45.937Z",
       "note": "Eventbrite retired public event search; per-organizer listings work via their free API. Add EVENTBRITE_TOKEN as a repo secret and organizer IDs here — see README."
     },
     {
@@ -76,7 +76,7 @@
       "aic": false,
       "status": "manual",
       "count": 0,
-      "lastChecked": "2026-09-28T00:37:50.552Z",
+      "lastChecked": "2026-09-29T02:32:45.937Z",
       "note": "LinkedIn and Facebook publish no feeds. Chapter leads add validated in-person events to data/manual-events.json via pull request; each entry must link to a live listing on a trusted site."
     },
     {
@@ -87,49 +87,11 @@
       "aic": true,
       "status": "ok",
       "count": 12,
-      "lastChecked": "2026-09-28T00:37:50.552Z",
+      "lastChecked": "2026-09-29T02:32:45.937Z",
       "note": ""
     }
   ],
   "events": [
-    {
-      "id": "evt-oXJiBQlmC43Pu7r@events.lu.ma",
-      "title": "From Silicon Valley to Helsinki: What Finnish Founders Learned in the AI Capital",
-      "start": "2026-09-28T14:00:00.000Z",
-      "end": "2026-09-28T16:30:00.000Z",
-      "allDay": false,
-      "tz": null,
-      "location": "Maria 01, Lapinlahdenkatu 16, 00180 Helsinki, Finland",
-      "lat": 60.16675379999999,
-      "lon": 24.9219224,
-      "organizer": "The AI Collective",
-      "url": "https://lu.ma/genai-collective",
-      "sourceDomain": "lu.ma",
-      "aic": true,
-      "type": "meetup",
-      "price": "check",
-      "capacity": null,
-      "market": "global"
-    },
-    {
-      "id": "evt-HjqqW76FE1c9Jx5@events.lu.ma",
-      "title": "ThinkingAI Agentic Growth Summit 2026",
-      "start": "2026-09-28T19:00:00.000Z",
-      "end": "2026-09-28T23:00:00.000Z",
-      "allDay": false,
-      "tz": null,
-      "location": "Computer History Museum, 1401 N Shoreline Blvd, Mountain View, CA 94043, USA",
-      "lat": 37.4142744,
-      "lon": -122.077409,
-      "organizer": "The AI Collective",
-      "url": "https://lu.ma/genai-collective",
-      "sourceDomain": "lu.ma",
-      "aic": true,
-      "type": "panel",
-      "price": "check",
-      "capacity": null,
-      "market": "global"
-    },
     {
       "id": "evt-y8PDS8hADlenFMq@events.lu.ma",
       "title": "AI in Finance - The Future of Work",
@@ -264,6 +226,25 @@
       "market": "atlanta"
     },
     {
+      "id": "evt-M818OoCREzChuFj@events.lu.ma",
+      "title": "AI Agents in Production / The AI Collective Bucharest Chapter",
+      "start": "2026-10-07T15:00:00.000Z",
+      "end": "2026-10-07T18:00:00.000Z",
+      "allDay": false,
+      "tz": null,
+      "location": "theMarketer, Floreasca Business Park, Șoseaua Pipera 43 Corp B, Etaj 6, 014254 București, Romania",
+      "lat": 44.48177200000001,
+      "lon": 26.1041024,
+      "organizer": "The AI Collective",
+      "url": "https://lu.ma/genai-collective",
+      "sourceDomain": "lu.ma",
+      "aic": true,
+      "type": "meetup",
+      "price": "check",
+      "capacity": null,
+      "market": "global"
+    },
+    {
       "id": "evt-BvrOdjRGSmQyQbh@events.lu.ma",
       "title": "AI and the Future of Filmmaking (w/ The AI Collective)",
       "start": "2026-10-08T16:00:00.000Z",
@@ -292,6 +273,25 @@
       "location": "Centro de Tecnologías de Información, Av. Aviacion s/n, Petrolera, 24179 Cdad. del Carmen, Camp., Mexico",
       "lat": 18.6446985,
       "lon": -91.8176407,
+      "organizer": "The AI Collective",
+      "url": "https://lu.ma/genai-collective",
+      "sourceDomain": "lu.ma",
+      "aic": true,
+      "type": "meetup",
+      "price": "check",
+      "capacity": null,
+      "market": "global"
+    },
+    {
+      "id": "evt-tI2usyJBWqesONF@events.lu.ma",
+      "title": "Hacktoberfest 2026 - Hack Day Hampton",
+      "start": "2026-10-17T14:00:00.000Z",
+      "end": "2026-10-17T20:00:00.000Z",
+      "allDay": false,
+      "tz": null,
+      "location": "757 Makerspace - Hampton, 16 Murray St, Hampton, VA 23651, USA",
+      "lat": 37.0065712,
+      "lon": -76.3101284,
       "organizer": "The AI Collective",
       "url": "https://lu.ma/genai-collective",
       "sourceDomain": "lu.ma",
