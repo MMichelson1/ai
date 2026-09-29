@@ -1987,7 +1987,7 @@ const state = {
   deckLogo:"aic",             // logo on the deck: "aic" (in-person) | "stitchs" (Maven) | "none"
   pocketLink:"",              // per-event Pocket summary notes link, used in the follow-up letter
   attachWorkbook:false,
-  gfx:{series:"AI Fundamentals", color:"auto", label:"", time:"5:30 – 8:30 pm", city:"", showEvent:true, coverLine:true, partner:"improving", artId:null, cover:true},  // Luma + 16:9 artwork settings       // follow-up letter: mention the workbook as an attachment (most download it via QR during the session)
+  gfx:{series:"AI Fundamentals", color:"auto", person:"gold", scene:"auto", label:"", time:"5:30 – 8:30 pm", city:"", showEvent:true, coverLine:true, partner:"improving", artId:null, cover:true},  // Luma + 16:9 artwork settings       // follow-up letter: mention the workbook as an attachment (most download it via QR during the session)
   activeTab:"luma"
 };
 
@@ -2875,7 +2875,7 @@ const THREADS = [
   {key:"gold",    name:"Gold",    c:"#C8921A", text:"#946A0B"}
 ];
 const GFX_INK="#1E2124", GFX_MUTED="#5B6168", GFX_STITCH="#D3C4AA";
-const GFX_DEFAULT=()=>({series:"AI Fundamentals", color:"auto", label:"", time:"5:30 – 8:30 pm", city:"", showEvent:true, coverLine:true, partner:"improving", artId:null, cover:true});
+const GFX_DEFAULT=()=>({series:"AI Fundamentals", color:"auto", person:"gold", scene:"auto", label:"", time:"5:30 – 8:30 pm", city:"", showEvent:true, coverLine:true, partner:"improving", artId:null, cover:true});
 const GFX_FMT = {
   square:{w:1200, h:1200, m:60, logoW:250, logoH:122, pLogoW:280, pLogoH:88},
   wide:  {w:1920, h:1080, m:90, logoW:360, logoH:170, pLogoW:340, pLogoH:110}
@@ -3018,7 +3018,7 @@ function logoPicker(target){
   }
   return box;
 }
-function saveGfxPrefs(){ const g=state.gfx||{}; const s=loadStore(); s.gfx={series:g.series, partner:g.partner, showEvent:g.showEvent, coverLine:g.coverLine, cover:g.cover, time:g.time}; saveStore(s); }
+function saveGfxPrefs(){ const g=state.gfx||{}; const s=loadStore(); s.gfx={series:g.series, person:g.person, partner:g.partner, showEvent:g.showEvent, coverLine:g.coverLine, cover:g.cover, time:g.time}; saveStore(s); }
 
 /* ---- own illustration (optional) ---- */
 function artLib(){ return (loadStore().arts||[]); }
@@ -3034,12 +3034,14 @@ function addArtFile(file){
 function gfxImagePrompt(){
   const icons=(PROF_ICONS[primaryName()]||PROF_ICONS_DEFAULT);
   const names={users:"people",calendar:"a calendar",chat:"chat bubbles",megaphone:"a megaphone",heart:"a heart",ticket:"event tickets",mic:"a microphone",pin:"a map pin",briefcase:"a briefcase",doc:"documents",trend:"a rising chart",clock:"a clock",dollar:"money",star:"star ratings",flow:"a flow diagram",pie:"a pie chart",phone:"a phone",mail:"email",gear:"a gear",search:"a magnifying glass",layout:"a wireframe",notes:"sticky notes",bulb:"a light bulb",target:"a target",shield:"a shield",cross:"a medical cross",clipboard:"a clipboard checklist",scales:"scales of justice",image:"photos",tag:"price tags",cart:"a shopping cart",chart:"a bar chart",box:"a package",store:"a storefront",house:"a house",key:"a house key",wave:"an audio waveform"};
-  return "Flat vector illustration on a pure white background, square format. A friendly "+audNoun()+" at their desk on a typical workday, working on a laptop, surrounded by floating cards that show "+icons.map(i=>names[i]||i).join(", ")+", connected by dashed stitched thread lines. Warm, human, tactile style. Color palette: crimson #B3312C, orange #CC5A17, gold #C8921A, moss green #5E7A2E, teal #2A7A74, plum #6B4A8C, brown #8A5A3C, with soft oat #EFE4D2 neutrals. Clean shapes, gentle shadows, no text, no logos, generous white space around the edges.";
+  const cfg=gfxSceneCfg(), where={desk:"at their desk on a typical workday, working on a laptop", stage:"on stage presenting to an audience, a slide with a chart behind them", team:"at a table with their team, a whiteboard behind them", home:"working from home on a sofa with a laptop, a window and a plant nearby", outdoor:"standing outside in front of a "+({house:"house with a for-sale sign",shop:"shop with a striped awning",clinic:"clinic",office:"office building"}[cfg.b||"shop"]||"building")}[cfg.t]||"at work";
+  return "Flat vector illustration on a pure white background, square format. A friendly "+audNoun()+" "+where+(cfg.headset?", wearing a headset":"")+", surrounded by floating cards that show "+icons.map(i=>names[i]||i).join(", ")+", connected by dashed stitched thread lines. Warm, human, tactile style. Color palette: crimson #B3312C, orange #CC5A17, gold #C8921A, moss green #5E7A2E, teal #2A7A74, plum #6B4A8C, brown #8A5A3C, with soft oat #EFE4D2 neutrals. Clean shapes, gentle shadows, no text, no logos, generous white space around the edges.";
 }
 
 /* ---- title / event text ---- */
 function gfxLabel(){
-  const g=state.gfx||{}; let l=(g.label&&g.label.trim())?g.label.trim():audLabel()||"Professionals";
+  const g=state.gfx||{}; if(g.label&&g.label.trim()) return g.label.trim();
+  let l=audLabel()||"Professionals";
   if(!/(Professionals|Researchers|Leaders|Managers|Administrators|Advisors|Owners|Founders|Teams|Organizers|Designers|Solopreneurs|Builders|Pros)$/i.test(l)) l+=" Professionals";
   return l;
 }
@@ -3153,57 +3155,114 @@ function gfxIcon(ctx, name, x, y, s, c){
 }
 function gfxSparkle(ctx,x,y,r,c){ ctx.beginPath(); ctx.moveTo(x,y-r); ctx.quadraticCurveTo(x+r*.18,y-r*.18,x+r,y); ctx.quadraticCurveTo(x+r*.18,y+r*.18,x,y+r); ctx.quadraticCurveTo(x-r*.18,y+r*.18,x-r,y); ctx.quadraticCurveTo(x-r*.18,y-r*.18,x,y-r); ctx.fillStyle=c; ctx.fill(); }
 
-/* ---- the scene: a snapshot of this professional's day (drawn in a 1000 x 760 box) ---- */
-function gfxScene(ctx, bx, by, bw, bh){
-  const VW=960, VH=690, sc=Math.min(bw/VW, bh/VH), ox=bx+(bw-VW*sc)/2, oy=by+(bh-VH*sc)/2;
-  ctx.save(); ctx.translate(ox,oy); ctx.scale(sc,sc); ctx.translate(-20,-44);
-  const lead=gfxLead(), li=gfxLeadIndex(), seed=gfxHash(gfxSeedKey());
-  const icons=(PROF_ICONS[state.audience==="__custom__"?"":primaryName()]||PROF_ICONS_DEFAULT);
-  const SKIN=["#F2CBA8","#E0AC85","#B97D56","#86553A"], HAIR=["#2B2320","#4A3226","#1B1B1B","#6E4A2E"];
-  const skin=SKIN[seed%4], hair=HAIR[(seed>>3)%4], style=(seed>>6)%4, glasses=((seed>>9)%3)===0;
-  const col=i=>THREADS[(li+1+i)%THREADS.length].c;
-  // cards: [cx, cy, w, h]
-  const cards=[[790,150,190,150],[200,150,170,130],[105,380,150,150],[895,395,150,135],[115,610,150,120],[885,615,150,120]];
-  // stitched threads from the person to each card
-  ctx.setLineDash([12,12]); ctx.lineWidth=4; ctx.strokeStyle=GFX_STITCH; ctx.lineCap="round";
-  cards.forEach(cd=>{ ctx.beginPath(); ctx.moveTo(500,330); ctx.quadraticCurveTo((500+cd[0])/2, Math.min(330,cd[1])-60, cd[0], cd[1]); ctx.stroke(); });
-  ctx.setLineDash([]);
-  // floor shadow + desk
-  ctx.beginPath(); ctx.ellipse(500,712,400,30,0,0,Math.PI*2); ctx.fillStyle="#F4EDE1"; ctx.fill();
-  // person (behind desk)
-  if(style===1){ gfxRound(ctx,420,272,160,170,70); ctx.fillStyle=hair; ctx.fill(); }            // long hair back
-  gfxRound(ctx,382,420,236,190,96); ctx.fillStyle=lead.c; ctx.fill();                            // torso
-  ctx.beginPath(); ctx.moveTo(470,420); ctx.lineTo(500,462); ctx.lineTo(530,420); ctx.closePath(); ctx.fillStyle="#fff"; ctx.fill(); // collar
-  gfxRound(ctx,478,372,44,56,14); ctx.fillStyle=skin; ctx.fill();                                // neck
-  ctx.beginPath(); ctx.arc(500,330,70,0,Math.PI*2); ctx.fillStyle=skin; ctx.fill();              // head
-  ctx.fillStyle=hair; ctx.beginPath();
-  if(style===3){ [[-52,-30],[-30,-58],[0,-66],[30,-58],[52,-30]].forEach(p=>{ ctx.moveTo(500+p[0]+26,330+p[1]); ctx.arc(500+p[0],330+p[1],26,0,Math.PI*2); }); ctx.fill(); }
-  else { ctx.arc(500,322,74,Math.PI*1.04,Math.PI*1.96); ctx.quadraticCurveTo(540,282,500,290); ctx.quadraticCurveTo(460,284,426,316); ctx.closePath(); ctx.fill(); }
-  if(style===2){ ctx.beginPath(); ctx.arc(500,244,26,0,Math.PI*2); ctx.fill(); }
-  ctx.fillStyle=GFX_INK; [[476,338],[524,338]].forEach(p=>{ ctx.beginPath(); ctx.arc(p[0],p[1],6.5,0,Math.PI*2); ctx.fill(); });
-  if(glasses){ ctx.lineWidth=4; ctx.strokeStyle=GFX_INK; [[476,338],[524,338]].forEach(p=>{ ctx.beginPath(); ctx.arc(p[0],p[1],17,0,Math.PI*2); ctx.stroke(); }); ctx.beginPath(); ctx.moveTo(493,336); ctx.lineTo(507,336); ctx.stroke(); }
-  ctx.beginPath(); ctx.arc(500,352,18,0.2*Math.PI,0.8*Math.PI); ctx.lineWidth=4.5; ctx.strokeStyle=GFX_INK; ctx.stroke();
-  // arms: one on the desk, one raised toward the hero card
-  const arm=gfxTint(lead.c,-0.0); ctx.lineCap="round"; ctx.strokeStyle=arm; ctx.lineWidth=46;
-  ctx.beginPath(); ctx.moveTo(404,452); ctx.lineTo(392,560); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(598,452); ctx.quadraticCurveTo(660,420,700,262); ctx.stroke();
-  ctx.fillStyle=skin; ctx.beginPath(); ctx.arc(392,572,22,0,Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.arc(703,246,22,0,Math.PI*2); ctx.fill();
-  // desk
-  gfxRound(ctx,170,560,660,34,14); ctx.fillStyle="#D9C7A8"; ctx.fill();
-  gfxRound(ctx,210,590,580,112,10); ctx.fillStyle="#EFE6D6"; ctx.fill();
-  // laptop (back toward us) with an AI sparkle
-  gfxRound(ctx,430,468,140,94,12); ctx.fillStyle="#2E3238"; ctx.fill();
-  gfxRound(ctx,408,556,184,10,5); ctx.fillStyle="#3D4249"; ctx.fill();
-  gfxSparkle(ctx,500,514,22,THREADS[6].c);
-  // books in yarn colors + mug
-  [[250,538,120,col(0)],[258,518,104,col(2)],[244,498,116,col(4)]].forEach(b=>{ gfxRound(ctx,b[0],b[1],b[2],20,5); ctx.fillStyle=b[3]; ctx.fill(); });
-  gfxRound(ctx,650,506,58,56,10); ctx.fillStyle="#fff"; ctx.fill(); ctx.lineWidth=4; ctx.strokeStyle="#CFC3AE"; ctx.stroke();
-  gfxRound(ctx,650,522,58,12,0); ctx.fillStyle=col(1); ctx.fill();
-  ctx.beginPath(); ctx.arc(714,532,13,-Math.PI/2,Math.PI/2); ctx.lineWidth=6; ctx.strokeStyle="#CFC3AE"; ctx.stroke();
-  ctx.lineWidth=4; ctx.strokeStyle="#D9CBB4"; [666,690].forEach(x=>{ ctx.beginPath(); ctx.moveTo(x,494); ctx.quadraticCurveTo(x-8,480,x,468); ctx.quadraticCurveTo(x+8,456,x,444); ctx.stroke(); });
-  // two sticky notes on the desk front
-  [[430,622,col(3)],[488,630,col(5)]].forEach(n=>{ gfxRound(ctx,n[0],n[1],44,40,4); ctx.fillStyle=gfxTint(n[2],.35); ctx.fill(); });
-  // floating cards, each in a different yarn color (hero card uses the lead color)
+/* ---- people + scenes: a snapshot of this professional's world (drawn in a 1000 x 760 box) ---- */
+// Person colors. Stylized yarn tones (default) or natural skin tones - the user picks; nothing is inferred.
+const PERSON_TONES = [
+  {key:"gold",   name:"Gold",   skin:"#F0C766", hair:"#8A6212", stylized:true},
+  {key:"blue",   name:"Blue",   skin:"#AFC9EE", hair:"#2F5C9A", stylized:true},
+  {key:"teal",   name:"Teal",   skin:"#A8D8D0", hair:"#1F6660", stylized:true},
+  {key:"plum",   name:"Plum",   skin:"#D2BFE6", hair:"#553A73", stylized:true},
+  {key:"light",  name:"Light",  skin:"#F3CFAE", hair:"#5A3A26", stylized:false},
+  {key:"medium", name:"Medium", skin:"#DDA67E", hair:"#2B2320", stylized:false},
+  {key:"tan",    name:"Tan",    skin:"#B98357", hair:"#2B2320", stylized:false},
+  {key:"deep",   name:"Deep",   skin:"#7E4E33", hair:"#1B1B1B", stylized:false}
+];
+function gfxTone(){ const k=(state.gfx&&state.gfx.person)||"gold"; return PERSON_TONES.find(t=>t.key===k)||PERSON_TONES[0]; }
+function gfxOthers(main){ return PERSON_TONES.filter(t=>t.stylized===main.stylized && t.key!==main.key); }
+// Scene theme per profession: desk | stage | outdoor (house/shop/clinic/office) | team | home
+const PROF_SCENE = {
+  "Community Builders & Managers":{t:"team", wall:"notes"},
+  "Conference Organizers":{t:"stage"},
+  "Consultants & Solopreneurs":{t:"home"},
+  "Customer Experience Professionals":{t:"team", wall:"journey"},
+  "Customer Service":{t:"home", headset:true},
+  "Customer Success":{t:"team", wall:"chart"},
+  "Customer Support":{t:"desk", headset:true},
+  "CX Design":{t:"team", wall:"notes"},
+  "CX Management":{t:"stage"},
+  "Enterprise Teams":{t:"team", wall:"chart"},
+  "Financial Advisors":{t:"desk"},
+  "Founders":{t:"stage"},
+  "Healthcare Administrators":{t:"outdoor", b:"clinic", clipboard:true},
+  "HR & People Operations Leaders":{t:"team", wall:"journey"},
+  "Legal Professionals":{t:"desk"},
+  "Marketing Professionals":{t:"stage"},
+  "Merchandising":{t:"outdoor", b:"shop"},
+  "Mystery Shopping":{t:"outdoor", b:"shop", clipboard:true},
+  "Nonprofit Leaders":{t:"team", wall:"notes"},
+  "Product Designers":{t:"home"},
+  "Product Managers":{t:"team", wall:"notes"},
+  "Qualitative Research Professionals":{t:"desk"},
+  "Real Estate Professionals":{t:"outdoor", b:"house"},
+  "Retail Design":{t:"outdoor", b:"shop"},
+  "Sales Professionals":{t:"outdoor", b:"office"},
+  "Small Business Owners":{t:"outdoor", b:"shop"},
+  "SMB":{t:"outdoor", b:"office"}
+};
+const SCENE_CHOICES = [["auto","Auto (by profession)"],["desk","At the desk"],["stage","On stage"],["team","With the team"],["home","At home"],["house","Out front: house"],["shop","Out front: shop"],["clinic","Out front: clinic"],["office","Out front: office"]];
+function gfxSceneCfg(){
+  const base = Object.assign({t:"desk"}, PROF_SCENE[state.audience==="__custom__"?"":primaryName()]||{});
+  const pick=(state.gfx&&state.gfx.scene)||"auto";
+  if(pick==="auto") return base;
+  if(["house","shop","clinic","office"].includes(pick)) return Object.assign({}, base, {t:"outdoor", b:pick});
+  return Object.assign({}, base, {t:pick});
+}
+
+// A person. (x,y) = head center, s = scale (1 = head radius 70). pose: point | type | present | wave | clipboard | back
+function gfxPerson(ctx, o){
+  const s=o.s||1, x=o.x, y=o.y, T=o.tone, shirt=o.shirt, dir=o.dir||-1;
+  const P=(dx,dy)=>[x+dx*s, y+dy*s];
+  ctx.save(); ctx.lineCap="round"; ctx.lineJoin="round";
+  // legs (standing figures)
+  if(o.legs){
+    ctx.fillStyle="#3E434A"; gfxRound(ctx,x-64*s,y+270*s,58*s,200*s,24*s); ctx.fill(); gfxRound(ctx,x+6*s,y+270*s,58*s,200*s,24*s); ctx.fill();
+    ctx.fillStyle="#2A2D31"; ctx.beginPath(); ctx.ellipse(x-38*s,y+470*s,40*s,14*s,0,0,Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.ellipse(x+38*s,y+470*s,40*s,14*s,0,0,Math.PI*2); ctx.fill();
+  }
+  if(o.pose==="back"){
+    gfxRound(ctx,x-118*s,y+70*s,236*s,220*s,100*s); ctx.fillStyle=shirt; ctx.fill();
+    ctx.beginPath(); ctx.arc(x,y,70*s,0,Math.PI*2); ctx.fillStyle=T.hair; ctx.fill();
+    ctx.beginPath(); ctx.arc(x-70*s,y+6*s,13*s,0,Math.PI*2); ctx.arc(x+70*s,y+6*s,13*s,0,Math.PI*2); ctx.fillStyle=T.skin; ctx.fill();
+    ctx.restore(); return;
+  }
+  if(o.style===1){ gfxRound(ctx,x-80*s,y-58*s,160*s,170*s,70*s); ctx.fillStyle=T.hair; ctx.fill(); }
+  gfxRound(ctx,x-118*s,y+90*s,236*s,(o.legs?200:190)*s,96*s); ctx.fillStyle=shirt; ctx.fill();          // torso
+  ctx.beginPath(); ctx.moveTo(x-30*s,y+90*s); ctx.lineTo(x,y+132*s); ctx.lineTo(x+30*s,y+90*s); ctx.closePath(); ctx.fillStyle="#fff"; ctx.fill();
+  gfxRound(ctx,x-22*s,y+42*s,44*s,56*s,14*s); ctx.fillStyle=T.skin; ctx.fill();
+  ctx.beginPath(); ctx.arc(x,y,70*s,0,Math.PI*2); ctx.fillStyle=T.skin; ctx.fill();
+  ctx.fillStyle=T.hair; ctx.beginPath();
+  if(o.style===3){ [[-52,-30],[-30,-58],[0,-66],[30,-58],[52,-30]].forEach(p=>{ ctx.moveTo(x+(p[0]+26)*s,y+p[1]*s); ctx.arc(x+p[0]*s,y+p[1]*s,26*s,0,Math.PI*2); }); ctx.fill(); }
+  else { ctx.arc(x,y-8*s,74*s,Math.PI*1.04,Math.PI*1.96); ctx.quadraticCurveTo(x+40*s,y-48*s,x,y-40*s); ctx.quadraticCurveTo(x-40*s,y-46*s,x-74*s,y-14*s); ctx.closePath(); ctx.fill(); }
+  if(o.style===2){ ctx.beginPath(); ctx.arc(x,y-86*s,26*s,0,Math.PI*2); ctx.fill(); }
+  ctx.fillStyle=GFX_INK; [[-24,8],[24,8]].forEach(p=>{ ctx.beginPath(); ctx.arc(x+p[0]*s,y+p[1]*s,6.5*s,0,Math.PI*2); ctx.fill(); });
+  if(o.glasses){ ctx.lineWidth=4*s; ctx.strokeStyle=GFX_INK; [[-24,8],[24,8]].forEach(p=>{ ctx.beginPath(); ctx.arc(x+p[0]*s,y+p[1]*s,17*s,0,Math.PI*2); ctx.stroke(); }); ctx.beginPath(); ctx.moveTo(x-7*s,y+6*s); ctx.lineTo(x+7*s,y+6*s); ctx.stroke(); }
+  ctx.beginPath(); ctx.arc(x,y+22*s,18*s,0.2*Math.PI,0.8*Math.PI); ctx.lineWidth=4.5*s; ctx.strokeStyle=GFX_INK; ctx.stroke();
+  if(o.headset){ ctx.lineWidth=9*s; ctx.strokeStyle=GFX_INK; ctx.beginPath(); ctx.arc(x,y-4*s,82*s,Math.PI*1.08,Math.PI*1.92); ctx.stroke();
+    ctx.fillStyle=GFX_INK; gfxRound(ctx,x-92*s,y-14*s,24*s,44*s,10*s); ctx.fill(); gfxRound(ctx,x+68*s,y-14*s,24*s,44*s,10*s); ctx.fill();
+    ctx.lineWidth=6*s; ctx.beginPath(); ctx.moveTo(x-80*s,y+26*s); ctx.quadraticCurveTo(x-70*s,y+56*s,x-26*s,y+44*s); ctx.stroke(); ctx.beginPath(); ctx.arc(x-24*s,y+44*s,7*s,0,Math.PI*2); ctx.fill(); }
+  // arms
+  const arm=(a,b,c)=>{ ctx.strokeStyle=shirt; ctx.lineWidth=46*s; ctx.beginPath(); ctx.moveTo(...P(a[0],a[1])); if(c) ctx.quadraticCurveTo(...P(c[0],c[1]),...P(b[0],b[1])); else ctx.lineTo(...P(b[0],b[1])); ctx.stroke();
+    ctx.fillStyle=T.skin; ctx.beginPath(); ctx.arc(...P(b[0],b[1]),22*s,0,Math.PI*2); ctx.fill(); };
+  const L=[-96,122], R=[98,122];
+  if(o.pose==="type"){ arm(L,[-52,222]); arm(R,[52,222]); }
+  else if(o.pose==="present"){ const side=dir<0?L:R, other=dir<0?R:L; arm(other,[other[0]*1.1,236]); arm(side,[dir*235,40],[dir*170,120]); }
+  else if(o.pose==="wave"){ arm(L,[-108,232]); arm(R,[150,-40],[150,90]); }
+  else if(o.pose==="clipboard"){
+    arm(R,[112,236]);
+    ctx.save(); ctx.translate(x-40*s,y+200*s); ctx.rotate(-0.12);
+    gfxRound(ctx,-50*s,-62*s,100*s,130*s,10*s); ctx.fillStyle="#fff"; ctx.fill(); ctx.lineWidth=5*s; ctx.strokeStyle=o.clip||GFX_INK; ctx.stroke();
+    gfxRound(ctx,-20*s,-74*s,40*s,20*s,6*s); ctx.fillStyle=o.clip||GFX_INK; ctx.fill();
+    ctx.lineWidth=5*s; ctx.strokeStyle="#D9CBB4"; [-24,0,24].forEach(d=>{ ctx.beginPath(); ctx.moveTo(-30*s,d*s); ctx.lineTo(30*s,d*s); ctx.stroke(); });
+    ctx.restore(); arm(L,[-10,210],[-90,210]);
+  }
+  else { arm(L,[-108,230]); arm(R,[200,-68],[160,92]); }       // point
+  ctx.restore();
+}
+function gfxCardsAndThreads(ctx, cards, anchors, icons, lead, col){
+  ctx.save(); ctx.setLineDash([12,12]); ctx.lineWidth=4; ctx.strokeStyle=GFX_STITCH; ctx.lineCap="round";
+  cards.forEach((cd,i)=>{ const a=anchors[i%anchors.length]; ctx.beginPath(); ctx.moveTo(a[0],a[1]); ctx.quadraticCurveTo((a[0]+cd[0])/2, Math.min(a[1],cd[1])-60, cd[0], cd[1]); ctx.stroke(); });
+  ctx.restore();
+}
+function gfxDrawCards(ctx, cards, icons, lead, col){
   cards.forEach((cd,i)=>{
     const c=i===0?lead.c:col(i), w=cd[2], h=cd[3], x=cd[0]-w/2, y=cd[1]-h/2;
     ctx.save(); ctx.shadowColor="rgba(90,70,40,0.16)"; ctx.shadowBlur=26; ctx.shadowOffsetY=10;
@@ -3212,11 +3271,155 @@ function gfxScene(ctx, bx, by, bw, bh){
     gfxRound(ctx,x+14,y+h-12,w-28,5,2.5); ctx.fillStyle=gfxTint(c,.55); ctx.fill();
     gfxIcon(ctx, icons[i%icons.length], cd[0], cd[1]-4, Math.min(w,h)*0.72, c);
   });
-  // paper scraps + sparkles
-  [[410,82,62,74,-8],[598,100,54,64,7]].forEach(p=>{ ctx.save(); ctx.translate(p[0],p[1]); ctx.rotate(p[4]*Math.PI/180);
+}
+function gfxScraps(ctx, list){
+  list.forEach(p=>{ ctx.save(); ctx.translate(p[0],p[1]); ctx.rotate(p[4]*Math.PI/180);
     ctx.shadowColor="rgba(90,70,40,0.12)"; ctx.shadowBlur=14; ctx.shadowOffsetY=6; gfxRound(ctx,-p[2]/2,-p[3]/2,p[2],p[3],8); ctx.fillStyle="#fff"; ctx.fill(); ctx.shadowColor="transparent";
     [-.2,0,.2].forEach(d=>{ ctx.beginPath(); ctx.moveTo(-p[2]*.28,d*p[3]); ctx.lineTo(p[2]*.28,d*p[3]); ctx.lineWidth=5; ctx.lineCap="round"; ctx.strokeStyle="#E3D8C4"; ctx.stroke(); }); ctx.restore(); });
-  [[676,72,14,THREADS[6].c],[318,262,11,col(3)],[962,262,12,col(1)],[40,500,10,THREADS[6].c]].forEach(s=>gfxSparkle(ctx,s[0],s[1],s[2],s[3]));
+}
+function gfxLaptop(ctx,x,y,w,h,spark){ gfxRound(ctx,x,y,w,h,12); ctx.fillStyle="#2E3238"; ctx.fill(); gfxRound(ctx,x-w*.16,y+h-6,w*1.32,10,5); ctx.fillStyle="#3D4249"; ctx.fill(); gfxSparkle(ctx,x+w/2,y+h/2,Math.min(w,h)*.22,spark); }
+function gfxMug(ctx,x,y,band){ gfxRound(ctx,x,y,58,56,10); ctx.fillStyle="#fff"; ctx.fill(); ctx.lineWidth=4; ctx.strokeStyle="#CFC3AE"; ctx.stroke();
+  gfxRound(ctx,x,y+16,58,12,0); ctx.fillStyle=band; ctx.fill(); ctx.beginPath(); ctx.arc(x+64,y+26,13,-Math.PI/2,Math.PI/2); ctx.lineWidth=6; ctx.strokeStyle="#CFC3AE"; ctx.stroke(); }
+
+function gfxScene(ctx, bx, by, bw, bh){
+  const VW=960, VH=690, sc=Math.min(bw/VW, bh/VH), ox=bx+(bw-VW*sc)/2, oy=by+(bh-VH*sc)/2;
+  ctx.save(); ctx.beginPath(); ctx.rect(bx,by,bw,bh); ctx.clip(); ctx.translate(ox,oy); ctx.scale(sc,sc); ctx.translate(-20,-44);
+  const lead=gfxLead(), li=gfxLeadIndex(), seed=gfxHash(gfxSeedKey()), cfg=gfxSceneCfg();
+  const icons=(PROF_ICONS[state.audience==="__custom__"?"":primaryName()]||PROF_ICONS_DEFAULT);
+  const col=i=>THREADS[(li+1+i)%THREADS.length].c;
+  const tone=gfxTone(), others=gfxOthers(tone);
+  // shirt never matches a stylized skin tone
+  const shirt = (tone.key===lead.key || (tone.key==="gold"&&lead.key==="gold")) ? col(0) : lead.c;
+  const me={tone, shirt, style:(seed>>6)%4, glasses:((seed>>9)%3)===0, headset:!!cfg.headset};
+  const other=i=>({tone:others[(seed+i)%others.length], shirt:col(i+1), style:(seed>>(3+i))%4, glasses:false});
+  const spark=THREADS[6].c;
+  const floor=(cx,cy,rx)=>{ ctx.beginPath(); ctx.ellipse(cx,cy,rx,28,0,0,Math.PI*2); ctx.fillStyle="#F4EDE1"; ctx.fill(); };
+  let cards;
+
+  if(cfg.t==="stage"){
+    cards=[[110,165,160,125],[105,395,150,120],[905,120,150,115],[905,345,150,120]];
+    gfxCardsAndThreads(ctx,cards,[[470,200]]);
+    // screen with a chart
+    gfxRound(ctx,250,78,440,260,16); ctx.fillStyle="#fff"; ctx.fill(); ctx.lineWidth=4; ctx.strokeStyle="#DCCFBA"; ctx.stroke();
+    gfxRound(ctx,282,106,180,14,7); ctx.fillStyle=GFX_INK; ctx.fill(); gfxRound(ctx,282,132,120,10,5); ctx.fillStyle="#D9CBB4"; ctx.fill();
+    [[300,70,lead.c],[360,120,col(1)],[420,95,col(2)],[480,160,lead.c],[540,190,col(3)],[600,150,col(4)]].forEach(b=>{ gfxRound(ctx,b[0],312-b[1],40,b[1],6); ctx.fillStyle=b[2]; ctx.fill(); });
+    ctx.beginPath(); ctx.moveTo(270,312); ctx.lineTo(670,312); ctx.lineWidth=4; ctx.strokeStyle="#CFC3AE"; ctx.stroke();
+    // stage
+    gfxRound(ctx,140,560,760,36,12); ctx.fillStyle="#D9C7A8"; ctx.fill(); gfxRound(ctx,170,592,700,50,8); ctx.fillStyle="#EFE6D6"; ctx.fill();
+    gfxPerson(ctx,Object.assign({x:790,y:196,s:0.78,legs:true,pose:"present",dir:-1},me));
+    // audience (backs of heads), a mix of people
+    [140,262,384,506,628,750,872].forEach((x,i)=>gfxPerson(ctx,Object.assign({x,y:648+(i%2)*10,s:0.6,pose:"back"},other(i))));
+    gfxSparkle(ctx,720,70,13,spark); gfxSparkle(ctx,230,60,10,col(2));
+  }
+  else if(cfg.t==="outdoor"){
+    cards=[[105,165,150,115],[100,400,140,110],[890,150,150,115],[890,385,140,110]];
+    gfxCardsAndThreads(ctx,cards,[[700,250]]);
+    // sun + clouds
+    ctx.beginPath(); ctx.arc(760,96,42,0,Math.PI*2); ctx.fillStyle=gfxTint(THREADS[6].c,.55); ctx.fill();
+    [[310,86],[560,118]].forEach(c=>{ ctx.fillStyle="#EFEFEF"; [[0,0,26],[28,-10,32],[60,0,24]].forEach(k=>{ ctx.beginPath(); ctx.arc(c[0]+k[0],c[1]+k[1],k[2],0,Math.PI*2); ctx.fill(); }); gfxRound(ctx,c[0]-10,c[1],80,24,12); ctx.fill(); });
+    // ground
+    gfxRound(ctx,50,636,900,48,20); ctx.fillStyle="#EAE2D4"; ctx.fill();
+    const b=cfg.b||"shop";
+    if(b==="house"){
+      gfxRound(ctx,205,340,390,300,6); ctx.fillStyle="#F7F2EA"; ctx.fill(); ctx.lineWidth=4; ctx.strokeStyle="#E1D3BC"; ctx.stroke();
+      gfxRound(ctx,470,196,34,90,4); ctx.fillStyle=THREADS[5].c; ctx.fill();
+      ctx.beginPath(); ctx.moveTo(180,352); ctx.lineTo(400,176); ctx.lineTo(620,352); ctx.closePath(); ctx.fillStyle=lead.c; ctx.fill();
+      [[240,410],[480,410]].forEach(w=>{ gfxRound(ctx,w[0],w[1],80,70,6); ctx.fillStyle="#EAF2F2"; ctx.fill(); ctx.lineWidth=5; ctx.strokeStyle="#fff"; ctx.beginPath(); ctx.moveTo(w[0]+40,w[1]); ctx.lineTo(w[0]+40,w[1]+70); ctx.moveTo(w[0],w[1]+35); ctx.lineTo(w[0]+80,w[1]+35); ctx.stroke(); });
+      gfxRound(ctx,365,510,70,130,8); ctx.fillStyle=col(1); ctx.fill(); ctx.beginPath(); ctx.arc(420,578,6,0,Math.PI*2); ctx.fillStyle="#fff"; ctx.fill();
+      ctx.beginPath(); ctx.moveTo(372,640); ctx.lineTo(428,640); ctx.lineTo(452,684); ctx.lineTo(348,684); ctx.closePath(); ctx.fillStyle="#DDD2BF"; ctx.fill();
+      // sign
+      gfxRound(ctx,866,470,10,170,4); ctx.fillStyle=THREADS[5].c; ctx.fill();
+      gfxRound(ctx,806,462,130,78,10); ctx.fillStyle="#fff"; ctx.fill(); ctx.lineWidth=5; ctx.strokeStyle=lead.c; ctx.stroke();
+      gfxIcon(ctx,"key",871,501,58,lead.c);
+    } else if(b==="shop"){
+      gfxRound(ctx,195,300,410,340,6); ctx.fillStyle="#FFFFFF"; ctx.fill(); ctx.lineWidth=4; ctx.strokeStyle="#E1D3BC"; ctx.stroke();
+      gfxRound(ctx,250,238,300,52,10); ctx.fillStyle=GFX_INK; ctx.fill();
+      for(let i=0;i<4;i++){ gfxRound(ctx,300,252+i*7,200-i*34,4,2); ctx.fillStyle=THREADS[(li+i)%7].c; ctx.fill(); }
+      const aw=8, w=440/aw; for(let i=0;i<aw;i++){ ctx.beginPath(); ctx.rect(180+i*w,300,w,56); ctx.fillStyle=i%2?"#fff":lead.c; ctx.fill(); ctx.beginPath(); ctx.arc(180+i*w+w/2,356,w/2,0,Math.PI); ctx.fillStyle=i%2?"#F3EEE6":lead.c; ctx.fill(); }
+      gfxRound(ctx,225,400,220,200,8); ctx.fillStyle="#EEF4F3"; ctx.fill();
+      [[250,560,40,40,col(1)],[300,530,44,70,col(2)],[356,548,40,52,col(3)],[404,520,30,80,col(4)]].forEach(p=>{ gfxRound(ctx,p[0],p[1],p[2],p[3],6); ctx.fillStyle=p[4]; ctx.fill(); });
+      gfxRound(ctx,475,420,95,220,8); ctx.fillStyle="#3E434A"; ctx.fill(); gfxRound(ctx,490,436,65,110,6); ctx.fillStyle="#DDE8E7"; ctx.fill();
+      gfxRound(ctx,492,470,60,26,6); ctx.fillStyle="#fff"; ctx.fill(); ctx.fillStyle=lead.text; ctx.font=GF_SANS(800,16); ctx.textAlign="center"; ctx.fillText("OPEN",522,489); ctx.textAlign="left";
+      [[205,632,30],[595,632,30]].forEach(k=>{ ctx.beginPath(); ctx.arc(k[0],k[1],k[2],0,Math.PI*2); ctx.fillStyle=gfxTint(THREADS[3].c,.25); ctx.fill(); });
+    } else if(b==="clinic"){
+      gfxRound(ctx,190,280,420,360,8); ctx.fillStyle="#FFFFFF"; ctx.fill(); ctx.lineWidth=4; ctx.strokeStyle="#E1D3BC"; ctx.stroke();
+      gfxRound(ctx,190,280,420,40,8); ctx.fillStyle=gfxTint(lead.c,.8); ctx.fill();
+      gfxRound(ctx,360,176,80,80,16); ctx.fillStyle="#fff"; ctx.fill(); ctx.lineWidth=5; ctx.strokeStyle=THREADS[0].c; ctx.stroke();
+      gfxRound(ctx,388,190,24,52,4); ctx.fillStyle=THREADS[0].c; ctx.fill(); gfxRound(ctx,374,204,52,24,4); ctx.fill();
+      for(let r=0;r<2;r++) for(let c=0;c<4;c++){ gfxRound(ctx,222+c*96,346+r*84,64,52,6); ctx.fillStyle="#EAF2F2"; ctx.fill(); }
+      gfxRound(ctx,345,520,110,120,6); ctx.fillStyle="#DDE8E7"; ctx.fill(); ctx.lineWidth=4; ctx.strokeStyle="#B9C6C5"; ctx.beginPath(); ctx.moveTo(400,520); ctx.lineTo(400,640); ctx.stroke();
+      [[200,632,30],[600,632,30]].forEach(k=>{ ctx.beginPath(); ctx.arc(k[0],k[1],k[2],0,Math.PI*2); ctx.fillStyle=gfxTint(THREADS[3].c,.25); ctx.fill(); });
+    } else { // office
+      gfxRound(ctx,190,380,130,260,6); ctx.fillStyle="#F4F1EC"; ctx.fill();
+      gfxRound(ctx,300,170,240,470,8); ctx.fillStyle="#FFFFFF"; ctx.fill(); ctx.lineWidth=4; ctx.strokeStyle="#E1D3BC"; ctx.stroke();
+      gfxRound(ctx,300,170,240,26,8); ctx.fillStyle=lead.c; ctx.fill();
+      for(let r=0;r<7;r++) for(let c=0;c<4;c++){ gfxRound(ctx,322+c*54,214+r*52,36,32,4); ctx.fillStyle=((r+c+seed)%5===0)?gfxTint(col(c),.35):"#EAF2F2"; ctx.fill(); }
+      for(let r=0;r<4;r++) for(let c=0;c<2;c++){ gfxRound(ctx,212+c*52,404+r*52,34,30,4); ctx.fillStyle="#EAEFEF"; ctx.fill(); }
+      gfxRound(ctx,380,580,80,60,6); ctx.fillStyle="#3E434A"; ctx.fill();
+      [[570,632,30]].forEach(k=>{ ctx.beginPath(); ctx.arc(k[0],k[1],k[2],0,Math.PI*2); ctx.fillStyle=gfxTint(THREADS[3].c,.25); ctx.fill(); });
+    }
+    gfxPerson(ctx,Object.assign({x:705,y:262,s:0.8,legs:true,pose:cfg.clipboard?"clipboard":"present",dir:-1,clip:lead.c},me));
+    gfxSparkle(ctx,660,70,12,spark);
+  }
+  else if(cfg.t==="team"){
+    cards=[[105,165,150,115],[900,165,150,115],[98,420,140,110],[905,420,140,110]];
+    gfxCardsAndThreads(ctx,cards,[[500,330]]);
+    // wall: whiteboard with sticky notes / a journey / a chart
+    gfxRound(ctx,245,58,510,250,14); ctx.fillStyle="#fff"; ctx.fill(); ctx.lineWidth=4; ctx.strokeStyle="#DCCFBA"; ctx.stroke();
+    if(cfg.wall==="chart"){ ctx.beginPath(); ctx.moveTo(285,270); [[340,240],[400,250],[460,200],[520,212],[580,150],[640,160],[710,100]].forEach(p=>ctx.lineTo(p[0],p[1])); ctx.lineWidth=8; ctx.strokeStyle=lead.c; ctx.stroke(); [[460,200],[580,150],[710,100]].forEach(p=>{ ctx.beginPath(); ctx.arc(p[0],p[1],10,0,Math.PI*2); ctx.fillStyle=col(1); ctx.fill(); }); }
+    else if(cfg.wall==="journey"){ ctx.beginPath(); ctx.moveTo(290,200); ctx.bezierCurveTo(380,110,450,270,530,180); ctx.bezierCurveTo(600,110,650,230,712,160); ctx.lineWidth=6; ctx.setLineDash([14,10]); ctx.strokeStyle=GFX_STITCH; ctx.stroke(); ctx.setLineDash([]); [[290,200],[410,170],[530,180],[640,170],[712,160]].forEach((p,i)=>{ ctx.beginPath(); ctx.arc(p[0],p[1],20,0,Math.PI*2); ctx.fillStyle=THREADS[(li+i)%7].c; ctx.fill(); }); }
+    else { for(let r=0;r<2;r++) for(let c=0;c<6;c++){ ctx.save(); ctx.translate(290+c*76,100+r*96); ctx.rotate(((r*6+c)%3-1)*0.05); gfxRound(ctx,0,0,60,56,4); ctx.fillStyle=gfxTint(THREADS[(li+c+r*2)%7].c,.35); ctx.fill(); ctx.restore(); } }
+    // people behind the table
+    gfxPerson(ctx,Object.assign({x:300,y:408,s:0.66,pose:"type"},other(0)));
+    gfxPerson(ctx,Object.assign({x:700,y:408,s:0.66,pose:"type"},other(1)));
+    gfxPerson(ctx,Object.assign({x:500,y:350,s:0.8,pose:"point"},me));
+    // table
+    ctx.beginPath(); ctx.ellipse(500,590,340,74,0,0,Math.PI*2); ctx.fillStyle="#D9C7A8"; ctx.fill();
+    gfxLaptop(ctx,448,520,104,66,spark);
+    gfxRound(ctx,270,560,90,60,6); ctx.fillStyle="#fff"; ctx.fill(); gfxRound(ctx,640,556,90,60,6); ctx.fillStyle="#fff"; ctx.fill();
+    gfxMug(ctx,610,520,col(2));
+    // people in front (backs)
+    gfxPerson(ctx,Object.assign({x:360,y:668,s:0.62,pose:"back"},other(2)));
+    gfxPerson(ctx,Object.assign({x:640,y:674,s:0.62,pose:"back"},other(3)));
+    gfxSparkle(ctx,780,48,12,spark);
+  }
+  else if(cfg.t==="home"){
+    cards=[[110,160,150,115],[105,400,140,110],[905,165,150,115],[900,400,140,110]];
+    gfxCardsAndThreads(ctx,cards,[[500,330]]);
+    // window, lamp, plant, rug
+    gfxRound(ctx,560,78,250,210,10); ctx.fillStyle="#EEF5F4"; ctx.fill(); ctx.lineWidth=10; ctx.strokeStyle="#fff"; ctx.stroke(); ctx.lineWidth=4; ctx.strokeStyle="#DCCFBA"; ctx.stroke();
+    ctx.lineWidth=8; ctx.strokeStyle="#fff"; ctx.beginPath(); ctx.moveTo(685,78); ctx.lineTo(685,288); ctx.moveTo(560,183); ctx.lineTo(810,183); ctx.stroke();
+    ctx.beginPath(); ctx.ellipse(490,690,390,34,0,0,Math.PI*2); ctx.fillStyle=gfxTint(col(3),.8); ctx.fill();
+    gfxRound(ctx,210,250,10,420,4); ctx.fillStyle="#3E434A"; ctx.fill();
+    ctx.beginPath(); ctx.moveTo(172,250); ctx.lineTo(258,250); ctx.lineTo(240,190); ctx.lineTo(190,190); ctx.closePath(); ctx.fillStyle=THREADS[6].c; ctx.fill();
+    gfxRound(ctx,845,560,70,76,10); ctx.fillStyle=THREADS[5].c; ctx.fill();
+    [[880,520,30,58,-0.3],[860,500,22,50,-0.8],[900,500,22,50,0.6],[880,478,18,44,0]].forEach(l=>{ ctx.save(); ctx.translate(l[0],l[1]); ctx.rotate(l[4]); ctx.beginPath(); ctx.ellipse(0,0,l[2],l[3],0,0,Math.PI*2); ctx.fillStyle=THREADS[3].c; ctx.fill(); ctx.restore(); });
+    // sofa behind the person
+    const sofa=gfxTint(col(1),.55);
+    gfxRound(ctx,250,400,500,170,60); ctx.fillStyle=sofa; ctx.fill();
+    gfxPerson(ctx,Object.assign({x:500,y:352,s:0.86,pose:"type"},me));
+    gfxRound(ctx,232,528,536,84,34); ctx.fillStyle=gfxTint(col(1),.4); ctx.fill();
+    gfxRound(ctx,206,470,80,150,36); ctx.fillStyle=gfxTint(col(1),.3); ctx.fill(); gfxRound(ctx,714,470,80,150,36); ctx.fill();
+    gfxLaptop(ctx,440,470,120,82,spark);
+    gfxMug(ctx,724,428,col(2));
+    gfxSparkle(ctx,520,70,12,spark); gfxSparkle(ctx,330,120,9,col(4));
+  }
+  else { // desk
+    cards=[[790,150,190,150],[200,150,170,130],[105,380,150,150],[895,395,150,135],[115,610,150,120],[885,615,150,120]];
+    gfxCardsAndThreads(ctx,cards,[[500,330]]);
+    floor(500,712,400);
+    gfxPerson(ctx,Object.assign({x:500,y:330,s:1,pose:"point"},me));
+    gfxRound(ctx,170,560,660,34,14); ctx.fillStyle="#D9C7A8"; ctx.fill();
+    gfxRound(ctx,210,590,580,112,10); ctx.fillStyle="#EFE6D6"; ctx.fill();
+    gfxLaptop(ctx,430,468,140,94,spark);
+    [[250,538,120,col(0)],[258,518,104,col(2)],[244,498,116,col(4)]].forEach(b=>{ gfxRound(ctx,b[0],b[1],b[2],20,5); ctx.fillStyle=b[3]; ctx.fill(); });
+    gfxMug(ctx,650,506,col(1));
+    ctx.lineWidth=4; ctx.strokeStyle="#D9CBB4"; [666,690].forEach(x=>{ ctx.beginPath(); ctx.moveTo(x,494); ctx.quadraticCurveTo(x-8,480,x,468); ctx.quadraticCurveTo(x+8,456,x,444); ctx.stroke(); });
+    [[430,622,col(3)],[488,630,col(5)]].forEach(n=>{ gfxRound(ctx,n[0],n[1],44,40,4); ctx.fillStyle=gfxTint(n[2],.35); ctx.fill(); });
+    gfxScraps(ctx,[[410,82,62,74,-8],[598,100,54,64,7]]);
+    [[676,72,14,spark],[318,262,11,col(3)],[962,262,12,col(1)],[40,500,10,spark]].forEach(s=>gfxSparkle(ctx,s[0],s[1],s[2],s[3]));
+  }
+  gfxDrawCards(ctx, cards, icons, lead, col);
   ctx.restore();
 }
 
@@ -3610,6 +3813,19 @@ function renderOutput(){
     mkSw("auto","Auto ("+gfxLead().name+")",null); THREADS.forEach(t=>mkSw(t.key,t.name,t.c));
     pf.appendChild(sw);
     const ch=el("div","hint"); ch.style.marginTop="6px"; ch.textContent="Auto gives each profession its own color, so the series varies month to month. The scene mixes in the other yarn colors."; pf.appendChild(ch);
+    // scene theme
+    const scSel=el("select"); SCENE_CHOICES.forEach(o=>scSel.appendChild(opt(o[0],o[1]))); scSel.value=g.scene||"auto";
+    scSel.onchange=()=>{ g.scene=scSel.value; refresh(); };
+    const autoName=(function(){ const c=Object.assign({t:"desk"},PROF_SCENE[primaryName()]||{}); return c.t==="outdoor"?("Out front: "+(c.b||"shop")):({desk:"At the desk",stage:"On stage",team:"With the team",home:"At home"}[c.t]); })();
+    const scF=fld("Scene", scSel, "Auto for this profession: "+autoName+". Pick another to change the picture."); scF.style.marginTop="14px"; pf.appendChild(scF);
+    // person color
+    const pl=el("span","lab","Person color"); pl.style.cssText="display:block;margin-top:14px"; pf.appendChild(pl);
+    const ps=el("div"); ps.style.cssText="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:6px";
+    PERSON_TONES.forEach(t=>{ const b=el("button","dd"); b.setAttribute("data-on",(g.person||"gold")===t.key?"1":"0");
+      b.innerHTML='<span style="display:inline-block;width:14px;height:14px;border-radius:50%;vertical-align:-2px;margin-right:6px;background:'+t.skin+';border:1px solid rgba(0,0,0,.15)"></span>'+esc(t.name);
+      b.onclick=()=>{ g.person=t.key; saveGfxPrefs(); rerenderOut(); }; ps.appendChild(b); });
+    pf.appendChild(ps);
+    const ph=el("div","hint"); ph.style.marginTop="6px"; ph.textContent="Stylized colors (gold, blue, teal, plum) or natural skin tones. Your choice is remembered; other people in group scenes get a mix from the same family."; pf.appendChild(ph);
 
     const lab=el("span","lab","Logo (upper left, also on the deck)"); lab.style.cssText="display:block;margin-top:14px"; pf.appendChild(lab);
     pf.appendChild(logoPicker("brand"));
