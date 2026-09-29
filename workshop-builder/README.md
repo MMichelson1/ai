@@ -11,7 +11,18 @@ no server, no build step, no API keys or tokens, and it works offline.
 From one audience selection (plus date, venue, seats, and tool choices), the
 builder produces:
 
-- **Luma listing** — event title, description, and promo copy for the audience.
+- **Session focus** — pick what the session teaches and everything follows it (deck,
+  Workbook, Luma, LinkedIn). Always on: **The Human Side of AI** (AI is *Applied
+  Intelligence*: your domain expertise leads, AI is the machine, challenge the output,
+  review it so it never sounds robotic) and **context, sources & desired output**.
+  Pick from: how to think about AI (a machine analogy for each profession), good vs bad
+  prompts plus letting AI write the prompt, where AI doesn't work, apps & agents on the
+  fly, AI vs automation and when to hand off to Lovable / Zapier / Make / n8n (and what
+  to avoid, like autonomous outreach that reads like AI slop), the tool tour, the Me.md
+  (off by default), and context & knowledge graphs.
+- **Luma listing** — event title, description, and promo copy for the audience, built
+  from the Session focus and the profession's analogy. Hooks and phrasing change by
+  month, and **↻ Try another version** gives a fresh take (on the LinkedIn tab too).
 - **Agenda / run-of-show** — timed segments for the session.
 - **Slides** — a slide-by-slide brief, plus a **one-click "Download PowerPoint"**
   button on the **PowerPoint** tab that builds the real widescreen `.pptx` right in
@@ -42,8 +53,9 @@ builder produces:
 - **Use cases are written as real problems** — every audience's use cases read
   "Problem → what AI does about it" and feed the deep-dive slides; edit them in the
   ICP section in the same format.
-- **`me.md` context file** — a personal-context file to paste into Claude,
-  ChatGPT, or Gemini so the tools answer as *this* professional.
+- **`me.md` context file** — optional (Session focus). A personal-context file to paste
+  into Claude, ChatGPT, or Gemini. Turn on **context & knowledge graphs** to go beyond
+  one file.
 - **Facilitator credibility** — the **Facilitator** tab holds the lead's own
   me.md (editable, saved in the browser) and maps it to each topic in the
   session as a ready-to-say *"why I'm qualified to lead this"* line, drawn from
@@ -69,7 +81,7 @@ saved in the browser (`localStorage`), so they carry over month to month.
 **Add your own tools — as many as you like.** New AI tools ship constantly, so
 under **Tools this session** there's a *"Your added tools"* area: type a tool
 name, pick a **category**, and **Add**. Categories include the built-ins (LLM,
-research, notetaker, document intelligence, automation, writing, image/video,
+research, notetaker, document intelligence, app & agent builders, automation, writing, image/video,
 voice) **and your own** — choose *"＋ New category…"* to create one (you set what
 it "behaves like" so talking points and credibility still apply). Added tools are
 grouped by category, behave like built-ins (feature, deep-dive, credibility), and
