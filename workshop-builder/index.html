@@ -1831,6 +1831,7 @@ const TOOL_CATS = [
   {cat:"Research & Discovery", tools:["Perplexity","Elicit","Consensus","You.com","Google Deep Research"]},
   {cat:"Notetakers & Meeting AI", tools:["Otter.ai","Fireflies.ai","Granola","Fathom","Circleback","Tactiq","Avoma"]},
   {cat:"Document Intelligence", tools:["Gemini Notebook","ChatPDF","PDF.ai"]},
+  {cat:"App & Agent Builders", tools:["Claude Artifacts","Lovable","Bolt","Replit"]},
   {cat:"Automation & Task Delegation", tools:["Claude Cowork","Make.com","Zapier","n8n","Manus"]},
   {cat:"Writing & Content", tools:["Notion AI","Jasper","Copy.ai","Gamma","Writesonic"]},
   {cat:"Image, Video & Media", tools:["DALL-E","Midjourney","Canva AI","Runway","HeyGen","Sora"]},
@@ -1845,6 +1846,7 @@ const TOOL_KIND = {};
     "Perplexity":["research","perplexity"],"Elicit":["research",null],"Consensus":["research",null],"You.com":["research",null],"Google Deep Research":["research",null],
     "Otter.ai":["notetaker",null],"Fireflies.ai":["notetaker",null],"Granola":["notetaker",null],"Fathom":["notetaker",null],"Circleback":["notetaker",null],"Tactiq":["notetaker",null],"Avoma":["notetaker",null],
     "Gemini Notebook":["docintel","notebooklm"],"ChatPDF":["docintel",null],"PDF.ai":["docintel",null],
+    "Claude Artifacts":["builder",null],"Lovable":["builder",null],"Bolt":["builder",null],"Replit":["builder",null],
     "Claude Cowork":["automation","cowork"],"Make.com":["automation",null],"Zapier":["automation",null],"n8n":["automation",null],"Manus":["automation",null],
     "Notion AI":["writing",null],"Jasper":["writing",null],"Copy.ai":["writing",null],"Gamma":["writing",null],"Writesonic":["writing",null],
     "DALL-E":["image",null],"Midjourney":["image",null],"Canva AI":["image",null],"Runway":["image",null],"HeyGen":["image",null],"Sora":["image",null],
@@ -1904,13 +1906,16 @@ Direct, warm, conversational. Lead with the insight, plain language, address rea
 // Credibility lines in the facilitator's voice, matched to a topic. First match wins.
 const CRED_RULES = [
   {kw:["your hosts","host"], line:"42 years as a researcher and consultant, founder of Michelson & Associates and Threads, co-founder of 8 professional associations, and founder of the Atlanta AI Collective, now 4,000 members."},
-  {kw:["moment we","where ai fits","your work","why ai"], line:"I have built with AI since 1984 and took a year off to study how to teach it. This is 42 years of practice meeting a new set of tools, not a bandwagon."},
+  {kw:["human side","your hands"], line:"42 years as a researcher, consultant, and editor taught me that judgment is the job. I use AI as a machine I direct, never as a replacement for what I know."},
+  {kw:["doesn't work","avoid"], line:"I have watched a lot of automation go wrong in 40 years of building it. I will show you where these tools break before they break on you."},
+  {kw:["prompt"], line:"I have written thousands of research briefs and discussion guides. A good prompt is a good brief, and briefs are my craft."},
+  {kw:["moment we","where ai fits","your work","why ai","think about ai"], line:"I have built with AI since 1984 and took a year off to study how to teach it. This is 42 years of practice meeting a new set of tools, not a bandwagon."},
   {kw:["me.md","personaliz"], line:"I wrote my own me.md and run it every day. I am teaching you the exact system I use."},
   {kw:["llm","compared","claude","chatgpt","gemini","models"], line:"I use these tools daily in real client work and build apps and agents with Claude Code. I can tell you which to reach for because I reach for them myself."},
-  {kw:["notebook","document","pdf"], line:"I trained models to analyze unstructured data with Microsoft back in 2010. Pulling answers out of documents is work I have done for years."},
+  {kw:["notebook","document","pdf","graph"], line:"I trained models to analyze unstructured data with Microsoft back in 2010. Pulling answers out of documents is work I have done for years."},
   {kw:["notetaker","meeting","transcript"], line:"I have run thousands of interviews, focus groups, and VOC sessions. I know what matters in a transcript and what to cut."},
   {kw:["research","insight","discovery","perplexity"], line:"Research is my 42-year discipline. I have run studies for Google, Salesforce, and Johnson & Johnson, and I know what good sourcing looks like."},
-  {kw:["integration","wrapper","automation","cowork","stack","agent"], line:"I built custom research automation on Macintosh before off-the-shelf tools existed. Handing repetitive work to machines is a 40-year habit for me."},
+  {kw:["integration","wrapper","automation","cowork","stack","agent","hand off","build one"], line:"I built custom research automation on Macintosh before off-the-shelf tools existed. Handing repetitive work to machines is a 40-year habit for me."},
   {kw:["customer experience","journey","voc"," cx","cx "], line:"I co-founded the Mystery Shopping Providers Association and the Atlanta CXPA chapter, and produced CX Forums across 8 markets. CX is a career for me, not a slide."},
   {kw:["community"], line:"I founded the Atlanta AI Collective and grew it from zero to 4,000 members in 11 months. I know how communities actually grow."},
   {kw:["demo","action plan","hands-on"], line:"Everything I show you, I run in my own practice. Watch me do it, then do it yourself."}
@@ -1921,6 +1926,7 @@ const CRED_BY_KIND = {
   research:"Research is my 42-year discipline. I have built insights businesses on good sourcing for clients like Google and Salesforce.",
   docintel:"I trained models to analyze unstructured data with Microsoft in 2010. Getting answers out of documents is old ground for me.",
   notetaker:"I have run thousands of interviews and VOC sessions. I know what to keep in a transcript and what to throw away.",
+  builder:"I build apps and agents with Claude Code for my own practice. I show you what I actually ship.",
   automation:"I built custom research automation before off-the-shelf tools existed. Automating the repetitive work is a 40-year habit.",
   writing:"I have written for clients and published since college. I know when AI copy works and when it sounds like a robot.",
   image:"I am a lifelong professional musician with synesthesia. I bring a real eye and ear to visual and media tools.",
@@ -1987,7 +1993,9 @@ const state = {
   deckLogo:"aic",             // logo on the deck: "aic" (in-person) | "stitchs" (Maven) | "none"
   pocketLink:"",              // per-event Pocket summary notes link, used in the follow-up letter
   attachWorkbook:false,
-  gfx:{series:"AI Fundamentals", color:"auto", person:"gold", scene:"auto", label:"", time:"5:30 – 8:30 pm", city:"", showEvent:true, coverLine:true, partner:"improving", artId:null, cover:true},  // Luma + 16:9 artwork settings       // follow-up letter: mention the workbook as an attachment (most download it via QR during the session)
+  gfx:{series:"AI Fundamentals", color:"auto", person:"gold", scene:"auto", label:"", time:"5:30 – 8:30 pm", city:"", showEvent:true, coverLine:true, partner:"improving", artId:null, cover:true},  // Luma + 16:9 artwork settings
+  focus:{},                   // session focus: module id -> on/off (unset = module default, see MODULES)
+  copyVar:0,                  // "Try another version" counter for the Luma + LinkedIn copy
   activeTab:"luma"
 };
 
@@ -2019,6 +2027,7 @@ const TOOL_KINDS = [
   ["notetaker","Notetaker & Meeting AI"],
   ["docintel","Document Intelligence"],
   ["automation","Automation & Agents"],
+  ["builder","App & Agent Builders"],
   ["writing","Writing & Content"],
   ["image","Image, Video & Media"],
   ["voice","Voice & Audio"]
@@ -2068,7 +2077,7 @@ function persistReminder(){ const s=loadStore(); s.remindWeeks=state.remindWeeks
 function persistFacilitator(){ const s=loadStore(); s.facMemd=state.facMemd; s.credNotes=state.credNotes; saveStore(s); }
 function persistBrand(){ const s=loadStore(); s.deckLogo=state.deckLogo; saveStore(s); }
 // ----- saved workshops (name a whole setup and reload it later) -----
-const WORKSHOP_FIELDS=["audience","audience2","label","noun","customName","icp","date","venue","seats","lead","guests","include","deep","angle","maven","deckLogo","gfx"];
+const WORKSHOP_FIELDS=["audience","audience2","label","noun","customName","icp","date","venue","seats","lead","guests","include","deep","angle","maven","deckLogo","gfx","focus","copyVar"];
 function captureWorkshop(){ const o={}; WORKSHOP_FIELDS.forEach(k=>{ o[k]=(state[k]==null?null:JSON.parse(JSON.stringify(state[k]))); }); return o; }
 function applyWorkshop(cfg){
   WORKSHOP_FIELDS.forEach(k=>{ if(k in cfg && cfg[k]!=null) state[k]=JSON.parse(JSON.stringify(cfg[k])); });
@@ -2256,6 +2265,92 @@ function gcalUrl(remDate,title,desc){
   return "https://calendar.google.com/calendar/render?"+p.toString();
 }
 
+/* ============================================================ SESSION FOCUS ============================================================ */
+// What this session teaches. Core modules are always on: the Human Side of AI (Applied Intelligence)
+// and context / sources / desired output. The rest are picked per workshop so the deck, workbook,
+// Luma page, and LinkedIn post change with the topic.
+const MODULES = [
+  {id:"human", core:true, label:"The Human Side of AI", hint:"Applied Intelligence: your expertise leads and AI is the machine. Challenge the output, use your judgment, review it so it never sounds robotic."},
+  {id:"context", core:true, label:"Context, sources & desired output", hint:"The four-part prompt: context, sources, what good looks like, when to stop. No role lines."},
+  {id:"think", on:true, label:"How to think about AI", hint:"How it works, told through an analogy from their own work, so they see where it fits their workflow."},
+  {id:"prompts", on:true, label:"Good vs bad prompts", hint:"A bad prompt next to a good one for this profession, plus how to have AI interview you and write the prompt."},
+  {id:"limits", on:true, label:"Where AI doesn't work", hint:"The jobs to keep away from AI in this profession, and why."},
+  {id:"agents", on:true, label:"Apps & agents on the fly", hint:"Give AI instructions and let it finish the task: mini-apps, GPTs, Gems, Projects, Cowork."},
+  {id:"automation", on:true, label:"AI vs automation & hand-offs", hint:"Rules vs judgment, when to hand off to Lovable, Zapier, Make, or n8n, and what to avoid (autonomous outreach that reads like AI slop)."},
+  {id:"tools", on:true, label:"Tool tour", hint:"The ecosystem in four layers, LLMs compared, notetakers."},
+  {id:"memd", on:false, label:"Me.md context file", hint:"A personal context file they write once and paste into any AI."},
+  {id:"graphs", on:false, label:"Context & knowledge graphs", hint:"Beyond one file: connect clients, projects, and documents so AI can answer across them."}
+];
+function focusOn(id){ const m=MODULES.find(x=>x.id===id); if(!m) return false; if(m.core) return true; const f=state.focus||{}; return (id in f)?!!f[id]:!!m.on; }
+function focusCount(){ return MODULES.filter(m=>focusOn(m.id)).length; }
+
+// Per-profession teaching content: a machine analogy, where AI does not work, a bad prompt,
+// an app/agent to build, an AI-inside-automation flow, and a knowledge-graph example.
+const PRO_TEACH = {"Community Builders & Managers":{"analogy":"Think of AI as a sound system for your community: it amplifies whatever you feed it. Give it your members' words and your voice and it carries the room. Give it nothing and you get generic noise.","notFor":["Replacing real welcome conversations with members","Posting on your behalf in your community without review","Deciding who belongs or who gets moderated"],"bad":"Write a newsletter for my community.","agent":"An event kit builder: give it the topic and date, and it produces the Luma page, three posts, and two reminder emails in your voice.","auto":"New RSVP in Luma → AI drafts a personal welcome note from their answers → you approve → it sends.","graph":"Connect members, events attended, topics they care about, and who they came with, so AI can suggest who to introduce to whom."},"Conference Organizers":{"analogy":"Think of AI as a badge scanner for information: it reads every survey, bio, and session note in seconds, but only the ones you load into it. The program decisions stay yours.","notFor":["Confirming speakers, venues, or contracts without a human","Inventing speaker bios or credentials","Mass sponsor outreach that reads like a template"],"bad":"Plan a conference agenda.","agent":"A session-copy assistant: paste raw speaker notes, get consistent session descriptions, bios, and promo posts for every session.","auto":"Speaker submits the form → AI drafts the session description and bio → organizer approves → it posts to Sched.","graph":"Link speakers, sessions, topics, sponsors, and past ratings, so AI can answer which topics drew the best-rated sessions and which sponsors fit them."},"Consultants & Solopreneurs":{"analogy":"Think of AI as the best power tool in your kit: it cuts hours out of research, drafts, and decks, but you still decide what to build and you sign the deliverable.","notFor":["Sending client deliverables you have not reviewed","Pricing or scoping decisions without your judgment","Making up case studies or results"],"bad":"Write a proposal for a client.","agent":"A proposal engine: answer five intake questions and it drafts the proposal, the SOW, and the follow-up email in your structure.","auto":"Discovery call ends → notetaker transcript → AI drafts the recap and next steps → you edit → it lands in the client folder.","graph":"Connect clients, engagements, deliverables, and outcomes, so AI can find the past project that best fits a new prospect."},"Customer Experience Professionals":{"analogy":"Think of AI as text analytics on overdrive: it reads every survey comment overnight, but it has never walked your customer journey. You bring the journey, it brings the reading speed.","notFor":["Replacing real customer conversations and research","Reporting a score without checking the underlying data","Auto-replying to upset customers without a human"],"bad":"Analyze our customer feedback.","agent":"A VoC summarizer: drop in this month's exports and it returns themes, quotes, and the three fixes that matter most.","auto":"Low survey score arrives → AI tags the theme and drafts a recovery note → CX owner reviews → it sends and logs the case.","graph":"Connect touchpoints, feedback themes, customer segments, and revenue, so AI can show which friction costs the most."},"Customer Service":{"analogy":"Think of AI as a macro library that writes: it drafts replies from your policies and tone in seconds, but a person decides what the customer actually needs.","notFor":["Promising refunds or exceptions your policy does not allow","Handling a truly upset customer end to end","Answering from memory instead of your current policies"],"bad":"Reply to this customer.","agent":"A reply coach: paste a ticket and get an on-brand reply, the policy it relies on, and a shorter chat version.","auto":"New ticket arrives → AI drafts a reply from your macros and policies → rep approves or edits → it sends.","graph":"Link products, policies, common issues, and approved replies, so AI answers from the current policy instead of guessing."},"Customer Success":{"analogy":"Think of AI as a health score that can write: it reads every call note and ticket in your book, but only the ones you feed it, and the relationship stays yours.","notFor":["Predicting churn from gut feel with no data behind it","Sending renewal or pricing emails without review","Replacing the relationship with the customer's champion"],"bad":"Write a QBR.","agent":"A QBR builder: paste usage and call notes and it drafts the narrative, risks, and recommendations in your template.","auto":"Usage drops 30 percent → AI summarizes recent tickets and calls → CSM gets a risk brief and a drafted check-in → CSM decides.","graph":"Connect accounts, contacts, usage, tickets, and renewal dates, so AI can flag which renewals are at risk and why."},"Customer Support":{"analogy":"Think of AI as a log search that talks back: it scans runbooks, errors, and past tickets in seconds, but it cannot confirm the fix worked. That check is yours.","notFor":["Guessing at fixes for errors it has not seen documented","Closing tickets without confirming the fix worked","Writing release notes from memory instead of the changelog"],"bad":"Fix this error.","agent":"A triage helper: paste the error and ticket history and it returns likely causes, the checks to run, and a customer-ready update.","auto":"New bug ticket → AI summarizes steps and environment into a clean handoff → engineer gets it in Jira → you approve status updates.","graph":"Link errors, product versions, fixes, and help articles, so AI can find how the same symptom was solved before."},"CX Design":{"analogy":"Think of AI as an affinity-mapping machine: it sorts a wall of research notes in minutes, but it has never met your customers. You set the questions and make the design call.","notFor":["Inventing personas or pain points without research behind them","Replacing co-design sessions with real people","Making the design decision for you"],"bad":"Make a journey map.","agent":"A journey drafter: drop in research notes and quotes and it returns stages, emotions, pain points, and opportunities as a table for FigJam.","auto":"New research upload → AI tags quotes by journey stage → researcher reviews → it updates the shared insight board.","graph":"Connect personas, journey stages, pain points, quotes, and fixes, so AI can trace any pain back to the evidence."},"CX Management":{"analogy":"Think of AI as a dashboard that reads: it turns survey waves and VoC reports into a story fast, but it needs your business goals to know which story matters.","notFor":["Presenting AI-generated numbers you have not verified","Setting CX priorities without business context","Autonomous customer outreach at scale"],"bad":"Summarize our CX data.","agent":"A business-case builder: give it churn, customer value, and NPS by segment and it drafts a one-page case with the math shown.","auto":"Monthly exports land → AI updates the scorecard and flags drops → you review → exec update is drafted, not sent.","graph":"Link programs, metrics, owners, and outcomes, so AI can show which CX investments moved retention."},"Enterprise Teams":{"analogy":"Think of AI as a new system in your stack: fast and powerful, and useless without the right inputs, access rules, and an accountable owner for what it produces.","notFor":["Pasting confidential data into unapproved tools","Making approval decisions that need an accountable owner","Rolling out AI with no guardrails or training"],"bad":"Write a status update.","agent":"A status-report assistant: collect each owner's bullets and it produces the weekly update in your format with risks flagged.","auto":"Friday 2pm → automation collects updates from Jira and Slack → AI drafts the status report → PM reviews → it posts.","graph":"Connect teams, projects, decisions, owners, and documents, so AI can answer who decided what and where it is written down."},"Financial Advisors":{"analogy":"Think of AI as a financial calculator for words: fast and precise with what you give it, blind to what you do not, and never the one giving advice.","notFor":["Giving personalized investment advice","Anything with account numbers or sensitive client data in unapproved tools","Sending market commentary without compliance review"],"bad":"Write a letter to my client about their portfolio.","agent":"A review-letter assistant: paste anonymized meeting notes and it drafts a plain-language summary and action list for the household.","auto":"Meeting ends → notetaker summary → AI drafts follow-up tasks and a recap → advisor edits → compliance-approved template sends.","graph":"Connect households, goals, meetings, and open action items, so AI can prep you for the next review in minutes."},"Founders":{"analogy":"Think of AI as leverage: a machine that multiplies your time on code, copy, and research. It multiplies a wrong idea just as fast, so talk to customers first.","notFor":["Deciding what to build without talking to customers","Sending investor updates that spin the numbers","Shipping AI-written code or copy you have not reviewed"],"bad":"Write my pitch deck.","agent":"A landing-page builder: describe the customer and the offer and it builds a working page you can test the same day.","auto":"New signup → AI drafts a personal welcome and one question about their goal → founder approves → it sends.","graph":"Connect customer interviews, problems, features, and revenue, so AI can show which problems paying customers mention most."},"Healthcare Administrators":{"analogy":"Think of AI as a fast transcription and drafting machine: great at first drafts of memos and patient-friendly wording, never the final word on anything clinical.","notFor":["Anything involving patient information in unapproved tools","Clinical decisions or clinical wording without review","Regulatory interpretations you have not verified"],"bad":"Write patient instructions.","agent":"A plain-language rewriter: paste staff-facing instructions and it returns a 6th-grade patient version and a staff checklist.","auto":"Policy updated → AI drafts a short staff memo and a quiz question → manager approves → it goes out in the staff channel.","graph":"Connect policies, departments, accreditation standards, and owners, so AI can find the gaps before a survey."},"HR & People Operations Leaders":{"analogy":"Think of AI as an HR system that writes: it drafts job descriptions, policies, and onboarding plans fast, but it does not know your culture, and people decisions stay with people.","notFor":["Screening or ranking candidates on its own","Performance or termination decisions","Legal interpretations of employment law without counsel"],"bad":"Write a job description.","agent":"A JD builder: answer the hiring manager's five questions and it drafts an inclusive job description, scorecard, and interview questions.","auto":"Offer accepted → automation creates the onboarding folder → AI drafts the welcome letter and first-week plan → HR reviews → it sends.","graph":"Connect roles, skills, teams, and career paths, so AI can suggest growth paths and internal candidates."},"Legal Professionals":{"analogy":"Think of AI as e-discovery that writes back: it reads a stack of documents in minutes and drafts a first pass, but it can be confidently wrong. Never file what you have not checked.","notFor":["Citing cases or statutes you have not verified","Client-confidential documents in unapproved tools","Final legal advice or conclusions"],"bad":"Review this contract.","agent":"A contract first-pass: upload an agreement and your playbook and it returns obligations, dates, and deviations with section numbers.","auto":"New contract saved to the matter folder → AI extracts key dates → they land in the matter calendar → attorney confirms.","graph":"Connect matters, clients, clauses, and outcomes, so AI can find how you handled a similar clause before."},"Marketing Professionals":{"analogy":"Think of AI as a content engine: it runs on the fuel you give it. Feed it your brand voice, your audience, and your best work and it stops sounding generic.","notFor":["Publishing claims or stats you have not checked","Replacing your brand's point of view","Mass personalized outreach that reads like AI slop"],"bad":"Write social posts about our product.","agent":"A content multiplier: paste one blog post and it returns a week of posts, an email, and two ad variations in your voice.","auto":"New blog post published → AI drafts posts for each channel → marketer edits and schedules → nothing posts without approval.","graph":"Connect campaigns, audiences, messages, and results, so AI can show which message worked for which audience."},"Merchandising":{"analogy":"Think of AI as a planogram tool for data: it sorts a year of sales in seconds, but it has never walked your aisles. You bring the store sense, it brings the speed.","notFor":["Final assortment decisions without your judgment","Trusting numbers it calculated without checking the source","Vendor negotiations on autopilot"],"bad":"Analyze my sales data.","agent":"A category-review builder: drop in the sales export and it drafts the category story with movers, decliners, and recommendations.","auto":"Weekly sales export lands → automation refreshes the sheet → AI flags stockout risks and anomalies → buyer reviews.","graph":"Connect products, vendors, stores, promotions, and sales, so AI can show which promotions actually moved margin."},"Mystery Shopping":{"analogy":"Think of AI as a scoring engine that reads: it reviews every shopper narrative in a wave overnight, but it only knows what the shopper wrote. The evidence and the judgment stay human.","notFor":["Scoring shops without the shopper's evidence","Writing client findings you have not verified against the data","Generating fake shopper narratives"],"bad":"Make an evaluation form.","agent":"A form builder: paste the client's service standards and it returns a weighted evaluation form and three realistic scenarios.","auto":"Shop submitted → AI checks it against the form for missing answers → editor reviews flagged shops → approved scores go to the client report.","graph":"Connect clients, locations, standards, shoppers, and scores, so AI can show which standards fail most and where."},"Nonprofit Leaders":{"analogy":"Think of AI as a grant-writing machine that has read thousands of proposals: it knows the shape of a strong one, but not your mission or your people until you share them.","notFor":["Inventing outcomes or statistics for a funder","Donor communications that feel mass-produced","Donor data in tools your organization has not approved"],"bad":"Write a grant proposal.","agent":"A grant tailor: give it your core proposal and a funder's priorities and it drafts a narrative in that funder's language.","auto":"New donation → AI drafts a personal thank-you using the gift and program → staff approves → it sends within 24 hours.","graph":"Connect donors, gifts, programs, and outcomes, so AI can show each donor the impact of their giving."},"Product Designers":{"analogy":"Think of AI as a rapid-prototyping machine: it sketches fifty flows in a minute, but it has never met your users. The taste, the research, and the final call are yours.","notFor":["Replacing usability testing with real users","Final visual design decisions","Inventing user research findings"],"bad":"Design a login screen.","agent":"A flow sketcher: describe the feature and user and it returns the flow, edge cases, and UX copy, then builds a clickable prototype.","auto":"New research notes uploaded → AI tags insights by feature → designer reviews → insights sync to the research board.","graph":"Connect users, needs, screens, components, and test results, so AI can show which screens cause the most friction."},"Product Managers":{"analogy":"Think of AI as an analytics tool for words: it processes every interview and ticket, but it needs your strategy to know what matters.","notFor":["Prioritizing the roadmap without your strategy","Writing requirements with no evidence behind them","Shipping AI-generated specs without engineering review"],"bad":"Write a PRD.","agent":"A PRD assistant: paste the problem, evidence, and success metric and it drafts the PRD, user stories, and open questions.","auto":"New feedback in Intercom → AI tags it to a theme and product area → PM reviews weekly → counts update in Productboard.","graph":"Connect customers, feedback, features, and revenue, so AI can show which requests matter most to paying customers."},"Qualitative Research Professionals":{"analogy":"Think of AI as a coding machine for transcripts: it codes forty interviews overnight, but you write the codebook and you own the interpretation.","notFor":["Replacing the human interview and the empathy in it","Final interpretation of what findings mean","Quoting participants it has paraphrased"],"bad":"Summarize these interviews.","agent":"A discussion-guide builder: paste objectives and audience and it drafts a timed guide with probes, then a matching screener.","auto":"Interview recording uploaded → transcript → AI codes it against your codebook → researcher reviews → themes update in the tracker.","graph":"Connect participants, segments, themes, and quotes, so AI can show how a theme differs across segments with evidence."},"Real Estate Professionals":{"analogy":"Think of AI as an MLS search that writes: it knows the market in general, but not your listings or your clients until you brief it, and it never sets the price.","notFor":["Pricing a home without real comps","Fair-housing-risky language in listings","Automated texts to leads that sound robotic"],"bad":"Write a listing description.","agent":"A listing kit: speak a walkthrough voice memo and it returns MLS copy, social posts, and a seller update.","auto":"New lead in your CRM → AI drafts a personal reply from their search → you approve → it sends from your email.","graph":"Connect buyers, listings, showings, and feedback, so AI can answer which buyers fit a new listing."},"Retail Design":{"analogy":"Think of AI as a rendering engine for ideas: it shows you a hundred concepts fast, but it has never stood in your space. You bring the brand, the site, and the judgment.","notFor":["Final design or construction decisions","Specs and code compliance without an expert review","Replacing time on the floor with shoppers"],"bad":"Design a store.","agent":"A concept generator: paste the brief and constraints and it drafts three concept directions and a spec outline.","auto":"Rollout tracker updates → AI flags stores behind schedule and drafts a vendor nudge → you approve → it sends.","graph":"Connect stores, fixtures, vendors, and rollout status, so AI can show where a rollout is stuck and why."},"Sales Professionals":{"analogy":"Think of AI as a CRM that writes: it turns account research and call notes into sharp drafts, but it has never met your buyer. The relationship stays yours.","notFor":["Autonomous outreach at scale that reads like AI slop","Claims about your product you cannot back up","Faking familiarity with a prospect"],"bad":"Write a cold email.","agent":"An account-brief builder: type a company name and it returns news, triggers, likely priorities, and three discovery questions.","auto":"Call ends → notetaker transcript → AI drafts the CRM update and follow-up → rep edits → it logs and sends.","graph":"Connect accounts, contacts, deals, calls, and objections, so AI can show what wins deals like this one."},"Small Business Owners":{"analogy":"Think of AI as the best power tool in your shop: fast and capable, but it only builds what you measure and mark. It knows nothing about your business until you walk it through.","notFor":["Tax, legal, or financial decisions without a professional","Posting or replying to customers without your review","Customer data in tools you have not vetted"],"bad":"Help me market my business.","agent":"A quote builder: give it your price list and it turns any customer request into a professional quote in seconds.","auto":"New form inquiry → AI drafts a friendly reply and a quote → you approve on your phone → it sends.","graph":"Connect customers, jobs, invoices, and reviews, so AI can show your best customers and what they buy."},"SMB":{"analogy":"Think of AI as equipment, not staff: a machine that writes, analyzes, and summarizes, but only as well as the process and context you put around it.","notFor":["Automating a process that is broken to begin with","Sending anything to customers without a human check","Company data in tools nobody has approved"],"bad":"Write our SOPs.","agent":"An SOP builder: record someone explaining a task and it turns the transcript into a step-by-step SOP and checklist.","auto":"New order → automation creates the job record → AI drafts the customer update → staff approves → it sends.","graph":"Connect customers, orders, staff, and processes, so AI can show where work gets stuck."}};
+function teachFor(){
+  const p=PRO_TEACH[primaryName()], s=state.audience2?PRO_TEACH[state.audience2]:null, noun=audNoun();
+  if(p && s) return Object.assign({}, p, {notFor:[p.notFor[0], s.notFor[0], p.notFor[1]]});
+  if(p) return p;
+  return {analogy:"Think of AI as a very fast machine for "+noun+" work: it has read most of the internet, but it knows nothing about your work until you give it your context. You decide where to point it.",
+    notFor:["Decisions that need your professional judgment","Facts, numbers, or quotes you have not checked against a source","Anything that reaches a client or customer without your review"],
+    bad:"Help me with my work.",
+    agent:"A one-page tool: paste your rough notes on a weekly "+noun+" task and it returns a finished first draft in your format.",
+    auto:"A form or email arrives → automation files it → AI drafts the reply → you approve → it sends.",
+    graph:"Connect your clients, projects, documents, and outcomes, so AI can answer questions across all of them."};
+}
+const lcFirst=s=>{ s=String(s||""); return s.charAt(0).toLowerCase()+s.slice(1); };
+function agentName(t){ const a=String(t.agent||""), i=a.indexOf(":"); return lcFirst(i>0?a.slice(0,i):a); }
+function graphThings(t){ const g=String(t.graph||""), i=g.indexOf(", so "); return lcFirst((i>0?g.slice(0,i):g).replace(/^Connect |^Link /,"")); }
+function firstSentence(s,max){ s=String(s||"").trim(); max=max||120; const i=s.search(/[.!?](\s|$)/); let f=i>0?s.slice(0,i+1):s; if(f.length>max){ f=f.slice(0,max); f=f.slice(0,f.lastIndexOf(" "))+"..."; } return f; }
+
+// Copy variety: a seed from the event month plus the "Try another version" counter.
+function copySeed(){ const d=state.date?new Date(state.date+"T12:00:00"):new Date(); return d.getFullYear()*12+d.getMonth()+(state.copyVar||0)*7919; }
+function hashStr(s){ let h=2166136261; s=String(s); for(let i=0;i<s.length;i++){ h^=s.charCodeAt(i); h=Math.imul(h,16777619); } return h>>>0; }
+function pickV(arr,salt){ return arr[hashStr((salt||"")+"|"+copySeed()) % arr.length]; }
+function shuffleV(arr,salt){ return arr.map((x,i)=>[hashStr((salt||"")+"|"+copySeed()+"|"+i),x]).sort((a,b)=>a[0]-b[0]).map(x=>x[1]); }
+
+// Shared teaching content (deck + workbook)
+const META_PROMPT = "I want to [task]. Before you do anything, interview me: ask up to 5 questions about the context, the sources you should use, and what a great result looks like. Then write the prompt I should use, with Context, Sources, What good looks like, and When to stop. Wait for my OK before you run it.";
+const AGENT_PROMPT = "Build me a simple tool that [does the job]. Who uses it: [me, my team, or clients]. What goes in: [notes, a file, a form]. What comes out: [the finished output and its format]. Rules: [what it must never do]. Ask me up to 5 questions first, then build it as a single page I can use right away.";
+const HANDOFF = [
+  ["Stay in the chat","One-off tasks: a draft, a summary, a quick analysis"],
+  ["Save it: Artifact, GPT, Gem, or Project","You give the same instructions every week"],
+  ["Lovable, Bolt, or Replit","Other people need to use it as a real app, with logins and data"],
+  ["Zapier or Make","When X happens, steps run on their own, no code"],
+  ["n8n","Complex, multi-step, or self-hosted flows with AI steps inside"]
+];
+const AI_VS_AUTO = [
+  {head:"Automation", items:["Follows the rules you set","Same input, same result, every time","Moves data, routes, schedules"]},
+  {head:"AI", items:["Handles language and judgment calls","Same input, a different result each time","Drafts, summarizes, sorts meaning"]},
+  {head:"You", items:["Decide what gets automated","Review before anything reaches a person","Own the result"]}
+];
+const AVOID = [
+  "Autonomous outreach at scale that reads like AI slop",
+  "Anything reaching a customer without a human review",
+  "Sensitive data in tools your organization has not approved",
+  "Automating a broken process: fix it first, then automate"
+];
+const HUMAN_CHECK = [
+  "Did I check every fact, number, and quote against a source?",
+  "Does it sound like me, not like a machine?",
+  "Did I challenge it: what is missing, what is wrong?",
+  "Would I sign my name to it?",
+  "Did a human approve it before a customer saw it?"
+];
+// The 7-day plan follows the session focus.
+function planDays(dd){
+  const t1=dd[0]||"your main AI tool", t2=dd[1]||"a notetaker", t=teachFor();
+  return [
+    focusOn("memd")?"Day 1 - Write your Me.md from tonight's template":"Day 1 - Write down one task's context, sources, and desired output",
+    "Day 2 - Run it through "+t1+" with the four-part prompt",
+    focusOn("prompts")?"Day 3 - Have AI interview you and write a prompt":("Day 3 - Add "+t2+" to your next meeting"),
+    focusOn("agents")?"Day 4 - Build one small tool, like "+agentName(t):(focusOn("graphs")?"Day 4 - Sketch how the things in your work connect":"Day 4 - Redo a task you dread, this time with AI"),
+    focusOn("automation")?"Day 5 - Map one workflow: rules, judgment, and what stays yours":"Day 5 - Save the prompts that worked",
+    "Day 6 - Challenge one output, then rewrite it in your voice",
+    "Day 7 - Teach a teammate and keep the one tool you use most"
+  ];
+}
+
 /* ============================================================ SLIDE MODEL ============================================================ */
 // returns array of slide objects: {kind, part, accent, title, subtitle, bullets[], columns[], table{}, footer, note}
 function buildModel(){
@@ -2278,27 +2373,38 @@ function buildModel(){
     footer:[dateStr, c.venue].filter(Boolean).join("   |   "),
     note:"Open warm. One line on why tonight is worth their two hours. Set the tone: practical, no hype, leave with something you can use tomorrow."});
 
-  // 2 Agenda
-  S.push({kind:"content", part:"p1", title:"Tonight's Agenda",
-    bullets:[
-      "Part 1 - Your work and where AI fits",
-      "Part 2 - The AI ecosystem: LLMs, notetakers, your Me.md, integrations",
-      "Part 3 - Deep dives on "+(dd.length?dd.join(", "):"tonight's featured tools"),
-      "Live demo and Q&A",
-      "Your 7-day action plan"
-    ],
-    note:"Keep it to a glance. Tell them the format repeats so they can relax and follow along."});
+  const T=teachFor(), on=focusOn, kit=promptKitFor(), memd=on("memd");
+  const ctxLine = memd ? "Your Me.md - the context you paste into all of them" : "Your context - the notes, files, and examples you give every tool";
+  const p1Title = on("think") ? "How AI Works And Where It Fits" : "Your Work And Where AI Fits";
+  const p3Build = on("agents")||on("automation");
+  const p3Title = (on("agents")&&on("automation")) ? "Build, Automate, Go Deep" : on("agents") ? "Build And Go Deep" : on("automation") ? "Automate And Go Deep" : ("Deep Dives For "+aud);
+
+  // 2 Agenda (follows the session focus)
+  {
+    const a1=["Part 1 - "+(on("think")?"How AI works and":"Your work and")+" where it fits"+(on("limits")?", and where it does not":"")];
+    const p2=["context, sources, and the output you want"];
+    if(on("prompts")) p2.push("good vs bad prompts");
+    if(memd) p2.push("your Me.md");
+    if(on("graphs")) p2.push("knowledge graphs");
+    if(on("tools")) p2.push("the tool landscape");
+    a1.push("Part 2 - "+cap(p2.length>2?(p2.slice(0,-1).join(", ")+", and "+p2[p2.length-1]):p2.join(" and ")));
+    const p3=[]; if(on("agents")) p3.push("apps and agents on the fly"); if(on("automation")) p3.push("AI vs automation");
+    p3.push("deep dives on "+(dd.length?dd.join(", "):"tonight's featured tools"));
+    a1.push("Part 3 - "+cap(p3.join(", ")));
+    a1.push("Live demo and Q&A"); a1.push("Your 7-day action plan");
+    S.push({kind:"content", part:"p1", title:"Tonight's Agenda", bullets:a1,
+      note:"Keep it to a glance. The theme all night: AI is Applied Intelligence. It is a machine, and knowing when and how to apply it is the human part."});
+  }
 
   // 3 Hosts
   S.push({kind:"content", part:"p1", title:"Your Hosts",
     bullets:hostLine,
     note:"30 seconds each. Mention Threads ("+URL_THREADS+") and the Atlanta chapter naturally. If a guest is here, hand them a sentence to introduce their own topic."});
 
-  // 4 Part 1 break
-  S.push({kind:"section", part:"p1", accent:A.p1, subtitle:"PART 1", title:"Your Work And Where AI Fits",
-    note:"This part is about them, not the tools. Ask the room what eats their week."});
+  // Part 1
+  S.push({kind:"section", part:"p1", accent:A.p1, subtitle:"PART 1", title:p1Title,
+    note:"This part is about them and their work, not the tools. Ask the room what eats their week."});
 
-  // 5 The Moment We're In (3 stats)
   S.push({kind:"content", part:"p1", title:"The Moment We're In",
     bullets:[
       "Stat 1: [X]% of "+nounPl+" now use AI weekly - VERIFY figure and source",
@@ -2306,15 +2412,25 @@ function buildModel(){
       "Stat 3: [X]x faster turnaround on "+(list(icp.winning)[0]||"core deliverables").toLowerCase()+" - VERIFY"
     ],
     flagNote:true,
-    note:"FILL THESE WITH REAL, SOURCED NUMBERS before the event. Three stats specific to "+aud+". The point is not fear, it is momentum: the people in your field who adopt early are pulling ahead."});
+    note:"FILL THESE WITH REAL, SOURCED NUMBERS before the event. Three stats specific to "+aud+". The point is not fear, it is momentum. And model the lesson: check every number before you show it."});
 
-  // 6 Your Workflows Today
+  if(on("think")){
+    S.push({kind:"content", part:"p1", title:"How To Think About AI",
+      bullets:[
+        T.analogy,
+        "It predicts likely next words from patterns, it does not know facts",
+        "It knows the world in general, not your world, until you add context",
+        "It sounds just as sure when it is wrong",
+        "AI = Applied Intelligence: you decide where and how to apply it"
+      ],
+      note:"The big idea of the night. Say the analogy in your own words, then ask: where in your week would a machine like that help, and where would it hurt? Keep it a machine, not a colleague, friend, or advisor."});
+  }
+
   S.push({kind:"content", part:"p1", title:"Your Workflows Today",
     subtitle:"Where "+nounPl+" spend their time",
     bullets: list(icp.pains).length ? list(icp.pains).map(p=>p) : ["List the core workflows this audience repeats every week","Where the manual hours go","What they dread starting"],
     note:"Read the room. Ask which of these hurts most. This sets up every tool later as an answer to a real pain."});
 
-  // 7 Where AI Helps Most
   {
     const pains = list(icp.pains); const wins = list(icp.winning);
     const rows = pains.slice(0,4).map((p,i)=>[p, wins[i] || wins[wins.length-1] || "Faster, cleaner output"]);
@@ -2323,143 +2439,202 @@ function buildModel(){
       note:"Move left to right. Every pain has an AI answer you will show tonight. Do not name tools yet, name outcomes."});
   }
 
-  // 8 Part 2 break
-  S.push({kind:"section", part:"p2", accent:A.p2, subtitle:"PART 2", title:"The AI Ecosystem",
-    note:"Now the map. Four layers, then the tools that live in each."});
+  if(on("limits")){
+    S.push({kind:"content", part:"p1", title:"Where AI Doesn't Work",
+      subtitle:"For "+nounPl,
+      bullets: T.notFor.concat(["Facts, numbers, and quotes it cannot source","Final calls that need your judgment"]),
+      note:"Be specific and honest. This builds more trust than any demo. The rule of thumb: if it needs your license, your relationships, or your signature, AI drafts at most and you decide."});
+  }
 
-  // 9 Ecosystem 4 layers
-  S.push({kind:"content", part:"p2", title:"The AI Ecosystem: 4 Layers",
-    columns:[
-      {head:"Foundation", items:["Large language models (LLMs)","The engines: Claude, ChatGPT, Gemini"]},
-      {head:"Capture", items:["Notetakers and meeting AI","Turn talk into text and action"]},
-      {head:"Context", items:["Your Me.md and document intelligence","Give AI your world to work in"]},
-      {head:"Delegation", items:["Integrations, wrappers, automation","Let work move on its own"]}
-    ],
-    note:"Give them a mental model they keep. Everything tonight fits in one of these four layers."});
-
-  // 10 LLMs compared (table)
-  S.push({kind:"table", part:"p2", title:"LLMs Compared",
-    table:{headers:["Tool","Best for","Watch-out"], rows:[
-      ["Claude Code","Deep writing, reasoning, working across your files","Learn where it lives (desktop and terminal)"],
-      ["ChatGPT","All-round tasks, images, wide plugin world","Verify facts, it sounds sure even when wrong"],
-      ["Gemini","Living inside Google Docs, Gmail, and Sheets","Best value if you already run Google Workspace"],
-      ["Perplexity","Research with real, clickable sources","Not a writer, it is a finder"],
-      ["Notebook","Answering questions from your own documents","Only knows what you upload"]
-    ]},
-    note:"Frame it as a team, not a contest. You will use two or three of these together. Show the table, then say which you reach for first."});
-
-  // 11 Me.md
-  S.push({kind:"content", part:"p2", title:"Personalizing Your AI: The Me.md",
+  S.push({kind:"content", part:"p1", title:"The Human Side Of AI",
+    subtitle:"AI is Applied Intelligence. Knowing when and how to apply it is up to us.",
     bullets:[
-      "A plain-text file you write once about you and your work",
-      "Paste it at the start of any AI session for instant context",
-      "The AI stops guessing and starts sounding like you",
-      "Portable: it works in Claude, ChatGPT, Gemini, anywhere"
+      "Your domain expertise leads, AI complements it",
+      "Use AI as a machine, not a friend or an advisor",
+      "Never let AI think for you: challenge every output",
+      "Ask what it is unsure of, check it against your sources",
+      "Review and rewrite so nothing sounds robotic"
     ],
-    note:"This is the through-line of the whole series. Hold up the QR code. Everyone leaves with a template tonight."});
+    note:"This is the heart of The AI Collective and of tonight: the Human Side of AI. The people who win keep their expertise sharp and use AI to go further, not to skip the thinking."});
 
-  // 12 What goes in your Me.md
-  S.push({kind:"content", part:"p2", title:"What Goes In Your Me.md",
-    columns:[
-      {head:"Section 1-3", items:ME_MD_SECTIONS.slice(0,3).map(s=>s[0]+" - "+s[1].toLowerCase())},
-      {head:"Section 4-6", items:ME_MD_SECTIONS.slice(3).map(s=>s[0]+" - "+s[1].toLowerCase())}
-    ],
-    note:"Six short sections. Walk one example live using a "+nounRaw+"'s details so the room sees themselves in it."});
+  // Part 2
+  S.push({kind:"section", part:"p2", accent:A.p2, subtitle:"PART 2", title:"Context Is Everything",
+    note:"Better input, better output. Context, sources, and a clear picture of the result matter more than clever wording."});
 
-  // The four-part prompt (context, sources, what good looks like, when to stop) - no role statements
   S.push({kind:"content", part:"p2", title:"The Four-Part Prompt",
     bullets:[
-      "Context - who you are and the situation (start with your Me.md)",
+      "Context - who you are and the situation"+(memd?" (start with your Me.md)":""),
       "Sources - the notes, files, or data it should work from",
       "What good looks like - format, length, audience, an example",
       "When to stop - where the job ends, and when you finish it yourself"
     ],
-    note:"Skip the old \"act as a...\" opener. Context and sources change the answer, a job title does not. Show one of tonight's prompts from the workbook with the four parts labeled."});
+    note:"Skip the old \"act as a...\" opener. Frontier models do not need a role. Context and sources change the answer, a job title does not. Show one of tonight's prompts from the workbook with the four parts labeled."});
 
-  // 13 Notetakers
-  S.push({kind:"content", part:"p2", title:"Notetakers That Do The Work",
-    subtitle:"Never take meeting notes by hand again",
-    bullets:[
-      "Pocket, Otter, Fireflies, and Granola join your calls and write it all down",
-      "You get summaries, action items, and searchable transcripts",
-      "Feed those transcripts straight into an LLM for the real analysis",
-      "Pick one, use it for a week, and feel the difference"
-    ],
-    note:"Show one recording turning into a summary and a follow-up email. This always lands."});
+  if(on("prompts")){
+    const k=kit[0]||{context:"[Who you are, the task, who it is for]",sources:"[Your notes, files, or data]",good:"[Format, length, audience, an example]",stop:"[Where the job ends]"};
+    S.push({kind:"table", part:"p2", title:"Bad Prompt vs Good Prompt",
+      table:{headers:["","For "+nounPl], rows:[
+        ["Bad", "\""+T.bad+"\""],
+        ["Context", firstSentence(k.context,120)],
+        ["Sources", firstSentence(k.sources,120)],
+        ["Good looks like", firstSentence(k.good,120)],
+        ["When to stop", firstSentence(k.stop,120)]
+      ]},
+      note:"Read the bad prompt out loud and ask what the AI would have to guess. Then walk the good one line by line. Same model, completely different answer."});
+    S.push({kind:"content", part:"p2", title:"Let AI Write Your Prompt",
+      bullets:[
+        "Tell it the task in one line",
+        "Ask it to interview you first: up to 5 questions",
+        "It writes the four-part prompt from your answers",
+        "You review it, fix it, and save it for next time"
+      ],
+      note:"Show it live. The prompt: "+META_PROMPT});
+  }
 
-  // 14 Integrations & wrappers
-  S.push({kind:"content", part:"p2", title:"Integrations & Wrappers",
-    bullets:[
-      "Wrappers put AI inside tools you already use, no new tab needed",
-      "Integrations connect your tools so output flows automatically",
-      "Automation platforms like Make, Zapier, and n8n move work while you sleep",
-      "Claude Cowork hands off whole recurring tasks, not just single prompts"
-    ],
-    note:"This is the payoff of the ecosystem. Keep it concrete: one workflow they run weekly, now on autopilot."});
+  if(memd){
+    S.push({kind:"content", part:"p2", title:"Personalizing Your AI: The Me.md",
+      bullets:[
+        "A plain-text file you write once about you and your work",
+        "Paste it at the start of any AI session for instant context",
+        "The AI stops guessing and starts sounding like you",
+        "Portable: it works in Claude, ChatGPT, Gemini, anywhere"
+      ],
+      note:"Hold up the QR code. Everyone leaves with a template tonight."});
+    S.push({kind:"content", part:"p2", title:"What Goes In Your Me.md",
+      columns:[
+        {head:"Section 1-3", items:ME_MD_SECTIONS.slice(0,3).map(s=>s[0]+" - "+s[1].toLowerCase())},
+        {head:"Section 4-6", items:ME_MD_SECTIONS.slice(3).map(s=>s[0]+" - "+s[1].toLowerCase())}
+      ],
+      note:"Six short sections. Walk one example live using a "+nounRaw+"'s details so the room sees themselves in it."});
+  }
 
-  // 15 Part 3 break
-  S.push({kind:"section", part:"p3", accent:A.p3, subtitle:"PART 3",
-    title:"Deep Dives For "+aud,
-    note:"Now the hands-on part. "+(dd.length?dd.length+" tools, each tied to your work.":"Pick the featured tools in the builder to fill this section.")});
+  if(on("graphs")){
+    S.push({kind:"content", part:"p2", title:"Context & Knowledge Graphs",
+      subtitle:"Beyond one file: how your things connect",
+      bullets:[
+        "A context file tells AI about you, a graph tells it how things connect",
+        "Things: clients, projects, documents, people. Links: who, what, when, why",
+        T.graph,
+        "Start simple: linked notes in Notion or Obsidian, or a Project with your key files"
+      ],
+      note:"A knowledge graph is things plus the links between them. A context graph is the slice of that an AI pulls in for one task. Draw four boxes and the lines between them on a whiteboard. That is the idea."});
+  }
 
-  // 16 Live demo (dark)
+  if(on("tools")){
+    S.push({kind:"content", part:"p2", title:"The AI Ecosystem: 4 Layers",
+      columns:[
+        {head:"Foundation", items:["Large language models (LLMs)","The engines: Claude, ChatGPT, Gemini"]},
+        {head:"Capture", items:["Notetakers and meeting AI","Turn talk into text and action"]},
+        {head:"Context", items:[memd?"Your Me.md and document intelligence":"Your files, notes, and document intelligence","Give AI your world to work in"]},
+        {head:"Delegation", items:["Apps, agents, and automation","Let work move on its own"]}
+      ],
+      note:"Give them a mental model they keep. Everything tonight fits in one of these four layers."});
+    S.push({kind:"table", part:"p2", title:"LLMs Compared",
+      table:{headers:["Tool","Best for","Watch-out"], rows:[
+        ["Claude","Deep writing, reasoning, working across your files","Learn Projects, Artifacts, and Cowork"],
+        ["ChatGPT","All-round tasks, images, wide plugin world","Verify facts, it sounds sure even when wrong"],
+        ["Gemini","Living inside Google Docs, Gmail, and Sheets","Best value if you already run Google Workspace"],
+        ["Perplexity","Research with real, clickable sources","Not a writer, it is a finder"],
+        ["NotebookLM","Answering questions from your own documents","Only knows what you upload"]
+      ]},
+      note:"Frame it as a toolbox, not a contest. You will use two or three of these together. Show the table, then say which you reach for first."});
+    S.push({kind:"content", part:"p2", title:"Notetakers That Do The Work",
+      subtitle:"Never take meeting notes by hand again",
+      bullets:[
+        "Pocket, Otter, Fireflies, and Granola join your calls and write it all down",
+        "You get summaries, action items, and searchable transcripts",
+        "Feed those transcripts to an LLM for the real analysis",
+        "Pick one, use it for a week, and feel the difference"
+      ],
+      note:"Show one recording turning into a summary and a follow-up email. This always lands."});
+    if(!on("automation")){
+      S.push({kind:"content", part:"p2", title:"Integrations & Wrappers",
+        bullets:[
+          "Wrappers put AI inside tools you already use, no new tab needed",
+          "Integrations connect your tools so output flows automatically",
+          "Automation platforms like Make, Zapier, and n8n move work while you sleep",
+          "Claude Cowork hands off whole recurring tasks, not just single prompts"
+        ],
+        note:"Keep it concrete: one workflow they run weekly, now with a machine doing the repetitive part and a human checking the result."});
+    }
+  }
+
+  // Part 3
+  S.push({kind:"section", part:"p3", accent:A.p3, subtitle:"PART 3", title:p3Title,
+    note:(p3Build?"From prompts to working tools. ":"")+(dd.length?dd.length+" deep-dive tools, each tied to your work.":"Pick the featured tools in the builder to fill the deep dives.")});
+
+  if(on("agents")){
+    S.push({kind:"content", part:"p3", title:"Apps & Agents On The Fly",
+      bullets:[
+        "Instructions in, finished work out: you describe the job, AI does the task",
+        "Build a working mini-app in minutes with Claude Artifacts or ChatGPT Canvas",
+        "Save standing instructions as a Claude Project, Custom GPT, or Gemini Gem",
+        "Agents like Claude Cowork run multi-step tasks across your files"
+      ],
+      note:"This is where the room leans in. Build one live in under five minutes. Point out that the instructions are just a four-part prompt with rules."});
+    S.push({kind:"content", part:"p3", title:"Build One Tonight",
+      bullets:[
+        "For "+nounPl+": "+T.agent,
+        "Describe the job, who uses it, what goes in, what comes out",
+        "Set the rules: what it must never do",
+        "Let it ask you questions, then build",
+        "Test it on real work and fix what is off"
+      ],
+      note:"The build prompt: "+AGENT_PROMPT});
+  }
+
+  if(on("automation")){
+    S.push({kind:"content", part:"p3", title:"AI vs Automation",
+      subtitle:"Automation is the conveyor belt. AI is one station on it. You are quality control.",
+      columns:AI_VS_AUTO,
+      note:"Automation follows rules and gives the same result every time. AI handles language and judgment, and gives a different result each time. Put AI where the judgment is, put a human checkpoint before anything reaches a person. Example for "+nounPl+": "+T.auto});
+    S.push({kind:"table", part:"p3", title:"When To Hand Off",
+      table:{headers:["Use","When"], rows:HANDOFF},
+      note:"Most people jump to automation too early. Start in the chat, save it once you repeat it, and only build or automate when it is proven and a human review step is built in."});
+    S.push({kind:"content", part:"p3", title:"What To Avoid",
+      bullets:AVOID.concat(["Do this instead: "+T.auto]),
+      note:"The fastest way to burn trust is outreach that sounds like a machine wrote it, because one did. AI drafts, a person approves, and the message goes out from a real human."});
+  }
+
   S.push({kind:"dark", part:"p3", title:"Live Demo",
     bullets:[
-      "Watch one real "+nounRaw+" task go from blank page to finished",
-      "We build it together, prompt by prompt",
+      "Watch one everyday "+nounRaw+" task go from blank page to finished",
+      "We build it together, prompt by prompt, and challenge the output",
       "Then you try the same on your laptop"
     ],
-    note:"The energy peak. Pick a task everyone recognizes. Narrate your prompting out loud."});
+    note:"The energy peak. Pick a task everyone recognizes. Narrate your prompting out loud, then push back on the first answer so they see the human part."});
 
-  // deep dive slides, one per featured tool
-  dd.forEach((tool,i)=>{
+  dd.forEach(tool=>{
     const meta = TOOL_KIND[tool] || {kind:"llm", field:null};
-    let bullets;
-    if(meta.field && list(icp[meta.field]).length){
-      bullets = list(icp[meta.field]);
-    } else {
-      bullets = genericToolUses(meta.kind, tool, nounRaw, nounPl);
-    }
+    const bullets = (meta.field && list(icp[meta.field]).length) ? list(icp[meta.field]) : genericToolUses(meta.kind, tool, nounRaw, nounPl);
     S.push({kind:"content", part:"p3", title:"Deep Dive: "+tool,
       subtitle:"For "+aud,
       bullets:bullets,
       note:"Show, do not tell. Run one of these live. Then give the room 3 minutes to try it themselves before you move on."});
   });
 
-  // Building your stack
   {
     const stack = [];
-    const core = deepTools().slice(0,4);
-    core.forEach(t=>stack.push(t+" - "+stackRole(t)));
+    deepTools().slice(0,4).forEach(t=>stack.push(t+" - "+stackRole(t)));
     if(!stack.length) stack.push("Pick your featured tools to auto-fill this stack");
-    stack.push("Your Me.md - the context you paste into all of them");
+    stack.push(ctxLine);
     S.push({kind:"content", part:"p3", title:"Building Your Personal AI Stack",
       subtitle:"You do not need every tool, you need the right few",
       bullets:stack,
-      note:"Bring it together. Three or four tools plus your Me.md beats a pile of subscriptions you never open."});
+      note:"Three or four tools plus good context beats a pile of subscriptions you never open."});
   }
 
-  // 7-day action plan (dark)
-  {
-    const t1 = dd[0] || "your first LLM";
-    const t2 = dd[1] || "a notetaker";
-    S.push({kind:"dark", part:"p3", title:"Your 7-Day Action Plan",
-      bullets:[
-        "Day 1 - Write your Me.md using tonight's template",
-        "Day 2 - Set up "+t1+" and run one real task through it",
-        "Day 3 - Add "+t2+" to your next meeting",
-        "Day 4 - Redo a task you dread, this time with AI",
-        "Day 5 - Save the prompts that worked",
-        "Day 6 - Teach one teammate what you learned",
-        "Day 7 - Pick the one tool you will keep and commit"
-      ],
-      note:"Make it doable. Small daily reps beat one big weekend push. Tell them to start tonight with the Me.md."});
-  }
+  S.push({kind:"content", part:"p3", title:"Before Anything Leaves Your Hands",
+    bullets:HUMAN_CHECK,
+    note:"The human checklist. Read it slowly. This is what separates people who use AI well from people who publish AI slop."});
 
-  // Resources
+  S.push({kind:"dark", part:"p3", title:"Your 7-Day Action Plan",
+    bullets:planDays(dd),
+    note:"Make it doable. Small daily reps beat one big weekend push. Tell them to start tonight."});
+
   {
     const res = [
-      "Slides, Me.md template, and tonight's prompts: sent to every attendee",
+      "Slides, "+(memd?"Me.md template, ":"the workbook, ")+"and tonight's prompts: sent to every attendee",
       "The AI Collective ATL: "+URL_AIC,
       "Mark and Threads Marketing: "+URL_THREADS,
       "Next month's session: watch the chapter page to register early"
@@ -2470,7 +2645,6 @@ function buildModel(){
       note:"Tell them exactly what lands in their inbox and when. Make the next step obvious."});
   }
 
-  // Continue learning (maven)
   if(c.maven.on){
     S.push({kind:"content", part:"p3", title:"Continue Learning: "+(c.maven.title||"The 4-Week Cohort"),
       bullets:[
@@ -2482,15 +2656,15 @@ function buildModel(){
       note:"Soft invite, not a hard sell. It is for the people who want to go further than one night allows."});
   }
 
-  // Thank you (dark)
   S.push({kind:"dark", part:"dk", title:"Thank You",
     bullets:[
       "You showed up, that is the hard part",
-      "Start with your Me.md tonight",
+      memd?"Start with your Me.md tonight":"Start tonight: one real task, full context, your judgment",
       "See you next month - bring someone who needs this",
       URL_AIC
     ],
     note:"Warm close. Invite them to stay, network, and grab another slice. Point to the QR code one more time."});
+
 
   // Weave the facilitator's credibility into speaker notes ("why I can lead this")
   if(state.credNotes){
@@ -2507,6 +2681,7 @@ function genericToolUses(kind, tool, noun, nounPl){
     research:["Walking into meetings under-prepared → sourced research on people, companies, and trends","Stats and claims you cannot back up → cited answers you can drop into your work","An hour of tab-hopping for one answer → one question, a sourced summary"],
     notetaker:["Typing notes instead of listening → it records and summarizes every call","Action items forgotten after meetings → follow-ups with owners, drafted automatically","Scrubbing old recordings for one detail → search past meetings by topic"],
     docintel:["Long "+noun+" documents nobody has time to read → ask them questions in plain language","Key points buried in dense files → the themes and facts with citations","Briefing someone on a stack of material → a summary in minutes"],
+    builder:["A "+noun+" task that needs its own little tool → describe it and get a working app in minutes","A spreadsheet or doc everyone copies by hand → a simple app with a form and a result","An idea you cannot test without a developer → a clickable version you can show people today"],
     automation:["The same "+noun+" task done by hand every week → a workflow that runs itself","Copying data between the tools you use → output that flows automatically","Recurring deliverables rebuilt each time → built once, then run on schedule"],
     writing:[noun.charAt(0).toUpperCase()+noun.slice(1)+" content takes longer than it should → drafts in your voice, faster","Stuck between outline and finished piece → a polished draft from your outline","Tone drifts across everything you ship → consistent messaging from one guide"],
     image:["Waiting on a designer for simple visuals → on-brand graphics in minutes","Every "+noun+" post needs an image → visuals produced on demand","Spending budget before you see the idea → a quick visual concept to test first"],
@@ -2516,7 +2691,7 @@ function genericToolUses(kind, tool, noun, nounPl){
 }
 function stackRole(tool){
   const k = (TOOL_KIND[tool]||{}).kind;
-  const map = {llm:"your main writing and thinking engine",research:"your research and fact-finding",notetaker:"capturing every meeting",docintel:"reading your long documents",automation:"running work on autopilot",writing:"fast content drafting",image:"visuals and media",voice:"audio and voice"};
+  const map = {llm:"your main writing and thinking engine",research:"your research and fact-finding",notetaker:"capturing every meeting",docintel:"reading your long documents",automation:"running work on autopilot",builder:"building apps and tools on the fly",writing:"fast content drafting",image:"visuals and media",voice:"audio and voice"};
   return map[k] || "a core part of your stack";
 }
 
@@ -2580,10 +2755,32 @@ function genWorkbookDoc(){
       +(c.date?'<div class="by">'+wbEsc(fmtDate(c.date))+(c.venue?('  &middot;  '+wbEsc(c.venue)):'')+'</div>':'')
       +'</div>'+br;
 
+  const T=teachFor(), on=focusOn, memd=on("memd"), dd=deepTools();
+  const ul=items=>'<ul>'+items.map(x=>'<li>'+x+'</li>').join("")+'</ul>';
+  const kitText=k=>memd?kitPromptText(k):kitPromptText(k).replace(/^\[Paste your me\.md\]\n\n/,"");
+
   // how to use
-  body+=h1("How to use this workbook")
-     +p("This is your hands-on companion for tonight and the weeks after. Keep it open during the exercises, write in it, and take it home. Everything here is built for "+wbEsc(nounPl)+".")
-     +p("<b>Three things to do tonight:</b> (1) write your <b>me.md</b> using the template on the next page, (2) run at least three of the sample prompts on your own work, and (3) pick one tool you will keep using this week.");
+  {
+    const three=[memd?"write your <b>me.md</b> using the template in this workbook":"pick one real task and write down its <b>context, sources, and what good looks like</b>",
+      "run at least three of the prompts on your own work, and <b>challenge</b> the first answer",
+      on("agents")?"build one small tool with the app-builder prompt":"pick one tool you will keep using this week"];
+    body+=h1("How to use this workbook")
+       +p("This is your hands-on companion for tonight and the weeks after. Keep it open during the exercises, write in it, and take it home. Everything here is built for "+wbEsc(nounPl)+".")
+       +p("<b>Three things to do tonight:</b> (1) "+three[0]+", (2) "+three[1]+", and (3) "+three[2]+".");
+  }
+
+  // the human side of AI (always)
+  body+=h2("The Human Side of AI")
+     +p("AI is <b>Applied Intelligence</b>. It is a machine, not a friend or an advisor, and knowing when and how to apply it is up to you. Your domain expertise leads. AI complements it.")
+     +ul(["<b>Never let AI think for you.</b> Use it to go further, not to skip the thinking.","<b>Challenge the output.</b> Ask what it is unsure of, what is missing, and what would make it wrong.","<b>Use your judgment.</b> Check facts, numbers, and quotes against your sources.","<b>Review so it never sounds robotic.</b> Rewrite anything you would not say out loud."]);
+
+  // how to think about AI
+  if(on("think")){
+    body+=h2("How to think about AI")
+       +p('<i>'+wbEsc(T.analogy)+'</i>')
+       +ul(["It predicts likely next words from patterns. It does not look facts up unless you give it sources or a search tool.","It knows the world in general, not your world, until you give it context.","It sounds just as sure when it is wrong. That is why your judgment matters."])
+       +p("<b>Your turn:</b> where in your week would a machine like that save you time, and where would it get you in trouble?")+'<div class="wline">&nbsp;</div><div class="wline">&nbsp;</div>';
+  }
 
   // where AI helps: the problem-framed use cases, two per tool
   {
@@ -2596,39 +2793,99 @@ function genWorkbookDoc(){
     }
   }
 
-  // the four-part prompt (replaces CRAFT: no role statements)
+  // where AI does not work
+  if(on("limits")){
+    body+=h2("Where AI does not work for "+wbEsc(nounPl))
+       +ul(T.notFor.map(wbEsc).concat(["Facts, numbers, and quotes it cannot source","Final calls that need your judgment, license, or signature"]));
+  }
+
+  // the four-part prompt (always): context, sources, desired output
   body+=br+h1("How to prompt well: the four-part prompt")
-     +p("Today's AI does not need to be told who to be. It needs what you know. Give it four things and the answers get specific fast.")
+     +p("Today's AI does not need to be told who to be. It needs what you know. The three things that matter most are <b>context</b>, <b>sources</b>, and a clear picture of the <b>output you want</b>. Add where to stop and the answers get specific fast.")
      +'<ul>'
-     +'<li><b style="color:'+O+'">Context</b> &mdash; who you are and the situation. Paste your me.md, then add what is specific to this task: who it is for, what matters, the deadline.</li>'
+     +'<li><b style="color:'+O+'">Context</b> &mdash; who you are and the situation. '+(memd?'Paste your me.md, then add':'Add')+' what is specific to this task: who it is for, what matters, the deadline.</li>'
      +'<li><b style="color:'+O+'">Sources</b> &mdash; the material to work from. Paste your notes, attach the files, or say where to look (your documents, your inbox, the web with citations). AI is only as good as what you give it.</li>'
      +'<li><b style="color:'+O+'">What good looks like</b> &mdash; describe the finished output: format, length, audience, tone. Paste an example you liked if you have one.</li>'
      +'<li><b style="color:'+O+'">When to stop</b> &mdash; say where the job ends: first draft only, 3 options not 10, flag gaps instead of guessing. And know when <i>you</i> are done: once it is 80% there, finish it yourself.</li>'
      +'</ul>'
-     +pbox("Reusable template","[Paste your me.md]\n\nCONTEXT: I'm working on [task] for [who]. [What matters, the situation, any deadline.]\n\nSOURCES: [Paste notes, attach files, or say where to look.]\n\nWHAT GOOD LOOKS LIKE: [Format, length, audience, tone. Paste an example if you have one.]\n\nWHEN TO STOP: [Where the job ends. For example: first draft only, 3 options, flag gaps instead of guessing.]")
-     +p("<b>Skip the &ldquo;act as&rdquo; line.</b> Older advice says to start with &ldquo;Act as a&hellip;&rdquo;. Context and sources change the answer. A job title does not.");
+     +pbox("Reusable template",(memd?"[Paste your me.md]\n\n":"")+"CONTEXT: I'm working on [task] for [who]. [What matters, the situation, any deadline.]\n\nSOURCES: [Paste notes, attach files, or say where to look.]\n\nWHAT GOOD LOOKS LIKE: [Format, length, audience, tone. Paste an example if you have one.]\n\nWHEN TO STOP: [Where the job ends. For example: first draft only, 3 options, flag gaps instead of guessing.]")
+     +p("<b>Skip the &ldquo;act as&rdquo; line.</b> Older advice says to start with &ldquo;Act as a&hellip;&rdquo;. With today's models, context and sources change the answer. A job title does not.");
+
+  // good vs bad + let AI write the prompt
+  if(on("prompts")){
+    const k=kit[0];
+    body+=h2("Bad prompt vs good prompt")
+       +'<table class="ct"><tr class="hd"><td>Bad</td><td>Good</td></tr><tr><td class="tk">&ldquo;'+wbEsc(T.bad)+'&rdquo;<br><br><span style="font-weight:normal;color:'+M+'">No context, no sources, no finish line. The AI has to guess.</span></td><td>'
+       +(k?wbEsc(kitText(k)).replace(/\n/g,"<br>"):"Context, sources, what good looks like, when to stop.")+'</td></tr></table>'
+       +h2("Let AI write your prompt")
+       +p("Stuck on how to ask? Have the AI interview you. Answer its questions, then check and edit the prompt it writes before you run it.")
+       +pbox("The prompt-writing prompt",META_PROMPT);
+  }
 
   // me.md
-  body+=br+h1("Your me.md - your personal AI knowledge base")
-     +p("The highest-leverage habit in this whole workshop. A <b>me.md</b> (call it your name if you like - <i>yourname.md</i>) is a short file about you and your work. Paste it at the <b>start of every AI conversation</b> and the AI stops giving generic answers and starts sounding like you, for your work.")
-     +p("Write it once tonight. Update it as things change. It works in Claude, ChatGPT, Gemini, and Perplexity.")
-     +h2("Fill in your six sections");
-  ME_MD_SECTIONS.forEach(sec=>{ body+='<div class="mlab">'+wbEsc(sec[0])+'</div><div class="mhint">'+wbEsc(sec[1])+'</div><div class="wline">&nbsp;</div><div class="wline">&nbsp;</div>'; });
-  body+=p('<b>Tip:</b> start any chat with "Here is context about me before we start:" and paste the whole thing in.');
+  if(memd){
+    body+=br+h1("Your me.md - your personal AI knowledge base")
+       +p("A <b>me.md</b> (call it your name if you like - <i>yourname.md</i>) is a short file about you and your work. Paste it at the <b>start of every AI conversation</b> and the AI stops giving generic answers and starts working from your context.")
+       +p("Write it once tonight. Update it as things change. It works in Claude, ChatGPT, Gemini, and Perplexity.")
+       +h2("Fill in your six sections");
+    ME_MD_SECTIONS.forEach(sec=>{ body+='<div class="mlab">'+wbEsc(sec[0])+'</div><div class="mhint">'+wbEsc(sec[1])+'</div><div class="wline">&nbsp;</div><div class="wline">&nbsp;</div>'; });
+    body+=p('<b>Tip:</b> start any chat with "Here is context about me before we start:" and paste the whole thing in.');
+  }
+
+  // context & knowledge graphs
+  if(on("graphs")){
+    body+=br+h1("Context and knowledge graphs")
+       +p("A context file tells AI about you. A <b>knowledge graph</b> tells it how the things in your work connect: the <b>things</b> (clients, projects, documents, people) and the <b>links</b> between them (who, what, when, why). A <b>context graph</b> is the slice of that the AI pulls in for one task.")
+       +p("<b>For "+wbEsc(nounPl)+":</b> "+wbEsc(T.graph))
+       +h2("Sketch yours")
+       +'<div class="mlab">The four things my work revolves around</div><div class="wline">&nbsp;</div><div class="wline">&nbsp;</div>'
+       +'<div class="mlab">How they connect (who, what, when, why)</div><div class="wline">&nbsp;</div><div class="wline">&nbsp;</div>'
+       +'<div class="mlab">The question I wish I could ask across all of it</div><div class="wline">&nbsp;</div>'
+       +p("Start simple: linked notes in Notion or Obsidian, or a Claude Project or NotebookLM notebook with your key files.");
+  }
 
   // sample prompts: the kit
   body+=br+h1("Prompts that solve real problems")
-     +p("Each prompt below tackles a problem "+wbEsc(nounPl)+" deal with every week. Paste your <b>me.md</b> first, swap the [brackets] for your details, and run it.");
-  kit.forEach(k=>{ body+=h2(k.problem); body+=pbox("Use "+k.tool, kitPromptText(k)); });
+     +p("Each prompt below tackles a problem "+wbEsc(nounPl)+" deal with every week. "+(memd?"Paste your <b>me.md</b> first, swap":"Swap")+" the [brackets] for your details, run it, then challenge the first answer.");
+  kit.forEach(k=>{ body+=h2(k.problem); body+=pbox("Use "+k.tool, kitText(k)); });
 
-  // exercises + 7 day
-  body+=br+h1("Tonight's hands-on exercises")
-     +'<ul>'
-     +'<li><b>Write your me.md</b> - use the six-section template. Five minutes, keep it rough.</li>'
-     +'<li><b>Run a real task</b> - pick something on your plate this week; paste your me.md, use a prompt above, iterate twice.</li>'
-     +'<li><b>Compare two tools</b> - run the same research question in Perplexity and your LLM; notice the difference.</li>'
-     +'<li><b>Save what worked</b> - keep the prompts that landed. That note becomes your prompt library.</li>'
-     +'</ul>';
+  // apps and agents on the fly
+  if(on("agents")){
+    body+=br+h1("Build an app or agent on the fly")
+       +p("Give AI instructions and let it complete the task. The instructions are a four-part prompt plus rules. Build a working mini-app with Claude Artifacts or ChatGPT Canvas, or save standing instructions as a Claude Project, Custom GPT, or Gemini Gem. Agents like Claude Cowork run multi-step tasks across your files.")
+       +p("<b>Try this one:</b> "+wbEsc(T.agent))
+       +pbox("The app-builder prompt",AGENT_PROMPT)
+       +p("<b>Test it on real work.</b> Then fix what is off. It is a machine you direct, so the rules and the review are yours.");
+  }
+
+  // AI vs automation, hand-offs, what to avoid
+  if(on("automation")){
+    body+=br+h1("AI vs automation: when to hand off")
+       +p("<b>Automation</b> follows rules and gives the same result every time. <b>AI</b> handles language and judgment and gives a different result each time. Automation is the conveyor belt, AI is one station on it, and you are quality control.")
+       +'<table class="ct"><tr class="hd"><td>Automation</td><td>AI</td><td>You</td></tr>'
+       +[0,1,2].map(i=>'<tr>'+AI_VS_AUTO.map(col=>'<td>'+wbEsc(col.items[i])+'</td>').join("")+'</tr>').join("")+'</table>'
+       +h2("An AI step inside an automation")+p(wbEsc(T.auto))
+       +h2("Where to build it")
+       +'<table class="ct"><tr class="hd"><td>Use</td><td>When</td></tr>'+HANDOFF.map(r=>'<tr><td class="tk">'+wbEsc(r[0])+'</td><td>'+wbEsc(r[1])+'</td></tr>').join("")+'</table>'
+       +h2("What to avoid")+ul(AVOID.map(wbEsc))
+       +h2("Map one workflow")
+       +'<div class="mlab">The steps that follow a rule (automation)</div><div class="wline">&nbsp;</div>'
+       +'<div class="mlab">The steps that need language or judgment (AI drafts)</div><div class="wline">&nbsp;</div>'
+       +'<div class="mlab">The steps that stay mine (review, approve, relationship)</div><div class="wline">&nbsp;</div>';
+  }
+
+  // exercises (follow the focus)
+  {
+    const ex=[];
+    ex.push(memd?"<b>Write your me.md</b> - use the six-section template. Five minutes, keep it rough.":"<b>Write the context</b> - for one task on your plate this week, jot the context, the sources, and what good looks like.");
+    ex.push("<b>Run a real task</b> - use a prompt above on your own work, then push back twice: what is missing, what is wrong.");
+    if(on("prompts")) ex.push("<b>Let AI write a prompt</b> - use the prompt-writing prompt for a task you dread.");
+    if(on("agents")) ex.push("<b>Build one small tool</b> - use the app-builder prompt and test it on real work.");
+    if(on("automation")) ex.push("<b>Map one workflow</b> - split it into rules, judgment, and the parts that stay yours.");
+    ex.push("<b>Compare two tools</b> - run the same research question in Perplexity and your LLM, and notice the difference.");
+    body+=br+h1("Tonight's hands-on exercises")+ul(ex);
+  }
+
 
   // Community "Design your gathering" exercise
   const gq=[
@@ -2645,7 +2902,7 @@ function genWorkbookDoc(){
   gq.forEach((q,i)=>{ body+='<div class="mlab">'+(i+1)+'. '+wbEsc(q)+'</div><div class="wline">&nbsp;</div><div class="wline">&nbsp;</div>'; });
   body+=h2("Then run this prompt")
      +pbox("Copy, paste your answers, and go",
-        "[Paste your me.md]\n\n"
+        (memd?"[Paste your me.md]\n\n":"")
        +"CONTEXT: I'm designing a gathering for a community I care about: [who they are].\n\n"
        +"SOURCES: My honest answers:\n"
        +"- Who I want in the room: [answer 1]\n"
@@ -2658,27 +2915,30 @@ function genWorkbookDoc(){
        +"WHEN TO STOP: Stop after one plan and ask me the one question that would make it sharper.")
      +p("<b>Now argue with it:</b> “make it feel less like an event and more like us,” “that won't work because ___ - try again,” “give me one small, weird detail people will remember.” That back-and-forth is where the magic is.");
 
-  body+=h1("Your 7-day action plan")
-     +'<ul>'
-     +'<li>Day 1 - Finish and save your me.md.</li><li>Day 2 - Set up one LLM and run one real task through it.</li>'
-     +'<li>Day 3 - Add a notetaker to your next meeting.</li><li>Day 4 - Redo a task you dread, this time with AI.</li>'
-     +'<li>Day 5 - Save the prompts that worked into one note.</li><li>Day 6 - Teach one teammate what you learned.</li>'
-     +'<li>Day 7 - Pick the one tool you will keep and commit.</li></ul>';
+  body+=h1("Before anything leaves your hands")+ul(HUMAN_CHECK.map(wbEsc));
+
+  body+=h1("Your 7-day action plan")+ul(planDays(dd).map(wbEsc));
 
   // tool table
-  body+=h1("Which tool for what")
-     +'<table class="ct"><tr class="hd"><td>Tool</td><td>Reach for it when&hellip;</td></tr>'
-     +[["Claude","Deep writing, proposals, SOPs, thinking through a problem, working across your files."],
+  {
+    const rows=[["Claude","Deep writing, proposals, SOPs, thinking through a problem, working across your files."],
        ["ChatGPT","All-round tasks, quick drafts, images."],
        ["Gemini","You live in Google Docs, Gmail, and Sheets."],
        ["Perplexity","You need researched answers with real, clickable sources."],
-       ["Gemini Notebook / NotebookLM","Asking questions of your own documents."],
-       ["Claude Cowork","Handing off whole recurring tasks and file work."]].map(r=>'<tr><td class="tk">'+wbEsc(r[0])+'</td><td>'+wbEsc(r[1])+'</td></tr>').join("")
-     +'</table>';
+       ["NotebookLM","Asking questions of your own documents."],
+       ["Claude Cowork","Handing off whole recurring tasks and file work."]];
+    if(on("agents")) rows.push(["Claude Artifacts / ChatGPT Canvas","Building a quick working tool or mini-app from instructions."]);
+    if(on("agents")||on("automation")) rows.push(["Lovable","Turning a proven idea into a real app other people log into."]);
+    if(on("automation")) rows.push(["Zapier / Make","No-code, trigger-based flows: when X happens, do Y."],["n8n","Complex or self-hosted flows with AI steps inside."]);
+    body+=h1("Which tool for what")
+       +'<table class="ct"><tr class="hd"><td>Tool</td><td>Reach for it when&hellip;</td></tr>'
+       +rows.map(r=>'<tr><td class="tk">'+wbEsc(r[0])+'</td><td>'+wbEsc(r[1])+'</td></tr>').join("")
+       +'</table>';
+  }
 
   // resources + QR
   body+=br+h1("Resources &amp; next steps")
-     +p("Slides, this workbook, and tonight's prompts are yours to keep. Put your me.md and your best prompts into one note this week - that's your own AI toolkit.")
+     +p("Slides, this workbook, and tonight's prompts are yours to keep. Put "+(memd?"your me.md and ":"")+"your best prompts into one note this week - that's your own AI toolkit.")
      +p("<b>Scan to see upcoming AI Collective Atlanta events and register:</b>")
      +'<div style="text-align:center;margin:14px 0"><img src="'+WORKBOOK_QR+'" style="width:150px;height:150px"><div style="color:'+B+';font-size:9pt">luma.com/aicatl</div></div>'
      +'<ul><li><b>The AI Collective - Atlanta:</b> aicollective.com/chapters/atlanta</li>'
@@ -2721,24 +2981,59 @@ function downloadWorkbook(){
   }catch(e){ toast("Workbook error: "+((e&&e.message)||e)); }
 }
 
+// One learn line per selected module, phrased a few ways so the copy changes month to month.
+function moduleLines(){
+  const T=teachFor(), noun=audNoun(), nounPl=audNounPl(), dd=deepTools();
+  const L={
+    think:["💡 How AI actually works, explained in "+noun+" terms, so you know where it fits your week","💡 A simple way to think about AI that shows exactly where it helps "+nounPl,"💡 The mental model: AI as a machine you point at the right work, not a coworker"],
+    context:["🎯 The three things every prompt needs: context, sources, and the output you want","🎯 Why context and sources beat clever wording (and why you can drop the \"act as a...\" line)","🎯 How to brief AI the way you would brief a pro: context, sources, and what good looks like"],
+    prompts:["✍️ Bad prompt vs good prompt, side by side, for everyday "+noun+" work","✍️ How to have AI interview you and write the prompt for you","✍️ Turning a one-line ask into a prompt that gets it right the first time"],
+    limits:["🚧 Where AI does not work for "+nounPl+", starting with "+lcFirst(T.notFor[0]),"🚧 The jobs to keep away from AI, and why","🚧 Where AI gets "+nounPl+" in trouble, and how to stay out of it"],
+    agents:["🛠️ Build a working app or agent on the fly, like "+agentName(T),"🛠️ Give AI instructions and let it finish the task: mini-apps, GPTs, Gems, and agents","🛠️ From prompt to tool: build "+agentName(T)+" you can use the next morning"],
+    automation:["⚙️ AI vs automation: when to hand off to Lovable, Zapier, Make, or n8n","⚙️ Where AI fits inside an automation, and what never to automate","⚙️ Why autonomous outreach backfires, and what to build instead"],
+    tools:["🗺️ The AI tool landscape: the LLMs, notetakers, and helpers worth your time","🗺️ Which tool for which job"+(dd.length?(": "+dd.slice(0,3).join(", ")):""),"🗺️ A short list of tools that earn a place in your week"],
+    memd:["📄 The Me.md: build a portable context file and leave using it","📄 One file that gives any AI your context, written tonight"],
+    graphs:["🕸️ Knowledge graphs, simply: "+lcFirst(T.graph),"🕸️ Context graphs: connect "+graphThings(T)+" so AI can answer across them"],
+    human:["🧠 The Human Side of AI: your expertise leads, AI is the machine","🧠 Applied Intelligence: challenge the output, use your judgment, never sound robotic","🧠 How to keep your judgment in charge and your work sounding like you"]
+  };
+  const out=[];
+  ["think","context","prompts","limits","memd","graphs","agents","automation","tools","human"].forEach(id=>{ if(focusOn(id)) out.push({id, line:pickV(L[id],"learn-"+id)}); });
+  return out;
+}
+
 function genLuma(){
   const c=state, icp=c.icp||freshIcp(c.audience), aud=audLabel()||"Your Audience";
-  const noun=audNoun();
-  const nounPl=audNounPl();
+  const noun=audNoun(), nounPl=audNounPl(), T=teachFor();
   const dd=deepTools(), guests=guestsFor("inperson");
   const dateStr=fmtDate(c.date);
-  const win=(list(icp.winning)[0]||"do your best work in a fraction of the time").toLowerCase();
   const pain=(list(icp.pains)[0]||"the manual work that eats your week").toLowerCase();
 
-  const learn=[];
-  learn.push("🗺️ The AI tool landscape - the LLMs, notetakers, and helpers worth your time");
-  const g0=guests[0];
-  learn.push("🎙️ "+ (g0 ? (g0.name+(g0.topic?(" on "+g0.topic):(g0.role?(", "+g0.role):" - live segment"))) : "A guest instructor on a hands-on topic"));
-  learn.push("🔧 "+ (dd[0] ? ("Deep dive: "+dd[0]+" for "+noun+" work") : "Deep dive on a featured tool"));
-  learn.push("⚡ "+ (dd[1] ? ("Deep dive: "+dd[1]+" in action") : "A second featured tool in action"));
-  learn.push("✅ The Me.md - build your portable AI context file and leave using it");
+  const hook=pickV([
+    "You already know AI could take work off your plate. Tonight you find out exactly where, and where it should not, hands on your own laptop.",
+    T.analogy+" Tonight you learn how to point it at your real work.",
+    "Most "+nounPl+" use AI like a search box. The ones pulling ahead give it context, sources, and a clear picture of the output they want.",
+    "AI does not replace what you know as a "+noun+". It multiplies it, if you know where and how to apply it.",
+    "What would you do with five extra hours a week? For most "+nounPl+", those hours are stuck in "+pain+"."
+  ],"luma-hook");
+  const about=pickV([
+    "This is a free, hands-on workshop built for "+nounPl+". You leave knowing where AI fits your workflow, where it does not, and how to get work out of it that sounds like you, not a machine.",
+    "A free, hands-on session for "+nounPl+". No hype and no lecture. You work on your own tasks, with your own laptop, and leave with a setup you can use tomorrow.",
+    "Built for "+nounPl+" who want practical results, not theory. Bring a real task. You leave with prompts, tools, and a way of working you can use the next morning."
+  ],"luma-about");
+  const human=pickV([
+    "We teach AI the way The AI Collective does: the human side first. AI is Applied Intelligence. Your expertise leads, AI is the machine, and your judgment decides what goes out.",
+    "Our approach is the Human Side of AI. Never let AI think for you. Challenge the output, use your judgment, and review everything so it never sounds robotic.",
+    "The rule we teach by: AI is a machine, not a friend or an advisor. Knowing when and how to apply it is the human part, and that is what you will practice."
+  ],"luma-human");
 
-  const bring=["Your laptop"];
+  const ml=moduleLines(), learn=[];
+  const g0=guests[0];
+  ml.filter(m=>m.id!=="human").forEach(m=>learn.push(m.line));
+  if(g0) learn.push("🎙️ "+g0.name+(g0.topic?(" on "+g0.topic):(g0.role?(", "+g0.role):" - live segment")));
+  if(dd[0]) learn.push("🔧 Deep dive: "+dd.slice(0,2).join(" and ")+" for "+noun+" work");
+  const hm=ml.find(m=>m.id==="human"); if(hm) learn.push(hm.line);
+
+  const bring=["Your laptop","A real task from your week to work on"];
   const acct = firstN(dd.length?dd:["Claude","ChatGPT","Perplexity","a notetaker"],4);
   bring.push("Free accounts for: "+acct.join(", "));
 
@@ -2746,65 +3041,92 @@ function genLuma(){
   out += clean("AI Fundamentals for "+aud)+"\n";
   if(dateStr) out += dateStr+"  |  "+clean(c.venue)+"\n";
   out += "\n";
-  // hook
-  out += clean("You already know AI could take work off your plate. Tonight you find out exactly how, hands on your own laptop.")+"\n\n";
-  // about
-  out += clean("This is a free, hands-on workshop built for "+nounPl+". The "+nounPl+" who use AI well are already pulling ahead. They spend less time on "+pain+" and more time on what actually moves the work forward. This session bridges that gap. You leave with tools you can use tomorrow and a personal AI setup that is yours to keep.")+"\n\n";
-  // what you'll learn
+  out += clean(hook)+"\n\n";
+  out += clean(about)+"\n\n";
+  out += clean(human)+"\n\n";
   out += "What You'll Learn\n";
   learn.forEach(l=>out+=clean(l)+"\n");
   out+="\n";
-  // agenda
   out += "Agenda\n";
   out += "5:30 PM - Doors open, pizza and networking\n6:15 PM - Workshop begins\n8:00 PM - Workshop ends, networking and cleanup\n8:30 PM - Doors close\n\n";
-  // bring
   out += "What to Bring\n";
   bring.forEach(b=>out+="- "+clean(b)+"\n");
   out+="\n";
-  // hosts
   out += "Your Hosts\n";
   out += clean(c.lead.name+", "+c.lead.credit+" ("+URL_THREADS+", "+URL_AIC+"). 42 years helping "+nounPl+" and teams work smarter.")+"\n";
   guests.forEach(g=>{
     out += clean(g.name + (g.role?(", "+g.role):"") + ". " + (g.bio||"[ICP bio - Claude drafts this in chat]")) + (g.linkedin?(" "+g.linkedin):"") + "\n";
   });
   out+="\n";
-  // maven
   if(c.maven.on){
     out += "Want To Go Deeper\n";
     out += clean("This workshop is also a 4-week online cohort, "+(c.maven.title||"AI Fundamentals")+". "+(c.maven.start?("Starts "+fmtDate(c.maven.start)+". "):"")+(c.maven.price?("Price "+c.maven.price+". "):"")+(c.maven.url?("Register at "+c.maven.url+"."):"Details at the event."))+"\n\n";
   }
-  // close
   out += clean("Free. "+ (c.seats||SEATS_DEFAULT) +" seats. Register to hold your spot.")+"\n";
   return out;
 }
 
 function genLinkedIn(){
   const c=state, icp=c.icp||freshIcp(c.audience), aud=audLabel()||"your field";
-  const noun=audNoun();
-  const nounPl=audNounPl();
+  const noun=audNoun(), nounPl=audNounPl(), T=teachFor();
   const dd=deepTools(), guests=guestsFor("inperson");
   const dateStr=fmtDate(c.date);
-  const win=(list(icp.winning)[0]||"do more of your best work in less time").toLowerCase();
   const g=guests[0];
+  const pain=(list(icp.pains)[0]||"the busywork").toLowerCase();
+
+  const hook=pickV([
+    "Most "+nounPl+" I talk to use AI like a search box. Type a question, get something generic, give up.",
+    "Here is the analogy I use with "+nounPl+":\n\n"+T.analogy,
+    "AI is not your coworker, your friend, or your advisor. It is a machine. A very good one, if you know where to point it.",
+    "Where does AI actually help a "+noun+"? And where does it make things worse? Both answers matter.",
+    "The question I get most from "+nounPl+": \"How do I get AI to stop sounding like AI?\" The answer is not a better tool.",
+    "If your week still disappears into "+pain+", this one is for you."
+  ],"li-hook");
+  const event=pickV([
+    "On "+(dateStr||"our next date")+", I am running a free, hands-on AI Fundamentals workshop for "+aud.toLowerCase()+" at "+c.venue+". Bring your laptop and a real task.",
+    (dateStr?(dateStr+": free"):"Free")+", hands-on AI Fundamentals for "+aud.toLowerCase()+", at "+c.venue+". Not a lecture. You work on your own tasks and leave using the tools.",
+    "Next AI Fundamentals workshop: built for "+aud.toLowerCase()+", "+(dateStr?("on "+dateStr+", "):"")+"at "+c.venue+". Free, hands-on, laptops open."
+  ],"li-event");
+  const H={
+    think:"How to think about AI so you can see exactly where it fits your week",
+    context:"The three inputs that matter most: context, sources, and the output you want (no more \"act as a...\")",
+    prompts:"Bad prompt vs good prompt, and how to have AI interview you and write the prompt",
+    limits:"Where AI does not work for "+nounPl+", like "+lcFirst(T.notFor[0]),
+    agents:"Building apps and agents on the fly, like "+agentName(T),
+    automation:"AI vs automation, when to hand off to Lovable, Zapier, Make, or n8n, and why autonomous outreach backfires",
+    tools:"The tools worth your time"+(dd.length?(": "+dd.slice(0,3).join(", ")):""),
+    memd:"A Me.md: one file that gives any AI your context",
+    graphs:"Context graphs: connecting "+graphThings(T)+" so AI can answer across them"
+  };
+  const ids=shuffleV(Object.keys(H).filter(focusOn),"li-order").slice(0,5);
+  const bridge=pickV([
+    "The difference is rarely the tool. It is knowing where AI fits your work, what to give it, and where to keep it away.",
+    "Most of what goes wrong with AI comes from missing context, not a missing feature. That is fixable in one evening.",
+    "AI can take real work off a "+noun+"'s plate. It can also produce confident nonsense. Knowing which is which is the skill.",
+    "You do not need more AI tools. You need to know what to hand them, what to keep, and how to check the result."
+  ],"li-bridge");
+  const principle=pickV([
+    "My rule: AI is Applied Intelligence. It is a machine, not a friend or an advisor. Knowing when and how to apply it is the human part, and that is what we practice.",
+    "The Human Side of AI is the whole point. Keep your expertise in charge, challenge every output, and never send anything that sounds robotic.",
+    "Never let AI think for you. Use it to go further, then bring your own judgment to the last mile."
+  ],"li-principle");
 
   let p="";
-  p += clean("If you are one of Atlanta's "+nounPl+", this one is built for you.")+"\n\n";
-  p += clean("On "+(dateStr||"our next date")+" I am running a free, hands-on AI Fundamentals workshop for "+aud.toLowerCase()+" at "+c.venue+". Not a lecture. You bring your laptop and leave using the tools.")+"\n\n";
-  if(g){
-    p += clean((g.name)+" joins me"+(g.role?(", "+g.role):"")+(g.topic?(", on "+g.topic):", sharing how they use this in the field")+".")+"\n\n";
-  }
-  const tnames = dd.length ? dd.join(", ") : "the LLMs, notetakers, and tools worth your time";
-  p += clean("We go deep on "+tnames+", and everyone builds a Me.md - a portable context file that makes any AI sound like you. The goal is simple: help you "+win+".")+"\n\n";
-  if(c.maven.on){
-    p += clean("Can't make it in person or want more? It also runs as a 4-week online cohort"+(c.maven.start?(" starting "+fmtDate(c.maven.start)):"")+".")+"\n\n";
-  }
+  p += clean(hook)+"\n\n";
+  p += clean(bridge)+"\n\n";
+  p += clean(event)+"\n\n";
+  p += "What we will cover:\n";
+  ids.forEach(id=>{ p += "→ "+clean(H[id])+"\n"; });
+  p += "\n";
+  if(g) p += clean(g.name+" joins me"+(g.role?(", "+g.role):"")+(g.topic?(", on "+g.topic):", sharing how they use this in the field")+".")+"\n\n";
+  p += clean(principle)+"\n\n";
+  if(c.maven.on) p += clean("Can't make it in person or want more? It also runs as a 4-week online cohort"+(c.maven.start?(" starting "+fmtDate(c.maven.start)):"")+".")+"\n\n";
   p += clean("Free admission. "+(c.seats||SEATS_DEFAULT)+" seats.")+"\n\n";
   p += "Link in comments.\n\n";
-  // hashtags
   const shortTag=(AUD_META[state.audience]||{}).short||"AI";
   const shortTag2=state.audience2?((AUD_META[state.audience2]||{}).short):null;
-  const tags=["#AI","#ArtificialIntelligence","#Atlanta","#"+shortTag]; if(shortTag2&&shortTag2!==shortTag) tags.push("#"+shortTag2); tags.push("#TheAICollective");
-  p += tags.join(" ");
+  const tags=["#AI","#AppliedIntelligence","#Atlanta","#"+shortTag]; if(shortTag2&&shortTag2!==shortTag) tags.push("#"+shortTag2); tags.push("#TheAICollective");
+  p += tags.filter((t,k)=>tags.indexOf(t)===k).join(" ");
   return p;
 }
 
@@ -2841,9 +3163,9 @@ function genMaven(){
   out += "=== PAGE COPY ===\n\n";
   out += "Title: "+clean(title)+"\n";
   out += "Tagline: "+clean("Build your personal AI stack in four weeks, with feedback the whole way.")+"\n\n";
-  out += "About\n"+clean("This cohort turns one night of AI Fundamentals into a hands-on month. Built for "+nounPl+", it takes you from curious to fluent. You build your Me.md, set up the right tools for your work, and wire them into a stack you actually use. Every week you ship something real and get feedback on it.")+"\n\n";
+  out += "About\n"+clean("This cohort turns one night of AI Fundamentals into a hands-on month. Built for "+nounPl+", it takes you from curious to fluent. "+(focusOn("memd")?"You build your Me.md, set up":"You learn to give AI real context, set up")+" the right tools for your work, and wire them into a stack you actually use. Every week you ship something real and get feedback on it.")+"\n\n";
   out += "Week By Week\n";
-  out += clean("Week 1 - Foundation: your Me.md, the LLM landscape, and your first real task done with AI.")+"\n";
+  out += clean("Week 1 - Foundation: "+(focusOn("memd")?"your Me.md":"the Human Side of AI, context and sources")+", the LLM landscape, and your first real task done with AI.")+"\n";
   out += clean("Week 2 - Tool application: go deep on "+(dd.length?dd.join(", "):"your featured tools")+" against your own work.")+"\n";
   out += clean("Week 3 - Stack integration: connect your tools, add automation, and build a repeatable workflow.")+"\n";
   out += clean("Week 4 - Put it to work: bring a live project, get feedback, and leave with a stack you trust.")+"\n\n";
@@ -2858,7 +3180,7 @@ function genMaven(){
   out += "CTA: "+clean("Save your seat"+(c.maven.url?(" at "+c.maven.url):"")+(c.maven.price?(". "+c.maven.price):"")+".")+"\n\n";
 
   out += "=== 3-WEEK CURRICULUM OUTLINE ===\n\n";
-  out += clean("Week 1 - Foundation")+"\n"+clean("The AI ecosystem in four layers. Write your Me.md. Pick your primary LLM and run one real "+noun+" task end to end.")+"\n\n";
+  out += clean("Week 1 - Foundation")+"\n"+clean("The AI ecosystem in four layers. "+(focusOn("memd")?"Write your Me.md.":"Practice context, sources, and desired output.")+" Pick your primary LLM and run one real "+noun+" task end to end.")+"\n\n";
   out += clean("Week 2 - Tool Application")+"\n"+clean("Hands-on with "+(dd.length?dd.join(", "):"your featured tools")+". Each person applies them to their own work and shares the result.")+"\n\n";
   out += clean("Week 3 - Stack Integration")+"\n"+clean("Connect the tools. Add a notetaker and one automation. Build a workflow you will run every week, then present it.")+"\n\n";
 
@@ -3717,6 +4039,14 @@ function docHead(title, sub, plainGetter, dlName){
   return h;
 }
 
+// "Try another version": new hooks and phrasing for the Luma page and LinkedIn post (saved with the workshop)
+function addVariantBtn(out){
+  const sp=out.lastChild && out.lastChild.querySelector(".sp"); if(!sp) return;
+  const b=el("button","btn sm ghost","↻ Try another version"); b.title="New hook and phrasing. Copy follows your Session focus.";
+  b.onclick=()=>{ state.copyVar=(state.copyVar||0)+1; renderOutput(); };
+  sp.insertBefore(b, sp.firstChild);
+  if(state.copyVar){ const r=el("button","btn sm ghost","Reset"); r.title="Back to version 1"; r.onclick=()=>{ state.copyVar=0; renderOutput(); }; sp.insertBefore(r, b.nextSibling); }
+}
 function renderOutput(){
   const out=$("#out"); out.innerHTML="";
   if(!state.audience){
@@ -3730,12 +4060,14 @@ function renderOutput(){
   const tab=state.activeTab;
 
   if(tab==="luma"){
-    out.appendChild(docHead("Luma Event Page", "Paste into your Luma event description", genLuma, "luma_"+slug(audLabel())+".txt"));
+    out.appendChild(docHead("Luma Event Page", "Paste into your Luma event description - version "+((state.copyVar||0)+1), genLuma, "luma_"+slug(audLabel())+".txt"));
+    addVariantBtn(out);
     const d=el("div","doc md"); d.appendChild(paraBlock(genLuma())); out.appendChild(d);
   }
   else if(tab==="linkedin"){
     const words=genLinkedIn().split(/\s+/).filter(Boolean).length;
-    out.appendChild(docHead("LinkedIn Post", words+" words - target 160 to 230", genLinkedIn, "linkedin_"+slug(audLabel())+".txt"));
+    out.appendChild(docHead("LinkedIn Post", words+" words - target 160 to 230 - version "+((state.copyVar||0)+1), genLinkedIn, "linkedin_"+slug(audLabel())+".txt"));
+    addVariantBtn(out);
     const d=el("div","doc md"); d.appendChild(paraBlock(genLinkedIn())); out.appendChild(d);
   }
   else if(tab==="brief"){
@@ -3777,7 +4109,7 @@ function renderOutput(){
     big.onclick=()=>downloadWorkbook();
     panel.appendChild(big);
     const note=el("div","hint"); note.style.marginTop="10px";
-    note.innerHTML="A multi-page Word handout: the four-part prompt (context, sources, what good looks like, when to stop), a fill-in <b>me.md</b> template, prompts that solve this audience's real problems, hands-on exercises (including a &ldquo;design your gathering&rdquo; community exercise), a 7-day plan, and a tool cheat sheet. Safe to hand out - the only QR points to the AIC Atlanta event calendar (luma.com/aicatl), not this builder. Opens in Word or Google Docs; print it or hand it out.";
+    note.innerHTML="A multi-page Word handout that follows your <b>Session focus</b>: the Human Side of AI, the four-part prompt (context, sources, what good looks like, when to stop), prompts that solve this audience's real problems, plus the modules you picked (how to think about AI, good vs bad prompts, where AI doesn't work, "+(focusOn("memd")?"a fill-in <b>me.md</b>, ":"")+(focusOn("graphs")?"knowledge graphs, ":"")+"apps and agents, AI vs automation), hands-on exercises (including a &ldquo;design your gathering&rdquo; community exercise), a human checklist, a 7-day plan, and a tool cheat sheet. Safe to hand out - the only QR points to the AIC Atlanta event calendar (luma.com/aicatl), not this builder. Opens in Word or Google Docs; print it or hand it out.";
     panel.appendChild(note);
     out.appendChild(panel);
   }
@@ -4182,9 +4514,30 @@ function buildForm(){
     refreshRem();
   }));
 
-  // SECTION 3 - Instructors
   const gCount=state.guests.filter(g=>g.name.trim()).length;
-  f.appendChild(section(3,"Instructors", gCount?("Mark + "+gCount+" guest"+(gCount>1?"s":"")):"Mark (lead only)", body=>{
+  // SECTION 3 - Session focus (what this session teaches; drives the deck, workbook, Luma, LinkedIn)
+  f.appendChild(section(3,"Session focus", focusCount()+" topics", body=>{
+    const p0=el("div","hint"); p0.style.margin="2px 0 8px";
+    p0.innerHTML="Pick what this session teaches. The deck, Workbook, Luma page, and LinkedIn post follow it. <b>The Human Side of AI</b> and <b>context, sources &amp; desired output</b> are always in.";
+    body.appendChild(p0);
+    MODULES.forEach(m=>{
+      const tg=el("div","toggle"); const onNow=focusOn(m.id);
+      tg.setAttribute("data-on", onNow?"1":"0"); tg.tabIndex=0; tg.style.alignItems="flex-start"; tg.style.marginBottom="8px";
+      tg.innerHTML='<span class="switch" style="flex:none;margin-top:2px"></span><span><b>'+esc(m.label)+'</b>'+(m.core?' <span style="color:var(--faint);font-size:11px">always on</span>':'')+'<br><span style="color:var(--muted);font-size:12px">'+esc(m.hint)+'</span></span>';
+      if(m.core){ tg.style.opacity="0.75"; tg.style.cursor="default"; }
+      else {
+        const flip=()=>{ state.focus=Object.assign({}, state.focus||{}); state.focus[m.id]=!focusOn(m.id); rerenderAll(); };
+        tg.onclick=flip; tg.onkeydown=e=>{ if(e.key===" "||e.key==="Enter"){e.preventDefault();flip();} };
+      }
+      body.appendChild(tg);
+    });
+    const n=el("div","hint"); n.style.marginTop="6px";
+    n.innerHTML="Tip: fewer topics make a tighter two hours. The Luma and LinkedIn tabs have <b>↻ Try another version</b> for fresh hooks and phrasing.";
+    body.appendChild(n);
+  }));
+
+  // SECTION 4 - Instructors
+  f.appendChild(section(4,"Instructors", gCount?("Mark + "+gCount+" guest"+(gCount>1?"s":"")):"Mark (lead only)", body=>{
     // Lead instructor
     const lead=el("div","guest");
     lead.appendChild(el("div","gh","Lead instructor"));
@@ -4230,9 +4583,9 @@ function buildForm(){
     body.appendChild(help);
   }));
 
-  // SECTION 4 - Tools
+  // SECTION 5 - Tools
   const ddCount=state.deep.filter(t=>state.include[t]).length;
-  f.appendChild(section(4,"Tools this session", (Object.values(state.include).filter(Boolean).length)+" on, "+ddCount+" deep-dive", body=>{
+  f.appendChild(section(5,"Tools this session", (Object.values(state.include).filter(Boolean).length)+" on, "+ddCount+" deep-dive", body=>{
     // one tool row (used for both built-in and custom tools)
     const toolRow=(t, removable)=>{
       const row=el("div","tool");
@@ -4341,8 +4694,8 @@ function buildForm(){
     body.appendChild(info);
   }));
 
-  // SECTION 5 - Maven
-  f.appendChild(section(5,"Maven cohort", state.maven.on?"Enabled":"Off", body=>{
+  // SECTION 6 - Maven
+  f.appendChild(section(6,"Maven cohort", state.maven.on?"Enabled":"Off", body=>{
     const tg=el("div","toggle"); tg.setAttribute("data-on", state.maven.on?"1":"0"); tg.tabIndex=0;
     tg.innerHTML='<span class="switch"></span><span>Package this event into a 4-week Maven cohort</span>';
     const flip=()=>{ state.maven.on=!state.maven.on; rerenderAll(); };
@@ -4359,8 +4712,8 @@ function buildForm(){
     }
   }));
 
-  // SECTION 6 - Facilitator background (me.md)
-  f.appendChild(section(6,"Facilitator (me.md)", state.credNotes?"Credibility on":"Credibility off", body=>{
+  // SECTION 7 - Facilitator background (me.md)
+  f.appendChild(section(7,"Facilitator (me.md)", state.credNotes?"Credibility on":"Credibility off", body=>{
     const tg=el("div","toggle"); tg.setAttribute("data-on", state.credNotes?"1":"0"); tg.tabIndex=0;
     tg.innerHTML='<span class="switch"></span><span>Add "why I can lead this" to slide speaker notes</span>';
     const flip=()=>{ state.credNotes=!state.credNotes; persistFacilitator(); rerenderAll(); };
@@ -4377,8 +4730,8 @@ function buildForm(){
     body.appendChild(reset);
   }));
 
-  // SECTION 7 - Brand
-  f.appendChild(section(7,"Brand", logoChoiceLabel(), body=>{
+  // SECTION 8 - Brand
+  f.appendChild(section(8,"Brand", logoChoiceLabel(), body=>{
     const p=el("div","hint"); p.style.marginTop="2px";
     p.innerHTML="The deck and graphics use the <b>Threads / Stitchs</b> yarn colors on white, with type sized to read from the back row. Pick the logo for this workshop: <b>AIC Atlanta</b> for in-person, <b>Stitchs</b> for Maven cohorts, or upload your own (Threads, Mark Michelson). The same logo goes on the deck and on the Luma and cover graphics; the venue logo (Improving) is set on the Graphics tab.";
     body.appendChild(p);
