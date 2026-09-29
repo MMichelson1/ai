@@ -16,22 +16,23 @@ builder produces:
 - **Slides** — a slide-by-slide brief, plus a **one-click "Download PowerPoint"**
   button on the **PowerPoint** tab that builds the real widescreen `.pptx` right in
   the browser (no coding, works on phone or desktop). A runnable **pptxgenjs**
-  script is still available under "Advanced" for developers. Decks are styled with
-  **AIC Atlanta brand colors**
-  (orange `#F97316`, blue `#0276D9`, slate `#374151`) and a **logo on every
+  script is still available under "Advanced" for developers. Decks use the **Threads / Stitchs** yarn colors on white with a **logo on every
   slide**. Per the brand rule, the **Brand** section lets you pick the logo:
   **AIC** (in-person), **Stitchs** (Maven cohorts, transparent-background logo),
   or **None**. On dark slides the logo sits on a small white chip for legibility.
 - **Graphics** — a **Luma event cover (1200 × 1200)** and a **16:9 deck cover
-  (1920 × 1080)** in one consistent series design: logo upper left, the title
-  ("AI Fundamentals for X Professionals") large at the bottom left, and a signal-arc
-  motif upper right whose lit arcs mark the level (one orange arc for **AI
-  Fundamentals**, two blue arcs for **AI Fluency**). Download each as a PNG. The 16:9
-  cover also becomes the PowerPoint title slide (toggle). Fonts are embedded (Barlow,
-  SIL OFL 1.1) so the artwork looks the same on every device.
-- **Logos** — pick AIC Atlanta, Stitchs, or **upload your own** (Threads, Mark
-  Michelson, anything) in the **Brand** section or on the Graphics tab. Uploads are
-  saved in the browser and reused; the chosen logo goes on the deck and the graphics.
+  (1920 × 1080)** in the **Threads / Stitchs** look: white background, the Threads yarn
+  palette, and the brand typefaces (Open Sans + Playfair Display, SIL OFL 1.1, embedded).
+  Each profession gets its own lead yarn color (or pick one) and a "day in the life"
+  scene: a person at their desk surrounded by cards for that job, stitched together with
+  thread lines. AIC logo upper left, venue logo (Improving) upper right, date · time and
+  city at the bottom. Use your own image instead (with a copy-ready image prompt for
+  ChatGPT or Gemini). The 16:9 cover becomes the PowerPoint title slide (toggle).
+- **Logos** — AIC Atlanta, Stitchs, Improving, or **upload your own** (Threads, Mark
+  Michelson, anything). Uploads are saved in the browser and reused.
+- **Deck design** — all-white slides in the Threads palette (rotated per workshop so
+  each profession leads with its own color), Calibri at back-row sizes: 40pt titles and
+  22–28pt body.
 - **Attendee Workbook (.doc)** — teaches the **four-part prompt** (context, sources,
   what good looks like, when to stop — no "act as" role lines), a table of the
   audience's real problems and what AI does about each, and five ready-to-run prompts
