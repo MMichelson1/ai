@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Mark Michelson</title>
-<meta name="description" content="Mark Michelson. Marketing researcher, strategist, and AI educator in Atlanta. Founder of Threads Marketing Research & Strategy and Stitchs AI Training. Region Director, The AI Collective.">
+<meta name="description" content="Mark Michelson. Head of Revenue & Retention at The AI Collective. Founder of Threads Marketing Research & Strategy and Stitchs AI Training & Solutions. Atlanta, GA.">
 <meta property="og:title" content="Mark Michelson">
 <meta property="og:description" content="Researcher, strategist, and AI educator. I translate what customers need into what companies build.">
 <meta property="og:type" content="profile">
@@ -176,6 +176,25 @@
   .assoc b { display: block; }
   .assoc span { color: var(--muted); font-size: 15px; }
 
+  /* Logos */
+  .logo-plate {
+    background: #fff; border: 1px solid var(--line); border-radius: 10px; height: 96px; margin-bottom: 18px;
+    display: flex; align-items: center; justify-content: center; padding: 14px 18px;
+  }
+  .logo-plate img { max-height: 100%; max-width: 100%; width: auto; height: auto; }
+  .logo-text { flex-direction: column; color: #2b3f6b; line-height: 1.1; }
+  .logo-text span { font-family: Fraunces, Georgia, serif; font-size: 34px; font-weight: 600; }
+  .logo-text small { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: #a8462b; font-weight: 600; margin-top: 4px; }
+
+  /* Questions */
+  .qgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  @media (max-width: 860px) { .qgrid { grid-template-columns: 1fr; } }
+  .qcol { border-top: 3px solid var(--warm); padding-top: 18px; }
+  .qcol h3 { font-family: Fraunces, Georgia, serif; font-size: 22px; font-weight: 600; margin: 0 0 12px; }
+  .qcol ul { margin: 0; padding: 0 0 0 18px; }
+  .qcol li { margin-bottom: 10px; color: var(--muted); font-size: 15.5px; }
+  .qcol li::marker { color: var(--warm); }
+
   /* Story */
   .story { background: var(--surface); }
   .story .big { font-family: Fraunces, Georgia, serif; font-size: clamp(20px, 2.6vw, 24px); line-height: 1.5; }
@@ -212,7 +231,7 @@
     <a class="brand" href="#top">Mark Michelson</a>
     <ul>
       <li><a href="#now">Work</a></li>
-      <li><a href="#threads">Why Threads</a></li>
+      <li><a href="#questions">Questions</a></li>
       <li><a href="#approach">Approach</a></li>
       <li><a href="#background">Background</a></li>
       <li><a href="#community">Community</a></li>
@@ -224,8 +243,8 @@
 <header class="hero" id="top">
   <div class="wrap">
     <p class="eyebrow">Atlanta, GA &middot; Roots in Eastern Tennessee</p>
-    <h1>I translate what customers need into what companies build.</h1>
-    <p class="lede">I'm a marketing researcher, strategist, and AI educator. I help companies understand how customers think, what they need, and why they buy. <em>Now I teach professionals to use AI the same way: problem first, technology second.</em></p>
+    <h1>Real answers about your real customers. And AI that helps you get them.</h1>
+    <p class="lede">I run research for companies that need to know what their customers think, need, and buy. I train professionals to use AI in their work, from analysis to digital twins and synthetic personas. <em>And I help lead The AI Collective, a global AI community.</em></p>
     <div class="cta">
       <a class="btn primary" href="mailto:mark@threadsmr.com">Email me</a>
       <button class="btn ghost copy-email" type="button" data-email="mark@threadsmr.com">Copy email</button>
@@ -248,10 +267,10 @@
 
 <div class="stats" aria-label="At a glance">
   <div class="wrap">
-    <div class="stat"><b>6</b><span>industry associations co-founded or led</span></div>
-    <div class="stat"><b>22</b><span>countries worked in, 78 visited</span></div>
     <div class="stat"><b>4,000+</b><span>AI Collective members in Atlanta's first year</span></div>
     <div class="stat"><b>~100</b><span>in-person AI events hosted</span></div>
+    <div class="stat"><b>22</b><span>countries worked in for clients</span></div>
+    <div class="stat"><b>6</b><span>industry associations co-founded or led</span></div>
   </div>
 </div>
 
@@ -261,45 +280,70 @@
   <div class="wrap">
     <p class="kicker">What I do now</p>
     <h2>Three hats, one thread.</h2>
-    <p class="intro">I'm not from tech, and that's my edge. Everything I do starts with the people on the other end: what they need, what gets in their way, and what they'll actually use.</p>
+    <p class="intro">Each one feeds the others. The community shows me what people are trying to do with AI. The research keeps me close to real customers. The training turns both into skills you can use on Monday.</p>
     <div class="cards">
       <article class="card">
-        <div class="role">Founder &amp; Principal &middot; 2009 to now</div>
+        <div class="logo-plate"><img src="img/aic-logo.png" alt="The AI Collective" width="884" height="511"></div>
+        <div class="role">Head of Revenue &amp; Retention &middot; Global Leadership Team</div>
+        <h3>The AI Collective</h3>
+        <p>I work with regional and chapter leaders around the world, building the tools, programs, and playbooks that help chapters grow and keep their members.</p>
+        <p>I founded the Atlanta chapter in July 2025. It passed 4,000 members in its first year through nearly 100 in-person events. I'm also Region Director for the Southeast US.</p>
+        <a class="more" href="#community">More on community</a>
+      </article>
+      <article class="card">
+        <div class="logo-plate logo-text" aria-hidden="true"><span>Threads</span><small>Marketing Research &amp; Strategy</small></div>
+        <div class="role">Founder &amp; Principal</div>
         <h3>Threads Marketing Research &amp; Strategy</h3>
-        <p>B2B and B2C research, qualitative and quantitative. I find the root problems customers need to solve and the best ways to help them buy. Fast, useful answers for marketing and insights leaders, without big-agency overhead.</p>
+        <p>B2B and B2C research, qualitative and quantitative. I find the root problems your customers need to solve and the best ways to help them buy.</p>
+        <p>Clients have included Google, Microsoft, Salesforce, Walmart, Coca-Cola, and Eli Lilly.</p>
         <a class="more" href="https://threadsmr.com" rel="noopener">threadsmr.com</a>
       </article>
       <article class="card">
-        <div class="role">Founder &amp; Lead Instructor &middot; 2024 to now</div>
+        <div class="logo-plate"><img src="img/stitchs-logo.png" alt="Stitchs AI Training &amp; Solutions" width="383" height="106"></div>
+        <div class="role">Founder &amp; Lead Instructor</div>
         <h3>Stitchs AI Training &amp; Solutions</h3>
-        <p>AI strategy, training, and insight. Formats run from free 90-minute workshops to multi-day cohorts. You learn to frame the problem before you touch the tool, then set up your workspace, projects, and chats so AI works the way you do.</p>
+        <p>AI training for professionals, from free 90-minute workshops to multi-day cohorts. You learn to frame the problem before you touch the tool.</p>
+        <p>I also teach teams to build digital twins and composite or synthetic personas grounded in real customer data.</p>
         <a class="more" href="mailto:mark@threadsmr.com?subject=Stitchs%20AI%20training">Ask about training</a>
-      </article>
-      <article class="card">
-        <div class="role">Region Director, Southeast US &middot; Global Leadership Team</div>
-        <h3>The AI Collective</h3>
-        <p>I founded the Atlanta chapter in July 2025. It grew past 4,000 members in its first year through nearly 100 in-person events. I now help lead chapters across Georgia, Tennessee, and Alabama, and work on revenue and retention strategy globally.</p>
-        <a class="more" href="#community">More on community</a>
       </article>
     </div>
   </div>
 </section>
 
-<section id="threads" class="story">
-  <div class="wrap two">
-    <div>
-      <p class="kicker">Why &ldquo;Threads&rdquo;</p>
-      <h2>A name I found in a museum in Bali.</h2>
-      <p>I was in Bali with a friend, walking through a museum exhibit called Threads of Life. Every fabric on the wall meant something. You could read a person's family, their home, and their place in the community from the cloth they wore.</p>
-      <p>I was hooked. Fabric was carrying identity, belonging, and status, and anyone who knew the patterns could read the whole story.</p>
-      <p class="big">That's what good research does. It reads the patterns in what people say and do, and finds what ties them together. So when I started my research company in 2009, I named it Threads.</p>
+<section id="questions">
+  <div class="wrap">
+    <p class="kicker">Questions I help answer</p>
+    <h2>If you're asking these, let's talk.</h2>
+    <p class="intro">Most people come to me with one of three sets of questions.</p>
+    <div class="qgrid">
+      <div class="qcol">
+        <h3>Market researchers</h3>
+        <ul>
+          <li>How do I use AI in my research without losing rigor?</li>
+          <li>Which parts of a study can AI speed up, and which still need a human?</li>
+          <li>How do I analyze open-ends, transcripts, and interviews faster?</li>
+          <li>How do I explain AI-assisted work to clients so they trust it?</li>
+        </ul>
+      </div>
+      <div class="qcol">
+        <h3>Companies</h3>
+        <ul>
+          <li>What do our real customers need, and why do they buy, or not?</li>
+          <li>Where are we losing customers, and what would bring them back?</li>
+          <li>How do we get honest answers from real people, not an AI's guess at them?</li>
+          <li>How do we turn research into decisions our teams will act on?</li>
+        </ul>
+      </div>
+      <div class="qcol">
+        <h3>Teams building with AI</h3>
+        <ul>
+          <li>How do we build digital twins and synthetic or composite personas?</li>
+          <li>When can a synthetic persona stand in for research, and when can't it?</li>
+          <li>How do we ground personas in real customer data so they stay honest?</li>
+          <li>How do we get our people using AI well, not just using it?</li>
+        </ul>
+      </div>
     </div>
-    <ul class="patterns" aria-label="What the patterns meant">
-      <li><svg viewBox="0 0 56 28" aria-hidden="true"><path d="M2 14 L10 4 L18 14 L10 24 Z M20 14 L28 4 L36 14 L28 24 Z M38 14 L46 4 L54 14 L46 24 Z" fill="none" stroke="var(--warm)" stroke-width="2"/></svg><span><b>Family and clan.</b> Some patterns told you whose people you came from.</span></li>
-      <li><svg viewBox="0 0 56 28" aria-hidden="true"><path d="M2 20 Q9 6 16 20 T30 20 T44 20 T58 20" fill="none" stroke="var(--accent)" stroke-width="2"/><path d="M2 10 H54" stroke="var(--accent)" stroke-width="2" stroke-dasharray="5 4"/></svg><span><b>Place.</b> Others showed what part of the country you were from.</span></li>
-      <li><svg viewBox="0 0 56 28" aria-hidden="true"><circle cx="10" cy="14" r="6" fill="none" stroke="var(--warm)" stroke-width="2"/><circle cx="28" cy="14" r="6" fill="none" stroke="var(--warm)" stroke-width="2"/><circle cx="46" cy="14" r="6" fill="none" stroke="var(--warm)" stroke-width="2"/><path d="M16 14 H22 M34 14 H40" stroke="var(--warm)" stroke-width="2"/></svg><span><b>Ceremony.</b> Some cloth was made only for rituals and celebrations.</span></li>
-      <li><svg viewBox="0 0 56 28" aria-hidden="true"><path d="M2 4 H54 M2 24 H54" stroke="var(--accent)" stroke-width="2"/><path d="M6 8 L14 20 L22 8 L30 20 L38 8 L46 20 L54 8" fill="none" stroke="var(--accent)" stroke-width="2"/></svg><span><b>Office.</b> Some patterns were reserved for officials and leaders.</span></li>
-    </ul>
   </div>
 </section>
 
@@ -334,7 +378,7 @@
       <p style="color:var(--muted);font-size:15.5px">Education: ABJ in Advertising, Grady College of Journalism, and B.S. in Marketing, Terry College of Business. Both at the University of Georgia.</p>
     </div>
     <ol class="timeline">
-      <li><div class="yr">2025 to now</div><b>The AI Collective</b><span>Founded Atlanta chapter. Region Director, Southeast US. Global Leadership Team.</span></li>
+      <li><div class="yr">2025 to now</div><b>The AI Collective</b><span>Head of Revenue &amp; Retention, Global Leadership Team. Region Director, Southeast US. Founded the Atlanta chapter.</span></li>
       <li><div class="yr">2024 to now</div><b>Stitchs AI Training &amp; Solutions</b><span>Founder and lead instructor.</span></li>
       <li><div class="yr">2016 to 2024</div><b>CX Talks / CX Forums</b><span>Founder and producer of speaker-driven CX conferences in Atlanta, Austin, Boston, Chicago, Dallas, and DC.</span></li>
       <li><div class="yr">2009 to now</div><b>Threads Marketing Research &amp; Strategy</b><span>Founder and principal.</span></li>

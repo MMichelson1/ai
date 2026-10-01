@@ -72,6 +72,7 @@ jobs:
           # Mark's personal site -> /mark/
           mkdir -p _site/mark
           cp personal-site/index.html _site/mark/index.html
+          cp -r personal-site/img _site/mark/img
           # (backups/, scripts/, and READMEs are intentionally NOT published.)
       - name: Upload site
         uses: actions/upload-pages-artifact@v3
