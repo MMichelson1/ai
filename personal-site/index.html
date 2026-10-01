@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Mark Michelson</title>
-<meta name="description" content="Mark Michelson. Head of Revenue & Retention at The AI Collective. Founder of Threads Marketing Research & Strategy and Stitchs AI Training & Solutions. Atlanta, GA.">
+<meta name="description" content="Mark Michelson. The Michelson Co.: customer discovery and understanding for founders up to the Fortune 100. Head of Revenue & Retention at The AI Collective. Founder of Threads Marketing Research & Strategy and Stitchs AI Training & Solutions. Atlanta, GA.">
 <meta property="og:title" content="Mark Michelson">
 <meta property="og:description" content="Researcher, strategist, and AI educator. I translate what customers need into what companies build.">
 <meta property="og:type" content="profile">
@@ -186,6 +186,17 @@
   .logo-text span { font-family: Fraunces, Georgia, serif; font-size: 34px; font-weight: 600; }
   .logo-text small { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: #a8462b; font-weight: 600; margin-top: 4px; }
 
+  /* Consulting */
+  .consult { background: var(--surface); }
+  .consult-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  @media (max-width: 860px) { .consult-grid { grid-template-columns: 1fr; } }
+  .consult-grid > div { background: var(--bg); border: 1px solid var(--line); border-radius: 14px; padding: 22px 24px; }
+  .consult-grid h3 { font-family: Fraunces, Georgia, serif; font-size: 20px; font-weight: 600; margin: 0 0 10px; }
+  .consult-grid ul { margin: 0; padding: 0 0 0 18px; }
+  .consult-grid li { color: var(--muted); font-size: 15.5px; margin-bottom: 8px; }
+  .consult-grid li::marker { color: var(--warm); }
+  .name-note { margin: 28px 0 0; font-size: 15px; color: var(--muted); font-style: italic; }
+
   /* Questions */
   .qgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
   @media (max-width: 860px) { .qgrid { grid-template-columns: 1fr; } }
@@ -230,6 +241,7 @@
   <div class="wrap">
     <a class="brand" href="#top">Mark Michelson</a>
     <ul>
+      <li><a href="#consulting">Consulting</a></li>
       <li><a href="#now">Work</a></li>
       <li><a href="#questions">Questions</a></li>
       <li><a href="#approach">Approach</a></li>
@@ -275,6 +287,44 @@
 </div>
 
 <main>
+
+<section id="consulting" class="consult">
+  <div class="wrap">
+    <p class="kicker">The Michelson Co.</p>
+    <h2>Customer discovery and understanding, for founders up to the Fortune 100.</h2>
+    <p class="intro">The Michelson Co. is my consulting agency. I find out who your customers really are, what they need, and what gets in their way. Then I help your team design for it, on screen and in the real world.</p>
+    <div class="consult-grid">
+      <div>
+        <h3>Who I work with</h3>
+        <ul>
+          <li>Founders and leadership teams</li>
+          <li>Product designers and product managers</li>
+          <li>CX, service, and experience design teams</li>
+          <li>Teams designing physical spaces</li>
+        </ul>
+      </div>
+      <div>
+        <h3>What I help you design</h3>
+        <ul>
+          <li>Digital products and services</li>
+          <li>Customer and service experiences</li>
+          <li>Stores, hotels, and restaurants</li>
+          <li>Dealerships and other places people buy</li>
+        </ul>
+      </div>
+      <div>
+        <h3>What you get</h3>
+        <ul>
+          <li>Research with real customers, not an AI's guess at them</li>
+          <li>The root problems behind what people say</li>
+          <li>Clear direction your designers can build from</li>
+          <li>A partner who has done this from startups to global brands</li>
+        </ul>
+      </div>
+    </div>
+    <p class="name-note">The name comes from my dad's ad agency. He even had a shirt for it: His shirts said &ldquo;Advertise or Die.&rdquo;ldquo;Advertise or Die.His shirts said &ldquo;Advertise or Die.&rdquo;rdquo;</p>
+  </div>
+</section>
 
 <section id="now">
   <div class="wrap">
@@ -326,11 +376,12 @@
         </ul>
       </div>
       <div class="qcol">
-        <h3>Companies</h3>
+        <h3>Founders and companies</h3>
         <ul>
           <li>What do our real customers need, and why do they buy, or not?</li>
           <li>Where are we losing customers, and what would bring them back?</li>
           <li>How do we get honest answers from real people, not an AI's guess at them?</li>
+          <li>How should our store, hotel, or restaurant work for the people who use it?</li>
           <li>How do we turn research into decisions our teams will act on?</li>
         </ul>
       </div>
