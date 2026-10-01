@@ -8,7 +8,7 @@
 <meta property="og:title" content="Mark Michelson">
 <meta property="og:description" content="Researcher, strategist, and AI educator. I translate what customers need into what companies build.">
 <meta property="og:type" content="profile">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231f3a34'/%3E%3Cpath d='M4 23 L11 13 L15 18 L20 9 L28 23' fill='none' stroke='%23e8b86a' stroke-width='2.5' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%232b3f6b'/%3E%3Cpath d='M3 22 H19' stroke='%23e8a07f' stroke-width='2.5' stroke-dasharray='4 3' stroke-linecap='round'/%3E%3Cpath d='M19 22 C23 22 22 13 26 11' fill='none' stroke='%23e8a07f' stroke-width='2'/%3E%3Cpath d='M22 12 L30 8' stroke='%23f7f3ec' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -19,40 +19,40 @@
     --ink: #1d2320;
     --muted: #5b625e;
     --line: #e2dbcf;
-    --accent: #1f5a4c;
-    --accent-soft: #e3ece8;
-    --warm: #b7792b;
-    --ridge-1: #c9d6cf;
-    --ridge-2: #9fb7ac;
-    --ridge-3: #1f5a4c;
+    --accent: #2b3f6b;
+    --accent-soft: #e6e9f1;
+    --warm: #a8462b;
+    --band: #2b3f6b;
+    --thread: #a8462b;
+    --needle: #6b7280;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --bg: #141816;
-      --surface: #1b201e;
+      --bg: #14161c;
+      --surface: #1b1e26;
       --ink: #ece7de;
       --muted: #a3aaa5;
-      --line: #2e3532;
-      --accent: #8fc7b5;
-      --accent-soft: #22302b;
-      --warm: #e8b86a;
-      --ridge-1: #1f2724;
-      --ridge-2: #2b3a34;
-      --ridge-3: #4f8a78;
+      --line: #2e323d;
+      --accent: #a9bbe6;
+      --accent-soft: #1f2433;
+      --warm: #e8a07f;
+      --band: #3a4f82;
+      --thread: #e8a07f;
+      --needle: #c4c9d2;
     }
   }
   :root[data-theme="dark"] {
-    --bg: #141816;
-    --surface: #1b201e;
+    --bg: #14161c;
+    --surface: #1b1e26;
     --ink: #ece7de;
     --muted: #a3aaa5;
-    --line: #2e3532;
-    --accent: #8fc7b5;
-    --accent-soft: #22302b;
-    --warm: #e8b86a;
-    --ridge-1: #1f2724;
-    --ridge-2: #2b3a34;
-    --ridge-3: #4f8a78;
+    --line: #2e323d;
+    --accent: #a9bbe6;
+    --accent-soft: #1f2433;
+    --warm: #e8a07f;
+    --band: #3a4f82;
+    --thread: #e8a07f;
+    --needle: #c4c9d2;
   }
 
   * { box-sizing: border-box; }
@@ -104,15 +104,15 @@
   .btn.ghost { color: var(--accent); }
   .btn.ghost:hover { color: var(--warm); border-color: var(--warm); }
   button.btn { background: none; font: inherit; font-size: 15px; font-weight: 500; cursor: pointer; }
-  .ridge { display: block; width: 100%; height: auto; }
+  .thread-art { display: block; width: 100%; height: 120px; }
 
   /* Stats */
-  .stats { background: var(--ridge-3); color: #f7f3ec; }
+  .stats { background: var(--band); color: #f7f3ec; }
   .stats .wrap { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; padding-top: 34px; padding-bottom: 38px; }
   .stat b { display: block; font-family: Fraunces, Georgia, serif; font-size: 36px; font-weight: 600; line-height: 1.1; }
   .stat span { font-size: 14px; opacity: .85; }
-  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .stats { color: #0f1412; } }
-  :root[data-theme="dark"] .stats { color: #0f1412; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .stats { color: #f7f3ec; } }
+  :root[data-theme="dark"] .stats { color: #f7f3ec; }
   @media (max-width: 720px) { .stats .wrap { grid-template-columns: repeat(2, 1fr); } }
 
   /* Sections */
@@ -176,6 +176,15 @@
   .assoc b { display: block; }
   .assoc span { color: var(--muted); font-size: 15px; }
 
+  /* Story */
+  .story { background: var(--surface); }
+  .story .big { font-family: Fraunces, Georgia, serif; font-size: clamp(20px, 2.6vw, 24px); line-height: 1.5; }
+  .patterns { list-style: none; padding: 0; margin: 8px 0 0; display: grid; gap: 12px; }
+  .patterns li { display: flex; gap: 14px; align-items: center; padding: 14px 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--bg); }
+  .patterns svg { flex: none; width: 56px; height: 28px; }
+  .patterns span { color: var(--muted); font-size: 15.5px; }
+  .patterns b { color: var(--ink); font-weight: 600; }
+
   /* Personal */
   .personal { background: var(--accent-soft); }
   .quote {
@@ -203,6 +212,7 @@
     <a class="brand" href="#top">Mark Michelson</a>
     <ul>
       <li><a href="#now">Work</a></li>
+      <li><a href="#threads">Why Threads</a></li>
       <li><a href="#approach">Approach</a></li>
       <li><a href="#background">Background</a></li>
       <li><a href="#community">Community</a></li>
@@ -215,24 +225,30 @@
   <div class="wrap">
     <p class="eyebrow">Atlanta, GA &middot; Roots in Eastern Tennessee</p>
     <h1>I translate what customers need into what companies build.</h1>
-    <p class="lede">I'm a marketing researcher, strategist, and AI educator. For 42 years I've helped companies understand how customers think, what they need, and why they buy. <em>Now I teach professionals to use AI the same way: problem first, technology second.</em></p>
+    <p class="lede">I'm a marketing researcher, strategist, and AI educator. I help companies understand how customers think, what they need, and why they buy. <em>Now I teach professionals to use AI the same way: problem first, technology second.</em></p>
     <div class="cta">
       <a class="btn primary" href="mailto:mark@threadsmr.com">Email me</a>
       <button class="btn ghost copy-email" type="button" data-email="mark@threadsmr.com">Copy email</button>
       <a class="btn ghost" href="https://www.linkedin.com/in/michelson" rel="noopener">LinkedIn</a>
     </div>
   </div>
-  <!-- A ridgeline that doubles as a sound wave. Mountains and music. -->
-  <svg class="ridge" viewBox="0 0 1440 180" preserveAspectRatio="none" aria-hidden="true">
-    <path fill="var(--ridge-1)" d="M0 120 L120 70 L220 105 L340 40 L470 95 L560 60 L700 110 L820 45 L950 100 L1060 55 L1200 95 L1320 50 L1440 85 L1440 180 L0 180 Z"/>
-    <path fill="var(--ridge-2)" d="M0 145 L90 110 L200 135 L310 85 L430 130 L540 100 L660 140 L780 90 L900 135 L1010 105 L1130 140 L1250 95 L1360 125 L1440 110 L1440 180 L0 180 Z"/>
-    <path fill="var(--ridge-3)" d="M0 180 L0 160 C80 150 140 140 220 152 C300 164 360 130 440 138 C520 146 580 168 680 158 C780 148 840 132 940 144 C1040 156 1100 170 1200 160 C1300 150 1370 142 1440 150 L1440 180 Z"/>
+  <!-- A running stitch across the page, ending at a needle. Threads. -->
+  <svg class="thread-art" viewBox="0 0 1440 140" preserveAspectRatio="xMaxYMid slice" aria-hidden="true">
+    <path d="M-10 96 H1060" fill="none" stroke="var(--thread)" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="26 16"/>
+    <g transform="translate(-90 0)">
+    <path d="M1150 96 C1205 96 1215 60 1250 52 C1280 45 1300 52 1318 50" fill="none" stroke="var(--thread)" stroke-width="3" stroke-linecap="round"/>
+    <path d="M1318 50 C1310 64 1296 74 1288 88" fill="none" stroke="var(--thread)" stroke-width="3" stroke-linecap="round"/>
+    <g transform="rotate(-14 1320 50)">
+      <path d="M1306 50 C1306 44 1312 42 1318 43 L1426 49 L1438 50 L1426 51 L1318 57 C1312 58 1306 56 1306 50 Z" fill="var(--needle)"/>
+      <ellipse cx="1318" cy="50" rx="7" ry="2.2" fill="var(--bg)"/>
+    </g>
+    </g>
   </svg>
 </header>
 
 <div class="stats" aria-label="At a glance">
   <div class="wrap">
-    <div class="stat"><b>42</b><span>years as a founder and consultant</span></div>
+    <div class="stat"><b>6</b><span>industry associations co-founded or led</span></div>
     <div class="stat"><b>22</b><span>countries worked in, 78 visited</span></div>
     <div class="stat"><b>4,000+</b><span>AI Collective members in Atlanta's first year</span></div>
     <div class="stat"><b>~100</b><span>in-person AI events hosted</span></div>
@@ -269,13 +285,31 @@
   </div>
 </section>
 
+<section id="threads" class="story">
+  <div class="wrap two">
+    <div>
+      <p class="kicker">Why &ldquo;Threads&rdquo;</p>
+      <h2>A name I found in a museum in Bali.</h2>
+      <p>I was in Bali with a friend, walking through a museum exhibit called Threads of Life. Every fabric on the wall meant something. You could read a person's family, their home, and their place in the community from the cloth they wore.</p>
+      <p>I was hooked. Fabric was carrying identity, belonging, and status, and anyone who knew the patterns could read the whole story.</p>
+      <p class="big">That's what good research does. It reads the patterns in what people say and do, and finds what ties them together. So when I started my research company in 2009, I named it Threads.</p>
+    </div>
+    <ul class="patterns" aria-label="What the patterns meant">
+      <li><svg viewBox="0 0 56 28" aria-hidden="true"><path d="M2 14 L10 4 L18 14 L10 24 Z M20 14 L28 4 L36 14 L28 24 Z M38 14 L46 4 L54 14 L46 24 Z" fill="none" stroke="var(--warm)" stroke-width="2"/></svg><span><b>Family and clan.</b> Some patterns told you whose people you came from.</span></li>
+      <li><svg viewBox="0 0 56 28" aria-hidden="true"><path d="M2 20 Q9 6 16 20 T30 20 T44 20 T58 20" fill="none" stroke="var(--accent)" stroke-width="2"/><path d="M2 10 H54" stroke="var(--accent)" stroke-width="2" stroke-dasharray="5 4"/></svg><span><b>Place.</b> Others showed what part of the country you were from.</span></li>
+      <li><svg viewBox="0 0 56 28" aria-hidden="true"><circle cx="10" cy="14" r="6" fill="none" stroke="var(--warm)" stroke-width="2"/><circle cx="28" cy="14" r="6" fill="none" stroke="var(--warm)" stroke-width="2"/><circle cx="46" cy="14" r="6" fill="none" stroke="var(--warm)" stroke-width="2"/><path d="M16 14 H22 M34 14 H40" stroke="var(--warm)" stroke-width="2"/></svg><span><b>Ceremony.</b> Some cloth was made only for rituals and celebrations.</span></li>
+      <li><svg viewBox="0 0 56 28" aria-hidden="true"><path d="M2 4 H54 M2 24 H54" stroke="var(--accent)" stroke-width="2"/><path d="M6 8 L14 20 L22 8 L30 20 L38 8 L46 20 L54 8" fill="none" stroke="var(--accent)" stroke-width="2"/></svg><span><b>Office.</b> Some patterns were reserved for officials and leaders.</span></li>
+    </ul>
+  </div>
+</section>
+
 <section id="approach">
   <div class="wrap two">
     <div>
       <p class="kicker">How I teach AI</p>
       <h2>Lead with the problem. The tool comes last.</h2>
       <p>Most AI training starts with features. Mine starts with the work you're trying to get done. When you give AI the full context around a problem, the answers get better and you spend less time fixing them.</p>
-      <p>I've been at this longer than the current wave. I worked with Microsoft in 2010 training models to analyze unstructured data. I built custom automation for research workflows from 1984 to 1994, before off-the-shelf tools existed. Then I took a full year off to study how AI is taught and how people actually learn it, before I started teaching.</p>
+      <p>I've been at this longer than the current wave. I worked with Microsoft in 2010 training models to analyze unstructured data. I built custom automation for research workflows long before off-the-shelf tools existed. Then I took a full year off to study how AI is taught and how people actually learn it, before I started teaching.</p>
       <p>I don't promise 10x. I focus on better work and time you get back.</p>
     </div>
     <ol class="steps" aria-label="The context I teach people to define">
@@ -294,8 +328,8 @@
   <div class="wrap two">
     <div>
       <p class="kicker">Background</p>
-      <h2>Four decades of listening to customers.</h2>
-      <p>I bought my first Macintosh in 1984, the year it launched, and started an ad agency on the back of it. Since then I've built and run companies across marketing research, customer experience, branding, store and facility design, and merchandising.</p>
+      <h2>A career spent listening to customers.</h2>
+      <p>I started on the agency side, then built a global research firm working in 22 countries. Along the way I've run companies across marketing research, customer experience, branding, store and facility design, and merchandising.</p>
       <p>Clients are usually VP or C-suite marketing and insights leaders. They want strategic thinking, not just data.</p>
       <p style="color:var(--muted);font-size:15.5px">Education: ABJ in Advertising, Grady College of Journalism, and B.S. in Marketing, Terry College of Business. Both at the University of Georgia.</p>
     </div>
@@ -304,8 +338,7 @@
       <li><div class="yr">2024 to now</div><b>Stitchs AI Training &amp; Solutions</b><span>Founder and lead instructor.</span></li>
       <li><div class="yr">2016 to 2024</div><b>CX Talks / CX Forums</b><span>Founder and producer of speaker-driven CX conferences in Atlanta, Austin, Boston, Chicago, Dallas, and DC.</span></li>
       <li><div class="yr">2009 to now</div><b>Threads Marketing Research &amp; Strategy</b><span>Founder and principal.</span></li>
-      <li><div class="yr">1984 to 2009</div><b>Michelson &amp; Associates</b><span>Global strategic research firm working in 22 countries for Fortune 100 clients.</span></li>
-      <li><div class="yr">1984</div><b>The Ad Shop</b><span>My first company. Sold in 1986.</span></li>
+      <li><div class="yr">Before Threads</div><b>Michelson &amp; Associates</b><span>Founder and CEO. Global strategic research firm working in 22 countries for Fortune 100 clients.</span></li>
     </ol>
   </div>
 </section>
