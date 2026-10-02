@@ -16,14 +16,21 @@ and the Studio behaves exactly as before.
 1. Create a Google Sheet to hold the log (e.g. "AIC Sponsorship Studio — Activity").
 2. In that Sheet, open **Extensions → Apps Script**, delete the sample, and paste
    [`Code.gs`](./Code.gs). Save.
-3. **Deploy → New deployment → Web app.** Set **Execute as: Me** and
+3. **Project Settings** (gear icon, left bar) → **Script Properties** → add three:
+
+   | Property | Value |
+   | --- | --- |
+   | `STREAM` | `commercial` (or `nonprofit` in the non-profit project) |
+   | `HQ_PASS` | your private dashboard phrase — the same in both projects |
+   | `NOTIFY` | `mark@aicollective.com` (comma-separate to add more) |
+
+   These live outside the code, so pasting a newer `Code.gs` never overwrites
+   them, and changing one takes effect immediately with no redeploy.
+4. **Deploy → New deployment → Web app.** Set **Execute as: Me** and
    **Who has access: Anyone**. Deploy, authorize, and copy the **Web app URL**
-   (ends in `/exec`).
-4. Send that URL back to be set as the Studio's `REPORT_ENDPOINT` (one-line change,
-   then the hosted Studio redeploys). Notifications go to `mark@aicollective.com`
-   only — edit `NOTIFY` in `Code.gs` to change who is emailed. Note that `NOTIFY`
-   lives in each deployed script, so changing it here does nothing until you paste
-   it into both Apps Script projects and redeploy them.
+   (ends in `/exec`). This is the only time you use *New deployment* — see the
+   runbook below for every later update.
+5. Send that URL back to be set as the Studio's `REPORT_ENDPOINT`.
 
 ## What gets sent
 
@@ -57,7 +64,7 @@ fiscal sponsor or an auditor asks.
 | | Commercial | Non-profit |
 | --- | --- | --- |
 | Sheet | "AIC Sponsorship — Commercial" | "AIC Sponsorship — Non-profit" |
-| `STREAM` in `Code.gs` | `'commercial'` | `'nonprofit'` |
+| `STREAM` script property | `commercial` | `nonprofit` |
 | Studio constant | `REPORT_ENDPOINT` | `REPORT_ENDPOINT_NP` |
 | Holds | Sponsorships into the regional LLC | Grants and 501(c)(3)-required donors |
 | Commissions | Yes | **Never** |
@@ -65,8 +72,8 @@ fiscal sponsor or an auditor asks.
 ### Setting up the second (non-profit) book
 
 1. Create a **second** Google Sheet, e.g. "AIC Sponsorship — Non-profit".
-2. **Extensions → Apps Script**, paste the same `Code.gs`, and change one line
-   near the top to `var STREAM = 'nonprofit';` (also set `HQ_PASS`). Save.
+2. **Extensions → Apps Script**, paste the same `Code.gs` unchanged, and save.
+   Then set its script properties, with `STREAM` = `nonprofit`.
 3. **Deploy → New deployment → Web app** (Execute as: Me · Who has access:
    Anyone). Copy the `/exec` URL.
 4. Set that URL as `REPORT_ENDPOINT_NP` in the Studio.
@@ -75,6 +82,42 @@ Each deployment **refuses events tagged for the other stream**, so a non-profit
 payment can never land in the commercial book even if something is misconfigured.
 In the Studio's Documents tab, every deal is booked with a **Commercial /
 Non-profit** switch before it's logged.
+
+## Runbook — updating Code.gs safely
+
+Both projects run the **identical** `Code.gs`. Everything that differs between
+them is a script property, so updating is always the same three steps:
+
+1. **Paste** the new `Code.gs` over the old one, unchanged. Save.
+2. **Deploy → Manage deployments → ✏️ pencil → Version: *New version* → Deploy.**
+   Always the pencil. *New deployment* issues a new `/exec` URL, leaves the old
+   URL running old code, and means the Studio must be re-pointed.
+3. **Verify:** open the Sales Dashboard → **System check** → ↻ Re-check. Both
+   books must be green. It confirms, from what each deployment is actually
+   running: the right `STREAM`, accepting writes, who gets emails (masked), that
+   the HQ passcode is set, and that both books run the same code version.
+
+"Deployment successfully updated" only proves *a* version went out — not what's
+in it. The System check is the proof. When you change `Code.gs`, bump
+`CODE_VERSION` in it and `EXPECTED_VERSION` in the dashboard to match.
+
+Changing a **script property** (e.g. adding a `NOTIFY` address) needs no
+redeploy at all — just re-run the System check.
+
+## Runbook — archiving stale deployments
+
+Every *New deployment* leaves an old `/exec` URL alive, still running the code
+it was created with. Old copies of the Studio in someone's browser tab can keep
+posting to them — and anything that predates the `NOTIFY` change still emails
+the old recipient list. Archive every deployment except the live one:
+
+1. In each project: **Deploy → Manage deployments**.
+2. Identify the live one by its **Deployment ID** — it matches the URL the Studio
+   points at (`REPORT_ENDPOINT` / `REPORT_ENDPOINT_NP` in
+   `AIC-Sponsorship-Studio.html`).
+3. For every *other* entry: select it → **Archive**. Archived URLs stop responding.
+4. Leave *Library* unticked on the live deployment unless another script imports
+   this one; it isn't needed for the Studio.
 
 ## Client sync (the shared CRM)
 
@@ -94,7 +137,7 @@ the team and pull in teammates' updates. Two extra tabs appear automatically:
   code is required to read or write that chapter's clients.
 - A chapter's passcode unlocks **only that chapter's** clients — chapters can't
   see each other's pipelines.
-- **Set `HQ_PASS`** at the top of `Code.gs` to a strong private phrase before you
+- **Set the `HQ_PASS` script property** to a strong private phrase before you
   deploy. That one passcode can **read every chapter** (use chapter `*` for all,
   or a specific chapter name). It's read-only — saving always uses the chapter's
   own passcode.
