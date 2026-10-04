@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-02T21:39:58.034Z",
+  "generatedAt": "2026-10-04T15:11:46.315Z",
   "sample": false,
   "markets": {
     "atlanta": {
@@ -21,7 +21,7 @@
       "aic": true,
       "status": "ok",
       "count": 3,
-      "lastChecked": "2026-10-02T21:39:58.034Z",
+      "lastChecked": "2026-10-04T15:11:46.316Z",
       "note": ""
     },
     {
@@ -32,7 +32,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-10-02T21:40:01.476Z",
+      "lastChecked": "2026-10-04T15:11:47.067Z",
       "note": "Get the section's public iCal feed URL from events.vtools.ieee.org (Events → Export/iCal for the Atlanta Section), paste it into 'url', then set enabled:true."
     },
     {
@@ -43,7 +43,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-10-02T21:40:01.476Z",
+      "lastChecked": "2026-10-04T15:11:47.067Z",
       "note": "Any Meetup group exposes an iCal feed at https://www.meetup.com/<group-slug>/events/ical/ — add one source entry per local AI group and set enabled:true."
     },
     {
@@ -54,7 +54,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-10-02T21:40:01.476Z",
+      "lastChecked": "2026-10-04T15:11:47.067Z",
       "note": "Most university event calendars (Localist, Google Calendar) publish an ICS feed — paste it here. AI keyword filtering is applied automatically."
     },
     {
@@ -65,7 +65,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-10-02T21:40:01.476Z",
+      "lastChecked": "2026-10-04T15:11:47.067Z",
       "note": "Eventbrite retired public event search; per-organizer listings work via their free API. Add EVENTBRITE_TOKEN as a repo secret and organizer IDs here — see README."
     },
     {
@@ -76,7 +76,7 @@
       "aic": false,
       "status": "manual",
       "count": 0,
-      "lastChecked": "2026-10-02T21:40:01.476Z",
+      "lastChecked": "2026-10-04T15:11:47.067Z",
       "note": "LinkedIn and Facebook publish no feeds. Chapter leads add validated in-person events to data/manual-events.json via pull request; each entry must link to a live listing on a trusted site."
     },
     {
@@ -86,31 +86,12 @@
       "type": "luma-calendar",
       "aic": true,
       "status": "ok",
-      "count": 13,
-      "lastChecked": "2026-10-02T21:40:01.476Z",
+      "count": 12,
+      "lastChecked": "2026-10-04T15:11:47.067Z",
       "note": ""
     }
   ],
   "events": [
-    {
-      "id": "evt-divq2gbcEgCnGpF@events.lu.ma",
-      "title": "Hack for Humanity: Finland",
-      "start": "2026-10-03T06:00:00.000Z",
-      "end": "2026-10-03T18:00:00.000Z",
-      "allDay": false,
-      "tz": null,
-      "location": "Tampere University, Hervanta Campus, Korkeakoulunkatu 7, 33720 Tampere, Finland",
-      "lat": 61.449828600000004,
-      "lon": 23.8589986,
-      "organizer": "The AI Collective",
-      "url": "https://lu.ma/genai-collective",
-      "sourceDomain": "lu.ma",
-      "aic": true,
-      "type": "meetup",
-      "price": "check",
-      "capacity": null,
-      "market": "global"
-    },
     {
       "id": "evt-IBXmEk2aa9MyZ97@events.lu.ma",
       "title": "AI ❤️ CX: Less hype. More signal.",
@@ -283,6 +264,25 @@
       "market": "global"
     },
     {
+      "id": "evt-Lm0gn5IrwY3Dexb@events.lu.ma",
+      "title": "Building with AI: Vibe2Pitch #2 (w/ The AI Collective)",
+      "start": "2026-10-21T22:00:00.000Z",
+      "end": "2026-10-22T01:00:00.000Z",
+      "allDay": false,
+      "tz": null,
+      "location": "University of Connecticut-Stamford Campus, 1 University Pl, Stamford, CT 06901, USA",
+      "lat": 41.0560153,
+      "lon": -73.54241549999999,
+      "organizer": "The AI Collective",
+      "url": "https://lu.ma/genai-collective",
+      "sourceDomain": "lu.ma",
+      "aic": true,
+      "type": "pitch",
+      "price": "check",
+      "capacity": null,
+      "market": "global"
+    },
+    {
       "id": "evt-Hl9eA91XCSQ9uQd@events.lu.ma",
       "title": "SpaceXAI Grok Bot - Breakfast & Build Helsinki",
       "start": "2026-10-27T07:00:00.000Z",
@@ -335,25 +335,6 @@
       "sourceDomain": "lu.ma",
       "aic": true,
       "type": "demo night",
-      "price": "check",
-      "capacity": null,
-      "market": "global"
-    },
-    {
-      "id": "evt-SLsBuqjMfQDDJ4m@events.lu.ma",
-      "title": "Office Hours (w/ The AI Collective)",
-      "start": "2026-11-10T22:00:00.000Z",
-      "end": "2026-11-10T23:00:00.000Z",
-      "allDay": false,
-      "tz": null,
-      "location": "TolHouse, 1447 N Summit St, Toledo, OH 43604, USA",
-      "lat": 41.6610659,
-      "lon": -83.5183677,
-      "organizer": "The AI Collective",
-      "url": "https://lu.ma/genai-collective",
-      "sourceDomain": "lu.ma",
-      "aic": true,
-      "type": "meetup",
       "price": "check",
       "capacity": null,
       "market": "global"
