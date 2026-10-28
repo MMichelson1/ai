@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-25T14:11:00.619Z",
+  "generatedAt": "2026-10-28T06:46:09.082Z",
   "sample": false,
   "markets": {
     "atlanta": {
@@ -20,8 +20,8 @@
       "type": "luma-calendar",
       "aic": true,
       "status": "ok",
-      "count": 1,
-      "lastChecked": "2026-10-25T14:11:00.619Z",
+      "count": 2,
+      "lastChecked": "2026-10-28T06:46:09.082Z",
       "note": ""
     },
     {
@@ -32,7 +32,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-10-25T14:11:01.710Z",
+      "lastChecked": "2026-10-28T06:46:10.736Z",
       "note": "Get the section's public iCal feed URL from events.vtools.ieee.org (Events → Export/iCal for the Atlanta Section), paste it into 'url', then set enabled:true."
     },
     {
@@ -43,7 +43,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-10-25T14:11:01.710Z",
+      "lastChecked": "2026-10-28T06:46:10.736Z",
       "note": "Any Meetup group exposes an iCal feed at https://www.meetup.com/<group-slug>/events/ical/ — add one source entry per local AI group and set enabled:true."
     },
     {
@@ -54,7 +54,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-10-25T14:11:01.710Z",
+      "lastChecked": "2026-10-28T06:46:10.736Z",
       "note": "Most university event calendars (Localist, Google Calendar) publish an ICS feed — paste it here. AI keyword filtering is applied automatically."
     },
     {
@@ -65,7 +65,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-10-25T14:11:01.710Z",
+      "lastChecked": "2026-10-28T06:46:10.736Z",
       "note": "Eventbrite retired public event search; per-organizer listings work via their free API. Add EVENTBRITE_TOKEN as a repo secret and organizer IDs here — see README."
     },
     {
@@ -76,7 +76,7 @@
       "aic": false,
       "status": "manual",
       "count": 0,
-      "lastChecked": "2026-10-25T14:11:01.710Z",
+      "lastChecked": "2026-10-28T06:46:10.736Z",
       "note": "LinkedIn and Facebook publish no feeds. Chapter leads add validated in-person events to data/manual-events.json via pull request; each entry must link to a live listing on a trusted site."
     },
     {
@@ -86,69 +86,12 @@
       "type": "luma-calendar",
       "aic": true,
       "status": "ok",
-      "count": 11,
-      "lastChecked": "2026-10-25T14:11:01.710Z",
+      "count": 9,
+      "lastChecked": "2026-10-28T06:46:10.736Z",
       "note": ""
     }
   ],
   "events": [
-    {
-      "id": "evt-VZcj2J4Cbn2elGZ@events.lu.ma",
-      "title": "Who's Watching the AI? Insurance, Regulation & Hartford's Next Chapter (w/ The AI Collective)",
-      "start": "2026-10-26T15:00:00.000Z",
-      "end": "2026-10-26T17:00:00.000Z",
-      "allDay": false,
-      "tz": null,
-      "location": "10 Constitution Plaza, Hartford, CT 06103, USA",
-      "lat": 41.766373099999996,
-      "lon": -72.6701382,
-      "organizer": "The AI Collective",
-      "url": "https://lu.ma/genai-collective",
-      "sourceDomain": "lu.ma",
-      "aic": true,
-      "type": "meetup",
-      "price": "check",
-      "capacity": null,
-      "market": "global"
-    },
-    {
-      "id": "evt-JuQAqfDHDz7kNwq@events.lu.ma",
-      "title": "AI Open Mic and Networking (w/ The AI Collective)",
-      "start": "2026-10-26T21:00:00.000Z",
-      "end": "2026-10-27T00:30:00.000Z",
-      "allDay": false,
-      "tz": null,
-      "location": "Missing Falls Brewery, 540 S Main St Ste 112, Akron, OH 44311, USA",
-      "lat": 41.0705056,
-      "lon": -81.52679309999999,
-      "organizer": "The AI Collective",
-      "url": "https://lu.ma/genai-collective",
-      "sourceDomain": "lu.ma",
-      "aic": true,
-      "type": "social",
-      "price": "check",
-      "capacity": null,
-      "market": "global"
-    },
-    {
-      "id": "evt-P8hjgdJ7RSxxEcT@events.lu.ma",
-      "title": "Office Hours (w/ The AI Collective)",
-      "start": "2026-10-27T21:00:00.000Z",
-      "end": "2026-10-27T22:00:00.000Z",
-      "allDay": false,
-      "tz": null,
-      "location": "TolHouse, 1447 N Summit St, Toledo, OH 43604, USA",
-      "lat": 41.6610659,
-      "lon": -83.5183677,
-      "organizer": "The AI Collective",
-      "url": "https://lu.ma/genai-collective",
-      "sourceDomain": "lu.ma",
-      "aic": true,
-      "type": "meetup",
-      "price": "check",
-      "capacity": null,
-      "market": "global"
-    },
     {
       "id": "evt-A4jGJcDp29pNig5@events.lu.ma",
       "title": "Hack for Humanity : London (w/ The AI Collective)",
@@ -175,9 +118,9 @@
       "end": "2026-10-29T22:30:00.000Z",
       "allDay": false,
       "tz": null,
-      "location": "1646 Barrington St, Halifax, NS B3J 2A3, Canada",
-      "lat": 44.646315699999995,
-      "lon": -63.5751936,
+      "location": "1800 Argyle St unit 801, Halifax, NS B3J 3N8, Canada",
+      "lat": 44.6483385,
+      "lon": -63.575904400000006,
       "organizer": "The AI Collective",
       "url": "https://lu.ma/genai-collective",
       "sourceDomain": "lu.ma",
@@ -205,6 +148,25 @@
       "price": "check",
       "capacity": null,
       "market": "global"
+    },
+    {
+      "id": "evt-eMuvDF5X29IxYZX@events.lu.ma",
+      "title": "Vibe Night in Sandy Springs (w/ The AI Collective)",
+      "start": "2026-11-02T23:00:00.000Z",
+      "end": "2026-11-03T01:30:00.000Z",
+      "allDay": false,
+      "tz": "America/New_York",
+      "location": "Hudson Grille Sandy Springs, 6317 Roswell Rd NE, Sandy Springs, GA 30328, USA",
+      "lat": 33.9274497,
+      "lon": -84.3784171,
+      "organizer": "The AI Collective — Atlanta",
+      "url": "https://lu.ma/aicatl",
+      "sourceDomain": "lu.ma",
+      "aic": true,
+      "type": "vibe night",
+      "price": "check",
+      "capacity": null,
+      "market": "atlanta"
     },
     {
       "id": "evt-cdjimq5XabroyPD@events.lu.ma",
