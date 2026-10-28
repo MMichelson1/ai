@@ -146,3 +146,24 @@ so from the hosted URL you can **Add to Home Screen** on a phone or tablet, or
 that saved settings (`localStorage`) are per-device and do not sync across
 devices; your me.md ships as the built-in default so it is present everywhere out
 of the box.
+
+## Vibe Night mode
+
+Switch **Workshop / Vibe Night** at the top. Vibe Night keeps its own look and copy:
+
+- **Graphic (GIF)** — your standard Vibe Night GIF with only the date, time, venue, and
+  calendar icon repainted on all 48 frames. Fonts match the original (Poppins Bold 30 for
+  the date, Carlito Bold 38 for time and venue). Everything else, animation included, is kept.
+- **PowerPoint** — the standard 23-slide Vibe Night deck. The GIF on slide 1 and both Vibe Time slides is
+  swapped for this month's, and the What's Next slide gets the next-Vibe-Night line and up to
+  two upcoming events. Images were shrunk once (14.6 MB → 2.8 MB template).
+- **Luma Page** — the standard description (editable, saved in the browser) and a title built
+  from the location and optional theme.
+
+Sources live in `vibe-night/`. After changing any of them, run
+`python3 scripts/build-vibe-night.py` to rebuild `index.html`. To swap in a new deck:
+`python3 scripts/shrink.py NEW.pptx /tmp/s.pptx && python3 scripts/prep_template.py /tmp/s.pptx vibe-night/template.pptx`
+(prep_template finds the What's Next slide by its title). Then re-apply `scripts/vn_deck_fixes.py` and `scripts/vn_deck_revise.py` only if the new deck still has the same slides.
+
+Downloads go through one helper: inside Claude it uses the artifact `downloads` capability,
+everywhere else a normal browser download.
