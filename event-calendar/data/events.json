@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-28T06:46:09.082Z",
+  "generatedAt": "2026-11-01T16:40:13.388Z",
   "sample": false,
   "markets": {
     "atlanta": {
@@ -20,8 +20,8 @@
       "type": "luma-calendar",
       "aic": true,
       "status": "ok",
-      "count": 2,
-      "lastChecked": "2026-10-28T06:46:09.082Z",
+      "count": 3,
+      "lastChecked": "2026-11-01T16:40:13.388Z",
       "note": ""
     },
     {
@@ -32,7 +32,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-10-28T06:46:10.736Z",
+      "lastChecked": "2026-11-01T16:40:14.464Z",
       "note": "Get the section's public iCal feed URL from events.vtools.ieee.org (Events → Export/iCal for the Atlanta Section), paste it into 'url', then set enabled:true."
     },
     {
@@ -43,7 +43,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-10-28T06:46:10.736Z",
+      "lastChecked": "2026-11-01T16:40:14.464Z",
       "note": "Any Meetup group exposes an iCal feed at https://www.meetup.com/<group-slug>/events/ical/ — add one source entry per local AI group and set enabled:true."
     },
     {
@@ -54,7 +54,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-10-28T06:46:10.736Z",
+      "lastChecked": "2026-11-01T16:40:14.464Z",
       "note": "Most university event calendars (Localist, Google Calendar) publish an ICS feed — paste it here. AI keyword filtering is applied automatically."
     },
     {
@@ -65,7 +65,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-10-28T06:46:10.736Z",
+      "lastChecked": "2026-11-01T16:40:14.464Z",
       "note": "Eventbrite retired public event search; per-organizer listings work via their free API. Add EVENTBRITE_TOKEN as a repo secret and organizer IDs here — see README."
     },
     {
@@ -76,7 +76,7 @@
       "aic": false,
       "status": "manual",
       "count": 0,
-      "lastChecked": "2026-10-28T06:46:10.736Z",
+      "lastChecked": "2026-11-01T16:40:14.464Z",
       "note": "LinkedIn and Facebook publish no feeds. Chapter leads add validated in-person events to data/manual-events.json via pull request; each entry must link to a live listing on a trusted site."
     },
     {
@@ -86,50 +86,12 @@
       "type": "luma-calendar",
       "aic": true,
       "status": "ok",
-      "count": 9,
-      "lastChecked": "2026-10-28T06:46:10.736Z",
+      "count": 11,
+      "lastChecked": "2026-11-01T16:40:14.464Z",
       "note": ""
     }
   ],
   "events": [
-    {
-      "id": "evt-A4jGJcDp29pNig5@events.lu.ma",
-      "title": "Hack for Humanity : London (w/ The AI Collective)",
-      "start": "2026-10-29T09:00:00.000Z",
-      "end": "2026-10-29T15:00:00.000Z",
-      "allDay": false,
-      "tz": null,
-      "location": "Corgi Cafe, 74 Great Eastern St, London EC2A 3JL, UK",
-      "lat": 51.525692199999995,
-      "lon": -0.0824866,
-      "organizer": "The AI Collective",
-      "url": "https://lu.ma/genai-collective",
-      "sourceDomain": "lu.ma",
-      "aic": true,
-      "type": "meetup",
-      "price": "check",
-      "capacity": null,
-      "market": "global"
-    },
-    {
-      "id": "evt-tfhTEA71RgnRHDl@events.lu.ma",
-      "title": "AI After Hours: Demo Night 🚀 (w / AI Collective Halifax)",
-      "start": "2026-10-29T20:30:00.000Z",
-      "end": "2026-10-29T22:30:00.000Z",
-      "allDay": false,
-      "tz": null,
-      "location": "1800 Argyle St unit 801, Halifax, NS B3J 3N8, Canada",
-      "lat": 44.6483385,
-      "lon": -63.575904400000006,
-      "organizer": "The AI Collective",
-      "url": "https://lu.ma/genai-collective",
-      "sourceDomain": "lu.ma",
-      "aic": true,
-      "type": "demo night",
-      "price": "check",
-      "capacity": null,
-      "market": "global"
-    },
     {
       "id": "evt-CTbtnmRFGDkapqM@events.lu.ma",
       "title": "AI Day at FGCU: Southwest Florida AI Expo Day Hosted by FGCU (w/ The AI Collective)",
@@ -254,6 +216,82 @@
       "location": "Centrul de Afaceri, Transfer Tehnologic și Incubator de Afaceri (CATTIA) Brașov, Strada Institutului 35, 500484 Brașov, Romania",
       "lat": 45.6698698,
       "lon": 25.5453691,
+      "organizer": "The AI Collective",
+      "url": "https://lu.ma/genai-collective",
+      "sourceDomain": "lu.ma",
+      "aic": true,
+      "type": "meetup",
+      "price": "check",
+      "capacity": null,
+      "market": "global"
+    },
+    {
+      "id": "evt-8rCNaBqXW50titg@events.lu.ma",
+      "title": "Vibe Night Midtown - Claude + Codex (w/ The AI Collective)",
+      "start": "2026-11-10T23:00:00.000Z",
+      "end": "2026-11-11T01:30:00.000Z",
+      "allDay": false,
+      "tz": "America/New_York",
+      "location": "Hudson Grille Midtown, 942 Peachtree St NE, Atlanta, GA 30309, USA",
+      "lat": 33.7804666,
+      "lon": -84.3843203,
+      "organizer": "The AI Collective — Atlanta",
+      "url": "https://lu.ma/aicatl",
+      "sourceDomain": "lu.ma",
+      "aic": true,
+      "type": "vibe night",
+      "price": "check",
+      "capacity": null,
+      "market": "atlanta"
+    },
+    {
+      "id": "evt-GQFLY0j6fGr4CIo@events.lu.ma",
+      "title": "Building With AI | ART-ificial Intelligence | w/The AI Collective",
+      "start": "2026-11-18T22:30:00.000Z",
+      "end": "2026-11-19T01:00:00.000Z",
+      "allDay": false,
+      "tz": null,
+      "location": "Serendipity Labs - Stamford, 700 Canal St First Floor, Stamford, CT 06902, USA",
+      "lat": 41.0446451,
+      "lon": -73.53203479999999,
+      "organizer": "The AI Collective",
+      "url": "https://lu.ma/genai-collective",
+      "sourceDomain": "lu.ma",
+      "aic": true,
+      "type": "meetup",
+      "price": "check",
+      "capacity": null,
+      "market": "global"
+    },
+    {
+      "id": "evt-C1KM4qrJVafpiEV@events.lu.ma",
+      "title": "AI SCALE-UP: From First AI Initiatives to Company-Wide Transformation",
+      "start": "2026-11-19T17:00:00.000Z",
+      "end": "2026-11-19T19:00:00.000Z",
+      "allDay": false,
+      "tz": null,
+      "location": "Infinum, Strojarska cesta 22, 10000, Zagreb, Croatia",
+      "lat": 45.803647999999995,
+      "lon": 15.9901766,
+      "organizer": "The AI Collective",
+      "url": "https://lu.ma/genai-collective",
+      "sourceDomain": "lu.ma",
+      "aic": true,
+      "type": "meetup",
+      "price": "check",
+      "capacity": null,
+      "market": "global"
+    },
+    {
+      "id": "evt-ZgHu3XgbZVYqyNI@events.lu.ma",
+      "title": "Why Should I Care About the EU AI Act?",
+      "start": "2026-11-26T15:00:00.000Z",
+      "end": "2026-11-26T17:00:00.000Z",
+      "allDay": false,
+      "tz": null,
+      "location": "Maria 01, Lapinlahdenkatu 16, 00180 Helsinki, Finland",
+      "lat": 60.16675379999999,
+      "lon": 24.9219224,
       "organizer": "The AI Collective",
       "url": "https://lu.ma/genai-collective",
       "sourceDomain": "lu.ma",
