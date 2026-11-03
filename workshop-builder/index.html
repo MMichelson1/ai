@@ -1968,7 +1968,7 @@ const ME_MD_SECTIONS = [
 // The lead facilitator's own me.md, stored so the builder can apply the
 // background as "why I am qualified to lead each topic." Editable in the form
 // and saved in the browser; this is the default seed.
-const FAC_HEADLINE = "42 years as a researcher, consultant, CX expert, conference producer, association founder, and community builder, now teaching AI Fundamentals for Professionals. I teach from inside these disciplines, not from the outside looking in.";
+const FAC_HEADLINE = "A long career as a researcher, consultant, CX expert, conference producer, association founder, and community builder, now teaching AI Fundamentals for Professionals. I teach from inside these disciplines, not from the outside looking in.";
 const FAC_MEMD_DEFAULT = `# Me.md - My AI Knowledge Base
 
 ## Who I Am
@@ -1977,16 +1977,17 @@ const FAC_MEMD_DEFAULT = `# Me.md - My AI Knowledge Base
 - Practice: Threads Marketing Research & Strategy (threadsmr.com), Stitchs AI Training & Solutions, The AI Collective ATL (SE Region Director)
 - Industry: Marketing Research, Customer Experience, AI Education, Community Building
 - Location: Atlanta, GA
-- Experience: 42 years as an independent consultant
+- Experience: a long career as an independent consultant across tech, health, retail, automotive, consumer brands, and agriculture
 
 ## Background and Credentials
 Education: B.A. Grady School of Journalism and B.S. Marketing & Business, University of Georgia.
 
 Career:
-- Founder & Principal, Michelson & Associates (1984-2009) - global research firm in 22 countries, Fortune 100 clients including IBM, Ford, Walmart, Samsung, HP, Coca-Cola, ExxonMobil, Goodyear
+- Founder & Principal, Michelson & Associates - global research firm in 22 countries, Fortune 100 clients including IBM, Ford, Walmart, Samsung, HP, Coca-Cola, ExxonMobil, Goodyear
 - Founder & Principal, Threads Marketing Research & Strategy (2009-present) - B2B/B2C qual and quant research, clients include Google, Salesforce, Johnson & Johnson, Bridgestone/Firestone, Mitsubishi
 - Founder & CEO, Stitchs AI Training & Solutions (2025-present)
-- Industries served: technology, large and small (Google, Microsoft, IBM, Hewlett-Packard, LG, Samsung, and others), pharma and oncology (Pfizer, GSK, and cancer hospitals), and agriculture (tractors, hydro systems, seed companies, and livestock)
+- Industries served: technology, large and small (Google, Microsoft, IBM, Hewlett-Packard, LG, Samsung, and others), pharma and oncology (Pfizer, GSK, and cancer hospitals), retail and grocery (Walmart, Sam's Club, Kroger, Publix, and other grocery chains), hospitality, automotive (Ford, GM, Nissan, and Toyota dealerships: the whole dealership experience, from the first view of the lot and the signage to the financing and closing area), consumer brands (Coca-Cola, Procter & Gamble, and many others), and agriculture (tractors, hydro systems, seed companies, and livestock)
+- Why it matters in class: I help people early in their careers avoid the mistakes I have seen, and I teach the profession, not only the tools
 - Region Director (South Central US), The AI Collective - founded the Atlanta chapter and grew it from 0 to 4,000 members in 11 months
 
 Customer Experience:
@@ -1997,7 +1998,7 @@ Customer Experience:
 
 Associations co-founded: QRCA, MMRA, SMRA, IDEA, CXPA and more - 8 associations total.
 
-AI background: Built custom automation for research workflows since 1984 (Macintosh), before off-the-shelf tools existed. Worked with Microsoft to train models on unstructured data (2010-2011). Took a year to study AI education before teaching it. Current skills: AI strategy, agent building, deployment and orchestration, app building with Claude Code, workflow automation.
+AI background: Built custom automation for research workflows on the first Macintosh, before off-the-shelf tools existed. Worked with Microsoft to train models on unstructured data (2010-2011). Took a year to study AI education before teaching it. Current skills: AI strategy, agent building, deployment and orchestration, app building with Claude Code, workflow automation.
 
 Global: Worked in 78 countries and 49 states. Lifelong professional musician with synesthesia.
 
@@ -2006,19 +2007,20 @@ Direct, warm, conversational. Lead with the insight, plain language, address rea
 
 // Credibility lines in the facilitator's voice, matched to a topic. First match wins.
 const CRED_RULES = [
-  {kw:["your hosts","host"], line:"42 years as a researcher and consultant, founder of Michelson & Associates and Threads, co-founder of 8 professional associations, and founder of the Atlanta AI Collective, now 4,800+ members."},
-  {kw:["human side","your hands"], line:"42 years as a researcher, consultant, and editor taught me that judgment is the job. I use AI as a machine I direct, never as a replacement for what I know."},
-  {kw:["doesn't work","avoid"], line:"I have watched a lot of automation go wrong in 40 years of building it. I will show you where these tools break before they break on you."},
+  {kw:["your hosts","host"], line:"A career as a researcher and consultant for Google, Microsoft, Walmart, Coca-Cola, and Pfizer, founder of Michelson & Associates and Threads, co-founder of 8 professional associations, and founder of the Atlanta AI Collective, now 4,800+ members."},
+  {kw:["human side","your hands"], line:"A career as a researcher, consultant, and editor taught me that judgment is the job. I use AI as a machine I direct, never as a replacement for what I know."},
+  {kw:["doesn't work","avoid"], line:"I have watched a lot of automation go wrong over a long career of building it. I will show you where these tools break before they break on you."},
   {kw:["prompt"], line:"I have written thousands of research briefs and discussion guides. A good prompt is a good brief, and briefs are my craft."},
-  {kw:["moment we","where ai fits","your work","why ai","think about ai"], line:"I have built with AI since 1984 and took a year off to study how to teach it. This is 42 years of practice meeting a new set of tools, not a bandwagon."},
+  {kw:["moment we","where ai fits","your work","why ai","think about ai"], line:"I have automated research work since the first Macintosh and took a year off to study how to teach AI. This is a career of practice meeting a new set of tools, not a bandwagon."},
   {kw:["me.md","personaliz"], line:"I wrote my own me.md and run it every day. I am teaching you the exact system I use."},
   {kw:["llm","compared","claude","chatgpt","gemini","models"], line:"I use these tools daily in real client work and build apps and agents with Claude Code. I can tell you which to reach for because I reach for them myself."},
   {kw:["notebook","document","pdf","graph"], line:"I trained models to analyze unstructured data with Microsoft back in 2010. Pulling answers out of documents is work I have done for years."},
   {kw:["notetaker","meeting","transcript"], line:"I have run thousands of interviews, focus groups, and VOC sessions. I know what matters in a transcript and what to cut."},
-  {kw:["research","insight","discovery","perplexity"], line:"Research is my 42-year discipline. I have run studies for Google, Microsoft, IBM, Samsung, Pfizer, and GSK, and I know what good sourcing looks like."},
-  {kw:["integration","wrapper","automation","cowork","stack","agent","hand off","build one"], line:"I built custom research automation on Macintosh before off-the-shelf tools existed. Handing repetitive work to machines is a 40-year habit for me."},
+  {kw:["research","insight","discovery","perplexity"], line:"Research is my discipline. I have run studies for Google, Microsoft, IBM, Samsung, Pfizer, and GSK, and I know what good sourcing looks like."},
+  {kw:["integration","wrapper","automation","cowork","stack","agent","hand off","build one"], line:"I built custom research automation on Macintosh before off-the-shelf tools existed. Handing repetitive work to machines is an old habit for me."},
   {kw:["customer experience","journey","voc"," cx","cx "], line:"I co-founded the Mystery Shopping Providers Association and the Atlanta CXPA chapter, and produced CX Forums across 8 markets. CX is a career for me, not a slide."},
   {kw:["healthcare","clinic","patient","pharma","hospital","medical"], line:"I have done research for Pfizer, GSK, and cancer hospitals. I know how much care this work takes, and where AI has to stay out of it."},
+  {kw:["retail","store","shopping","shopper","merchandis","dealership","path to purchase","friction","help them buy","hospitality"], line:"I have shaped store and dealership experiences for Walmart, Sam's Club, Kroger, Publix, and Ford, GM, Nissan, and Toyota dealers, from the first view of the lot to the closing table."},
   {kw:["farm","agri","seed","livestock"], line:"I have done research for tractor makers, hydro systems, seed companies, and livestock. I know field work is not office work."},
   {kw:["community"], line:"I founded the Atlanta AI Collective and grew it from zero to 4,000 members in 11 months. I know how communities actually grow."},
   {kw:["demo","action plan","hands-on"], line:"Everything I show you, I run in my own practice. Watch me do it, then do it yourself."}
@@ -2026,16 +2028,16 @@ const CRED_RULES = [
 // Deep-dive tool category -> credibility line
 const CRED_BY_KIND = {
   llm:"I use these tools daily in real client work and build apps and agents with Claude Code. I teach what I actually run.",
-  research:"Research is my 42-year discipline. I have built insights businesses on good sourcing for clients like Google and Salesforce.",
+  research:"Research is my discipline. I have built insights businesses on good sourcing for clients like Google and Salesforce.",
   docintel:"I trained models to analyze unstructured data with Microsoft in 2010. Getting answers out of documents is old ground for me.",
   notetaker:"I have run thousands of interviews and VOC sessions. I know what to keep in a transcript and what to throw away.",
   builder:"I build apps and agents with Claude Code for my own practice. I show you what I actually ship.",
-  automation:"I built custom research automation before off-the-shelf tools existed. Automating the repetitive work is a 40-year habit.",
+  automation:"I built custom research automation before off-the-shelf tools existed. Automating the repetitive work is an old habit.",
   writing:"I have written for clients and published since college. I know when AI copy works and when it sounds like a robot.",
   image:"I am a lifelong professional musician with synesthesia. I bring a real eye and ear to visual and media tools.",
   voice:"I am a lifelong professional musician. Voice and audio tools sit right in my wheelhouse."
 };
-const CRED_FALLBACK = "I have spent 42 years serving professionals as a consultant and researcher. I teach from inside your world, not from the outside looking in.";
+const CRED_FALLBACK = "I have spent my career serving professionals as a consultant and researcher. I teach from inside your world, not from the outside looking in.";
 
 // Return the credibility line for a slide, or null.
 function credForSlide(s){
@@ -2051,7 +2053,7 @@ function credForSlide(s){
   if(s.kind==="title" || /thank you|resources|agenda|continue learning/.test(t)) return null;
   // audience-fit line: health and agriculture audiences hear the matching industry experience
   const aud=(audLabel()+" "+primaryName()).toLowerCase();
-  const fit=CRED_RULES.find(r=>/healthcare|farm/.test(r.kw.join(" ")) && r.kw.some(k=>aud.includes(k)));
+  const fit=CRED_RULES.find(r=>/healthcare|farm|retail/.test(r.kw.join(" ")) && r.kw.some(k=>aud.includes(k)));
   return fit ? fit.line : CRED_FALLBACK;
 }
 
@@ -2514,7 +2516,7 @@ function talkPrompt(){
     teach:{analogy:"Think of AI as ... (a machine analogy from their world)", notFor:["3 things to keep away from AI in this work"], bad:"a bad one-line prompt", agent:"A ... : one small tool to build in the room", auto:"trigger → AI step → human check → result", graph:"Connect ..., so AI can ..."}
   };
   return [
-    "You help Mark Michelson set up one workshop in his AI Fundamentals workshop builder. Mark is a marketing researcher and strategist with 42 years of experience. He teaches professionals to use AI by starting from a real problem, not from the technology. The AI Collective Atlanta hosts the workshops.",
+    "You help Mark Michelson set up one workshop in his AI Fundamentals workshop builder. Mark is a marketing researcher and strategist with deep experience across tech, health, retail, automotive, consumer brands, and agriculture. Never state his years of experience or his age. He teaches professionals to use AI by starting from a real problem, not from the technology. The AI Collective Atlanta hosts the workshops.",
     "Below is what Mark said, in his own words, often dictated and rambling. Turn it into the workshop setup. Reply with ONLY one JSON object in the shape shown. Leave out any key you have nothing for. Arrays replace what is there now, so send whole lists.",
     "Shape:\n"+JSON.stringify(schema,null,1),
     "Rules:\n- Use what Mark said. Fill gaps only where his intent is clear, and say so in summary.\n- Never invent a date, venue, price, number, statistic, or quote.\n- Real case studies only when they are well known and documented, with a source link. Mark anything else real:false. Prefer cases Mark tells you about.\n- Plain, short sentences. No em dashes, no semicolons, no hype words, no emojis.\n- Use cases are written as a real problem, then →, then what the tool does about it.\n- The way of thinking (method) is the heart of the session: capture his process stage by stage, in his order and his words, with the questions he asks at each stage.\n- Keep everything in the current setup that he does not change.",
@@ -3406,7 +3408,7 @@ function genLuma(){
   bring.forEach(b=>out+="- "+clean(b)+"\n");
   out+="\n";
   out += "Your Hosts\n";
-  out += clean(c.lead.name+", "+c.lead.credit+" ("+URL_THREADS+", "+URL_AIC+"). 42 years helping "+nounPl+" and teams work smarter.")+"\n";
+  out += clean(c.lead.name+", "+c.lead.credit+" ("+URL_THREADS+", "+URL_AIC+"). Research and strategy for Google, Microsoft, Walmart, Coca-Cola, Pfizer, and many more, now helping "+nounPl+" and teams work smarter with AI.")+"\n";
   guests.forEach(g=>{
     out += clean(g.name + (g.role?(", "+g.role):"") + ". " + (g.bio||"[ICP bio - Claude drafts this in chat]")) + (g.linkedin?(" "+g.linkedin):"") + "\n";
   });
@@ -3526,7 +3528,7 @@ function genMaven(){
   out += clean("Week 3 - Stack integration: connect your tools, add automation, and build a repeatable workflow.")+"\n";
   out += clean("Week 4 - Put it to work: bring a live project, get feedback, and leave with a stack you trust.")+"\n\n";
   out += "Who It's For\n"+clean("Working "+nounPl+" who want to use AI well, not just talk about it. No coding required.")+"\n\n";
-  out += "Instructors\n"+clean(c.lead.name+". "+(c.lead.cohortBio || (c.lead.credit+". 42 years helping professionals and teams work smarter.")))+"\n";
+  out += "Instructors\n"+clean(c.lead.name+". "+(c.lead.cohortBio || (c.lead.credit+". Research and strategy for Google, Microsoft, Walmart, Coca-Cola, Pfizer, and many more, now helping professionals and teams work smarter with AI.")))+"\n";
   guestsFor("cohort").forEach(g=> out += clean(g.name+(g.role?(", "+g.role):"")+". "+(g.bio||"[ICP bio - Claude drafts this in chat]"))+(g.linkedin?(" "+g.linkedin):"")+"\n");
   out += "\n";
   out += "FAQ\n";
@@ -4181,21 +4183,27 @@ function gfxStitchLine(ctx, pts, color, width, closed){
   ctx.beginPath(); pts.forEach((pt,i)=>i?ctx.lineTo(pt[0],pt[1]):ctx.moveTo(pt[0],pt[1])); if(closed) ctx.closePath(); ctx.stroke(); ctx.restore();
 }
 function gfxSponsorLogos(){ const g=state.gfx||{}; return (g.sponsors||[]).filter(Boolean).slice(0,2).map(k=>logoLib().find(x=>"upl:"+x.id===k)).filter(Boolean); }
-async function gfxLogoChip(ctx, L, x, y, maxW, maxH, onDark, alignRight){
+async function gfxLogoChip(ctx, L, x, y, maxW, maxH, onDark, alignRight, P){
   if(!L) return 0;
   let img; try{ img=await gfxImg(L.data); }catch(e){ return 0; }
   let w=maxW, h=w*L.ratio; if(h>maxH){ h=maxH; w=h/L.ratio; }
   const left = alignRight ? x-w : x;
   if(onDark && !L.reverse){ const pad=Math.round(maxH*0.16); ctx.save(); gfxRound(ctx,left-pad,y-pad,w+2*pad,h+2*pad,14); ctx.fillStyle=GFX_LINEN; ctx.fill(); ctx.restore(); }
-  ctx.drawImage(img, left, y, w, h); return w;
+  if(P) P.push({t:"image", data:L.data, x:left, y, w, h}); else ctx.drawImage(img, left, y, w, h); return w;
 }
 function gfxFitLines(ctx, text, maxW, sizeMax, sizeMin, maxLines){
   for(let S=sizeMax; S>=sizeMin; S-=2){ ctx.font=GF_SANS(800,S); const ls=gfxWrap(ctx,text,maxW); if(ls.length<=maxLines && !ls.some(l=>ctx.measureText(l).width>maxW)) return {S, lines:ls}; }
   ctx.font=GF_SANS(800,sizeMin); return {S:sizeMin, lines:gfxWrap(ctx,text,maxW)};
 }
-async function renderGraphicTexture(fmtKey){
+async function renderGraphicTexture(fmtKey, opts){
   const F=GFX_FMT[fmtKey], g=Object.assign(GFX_DEFAULT(), state.gfx||{}), G=gfxGround(), wide=fmtKey==="wide";
   const cv=document.createElement("canvas"); cv.width=F.w; cv.height=F.h; const ctx=cv.getContext("2d");
+  // parts mode (PowerPoint): text and logos come back as separate, editable pieces instead of being painted in
+  const P=(opts&&opts.parts)?[]:null;
+  const ft=(text,x,y)=>{ if(!P){ ctx.fillText(text,x,y); return; }
+    const mt=/(\d+)\s+(\d+(?:\.\d+)?)px/.exec(ctx.font)||[0,600,40], size=+mt[2], w=ctx.measureText(text).width*1.25+size*0.6;
+    P.push({t:"text", text, x:ctx.textAlign==="center"?x-w/2:x, y:y-size*1.02, w, h:size*1.3, size, bold:+mt[1]>=700, color:ctx.fillStyle, align:ctx.textAlign==="center"?"center":"left"}); };
+  const di=(L,img,x,y,w,h)=>{ if(P) P.push({t:"image", data:L.data, x, y, w, h}); else ctx.drawImage(img,x,y,w,h); };
   const seed=gfxHash(gfxSeedKey()+"|"+(g.texture||"linen"));
   gfxTexture(ctx,0,0,F.w,F.h,G.bg,g.texture||"linen",seed);
   const m=wide?96:80;
@@ -4212,15 +4220,15 @@ async function renderGraphicTexture(fmtKey){
     for(let i=0;i<n;i++){
       const it=items[i], cx=m+cellW*(i+0.5);
       const first=items.findIndex(x=>x.grp===it.grp), last=items.length-1-items.slice().reverse().findIndex(x=>x.grp===it.grp);
-      if(i===first){ const lx=m+cellW*((first+last)/2+0.5); ctx.fillStyle=GFX_MUTED; ctx.font=GF_SANS(600,24); ctx.textAlign="center"; ctx.fillText(it.grp.toUpperCase().split("").join(String.fromCharCode(8202)), lx, bandTop+(wide?58:62)); ctx.textAlign="left"; }
+      if(i===first){ const lx=m+cellW*((first+last)/2+0.5); ctx.fillStyle=GFX_MUTED; ctx.font=GF_SANS(600,24); ctx.textAlign="center"; ft(it.grp.toUpperCase().split("").join(String.fromCharCode(8202)), lx, bandTop+(wide?58:62)); ctx.textAlign="left"; }
       let img; try{ img=await gfxImg(it.L.data); }catch(e){ continue; }
       let w=logoMaxW, h=w*it.L.ratio; if(h>logoMaxH){ h=logoMaxH; w=h/it.L.ratio; }
-      const top=bandTop+(wide?82:88)+(logoMaxH-h)/2; ctx.drawImage(img, cx-w/2, top, w, h);
+      const top=bandTop+(wide?82:88)+(logoMaxH-h)/2; di(it.L, img, cx-w/2, top, w, h);
     }
   }
 
   // host logo, upper left
-  await gfxLogoChip(ctx, brandLogo(G.dark), m, m, wide?360:300, wide?150:130, G.dark, false);
+  await gfxLogoChip(ctx, brandLogo(G.dark), m, m, wide?360:300, wide?150:130, G.dark, false, P);
 
   const series=(g.series||"AI Fundamentals")+" for", prof=gfxLabel();
   const dateLine=g.showEvent?gfxDateLine():"", city=g.showEvent?gfxCity():"";
@@ -4234,13 +4242,13 @@ async function renderGraphicTexture(fmtKey){
     const areaTop=m+150, areaBot=(bandH?bandTop:F.h-m)-30;
     let y=Math.max(areaTop, areaTop+((areaBot-areaTop)-blockH)/2) + seriesS;
     ctx.textAlign="center"; ctx.textBaseline="alphabetic";
-    ctx.fillStyle=G.soft; ctx.font=GF_SANS(600,seriesS); ctx.fillText(series, F.w/2, y);
+    ctx.fillStyle=G.soft; ctx.font=GF_SANS(600,seriesS); ft(series, F.w/2, y);
     y+=Math.round(seriesS*0.5);
     ctx.fillStyle=G.ink; ctx.font=GF_SANS(800,fit.S);
-    fit.lines.forEach(l=>{ y+=lh; ctx.fillText(l, F.w/2, y); });
+    fit.lines.forEach(l=>{ y+=lh; ft(l, F.w/2, y); });
     y+=Math.round(fit.S*0.3)+22; gfxStitchLine(ctx,[[F.w/2-110,y],[F.w/2+110,y]], G.accent, 5, false); y+=10;
-    if(dateLine){ y+=56; ctx.fillStyle=G.ink; ctx.font=GF_SANS(800,46); ctx.fillText(dateLine, F.w/2, y); }
-    if(city){ y+=50; ctx.fillStyle=G.accent; ctx.font=GF_SANS(600,36); ctx.fillText(city, F.w/2, y); }
+    if(dateLine){ y+=56; ctx.fillStyle=G.ink; ctx.font=GF_SANS(800,46); ft(dateLine, F.w/2, y); }
+    if(city){ y+=50; ctx.fillStyle=G.accent; ctx.font=GF_SANS(600,36); ft(city, F.w/2, y); }
     ctx.textAlign="left";
   } else {
     const hasArt=!!artImg, colW=hasArt?1000:F.w-2*m-80;
@@ -4250,14 +4258,14 @@ async function renderGraphicTexture(fmtKey){
     const areaTop=m+170, areaBot=(bandH?bandTop:F.h-m)-34;
     let y=Math.max(areaTop, areaTop+((areaBot-areaTop)-blockH)/2) + seriesS;
     const x=m+6;
-    ctx.fillStyle=G.soft; ctx.font=GF_SANS(600,seriesS); ctx.fillText(series, x, y);
+    ctx.fillStyle=G.soft; ctx.font=GF_SANS(600,seriesS); ft(series, x, y);
     y+=Math.round(seriesS*0.5);
     ctx.fillStyle=G.ink; ctx.font=GF_SANS(800,fit.S);
-    fit.lines.forEach(l=>{ y+=lh; ctx.fillText(l, x, y); });
+    fit.lines.forEach(l=>{ y+=lh; ft(l, x, y); });
     y+=Math.round(fit.S*0.3)+22; gfxStitchLine(ctx,[[x,y],[x+260,y]], G.accent, 6, false); y+=10;
-    if(dateLine){ y+=58; ctx.fillStyle=G.ink; ctx.font=GF_SANS(800,48); ctx.fillText(dateLine, x, y); }
+    if(dateLine){ y+=58; ctx.fillStyle=G.ink; ctx.font=GF_SANS(800,48); ft(dateLine, x, y); }
     const sub2=[city, presenter].filter(Boolean).join("   ·   ");
-    if(sub2){ y+=52; ctx.fillStyle=G.accent; ctx.font=GF_SANS(600,38); ctx.fillText(sub2, x, y); }
+    if(sub2){ y+=52; ctx.fillStyle=G.accent; ctx.font=GF_SANS(600,38); ft(sub2, x, y); }
     if(hasArt){
       const px=1160, py=m+40, pw=F.w-px-m, ph=(bandH?bandTop:F.h-m)-py-40;
       ctx.save(); gfxRound(ctx,px,py,pw,ph,22); ctx.clip();
@@ -4266,7 +4274,7 @@ async function renderGraphicTexture(fmtKey){
       gfxStitchLine(ctx,[[px-14,py-14],[px+pw+14,py-14],[px+pw+14,py+ph+14],[px-14,py+ph+14]], G.dark?"rgba(255,255,255,0.45)":gfxLead().c, 4, true);
     }
   }
-  return cv;
+  return P ? {canvas:cv, parts:P} : cv;
 }
 async function renderGraphic(fmtKey){
   await gfxFonts();
@@ -4361,7 +4369,16 @@ async function downloadPptx(model){
   const Engine = window.PptxGenJS || window.pptxgen;
   if(typeof Engine!=="function"){ toast("PowerPoint engine still loading - try again in a second"); return; }
   const META = pptxMeta(pptxFileName());
-  if(!state.gfx || state.gfx.cover!==false){ try{ META.cover=(await renderGraphic("wide")).toDataURL("image/png"); }catch(e){} }
+  if(!state.gfx || state.gfx.cover!==false){ try{
+    if(((state.gfx&&state.gfx.style)||"texture")!=="scene"){
+      await gfxFonts(); const r=await renderGraphicTexture("wide",{parts:true}), k=1/144;
+      const cc=document.createElement("canvas").getContext("2d");
+      const col=c=>{ cc.fillStyle="#000"; cc.fillStyle=c; const v=cc.fillStyle; if(v[0]==="#") return {hex:v.slice(1).toUpperCase(), tr:0}; const m=/rgba?\(([^)]+)\)/.exec(v); const q=m?m[1].split(",").map(x=>parseFloat(x)):[0,0,0,1]; return {hex:q.slice(0,3).map(x=>Math.round(x).toString(16).padStart(2,"0")).join("").toUpperCase(), tr:Math.round((1-(q[3]==null?1:q[3]))*100)}; };
+      META.coverBg=r.canvas.toDataURL("image/jpeg",0.92);
+      META.coverParts=r.parts.map(p=>{ const o={t:p.t, x:+(p.x*k).toFixed(3), y:+(p.y*k).toFixed(3), w:+(p.w*k).toFixed(3), h:+(p.h*k).toFixed(3)};
+        if(p.t==="image"){ o.data=p.data; } else { const c=col(p.color); Object.assign(o,{text:p.text, size:Math.round(p.size/2), bold:p.bold, color:c.hex, tr:c.tr, align:p.align}); } return o; });
+    } else META.cover=(await renderGraphic("wide")).toDataURL("image/png");
+  }catch(e){} }
   const SLIDES = pptxSlides(model);
   const body = PPTX_BODY.replace('pres.writeFile({ fileName: "/mnt/user-data/outputs/" + META.file })', 'pres.write({ outputType: "blob" }).then(function (b) { return window.__deliverFile ? window.__deliverFile(META.file, b) : pres.writeFile({ fileName: META.file }); })');
   try{
@@ -4415,6 +4432,14 @@ const PPTX_BODY = [
 '',
 'function renderTitle(s) {',
 '  const slide = pres.addSlide();',
+'  if (META.coverParts) {',
+'    slide.background = { data: META.coverBg };',
+'    META.coverParts.forEach(function (p) {',
+'      if (p.t === "image") slide.addImage({ data: p.data, x: p.x, y: p.y, w: p.w, h: p.h });',
+'      else slide.addText(p.text, { x: p.x, y: p.y, w: p.w, h: p.h, fontFace: "Calibri", fontSize: p.size, bold: p.bold, color: p.color, transparency: p.tr || 0, align: p.align, valign: "bottom", margin: 0, fit: "shrink" });',
+'    });',
+'    return;',
+'  }',
 '  if (META.cover) { slide.background = { data: META.cover }; return; }',
 '  slide.background = { color: C.white };',
 '  strands(slide, 0.8, 2.3, 2.2, YARN[0]);',
