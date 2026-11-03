@@ -1986,6 +1986,7 @@ Career:
 - Founder & Principal, Michelson & Associates (1984-2009) - global research firm in 22 countries, Fortune 100 clients including IBM, Ford, Walmart, Samsung, HP, Coca-Cola, ExxonMobil, Goodyear
 - Founder & Principal, Threads Marketing Research & Strategy (2009-present) - B2B/B2C qual and quant research, clients include Google, Salesforce, Johnson & Johnson, Bridgestone/Firestone, Mitsubishi
 - Founder & CEO, Stitchs AI Training & Solutions (2025-present)
+- Industries served: technology, large and small (Google, Microsoft, IBM, Hewlett-Packard, LG, Samsung, and others), pharma and oncology (Pfizer, GSK, and cancer hospitals), and agriculture (tractors, hydro systems, seed companies, and livestock)
 - Region Director (South Central US), The AI Collective - founded the Atlanta chapter and grew it from 0 to 4,000 members in 11 months
 
 Customer Experience:
@@ -2014,9 +2015,11 @@ const CRED_RULES = [
   {kw:["llm","compared","claude","chatgpt","gemini","models"], line:"I use these tools daily in real client work and build apps and agents with Claude Code. I can tell you which to reach for because I reach for them myself."},
   {kw:["notebook","document","pdf","graph"], line:"I trained models to analyze unstructured data with Microsoft back in 2010. Pulling answers out of documents is work I have done for years."},
   {kw:["notetaker","meeting","transcript"], line:"I have run thousands of interviews, focus groups, and VOC sessions. I know what matters in a transcript and what to cut."},
-  {kw:["research","insight","discovery","perplexity"], line:"Research is my 42-year discipline. I have run studies for Google, Salesforce, and Johnson & Johnson, and I know what good sourcing looks like."},
+  {kw:["research","insight","discovery","perplexity"], line:"Research is my 42-year discipline. I have run studies for Google, Microsoft, IBM, Samsung, Pfizer, and GSK, and I know what good sourcing looks like."},
   {kw:["integration","wrapper","automation","cowork","stack","agent","hand off","build one"], line:"I built custom research automation on Macintosh before off-the-shelf tools existed. Handing repetitive work to machines is a 40-year habit for me."},
   {kw:["customer experience","journey","voc"," cx","cx "], line:"I co-founded the Mystery Shopping Providers Association and the Atlanta CXPA chapter, and produced CX Forums across 8 markets. CX is a career for me, not a slide."},
+  {kw:["healthcare","clinic","patient","pharma","hospital","medical"], line:"I have done research for Pfizer, GSK, and cancer hospitals. I know how much care this work takes, and where AI has to stay out of it."},
+  {kw:["farm","agri","seed","livestock"], line:"I have done research for tractor makers, hydro systems, seed companies, and livestock. I know field work is not office work."},
   {kw:["community"], line:"I founded the Atlanta AI Collective and grew it from zero to 4,000 members in 11 months. I know how communities actually grow."},
   {kw:["demo","action plan","hands-on"], line:"Everything I show you, I run in my own practice. Watch me do it, then do it yourself."}
 ];
@@ -2046,7 +2049,10 @@ function credForSlide(s){
   for(const r of CRED_RULES){ if(r.kw.some(k=>t.includes(k))) return r.line; }
   // topic slides carry the audience-fit line; pure title/thank-you slides get nothing
   if(s.kind==="title" || /thank you|resources|agenda|continue learning/.test(t)) return null;
-  return CRED_FALLBACK;
+  // audience-fit line: health and agriculture audiences hear the matching industry experience
+  const aud=(audLabel()+" "+primaryName()).toLowerCase();
+  const fit=CRED_RULES.find(r=>/healthcare|farm/.test(r.kw.join(" ")) && r.kw.some(k=>aud.includes(k)));
+  return fit ? fit.line : CRED_FALLBACK;
 }
 
 /* ---------- brand: AIC Atlanta (in-person) graphic standards ---------- */
