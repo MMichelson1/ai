@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-01T16:40:13.388Z",
+  "generatedAt": "2026-11-03T23:46:26.997Z",
   "sample": false,
   "markets": {
     "atlanta": {
@@ -21,7 +21,7 @@
       "aic": true,
       "status": "ok",
       "count": 3,
-      "lastChecked": "2026-11-01T16:40:13.388Z",
+      "lastChecked": "2026-11-03T23:46:26.998Z",
       "note": ""
     },
     {
@@ -32,7 +32,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-11-01T16:40:14.464Z",
+      "lastChecked": "2026-11-03T23:46:28.309Z",
       "note": "Get the section's public iCal feed URL from events.vtools.ieee.org (Events → Export/iCal for the Atlanta Section), paste it into 'url', then set enabled:true."
     },
     {
@@ -43,7 +43,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-11-01T16:40:14.464Z",
+      "lastChecked": "2026-11-03T23:46:28.309Z",
       "note": "Any Meetup group exposes an iCal feed at https://www.meetup.com/<group-slug>/events/ical/ — add one source entry per local AI group and set enabled:true."
     },
     {
@@ -54,7 +54,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-11-01T16:40:14.464Z",
+      "lastChecked": "2026-11-03T23:46:28.309Z",
       "note": "Most university event calendars (Localist, Google Calendar) publish an ICS feed — paste it here. AI keyword filtering is applied automatically."
     },
     {
@@ -65,7 +65,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-11-01T16:40:14.464Z",
+      "lastChecked": "2026-11-03T23:46:28.309Z",
       "note": "Eventbrite retired public event search; per-organizer listings work via their free API. Add EVENTBRITE_TOKEN as a repo secret and organizer IDs here — see README."
     },
     {
@@ -76,7 +76,7 @@
       "aic": false,
       "status": "manual",
       "count": 0,
-      "lastChecked": "2026-11-01T16:40:14.464Z",
+      "lastChecked": "2026-11-03T23:46:28.309Z",
       "note": "LinkedIn and Facebook publish no feeds. Chapter leads add validated in-person events to data/manual-events.json via pull request; each entry must link to a live listing on a trusted site."
     },
     {
@@ -86,69 +86,12 @@
       "type": "luma-calendar",
       "aic": true,
       "status": "ok",
-      "count": 11,
-      "lastChecked": "2026-11-01T16:40:14.464Z",
+      "count": 13,
+      "lastChecked": "2026-11-03T23:46:28.309Z",
       "note": ""
     }
   ],
   "events": [
-    {
-      "id": "evt-CTbtnmRFGDkapqM@events.lu.ma",
-      "title": "AI Day at FGCU: Southwest Florida AI Expo Day Hosted by FGCU (w/ The AI Collective)",
-      "start": "2026-11-02T14:00:00.000Z",
-      "end": "2026-11-02T20:00:00.000Z",
-      "allDay": false,
-      "tz": null,
-      "location": "Harvey and Janet Cohen Student Union, 11090 Fgcu Blvd N, Fort Myers, FL 33965, USA",
-      "lat": 26.4660389,
-      "lon": -81.7719822,
-      "organizer": "The AI Collective",
-      "url": "https://lu.ma/genai-collective",
-      "sourceDomain": "lu.ma",
-      "aic": true,
-      "type": "meetup",
-      "price": "check",
-      "capacity": null,
-      "market": "global"
-    },
-    {
-      "id": "evt-eMuvDF5X29IxYZX@events.lu.ma",
-      "title": "Vibe Night in Sandy Springs (w/ The AI Collective)",
-      "start": "2026-11-02T23:00:00.000Z",
-      "end": "2026-11-03T01:30:00.000Z",
-      "allDay": false,
-      "tz": "America/New_York",
-      "location": "Hudson Grille Sandy Springs, 6317 Roswell Rd NE, Sandy Springs, GA 30328, USA",
-      "lat": 33.9274497,
-      "lon": -84.3784171,
-      "organizer": "The AI Collective — Atlanta",
-      "url": "https://lu.ma/aicatl",
-      "sourceDomain": "lu.ma",
-      "aic": true,
-      "type": "vibe night",
-      "price": "check",
-      "capacity": null,
-      "market": "atlanta"
-    },
-    {
-      "id": "evt-cdjimq5XabroyPD@events.lu.ma",
-      "title": "Movie Night: The AI Doc",
-      "start": "2026-11-02T23:00:00.000Z",
-      "end": "2026-11-03T01:30:00.000Z",
-      "allDay": false,
-      "tz": null,
-      "location": "Savor Cinema Fort Lauderdale, 503 SE 6th St, Fort Lauderdale, FL 33301, USA",
-      "lat": 26.1150164,
-      "lon": -80.1382521,
-      "organizer": "The AI Collective",
-      "url": "https://lu.ma/genai-collective",
-      "sourceDomain": "lu.ma",
-      "aic": true,
-      "type": "meetup",
-      "price": "check",
-      "capacity": null,
-      "market": "global"
-    },
     {
       "id": "evt-MAl8Ld07qoOPe76@events.lu.ma",
       "title": "AI, Human & Trust: Rethinking Decision-Making",
@@ -207,6 +150,25 @@
       "market": "atlanta"
     },
     {
+      "id": "evt-XtDWw9rd4pFJLmL@events.lu.ma",
+      "title": "OpenAI DevDay Exchange Community: Kansas City",
+      "start": "2026-11-06T00:00:00.000Z",
+      "end": "2026-11-06T02:30:00.000Z",
+      "allDay": false,
+      "tz": null,
+      "location": "Tech Central, 710 Central St, Kansas City, MO 64105, USA",
+      "lat": 39.1054263,
+      "lon": -94.58654589999999,
+      "organizer": "The AI Collective",
+      "url": "https://lu.ma/genai-collective",
+      "sourceDomain": "lu.ma",
+      "aic": true,
+      "type": "meetup",
+      "price": "check",
+      "capacity": null,
+      "market": "global"
+    },
+    {
       "id": "evt-CooCYRlCWlB9qd2@events.lu.ma",
       "title": "Built with AI: The Defensive Pedal Story (w/ The AI Collective)",
       "start": "2026-11-10T15:00:00.000Z",
@@ -216,6 +178,25 @@
       "location": "Centrul de Afaceri, Transfer Tehnologic și Incubator de Afaceri (CATTIA) Brașov, Strada Institutului 35, 500484 Brașov, Romania",
       "lat": 45.6698698,
       "lon": 25.5453691,
+      "organizer": "The AI Collective",
+      "url": "https://lu.ma/genai-collective",
+      "sourceDomain": "lu.ma",
+      "aic": true,
+      "type": "meetup",
+      "price": "check",
+      "capacity": null,
+      "market": "global"
+    },
+    {
+      "id": "evt-uNpE9N7035NSE2Z@events.lu.ma",
+      "title": "⚡ US Grid Instability Threatens AI Growth (w/AI Collective Hartford)",
+      "start": "2026-11-10T22:30:00.000Z",
+      "end": "2026-11-11T01:00:00.000Z",
+      "allDay": false,
+      "tz": null,
+      "location": "10 Constitution Plaza, Hartford, CT 06103, USA",
+      "lat": 41.766373099999996,
+      "lon": -72.6701382,
       "organizer": "The AI Collective",
       "url": "https://lu.ma/genai-collective",
       "sourceDomain": "lu.ma",
@@ -245,6 +226,25 @@
       "market": "atlanta"
     },
     {
+      "id": "evt-430gIbGDFDc3Dmp@events.lu.ma",
+      "title": "November Cyber Meetup",
+      "start": "2026-11-10T23:00:00.000Z",
+      "end": "2026-11-11T01:00:00.000Z",
+      "allDay": false,
+      "tz": "America/New_York",
+      "location": "Roswell Junction, 340 S Atlanta St, Roswell, GA 30075, USA",
+      "lat": 34.0080702,
+      "lon": -84.3595417,
+      "organizer": "The AI Collective — Atlanta",
+      "url": "https://lu.ma/aicatl",
+      "sourceDomain": "lu.ma",
+      "aic": true,
+      "type": "meetup",
+      "price": "check",
+      "capacity": null,
+      "market": "atlanta"
+    },
+    {
       "id": "evt-GQFLY0j6fGr4CIo@events.lu.ma",
       "title": "Building With AI | ART-ificial Intelligence | w/The AI Collective",
       "start": "2026-11-18T22:30:00.000Z",
@@ -254,6 +254,25 @@
       "location": "Serendipity Labs - Stamford, 700 Canal St First Floor, Stamford, CT 06902, USA",
       "lat": 41.0446451,
       "lon": -73.53203479999999,
+      "organizer": "The AI Collective",
+      "url": "https://lu.ma/genai-collective",
+      "sourceDomain": "lu.ma",
+      "aic": true,
+      "type": "meetup",
+      "price": "check",
+      "capacity": null,
+      "market": "global"
+    },
+    {
+      "id": "evt-jdo5V0Z6S8CAomn@events.lu.ma",
+      "title": "Fayetteville AI Tasting Monthly Meeting (w/ The AI Collective)",
+      "start": "2026-11-18T23:00:00.000Z",
+      "end": "2026-11-19T01:00:00.000Z",
+      "allDay": false,
+      "tz": null,
+      "location": "Revival Wines, 140 W Lanier Ave, Fayetteville, GA 30214, USA",
+      "lat": 33.4484657,
+      "lon": -84.4559491,
       "organizer": "The AI Collective",
       "url": "https://lu.ma/genai-collective",
       "sourceDomain": "lu.ma",
@@ -283,6 +302,25 @@
       "market": "global"
     },
     {
+      "id": "evt-Z0z5motfSCLEvJc@events.lu.ma",
+      "title": "Sandy Springs AI Meetup (w/ The AI Collective)",
+      "start": "2026-11-19T22:30:00.000Z",
+      "end": "2026-11-20T01:00:00.000Z",
+      "allDay": false,
+      "tz": null,
+      "location": "Mutation Brewing and Distilling Company, 5825 Roswell Rd NE, Sandy Springs, GA 30328, USA",
+      "lat": 33.9143451,
+      "lon": -84.37880539999999,
+      "organizer": "The AI Collective",
+      "url": "https://lu.ma/genai-collective",
+      "sourceDomain": "lu.ma",
+      "aic": true,
+      "type": "meetup",
+      "price": "check",
+      "capacity": null,
+      "market": "global"
+    },
+    {
       "id": "evt-ZgHu3XgbZVYqyNI@events.lu.ma",
       "title": "Why Should I Care About the EU AI Act?",
       "start": "2026-11-26T15:00:00.000Z",
@@ -297,6 +335,25 @@
       "sourceDomain": "lu.ma",
       "aic": true,
       "type": "meetup",
+      "price": "check",
+      "capacity": null,
+      "market": "global"
+    },
+    {
+      "id": "evt-yuLGSGL2d6lwrQx@events.lu.ma",
+      "title": "OpenAI Technical Practitioner Training (Lawrence, KS)",
+      "start": "2026-12-03T15:00:00.000Z",
+      "end": "2026-12-03T18:00:00.000Z",
+      "allDay": false,
+      "tz": null,
+      "location": "2033 Becker Dr, Lawrence, KS 66047, USA",
+      "lat": 38.9479618,
+      "lon": -95.26804179999999,
+      "organizer": "The AI Collective",
+      "url": "https://lu.ma/genai-collective",
+      "sourceDomain": "lu.ma",
+      "aic": true,
+      "type": "workshop",
       "price": "check",
       "capacity": null,
       "market": "global"
