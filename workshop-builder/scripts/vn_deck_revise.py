@@ -59,6 +59,8 @@ set_text(shp(9, 127), "Tell the AI what you want, why you want it, and what good
 # ---- slide 11: no dashes in the copy
 set_text(shp(11, 162), "The AI does the hard part and shows you the result. You look at what it made, not the code.")
 set_text(shp(11, 165), "“Make it darker.” “Add a date.” “That button doesn’t work. Fix it.”")
+for sid in (159, 162, 165):
+    sh = shp(11, sid); place(sh, t=3.40, h=1.2); sh.text_frame.vertical_anchor = 1
 
 # ---- slide 13: tools in plain words, nothing that looks like code
 set_text(shp(13, 177), "PICK ONE YOU LIKE")
@@ -68,7 +70,8 @@ set_text(shp(13, 181), "Where to find it")
 rows = [(185, "claude.ai", 186, "A great writer and builder. Best for bigger apps and detailed instructions."),
         (189, "chatgpt.com", 190, "Fast and familiar. A good all-around helper."),
         (193, "gemini.google.com", 194, "Works with your Google account. Good for quick builds."),
-        (197, "perplexity.ai", 198, "Searches the web and shows its sources. Great for research.")]
+        (197, "lovable.dev", 198, "Builds a working app or website from a description. Free daily limit.")]
+set_text(shp(13, 196), "Lovable")
 for us, url, ds, desc in rows:
     write_paras(shp(13, us), [[(url, False, CYAN, False)]], size=14, space_after=0)
     set_text(shp(13, ds), desc)
@@ -158,10 +161,12 @@ set_text(shp(N, 179), "No subscription needed. Free plans limit how much they do
 set_text(shp(N, 180), "Assistant"); set_text(shp(N, 181), "Where to find it"); set_text(shp(N, 182), "What it does for you")
 assist = [("Muse", "muse.ai or the Muse app", "Meta's new assistant. Plans, fills in forms, and books."),
           ("Comet", "Free browser from Perplexity", "Reads the page you're on and clicks through tasks."),
-          ("Gemini", "gemini.google.com", "Researches and builds your plan. Deep Research is free."),
+          ("Gemini in Chrome", "Chrome browser, top right", "Answers questions about the page you're on. Clicking for you needs a paid plan."),
           ("Manus", "manus.im", "Works through a bigger job, step by step.")]
 for (nm, where, what), (a, b, c) in zip(assist, [(184, 185, 186), (188, 189, 190), (192, 193, 194), (196, 197, 198)]):
     set_text(shp(N, a), nm)
+    if len(nm) > 10:
+        for r in shp(N, a).text_frame.paragraphs[0].runs: r.font.size = Pt(13)
     write_paras(shp(N, b), [[(where, False, CYAN, False)]], size=13, space_after=0)
     set_text(shp(N, c), what)
 # move it to sit right after slide 14
@@ -196,8 +201,8 @@ write_paras(body, [
     [("The AI Collective Atlanta", True, RGBColor(0, 0, 0), False), (" = 4,800+ members, 115+ events since July 2025", False, RGBColor(0, 0, 0), False)],
     [("We meet 2 to 3 times a week all over the Atlanta area.", False, RGBColor(0, 0, 0), False)],
     [("24 organizers in Atlanta, and we\u2019re adding more to cover the metro area and lead committees and special interest groups.", False, RGBColor(0, 0, 0), False)],
-], size=13.5, space_after=7)
-place(body, t=1.25, h=4.2); body.text_frame.vertical_anchor = 1
+], size=18, space_after=4)
+place(body, t=1.2, h=4.3); body.text_frame.vertical_anchor = 1
 from pptx.oxml.ns import qn
 for i, para in enumerate(body.text_frame.paragraphs):
     pPr = para._p.get_or_add_pPr()
@@ -206,7 +211,7 @@ for i, para in enumerate(body.text_frame.paragraphs):
         for tag in ("a:buAutoNum", "a:buChar", "a:buNone"):
             for el in pPr.findall(qn(tag)): pPr.remove(el)
         pPr.append(pPr.makeelement(qn("a:buNone"), {}))
-    if i in (1, 4, 5): para.space_before = Pt(8)
+    if i in (1, 4, 5): para.space_before = Pt(6)
 
 # ---- small cleanups: one font on the values slide, exercise times, Airbnb
 for sl in p.slides:

@@ -147,6 +147,25 @@ that saved settings (`localStorage`) are per-device and do not sync across
 devices; your me.md ships as the built-in default so it is present everywhere out
 of the box.
 
+## Talk it through
+
+At the top of the form. Type or dictate who the workshop is for, what people should leave with, your way of thinking, case studies, tools, date, and place. Then:
+
+- **Inside Claude** (the pinned artifact): **Build it with Claude** asks Claude on your own account and fills in the form. The page declares the `sample` capability for this.
+- **Anywhere else** (GitHub Pages, home screen app): **Copy for Claude**, paste it into Claude, then paste Claude's JSON answer under **Paste Claude's answer** and press **Apply**.
+
+Claude keeps whatever you already set up and only changes what you talked about. It lists a few questions to answer next. Add the answers to your notes and build again.
+
+## The way of thinking
+
+A framework per audience: stages (each with the questions it answers and where AI helps), case studies, who it is for, and what it is not. It becomes its own deck section between Part 1 and Part 2, a workbook page, lines on the Luma page and LinkedIn post, and a 4-week outline on the Maven tab. Edit it under **Session focus**, or switch it off there. Marketing Strategy Professionals ships with *From Problem To Purchase*.
+
+Source scripts: `scripts/add-marketing-strategy.py` (the audience split) and `scripts/add-method-and-talk.py` (this feature). Both are repeatable.
+
+## Graphics: the textured look
+
+The default look for the Luma square and the 16:9 cover (also the PowerPoint title slide) is a clean, handmade background in a Threads color: Deep, Rich, or Light linen shade, with a linen, handmade paper, or woven texture and an optional stitched border. No people, no scene. The title is big and centered on the topic. The host logo (AI Collective, Stitchs, or an uploaded Threads logo) sits upper left. A linen band at the bottom carries the venue and up to two sponsor logos. The old illustrated scene is still there as "Illustrated (old look)". Source: `scripts/add-textured-graphics.py`.
+
 ## Vibe Night mode
 
 Switch **Workshop / Vibe Night** at the top. Vibe Night keeps its own look and copy:
