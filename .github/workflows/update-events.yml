@@ -12,6 +12,7 @@ on:
     paths:
       - "event-calendar/**"
       - "sponsorship-studio/**"
+      - "sponsor-studio-playbook/**"
       - "workshop-builder/**"
       - "personal-site/**"
       - ".github/workflows/update-events.yml"
@@ -64,6 +65,9 @@ jobs:
           # Sponsor Sales Dashboard (HQ-only, reads the reporting sheet) -> /sponsorship-studio/dashboard/
           mkdir -p _site/sponsorship-studio/dashboard
           cp sponsorship-studio/dashboard/index.html _site/sponsorship-studio/dashboard/index.html
+          # Sponsor Studio Playbook -> /sponsor-studio-playbook/
+          mkdir -p _site/sponsor-studio-playbook
+          cp sponsor-studio-playbook/index.html _site/sponsor-studio-playbook/index.html
           # AI Fundamentals Workshop Builder -> /workshop-builder/
           mkdir -p _site/workshop-builder
           cp workshop-builder/index.html _site/workshop-builder/index.html
