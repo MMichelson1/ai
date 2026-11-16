@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-15T16:52:08.530Z",
+  "generatedAt": "2026-11-16T22:16:12.431Z",
   "sample": false,
   "markets": {
     "atlanta": {
@@ -21,7 +21,7 @@
       "aic": true,
       "status": "ok",
       "count": 6,
-      "lastChecked": "2026-11-15T16:52:08.531Z",
+      "lastChecked": "2026-11-16T22:16:12.431Z",
       "note": ""
     },
     {
@@ -32,7 +32,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-11-15T16:52:09.834Z",
+      "lastChecked": "2026-11-16T22:16:13.553Z",
       "note": "Get the section's public iCal feed URL from events.vtools.ieee.org (Events → Export/iCal for the Atlanta Section), paste it into 'url', then set enabled:true."
     },
     {
@@ -43,7 +43,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-11-15T16:52:09.834Z",
+      "lastChecked": "2026-11-16T22:16:13.553Z",
       "note": "Any Meetup group exposes an iCal feed at https://www.meetup.com/<group-slug>/events/ical/ — add one source entry per local AI group and set enabled:true."
     },
     {
@@ -54,7 +54,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-11-15T16:52:09.834Z",
+      "lastChecked": "2026-11-16T22:16:13.553Z",
       "note": "Most university event calendars (Localist, Google Calendar) publish an ICS feed — paste it here. AI keyword filtering is applied automatically."
     },
     {
@@ -65,7 +65,7 @@
       "aic": false,
       "status": "needs-setup",
       "count": 0,
-      "lastChecked": "2026-11-15T16:52:09.834Z",
+      "lastChecked": "2026-11-16T22:16:13.553Z",
       "note": "Eventbrite retired public event search; per-organizer listings work via their free API. Add EVENTBRITE_TOKEN as a repo secret and organizer IDs here — see README."
     },
     {
@@ -76,7 +76,7 @@
       "aic": false,
       "status": "manual",
       "count": 0,
-      "lastChecked": "2026-11-15T16:52:09.834Z",
+      "lastChecked": "2026-11-16T22:16:13.553Z",
       "note": "LinkedIn and Facebook publish no feeds. Chapter leads add validated in-person events to data/manual-events.json via pull request; each entry must link to a live listing on a trusted site."
     },
     {
@@ -86,50 +86,12 @@
       "type": "luma-calendar",
       "aic": true,
       "status": "ok",
-      "count": 20,
-      "lastChecked": "2026-11-15T16:52:09.834Z",
+      "count": 18,
+      "lastChecked": "2026-11-16T22:16:13.553Z",
       "note": ""
     }
   ],
   "events": [
-    {
-      "id": "evt-HFAnmgcKipHipsK@events.lu.ma",
-      "title": "AI build & distribution workshop @ SLUSH",
-      "start": "2026-11-16T15:30:00.000Z",
-      "end": "2026-11-16T18:30:00.000Z",
-      "allDay": false,
-      "tz": null,
-      "location": "Hive Helsinki, Haapaniemenkatu 5, 00530 Helsinki, Finland",
-      "lat": 60.18068449999999,
-      "lon": 24.9584314,
-      "organizer": "The AI Collective",
-      "url": "https://lu.ma/genai-collective",
-      "sourceDomain": "lu.ma",
-      "aic": true,
-      "type": "workshop",
-      "price": "check",
-      "capacity": null,
-      "market": "global"
-    },
-    {
-      "id": "evt-VIgm8X0OcIL2wa7@events.lu.ma",
-      "title": "AI and the Future of Work (w/ The AI Collective)",
-      "start": "2026-11-16T21:30:00.000Z",
-      "end": "2026-11-17T00:00:00.000Z",
-      "allDay": false,
-      "tz": null,
-      "location": "Oracle do Brasil Sistemas, R. Dr. José Aureo Bustamante, 455 - Chácara Santo Antônio (Zona Sul), São Paulo - SP, 04710-090, Brazil",
-      "lat": -23.623945199999998,
-      "lon": -46.6972474,
-      "organizer": "The AI Collective",
-      "url": "https://lu.ma/genai-collective",
-      "sourceDomain": "lu.ma",
-      "aic": true,
-      "type": "meetup",
-      "price": "check",
-      "capacity": null,
-      "market": "global"
-    },
     {
       "id": "evt-bjIWE8HaOd7aQH5@events.lu.ma",
       "title": "Grok Bot Atlanta Meetup",
@@ -188,25 +150,6 @@
       "market": "atlanta"
     },
     {
-      "id": "evt-GQFLY0j6fGr4CIo@events.lu.ma",
-      "title": "Building With AI | ART-ificial Intelligence | w/The AI Collective",
-      "start": "2026-11-18T22:30:00.000Z",
-      "end": "2026-11-19T01:00:00.000Z",
-      "allDay": false,
-      "tz": null,
-      "location": "Serendipity Labs - Stamford, 700 Canal St First Floor, Stamford, CT 06902, USA",
-      "lat": 41.0446451,
-      "lon": -73.53203479999999,
-      "organizer": "The AI Collective",
-      "url": "https://lu.ma/genai-collective",
-      "sourceDomain": "lu.ma",
-      "aic": true,
-      "type": "meetup",
-      "price": "check",
-      "capacity": null,
-      "market": "global"
-    },
-    {
       "id": "evt-jdo5V0Z6S8CAomn@events.lu.ma",
       "title": "Fayetteville AI Tasting Monthly Meeting (w/ The AI Collective)",
       "start": "2026-11-18T23:00:00.000Z",
@@ -224,6 +167,25 @@
       "price": "check",
       "capacity": null,
       "market": "atlanta"
+    },
+    {
+      "id": "evt-GQFLY0j6fGr4CIo@events.lu.ma",
+      "title": "Building With AI | ART-ificial Intelligence | w/The AI Collective",
+      "start": "2026-11-18T23:00:00.000Z",
+      "end": "2026-11-19T01:30:00.000Z",
+      "allDay": false,
+      "tz": null,
+      "location": "Serendipity Labs - Stamford, 700 Canal St First Floor, Stamford, CT 06902, USA",
+      "lat": 41.0446451,
+      "lon": -73.53203479999999,
+      "organizer": "The AI Collective",
+      "url": "https://lu.ma/genai-collective",
+      "sourceDomain": "lu.ma",
+      "aic": true,
+      "type": "meetup",
+      "price": "check",
+      "capacity": null,
+      "market": "global"
     },
     {
       "id": "evt-vd4qCsAwVm1Rdxt@events.lu.ma",
