@@ -868,7 +868,10 @@ const GLOBALS = {
 /* ---------- Chapter and Region numbers ----------
    Pulled from the AIC Platform Region Dashboard on Oct 25, 2026.
    Nov 1, 2026: Chapter list updated. Durham, Raleigh and Fayetteville, NC removed.
-   Columbia, SC is now Columbia. null means no platform count yet, so the number stays blank.
+   Columbia, SC is now Columbia.
+   Nov 26, 2026: 27 Chapters. Raleigh, Durham and Chapel Hill are part of Research Triangle.
+   Dahlonega is part of 400North. Added Kennesaw, Marietta, Berea (KY), Olive Branch (MS)
+   and Fayetteville, NC. Counts from the Nov 25 platform pull. null means no platform count yet, so the number stays blank.
    Chapter figures are Chapter members. Region figures are unique
    members across the Region, which is lower than the sum of its
    Chapters because people join more than one.
@@ -878,19 +881,21 @@ const REGION_STATS = {
   /* Southeast replaces South Central and includes the Carolinas (Nov 2026).
      Region members = old South Central 5,529 + Carolinas 570. Replace with the
      platform's unique Southeast count when it is pulled. */
-  'Southeast': {members:6439, chapters:{   // 22 Chapters
+  'Southeast': {members:6439, chapters:{   // 27 Chapters (Nov 26, 2026)
     /* Georgia */
-    'Atlanta':4846, 'Athens':26, 'Augusta':38, 'Cartersville':null, 'Cherokee':1454, 'Dalton':98,
-    'Douglasville':32, 'Fayetteville, GA':911, 'Gwinnett':0, 'Macon':169, '400 North':null,
-    'Savannah':null,
+    'Atlanta':5050, 'Athens':38, 'Augusta':42, 'Cartersville':null, 'Cherokee':1454, 'Dalton':98,
+    'Douglasville':58, 'Fayetteville, GA':973, 'Gwinnett':2341, 'Kennesaw':null, 'Macon':174,
+    'Marietta':null, '400North':null,
     /* Tennessee */
-    'Chattanooga':225, 'Nashville':null,
+    'Chattanooga':232, 'Nashville':null,
     /* Alabama */
     'Birmingham':null, 'Huntsville':null, 'Montgomery':null,
     /* Kentucky */
-    'Louisville':null,
-    /* Carolinas */
-    'Charlotte':476, 'Research Triangle':69, 'Columbia':3,
+    'Louisville':null, 'Berea':null,
+    /* Mississippi */
+    'Olive Branch':null,
+    /* Carolinas: Research Triangle covers Raleigh, Durham, and Chapel Hill */
+    'Charlotte':476, 'Research Triangle':85, 'Columbia':3, 'Fayetteville, NC':null,
     /* Florida */
     'Pensacola':11, 'Panama City':null }}
 };
@@ -951,12 +956,12 @@ function chapterLookup(name){
 /* Official Chapter logos ship with this page in logos/. Picking a Chapter loads
    its White and Color logos. Uploading your own still replaces them. */
 const LOGO_SETS=['Atlanta','Athens','Augusta','Cartersville','Cherokee','Dalton','Douglasville',
-  'Fayetteville, GA','Gwinnett','Macon','400 North','Savannah','Chattanooga','Nashville',
-  'Birmingham','Huntsville','Montgomery','Louisville','Charlotte','Research Triangle','Columbia',
-  'Pensacola','Panama City','Southeast','The AI Collective'];
+  'Fayetteville, GA','Gwinnett','Kennesaw','Macon','Marietta','400North','Chattanooga','Nashville',
+  'Birmingham','Huntsville','Montgomery','Louisville','Berea','Olive Branch','Charlotte','Research Triangle','Columbia',
+  'Fayetteville, NC','Pensacola','Panama City','Southeast','The AI Collective'];
 /* Chapters listed but not running yet. They show "coming soon" in the list. */
-const COMING_SOON={'Savannah':'Coming soon. Contact the regional office.'};
-const logoSlug=n=>n.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+const COMING_SOON={};
+const logoSlug=n=>n==='400North'?'400-north':n.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
 let autoLogoFor='';
 function autoLogos(){
   const v=canonName(($('chapter')||{}).value).toLowerCase();
