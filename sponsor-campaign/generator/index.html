@@ -1319,7 +1319,8 @@ const resolve=s=>{const P=proof(); return placeify(cityFill(s||'')
   .replace(/\{left\}/g,String(spotsLeft()))
   .replace(/\{sold\}/g,String(totalSlots()-spotsLeft()))
   .replace(/\{total\}/g,String(totalSlots()))
-  .replace(/\{place\}/g,chapterPlace()||($('chapter').value.trim()||'your city')));
+  .replace(/\{place\}/g,chapterPlace()||($('chapter').value.trim()||'your city')))
+  .replace(/\b(our|your|Our|Your) the (?=[A-Z])/g,'$1 ');
 };
 
 /* ---------- text fitting ---------- */
@@ -1850,23 +1851,23 @@ const HOLIDAYS=[
    win:y=>[D(y,10,1), nthWeekday(y,10,4,4)],
    head:'Happy Thanksgiving.', acc:'Thankful for our {city} community.',
    ask:'Grateful for your support.', cta:'Contact me 👇', print:true,
-   caps:['Happy Thanksgiving from The AI Collective {city}. We are thankful for every person who comes to our meetups and classes to learn, teach, and share.',
-         'This week we are thankful for the people who show up. Every event we run in {city} is free, and we are thankful for any support that helps keep it that way.',
-         'Grateful for our community in {city} this Thanksgiving. If your organization can help keep AI education free here, we would be thankful for the support.']},
+   caps:['Happy Thanksgiving from The AI Collective {city}. We are thankful for you, thankful for our {city} community, and thankful for your support. If you would like to support a Chapter in your area, or the whole region, I would love to hear from you.',
+         'This Thanksgiving we are grateful for every person who shows up to learn, teach, and share. Thank you for being part of our {city} community. If you would like to support a Chapter in your area, or the whole region, I would love to hear from you.',
+         'Grateful for you. Grateful for our {city} community. Grateful for your support. Every event we run stays free because people like you show up. If you would like to support a Chapter in your area, or the whole region, I would love to hear from you.']},
   {k:'holidays', name:'Happy Holidays', art:'town', bg:3,
    win:y=>[D(y,10,20), D(y,11,31)],
    head:'Happy Holidays.', acc:'A season for giving in {city}.',
    ask:'Give the gift of AI education.', cta:'Contact me 👇',
-   caps:['Happy Holidays from The AI Collective {city}. It is a season for giving, and our free AI education runs on the support of local organizations.',
-         'Wishing you a warm season. Thank you to everyone who learned, taught, and hosted with us this year.',
-         'This season, help keep AI education free in {city}. Local sponsors are the reason every event costs nothing to attend.']},
+   caps:['Happy Holidays from The AI Collective {city}. We are thankful for you, for our {city} community, and for your support this year. If you would like to support a Chapter in your area, or the whole region, I would love to hear from you.',
+         'Wishing you a warm season. Thank you to everyone who learned, taught, and hosted with us this year. If you would like to support a Chapter in your area, or the whole region, I would love to hear from you.',
+         'This season we are grateful for our {city} community and everyone who makes it work. Local supporters keep every event free. If you would like to support a Chapter in your area, or the whole region, I would love to hear from you.']},
   {k:'newyear', name:'Happy New Year', art:'toast', bg:5,
    win:y=>[D(y,10,20), D(y+1,0,10)],
    head:'Happy New Year.', acc:'Here’s to learning together in {city}.',
    ask:'Help us provide free AI education in {nextyear}.', cta:'Contact me 👇',
-   caps:['Happy New Year from The AI Collective {city}. Here is to another year of free, in-person AI education.',
-         'New year, new skills. Our events in {city} stay free, every month, thanks to local sponsors.',
-         'Thank you for a great year. We have more planned for {city}, and every event will be free.']}
+   caps:['Happy New Year from The AI Collective {city}. We are grateful for you, our {city} community, and your support this year. If you would like to support a Chapter in your area, or the whole region, in {nextyear}, I would love to hear from you.',
+         'New year, new skills. We are thankful for our {city} community and everyone who kept our events free this year. If you would like to support a Chapter in your area, or the whole region, I would love to hear from you.',
+         'Thank you for a great year. We have more planned for {nextyear}, and we are grateful for every person who shows up. If you would like to support a Chapter in your area, or the whole region, I would love to hear from you.']}
 ];
 function holidayOpen(h,now){
   now=now||new Date(); const t=new Date(now.getFullYear(),now.getMonth(),now.getDate());
@@ -1879,7 +1880,7 @@ function availableHolidays(){ return HOLIDAYS.filter(h=>showAllHolidays()||holid
 function curHoliday(){ const v=($('hoPick')||{}).value; return HOLIDAYS.find(h=>h.k===v)||availableHolidays()[0]||HOLIDAYS[0]; }
 function nextYear(){ const n=new Date(); return String(n.getMonth()>=10?n.getFullYear()+1:n.getFullYear()); }
 function applyHoliday(h){
-  $('hoHead').value=h.head; $('hoAccent').value=resolve(h.acc).replace(/\{nextyear\}/g,nextYear());
+  $('hoHead').value=h.head; $('hoAccent').value=h.acc.replace(/\{nextyear\}/g,nextYear());
   $('hoAsk').value=h.ask.replace(/\{nextyear\}/g,nextYear()); $('hoCta').value=h.cta;
   $('hoPrint').classList.toggle('hide',!h.print);
   
@@ -2488,7 +2489,7 @@ function captionOptions(){
   }
   if(S.mode==='holiday'){
     const h=curHoliday(); const lead=($('hoAsk').value||'').trim();
-    return h.caps.map(c=>R(lead?`${c}\n\n${lead} ${contactLine('')}`:c).replace(/\{nextyear\}/g,nextYear()));
+    return h.caps.map(c=>R(`${c}\n\n${contactLine('')}`).replace(/\{nextyear\}/g,nextYear()));
   }
   if(S.mode==='luma'){
     const nm=(($('luName')||{}).value||'').trim(), ct=(($('luContact')||{}).value||'').trim();
