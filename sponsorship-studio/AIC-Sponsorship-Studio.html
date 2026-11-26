@@ -845,7 +845,7 @@ const DEFAULTS={
   ],
   multsR:[[1000,1],[5000,1.25],[10000,1.75],[25000,2.5],[null,3.5]],
   annual:[
-    {cls:'cn',name:'Community Cornerstone',price:10000,qty:1,disc:20,floor:2500,benefits:['Logo — chapter landing page','Banner signage + callout','Logo on Luma invitations','Link on Luma invitations','Logo on event slides','Registration list','2 dedicated chapter newsletter sends/yr','20% off event sponsorships']},
+    {cls:'cn',name:'Cornerstone Sponsor',price:10000,qty:1,disc:20,floor:2500,benefits:['Logo — chapter landing page','Banner signage + callout','Logo on Luma invitations','Link on Luma invitations','Logo on event slides','Registration list','2 dedicated chapter newsletter sends/yr','20% off event sponsorships']},
     {cls:'ch',name:'Chapter Champion',price:7500,qty:2,disc:15,floor:2000,benefits:['Logo — chapter landing page','Banner signage + callout','Logo on Luma invitations','Link on Luma invitations','Logo on event slides','Registration list','1 dedicated chapter newsletter send/yr','15% off event sponsorships']},
     {cls:'cs',name:'Chapter Supporter',price:5000,qty:4,disc:10,floor:1250,benefits:['Logo — chapter landing page','Banner signage + callout','Link on Luma invitations','Feature in chapter newsletter','10% off event sponsorships']},
     {cls:'cm',name:'Community Supporter',price:1500,qty:6,disc:0,floor:500,benefits:['Banner signage + callout','Link on Luma invitations']}
@@ -922,7 +922,7 @@ function loadCfg(){
 /* Nov 25, 2026 migration: metal tier names become chapter names, and events that
    still carry the old default price move to the per-person defaults.
    Custom names and custom prices are left alone. */
-const TIER_RENAME_NOV25={Platinum:'Community Cornerstone',Gold:'Chapter Champion',Silver:'Chapter Supporter',Bronze:'Community Supporter'};
+const TIER_RENAME_NOV25={'Community Cornerstone':'Cornerstone Sponsor',Platinum:'Cornerstone Sponsor',Gold:'Chapter Champion',Silver:'Chapter Supporter',Bronze:'Community Supporter'};
 const TIER_CLS_NOV25={pl:'cn',go:'ch',si:'cs',br:'cm'};
 const OLD_EVT_PRICES_NOV25={'Workshop @ Sponsor Venue':[3000],'Workshop @ AIC Venue':[3750],'Online Workshop':[1500],'Demo Night':[3000],
   'Panel / Discussion':[3750],'Private Dinner':[1500],'Private Social':[1500],'Open Social \u2014 Appetizers':[375],'Pitch Night':[6000],
