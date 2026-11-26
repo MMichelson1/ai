@@ -68,7 +68,7 @@ jobs:
           cp sponsorship-studio/dashboard/index.html _site/sponsorship-studio/dashboard/index.html
           # Sponsor Studio Playbook -> /sponsor-studio-playbook/
           mkdir -p _site/sponsor-studio-playbook
-          cp sponsor-studio-playbook/index.html _site/sponsor-studio-playbook/index.html
+          cp sponsor-studio-playbook/index.html sponsor-studio-playbook/hero-logo.png _site/sponsor-studio-playbook/
           # Sponsor campaign: Start Here -> /sponsor-campaign/, Campaign Generator -> /sponsor-campaign/generator/
           cp -r sponsor-campaign _site/sponsor-campaign
           # AI Fundamentals Workshop Builder -> /workshop-builder/
