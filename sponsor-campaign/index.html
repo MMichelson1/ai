@@ -38,18 +38,18 @@ a{color:var(--brand-ink);text-underline-offset:2px}
 h1,h2,h3{font-family:"Spectral",Georgia,"Times New Roman",serif;font-weight:600;text-wrap:balance;letter-spacing:-.01em;line-height:1.15}
 .wrap{max-width:760px;margin:0 auto;padding:0 22px}
 
-/* Header: the Sponsor Studio Playbook's indigo band, with the AIC mark in the upper right */
+/* Header: the Sponsor Studio Playbook's indigo band, with The AI Collective Southeast logo in the upper right */
 header.hero{background:var(--hero);color:#fff;position:relative;overflow:hidden}
 .hero .wrap{padding-top:52px;padding-bottom:52px}
-.hero .hero-mark{position:absolute;top:52px;right:28px;width:auto;height:42px;display:block;pointer-events:none}
+.hero .hero-top{display:flex;justify-content:flex-end;margin-bottom:22px}
+.hero .hero-logo{height:64px;width:auto;display:block}
 .hero h2.ask{color:#fff;font-size:clamp(26px,4.4vw,36px);margin:30px 0 .4em}
 .eyebrow{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;margin:0}
 .hero .eyebrow{color:rgba(255,255,255,.72)}
 .hero h1{color:#fff;font-size:clamp(34px,6vw,52px);margin:.3em 0 .45em}
 .hero .lead{color:rgba(255,255,255,.86);font-size:clamp(16px,2.4vw,19px);line-height:1.6;max-width:34em;margin:0 0 12px}
 @media (max-width:560px){
-  .hero .hero-mark{top:52px;right:16px;height:40px}
-  .hero .eyebrow{padding-right:56px}
+  .hero .hero-logo{height:52px}
 }
 
 /* Section links, pinned once you scroll past the header */
@@ -135,9 +135,9 @@ footer .thanks{font-family:"Spectral",Georgia,serif;font-size:22px;font-weight:6
 
 
 <header class="hero">
-  <img class="hero-mark" alt="The AI Collective" src="data:image/png;base64,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">
   <div class="wrap">
-    <p class="eyebrow">The AI Collective Southeast<br>Sponsor Campaign</p>
+    <div class="hero-top"><img class="hero-logo" src="hero-logo.png" alt="The AI Collective Southeast"></div>
+    <p class="eyebrow">How to get sponsors for your Chapter</p>
     <h1>Thank you.</h1>
     <p class="lead">You are one of the people who make The AI Collective work in the Southeast, and work for your community. You show up, you host, you teach, and you bring people in. We are grateful for every bit of it, and we hope it's fulfilling for you too.</p>
     <h2 class="ask">We need your help.</h2>
